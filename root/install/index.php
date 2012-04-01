@@ -45,7 +45,7 @@ if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner';
+$mod_name = 'Raidplanner 0.3.1';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -434,6 +434,9 @@ $versions = array(
         	// php fixes
         ),     
         '0.3.0' => array(
+        	// php fixes
+        ),    
+        '0.3.1' => array(
         	// php fixes
         ),     
 );
