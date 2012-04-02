@@ -19,24 +19,52 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
+
 /**
  * raidplanner blocks
  *
  */
-class rpblocks
+class rpblocks 
 {
+	
+	public $group_options;
+	
 	/**
 	 * @see calendar::display($x)
 	 *
 	 * @param int $x
 	 */
-	public function display($groupoptions)
+	public function display()
 	{
-		global $template, $auth;
+		global $template, $auth, $user, $db;
+	
+		// What groups is this user a member of?
+	
+		/* if raidplan was made by the admin for a hidden group members of the hidden group need 
+			to be able to see the raidplan in the calendar */
+	
+		$sql = 'SELECT g.group_id, g.group_name, g.group_type
+				FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+				WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+					AND g.group_id = ug.group_id
+					AND ug.user_pending = 0
+				ORDER BY g.group_type, g.group_name';
+		$result = $db->sql_query($sql);
+	
+		$this->group_options = '';
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if( $this->group_options != "" )
+			{
+				$this->group_options .= " OR ";
+			}
+			$this->group_options .= "group_id = ".$row['group_id']. " OR group_id_list LIKE '%,".$row['group_id']. ",%'";
+		}
+		$db->sql_freeresult($result);
 		
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 		{
-			$this->_display_next_raidplans($groupoptions);
+			$this->_display_next_raidplans();
 			$this->_display_top_signups();
 		}
 		else
@@ -129,9 +157,9 @@ class rpblocks
 	/**
 	 * displays the next x number of upcoming raidplans 
 	 *
-	 * @param string $group_options
+	 * @param string $this->group_options
 	 */
-	private function _display_next_raidplans($group_options)
+	private function _display_next_raidplans()
 	{
 		global $config, $user, $db, $template, $phpEx, $phpbb_root_path;
 		// build sql 
@@ -139,7 +167,7 @@ class rpblocks
    			'SELECT'    => 'r.raidplan_id ',   
 			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
 			'WHERE'		=>  '(raidplan_access_level = 2 
-					   OR (r.poster_id = '. $db->sql_escape($user->data['user_id']).' ) OR (r.raidplan_access_level = 1 AND ('. $group_options.')) )  
+					   OR (r.poster_id = '. $db->sql_escape($user->data['user_id']).' ) OR (r.raidplan_access_level = 1 AND ('. $this->group_options.')) )  
 					  AND (r.raidplan_start_time >= '. $db->sql_escape(time() ) . " )",
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC'
 		);
@@ -147,9 +175,14 @@ class rpblocks
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		
 		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0);
-
+		if (!class_exists('rpraid', false))
+		{
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+		}
+					
 		while ($row = $db->sql_fetchrow($result))
 		{
+			
 			unset($rpraid);
 			$rpraid = new rpraid($row['raidplan_id']);
 			if(strlen( $rpraid->eventlist->events[$rpraid->event_type]['imagename'] ) > 1)

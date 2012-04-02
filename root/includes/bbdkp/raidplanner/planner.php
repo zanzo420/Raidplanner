@@ -179,7 +179,7 @@ if (!class_exists('rpblocks', false))
 	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);
 }
 $blocks = new rpblocks();
-$blocks->display($cal->group_options);
+$blocks->display();
 
 // Output the page
 page_header($user->lang['PAGE_TITLE']); 
