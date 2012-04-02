@@ -437,7 +437,14 @@ $versions = array(
         	// php fixes
         ),    
         '0.3.1' => array(
-        	// php fixes
+        
+	      // adding some configs
+		'config_add' => array(
+			array('rp_show_portal', 1, true),
+			
+			),
+        	 
+        
         ),     
 );
 
