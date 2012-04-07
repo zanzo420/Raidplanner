@@ -409,8 +409,10 @@ class rpraid
 			
 			// get array of raid roles with signups and confirmations per role (available+confirmed)
 			$this->get_raid_roles();
+			
 			// attach signups to roles (available+confirmed)
 			$this->getSignups();
+			
 			//get all that signed unavailable 
 			$this->get_unavailable();
 			unset ($row);
@@ -1352,10 +1354,10 @@ class rpraid
 		/* make the url for the edit button */
 		$edit_url = "";
 		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
-		    (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
-			{
-				$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". $this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-			}
+	    (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
+		{
+			$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". $this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+		}
 		
 		/* make the url for the delete button */
 		$delete_url = "";
@@ -1369,7 +1371,7 @@ class rpraid
 		
 		/* make url for signup action */
 		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;calEid=". $this->id);
-				
+		
 		// url to add raid
 		$add_raidplan_url = "";
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
@@ -1418,6 +1420,65 @@ class rpraid
 				       	'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $role['role_icon'] . ".png" : '',
 				 ));
 				 
+
+				 
+				 // loop confirmed signups per role
+				 foreach($role['role_confirmations'] as $confirmation)
+				 {
+				 	$confdetail = new rpsignup();
+				 	$confdetail->getSignup($confirmation['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
+				 	
+				 	$edit_text_array = generate_text_for_edit( $confdetail->comment, $confdetail->bbcode['uid'], 7);
+					$candeleteconf = false;
+					$caneditconf = false;
+					$editconfurl = "";
+					$deleteconfurl = "";
+					
+				 	if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $confirmation['poster_id'] == $user->data['user_id']  )
+					{
+						// then if signup is not frozen then show deletion button
+						//@todo calculate frozen
+						$candeleteconf = true;
+						$caneditconf = true;
+						$editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
+						$deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
+					}
+					
+					$signupcolor = '#006B02';
+					$signuptext = $user->lang['CONFIRMED'];
+					
+					$template->assign_block_vars('raidroles.confirmations', array(
+						'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $confdetail->priority_ratio : $confdetail->dkp_current,
+						'ATTENDANCEP1'	=> $confdetail->attendanceP1,
+						'U_MEMBERDKP'	=> $confdetail->dkmemberpurl,
+						'SIGNUP_ID' 	=> $confdetail->signup_id, 
+						'RAIDPLAN_ID' 	=> $confdetail->raidplan_id, 
+	       				'POST_TIME' 	=> $user->format_date($confdetail->signup_time, $config['rp_date_time_format'], true),
+						'POST_TIMESTAMP' => $confdetail->signup_time, 
+						'DETAILS' 		=> generate_text_for_display($confdetail->comment, $confdetail->bbcode['uid'], $confdetail->bbcode['bitfield'], 7),
+						'EDITDETAILS' 	=> $edit_text_array['text'],
+						'HEADCOUNT' 	=> $confdetail->signup_count,
+						'POSTER' 		=> $confdetail->poster_name, 
+						'POSTER_URL' 	=> get_username_string( 'full', $confdetail->poster_id, $confdetail->poster_name, $confdetail->poster_colour ),
+						'VALUE' 		=> $confdetail->signup_val, 
+						'COLOR' 		=> $signupcolor, 
+						'VALUE_TXT' 	=> $signuptext, 
+						'CHARNAME'      => $confdetail->dkpmembername,
+						'LEVEL'         => $confdetail->level,
+						'CLASS'         => $confdetail->classname,
+						'COLORCODE'  	=> ($confdetail->colorcode == '') ? '#123456' : $confdetail->colorcode,
+				        'CLASS_IMAGE' 	=> (strlen($confdetail->imagename) > 1) ? $confdetail->imagename : '',  
+						'S_CLASS_IMAGE_EXISTS' => (strlen($confdetail->imagename) > 1) ? true : false,
+				       	'RACE_IMAGE' 	=> (strlen( $confdetail->raceimg) > 1) ? $confdetail->raceimg : '',  
+						'S_RACE_IMAGE_EXISTS' => (strlen($confdetail->raceimg) > 1) ? true : false, 
+						'S_DELETE_SIGNUP'	=> $candeleteconf, 
+						'S_EDIT_SIGNUP' 	=> $caneditconf,
+						'S_SIGNUP_EDIT_ACTION' => $editconfurl, 
+						'U_DELETE'			=> $deleteconfurl, 
+					));
+						
+				 }
+				 
 				 // loop available signups per role
 				 foreach($role['role_signups'] as $signup)
 				 {
@@ -1425,7 +1486,6 @@ class rpraid
 				 	$signupdetail->getSignup($signup['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
 					$edit_text_array = generate_text_for_edit( $signupdetail->comment, $signupdetail->bbcode['uid'], 7);
 					
-					$editcomment = $edit_text_array['text'];
 					if( $signupdetail->signup_val == 1 )
 					{
 						$signupcolor = '#C9B634';
@@ -1477,6 +1537,7 @@ class rpraid
 	       				'POST_TIME' 	 	=> $user->format_date($signupdetail->signup_time, $config['rp_date_time_format'], true),
 						'POST_TIMESTAMP' 	=> $signup['signup_time'],
 						'DETAILS' 			=> generate_text_for_display($signupdetail->comment, $signupdetail->bbcode['uid'], $signupdetail->bbcode['bitfield'], 7),
+						'EDITDETAILS' 		=> $edit_text_array['text'],					
 						'HEADCOUNT' 		=> $signupdetail->signup_count,
 						'POSTER' 			=> $signupdetail->poster_name, 
 						'POSTER_URL' 		=> get_username_string( 'full', $signupdetail->poster_id, $signupdetail->poster_name, $signupdetail->poster_colour ),
@@ -1502,67 +1563,8 @@ class rpraid
 					));
 						
 				 }
-				 
-				 
-				 // loop confirmed signups per role
-				 foreach($role['role_confirmations'] as $confirmation)
-				 {
-				 	$confdetail = new rpsignup();
-				 	$confdetail->getSignup($confirmation['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
-				 	
-				 	$edit_text_array = generate_text_for_edit( $confdetail->comment, $confdetail->bbcode['uid'], 7);
-					$candeleteconf = false;
-					$caneditconf = false;
-					$editconfurl = "";
-					$deleteconfurl = "";
-					
-				 	if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $confirmation['poster_id'] == $user->data['user_id']  )
-					{
-						// then if signup is not frozen then show deletion button
-						//@todo calculate frozen
-						$candeleteconf = true;
-						$caneditconf = true;
-						$editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
-						$deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
-					}
-					
-					$signupcolor = '#006B02';
-					$signuptext = $user->lang['CONFIRMED'];
-					
-					$template->assign_block_vars('raidroles.confirmations', array(
-						'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $confdetail->priority_ratio : $confdetail->dkp_current,
-						'ATTENDANCEP1'	=> $confdetail->attendanceP1,
-						'U_MEMBERDKP'	=> $confdetail->dkmemberpurl,
-						'SIGNUP_ID' 	=> $confdetail->signup_id, 
-						'RAIDPLAN_ID' 	=> $confdetail->raidplan_id, 
-	       				'POST_TIME' 	=> $user->format_date($confdetail->signup_time, $config['rp_date_time_format'], true),
-						'POST_TIMESTAMP' => $confdetail->signup_time, 
-						'DETAILS' 		=> generate_text_for_display($confdetail->comment, $confdetail->bbcode['uid'], $confdetail->bbcode['bitfield'], 7),
-						'HEADCOUNT' 	=> $confdetail->signup_count,
-						'POSTER' 		=> $confdetail->poster_name, 
-						'POSTER_URL' 	=> get_username_string( 'full', $confdetail->poster_id, $confdetail->poster_name, $confdetail->poster_colour ),
-						'VALUE' 		=> $confdetail->signup_val, 
-						'COLOR' 		=> $signupcolor, 
-						'VALUE_TXT' 	=> $signuptext, 
-						'CHARNAME'      => $confdetail->dkpmembername,
-						'LEVEL'         => $confdetail->level,
-						'CLASS'         => $confdetail->classname,
-						'COLORCODE'  	=> ($confdetail->colorcode == '') ? '#123456' : $confdetail->colorcode,
-				        'CLASS_IMAGE' 	=> (strlen($confdetail->imagename) > 1) ? $confdetail->imagename : '',  
-						'S_CLASS_IMAGE_EXISTS' => (strlen($confdetail->imagename) > 1) ? true : false,
-				       	'RACE_IMAGE' 	=> (strlen( $confdetail->raceimg) > 1) ? $confdetail->raceimg : '',  
-						'S_RACE_IMAGE_EXISTS' => (strlen($confdetail->raceimg) > 1) ? true : false, 
-						'S_DELETE_SIGNUP'	=> $candeleteconf, 
-						'S_EDIT_SIGNUP' 	=> $caneditconf,
-						'S_SIGNUP_EDIT_ACTION' => $editconfurl, 
-						'U_DELETE'			=> $deleteconfurl, 
-					));
-						
-				 }
-				 
 			 
 			}
-			
 			unset($key);
 			unset($role);
 		}
@@ -1573,7 +1575,8 @@ class rpraid
 				 	
 			$signoffdetail = new rpsignup();
 			$signoffdetail->getSignup($signoff['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
-				 	
+			$edit_text_array = generate_text_for_edit( $signoffdetail->comment, $signoffdetail->bbcode['uid'], 7);
+			
 			$requeue=false;
 			$requeueurl="";
 			// allow requeueing your character
@@ -1592,6 +1595,7 @@ class rpraid
     			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
 				'POST_TIMESTAMP' => $signoff['signup_time'],
 				'DETAILS' 		=> generate_text_for_display($signoff['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
+				'EDITDETAILS' 	=> $edit_text_array['text'],
 				'POSTER' 		=> $signoff['poster_name'], 
 				'POSTER_URL' 	=> get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
 				'VALUE' 		=> $signoff['signup_val'], 
