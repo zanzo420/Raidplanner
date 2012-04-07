@@ -206,6 +206,45 @@ if (isset($config['bbdkp_raidplanner']))
 		</open>		
 		
 
+		<open src="index.php">
+			<edit>
+				<comment lang="en"><![CDATA[Include class]]></comment>
+				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[
+				// [+]Raidplanner
+				if (!class_exists('rpweek', false))
+{
+	// display the entire week
+	define('IN_BBDKP', true);
+	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+	$user->add_lang ( array ('mods/raidplanner'));
+}
+// [-]Raidplanner]]></action>
+			</edit>
+			<edit>
+				<comment lang="en"><![CDATA[Displays current week on index]]></comment>
+				<find><![CDATA[// Assign index specific vars]]></find>
+				<action type="before-add"><![CDATA[
+// [+]Raidplanner
+$user->add_lang ( array ('mods/raidplanner'));
+$cal = new rpweek();
+$cal->display();
+// [-]Raidplanner
+]]></action>
+			</edit>
+		</open>
+		
+<open src="styles/prosilver/template/index_body.html">
+			<edit>
+				<comment lang="en"><![CDATA[Add calendar to index page]]></comment>
+				<find><![CDATA[<!-- INCLUDE forumlist_body.html -->]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_PLANNER_WEEK -->
+	<!-- INCLUDE planner/calendar/planner_view_month.html -->
+<!-- ENDIF -->
+]]></action>
+			</edit>
+		</open>
+		
 		<php-installer><![CDATA[install/index.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/index.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to your style.]]></diy-instructions>
 	</action-group>

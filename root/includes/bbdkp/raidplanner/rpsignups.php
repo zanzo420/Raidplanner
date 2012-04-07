@@ -369,7 +369,7 @@ class rpsignup
 		generate_text_for_storage($message, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		$db->sql_transaction('begin');
 		$sql_signup = array(
-			'signup_detail'		=> $db->sql_escape($message),
+			'signup_detail'		=> $message,
 			'bbcode_bitfield' 	=> $this->bbcode['bitfield'],
 			'bbcode_uid'		=> $this->bbcode['uid'],
 			'bbcode_options'	=> 7, 
