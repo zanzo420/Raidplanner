@@ -1,5 +1,5 @@
 <!-- [+] UNAVAILABLE SIGNUPS -->
-<h4><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></img>&nbsp;{L_NOTAVAILABLE}</h4>
+<h4><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"/>&nbsp;{L_NOTAVAILABLE}</h4>
 <div class="panel bg2" >
 <div class="inner">
 <span class="corners-top"><span></span></span>
@@ -15,26 +15,25 @@
 	{L_DKP}: {unavailable.DKP_CURRENT}, {L_ATTENDANCE}: {unavailable.ATTENDANCEP1}<br />
 	{unavailable.POST_TIME}<br />
 	<span>{unavailable.DETAILS}</span>
+	<!-- IF unavailable.S_REQUEUE_SIGNUP -->
 	<br />
 	<hr />
-	<!-- IF unavailable.S_REQUEUE_SIGNUP -->
 	<div style="text-align:right;">
-		<input type="image" id="requeue{raidroles.confirmations.SIGNUP_ID}" src="{T_IMAGESET_PATH}/planner/icon_queue.png"  alt="{L_AVAILABLE}"  />
+		<input type="image" id="requeue{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" src="{T_IMAGESET_PATH}/planner/icon_queue.png"  alt="{L_AVAILABLE}"  />
 	</div>
 	<!-- ENDIF -->
 </div>
 <!-- END unavailable -->
 
-
 </div>
 <span class="corners-bottom"><span></span></span>
 </div>
 </div>
-
 <!-- BEGIN unavailable -->
+<!-- IF unavailable.S_REQUEUE_SIGNUP -->
 <div id="prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" class="overlaysignup">
 	<br />
-	<form id="requeuesignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" name="requeuesignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}"
+	<form id="requeuesignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" 
 		  method="post" action="{unavailable.S_REQUEUE_ACTION}">
 		<fieldset>
 			<dl>
@@ -74,10 +73,13 @@
 		</fieldset>
 	</form>
 </div>
+<!-- ENDIF -->
+<!-- END unavailable -->
+
 <script type="text/javascript">
 jQuery(document).ready( function() 
+<!-- BEGIN unavailable --><!-- IF unavailable.S_REQUEUE_SIGNUP -->
 	{
-
 	jQuery("#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay({
 		 top: 260,
 		mask: {
@@ -89,10 +91,9 @@ jQuery(document).ready( function()
  		load: false
 	});
 
-	jQuery("#requeue{raidroles.confirmations.SIGNUP_ID}").click(function() {
+	jQuery("#requeue{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").click(function() {
 		jQuery("#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay().load();
-	  });
-
+	});
 	
 	jQuery("#editsignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").submit(function(e)
 	{
@@ -101,9 +102,9 @@ jQuery(document).ready( function()
 		triggers_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}.eq(1).overlay().close();
 		return e.preventDefault();
 	});
-
-	});
+<!-- ENDIF --><!-- END unavailable -->
+});
 </script>
-<!-- END unavailable -->
+
 
 <!-- [-] UNAVAILABLE SIGNUPS -->
