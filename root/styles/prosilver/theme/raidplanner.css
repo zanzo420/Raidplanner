@@ -80,6 +80,11 @@ hr.hrCal {
 }
 
 .roleunavailable {
+    border:2px solid #666;
+    border:2px solid rgba(82, 82, 82, 0.698);
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+		
 	background-color:#FFFFFF;
 	width:160px; 
 	float:left; 
@@ -95,7 +100,20 @@ hr.hrCal {
 
 }
 
-
+.roleunavailable_signup
+{
+    display:none;
+    width:300px;
+    border:10px solid #666;
+    border:10px solid rgba(82, 82, 82, 0.698);
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    padding:5px;
+    background-color:#000;
+    color:#fff;
+    font-family:"lucida grande",tahoma,verdana,arial,sans-serif
+}
+ 
 
 /* Calendar view */
 
@@ -243,14 +261,14 @@ fieldset.rpfields dl {
 }
 
 .buttons div.planner-edit-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/icon_post_edit.gif");
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
 	width: 42px;
 	height: 20px;
 	
 }
 
 .buttons div.planner-delete-icon {
-	background-image: url("{T_IMAGESET_PATH}/icon_post_delete.gif");
+	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
 	width: 20px;
 	height: 20px;
 	
