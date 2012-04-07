@@ -94,7 +94,6 @@ class rpsignup
 		$this->comment = $row['signup_detail'];
 		$this->bbcode['bitfield']= $row['bbcode_bitfield'];
 		$this->bbcode['uid']= $row['bbcode_uid'];
-		//enable_bbcode & enable_smilies & enable_magic_url always 1
 		$this->confirm = $row['role_confirm'];
 		$this->dkpmemberid = $row['dkpmember_id'];
 		$this->roleid = $row['role_id'];
@@ -187,8 +186,6 @@ class rpsignup
 		}
 		unset ($row2);
 		$db->sql_freeresult($result);
-		
-			
 	}
 	
 	
@@ -361,6 +358,31 @@ class rpsignup
 		return true;
 	}
 	
+	public function editsignupcomment($signup_id)
+	{
+		global $db;
+		//make object
+		$this->getSignup($signup_id);
+		$message = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
+		$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
+		$allow_bbcode = $allow_urls = $allow_smilies = true;
+		generate_text_for_storage($message, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
+		$db->sql_transaction('begin');
+		$sql_signup = array(
+			'signup_detail'		=> $db->sql_escape($message),
+			'bbcode_bitfield' 	=> $this->bbcode['bitfield'],
+			'bbcode_uid'		=> $this->bbcode['uid'],
+			'bbcode_options'	=> 7, 
+			);
+		$sql = 'UPDATE ' . RP_SIGNUPS . ' SET ' . $db->sql_build_array('UPDATE', $sql_signup) . ' WHERE signup_id = ' . (int) $this->signup_id;
+		unset($sql_signup);
+		$db->sql_query($sql);
+		$db->sql_transaction('commit');
+		
+		return true;
+
+	}
+		
 	
 	/**
 	 * requeues a deleted signup
@@ -392,6 +414,11 @@ class rpsignup
 
 				//edit the comment
 				$this->comment = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
+				
+				$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
+				$allow_bbcode = $allow_urls = $allow_smilies = true;
+				generate_text_for_storage($this->comment, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
+				
 				if($this->comment != '')
 				{
 					$sql = 'UPDATE ' . RP_SIGNUPS . " SET signup_detail = '" .  $db->sql_escape($this->comment) . "' WHERE signup_id = " . (int) $this->signup_id;
@@ -550,24 +577,7 @@ class rpsignup
 		
 	}
 	
-	public function editsignupcomment($signup_id)
-	{
-		global $db;
-		//make object
-		$this->getSignup($signup_id);
-		$this->comment = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
-		if($this->comment != '')
-		{
-			$db->sql_transaction('begin');
-			$sql = 'UPDATE ' . RP_SIGNUPS . " SET signup_detail = '" .  $db->sql_escape($this->comment) . "' WHERE signup_id = " . (int) $this->signup_id;
-			$db->sql_query($sql);
-			$db->sql_transaction('commit');
-		}
-		
-		return true;
 
-	}
-	
 }
 
 ?>
