@@ -243,14 +243,14 @@ fieldset.rpfields dl {
 }
 
 .buttons div.planner-edit-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/icon_post_edit.gif");
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
 	width: 42px;
 	height: 20px;
 	
 }
 
 .buttons div.planner-delete-icon {
-	background-image: url("{T_IMAGESET_PATH}/icon_post_delete.gif");
+	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
 	width: 20px;
 	height: 20px;
 	
