@@ -3,11 +3,11 @@
 *
 * calendarpost [English]
 *
-* @author alightner
+* @author alightner alightner@hotmail.com
 *
 * @package phpBB Calendar
 * @version CVS/SVN: $Id: $
-* @copyright (c) 2009 alightner
+* @copyright (c) 2008 alightner
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -59,7 +59,6 @@ $lang = array_merge($lang, array(
 	'EVENT_STORED'				=> 'This event has been created successfully.',
 	'EVENT_TYPE'				=> 'Event Type',
 	'EVERYONE'					=> 'Everyone',
-	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring events must have a frequency greater than or equal to 1',
 	'FROM_TIME'					=> 'From',
 	'INVITE_INFO'				=> 'Invited',
 	'LOGIN_EXPLAIN_POST_EVENT'	=> 'You need to login in order to add/edit/delete events.',
@@ -69,7 +68,6 @@ $lang = array_merge($lang, array(
 	'NEW_EVENT'					=> 'New Event',
 	'NO_EVENT'					=> 'The requested event does not exist.',
 	'NO_EVENT_TYPES'			=> 'The site administrator has not set up event types for this calendar.  Calendar event creation has been disabled.',
-	'NO_GROUP_SELECTED'			=> 'There are no groups selected for this group event.',
 	'NO_POST_EVENT_MODE'		=> 'No post mode specified.',
 	'PM'						=> 'PM',
 	'RECURRING_EVENT'			=> 'Recurring event',
@@ -104,7 +102,6 @@ $lang = array_merge($lang, array(
 	'VIEW_EVENT'				=> '%sView your submitted event%s',
 	'WEEK'						=> 'Week',
 	'ZERO_LENGTH_EVENT'			=> 'The event cannot end at the same time it starts.',
-
 ));
 
 ?>

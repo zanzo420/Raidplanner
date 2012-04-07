@@ -1,0 +1,14 @@
+Subject: Es gibt einen neuen oder geänderten Kalender-Kommentar
+
+Hallo {USERNAME},
+
+Es gibt einen neuen oder geänderten Kommentar zum Kalender-Termin "{EVENT_SUBJECT}"
+
+Verwende diesen Link, um den Termin zu betrachten:
+{U_EVENT}
+
+Verwende diesen Link, wenn du keine weiteren emails über diesen Kalender-Termin erhalten möchtest:
+{U_UNWATCH_EVENT}
+
+
+{EMAIL_SIG}

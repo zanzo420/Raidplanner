@@ -1,0 +1,16 @@
+Subject: Ein neuer Termin wurde in den Kalender eingetragen
+
+Hallo {USERNAME},
+
+Der Termin "{EVENT_SUBJECT}" wurde im Kalender eingetragen.
+
+Verwende diesen Link, um den Kalender zu betrachten:
+{U_CALENDAR}
+
+Verwende diesen Link, um den Termin zu betrachten:
+{U_EVENT}
+
+Verwende diesen Link, wenn du keine weiteren emails über neue Kalender-Termine erhalten möchtest:
+{U_UNWATCH_CALENDAR}
+
+{EMAIL_SIG}

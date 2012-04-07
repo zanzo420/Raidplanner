@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="1.2.2/modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http
+://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.2.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+		
+		<title lang="en">phpbb Calendar</title>
+		
+		<description lang="en"><![CDATA[The Prosilver Style for the phpbb Calendar mod.
+]]></description>
+		
+		<author-notes lang="en"><![CDATA[Getting prosilver to run successfully also includes a few edits from the main install.xml instructions.  Specifically the edits to: language/en/acp/styles.php, includes/acp/acp_language.php, and includes/acp/acp_styles.php.  If you have problems with the prosilver style after installation don't forget to double check the edits in those files as well as all the steps described below in this file.  Also there are lots of troubleshooting tips listed in the main install.xml file.				
+				]]>
+		</author-notes>
+		
+		<author-group>
+			<author>
+				<realname>E. Ford</realname>
+				<username>alightner</username>
+				<homepage>http://www.phpbbcalendarmod.com</homepage>
+      		<contributions-group>
+      		  <contributions status="current" position="Developer"/>
+      		</contributions-group>			 				
+			</author>
+		</author-group>
+		
+		<mod-version>0.1.0</mod-version>
+		
+		<installation>
+			<level>intermediate</level>
+			<time>900</time>
+			<target-version>3.0.5</target-version>
+		</installation>
+
+				<history>
+					<entry>
+						<date>2008-01-06</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>0</revision>
+							<release>a</release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Fixed bugs in calendarpost.php:
+1) defined error variable
+2) added check for NULL mode to prevent triggering USER_CANNOT__EVENT error.
+3) removed event_level initialization on new events.</change>
+
+<change>Fixed bugs in includes\functions_calendar.php:
+1) added check for invalid event in calendar_display_event.
+2) removed check for sizeof($error) in calendar_display_event.
+3) changed $poster_data['username_colour'] to $poster_data['user_colour']
+4) changed if( $month_names[1] !== "January" ) to if( count($month_names) == 0 )
+5) add $date as global variable in handle_event_delete.
+6) fixed first sql query inside handle_event_delete.
+
+Added 'INVALID_EVENT' string to language\en\calendar.php.</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-01-07</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>1</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Fixed bug when editing from all day event to timed event in calendarpost.php</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-01-09</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>2</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Allow foreign characters in event_types names (includes\acp\acp_calendar.php)</change>
+							<change>Fix bug in which only one birthday is displayed per day (includes\functions_calendar.php)</change>
+							<change>Fix translation bug with month selection pulldown menu (calendarpost.php)</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-01-13</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>3</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Update SQL commands</change>
+							<change>Fix pass by reference bug (includes\functions_calendar.php)</change>
+							<change>Fix pass by reference bug (calendarpost.php)</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-01-25</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>4</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Update SQL commands for the phpbb_calendar_config table (added support for 12/24 hour display and truncated names)</change>
+							<change>Make things xhtml compliant (special thanks to ncc50446 for cleaning this up) (adm/style/acp_calendar.html, adm/style/acp_calendar_event_types.html, includes/acp/acp_calendar.php, includes/functions_calendar.php, styles/prosilver/template/calendar.html, styles/prosilver/template/calendar_next_events_on_index.html, styles/prosilver/template/calendar_post_body.html, styles/prosilver/template/calendar_post_editor.html, styles/prosilver/template/calendar_post_preview.html, styles/prosilver/template/calendar_view_day.html, styles/prosilver/template/calendar_view_event.html, styles/prosilver/template/calendar_week_on_index.html, calendarpost.php)</change>
+							<change>Add support for 12 hour vs 24 hour display. (adm/style/acp_calendar.html, includes/acp/acp_calendar.php, includes/functions_calendar.php, language/en/mods/calendar.php, language/en/calendar.php, language/en/calendarpost.php, styles/prosilver/template/calendar_view_day.html, calendarpost.php)</change>
+							<change>Add support for truncating the event subject in the calendar display. (adm/style/acp_calendar.html, includes/acp/acp_calendar.php, includes/functions_calendar.php, language/en/mods/calendar.php)</change>
+							<change>Fix DST bug. (includes/functions_calendar.php, calendarpost.php)</change>
+							<change>Fix bug where late at night the "next week display on index" showed the previous week (includes/functions_calendar.php)</change>
+							<change>Fix bug where some events didn't show up on the "upcoming events list on index" the day of the event. (includes/functions_calendar.php)</change>
+							<change>Fix bug where previous years weren't available on the view date pulldown menu after jumping forward a few years (includes/functions_calendar.php)</change>
+							<change>Fixed bug where the next events on index caused the colors to change in the online list and statistics sections (includes/functions_calendar.php)</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-02-15</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>5</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Fix bugs in xhtml changes from 0.0.4 - things stopped working in firefox (styles/prosilver/template/calendar_post_body.html, styles/prosilver/template/calendar_post_editor.html, calendarpost.php, adm/style/acp_calendar.html, adm/style/acp_calendar_event_types.html)</change>
+							<change>Add a few more xhtml compliant changes (adm/style/acp_calendar_event_types.html)</change>
+							<change>Fix another DST bug in the week and month views. (includes/functions_calendar.php)</change>
+							<change>Fixed incompatability issue with Arcade mod.  Renamed generate_smilies function to generate_calendar_smilies (calendarpost.php, includes/functions_calendar.php)</change>
+							<change>Fix style issue with location of submit button during event posting (styles/prosilver/template/calendar_post_body.html, styles/prosilver/template/calendar_post_editor.html)</change>
+							<change>Fix tranlation bug with calendar title on view event page (includes/functions_calendar.php, styles/prosilver/template/calendar_view_event.html)</change>
+							<change>Fix uninitialized variable $event_counter (includes/functions_calendar.php)</change>
+							<change>Allow calendar header date to be localized to different formats. (language/en/calendar.php, includes/functions_calendar.php)</change>
+							<change>Fix partial icon display bug. Add  text-align: left; in hand edits for buttons.css (styles/prosilver/theme/buttons.css)</change>
+							<change>Fix encoding of special html characters in event subject (calendarpost.php)</change>
+							<change>Fix session logout (when cookies disabled) when entering calendar (includes/functions.php, styles/prosilver/template/overall_header.html)</change>
+							<change>Add "..." to end of truncated subject strings (includes/functions_calendar.php)</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-02-24</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>6</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Add support for Auto-pruning events (SQL insert new entries in calendar_config table, cron.php, adm/style/acp_calendar.html, includes/functions.php, includes/functions_calendar.php, includes/acp/acp_calendar.php, language/en/mods/calendar.php)</change>
+							<change>Redesigned style to look more pro-silver like and added more comments to changed style files. (includes/functions_calendar.php, styles/prosilver/template/calendar.html, styles/prosilver/template/calendar_view_day.html, styles/prosilver/template/calendar_view_week_on_index.html, styles/prosilver/theme/buttons.css, styles/prosilver/theme/colours.css)</change>
+							<change>Fixed bug where event subjects were displaying censored words in the calendar (includes/functions_calendar.php)</change>
+							<change>Add Mod Version Check support. (adm/mods/phpbb_calendar_version.php)</change>
+							<change>Hide birthdays in calendar, unless user has permission to view profiles (includes/functions_calendar.php)</change>
+							<change>When errors are encountered during event creation, store re-use the input date/time info - don't force the user to start from scratch (calendarpost.php)</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-03-02</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>7</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Fix uninitialized variable subject_limit (includes/functions_calendar.php)</change>
+							<change>There were several bugs related to timezone and DST settings of the server hosting the forum.  In particular forums hosted in the southern hemisphere were seeing the most problems because their DST schedule is opposite GMT's DST schedule. Hopefully this is the last of the timezone/DST bug fixes ;) (calendarpost.php, includes/functions_calendar.php)</change>
+							<change>Update check mod version file (adm/mods/phpbb_calendar_version.php)</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2008-07-03</date>
+						<rev-version>
+							<major>0</major>
+							<minor>0</minor>
+							<revision>8</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Update server name and version number (adm/mods/phpbb_calendar_version.php)</change>
+							<change>Add option to allow everyday users to see hidden groups on invite list (adm/style/acp_calendar.html, includes/acp/acp_calendar.php, includes/functions_calendar.php, language/en/mods/calendar.php)</change>
+							<change>Remove bogus warning when deleting an event type that was not referenced by any events (adm/style/acp_calendar_event_types.html, includes/acp/acp_calendar.php)</change>
+							<change>Added color swatch to edit event type in ACP (adm/style/acp_calendar_event_types.html, includes/acp/acp_calendar.php)</change>
+							<change>Correct calls to request_var with integer type values (includes/acp/acp_calendar.php, includes/functions_calendar.php, calendarpost.php)</change>
+							<change>Remove alternate cron text - firefox bug unrelated to this mod, but many users complained about it so the fix is here if you want it (includes/functions.php)</change>
+							<change>Display full event subject text on mouseover tooltip (includes/functions_calendar.php, styles/prosilver/template/calendar.html, styles/prosilver/template/calendar_next_events_on_index.html, styles/prosilver/template/calendar_view_day.html, styles/prosilver/template/calendar_week_on_index.html)</change>
+							<change>Relocate the calendar on the index page (styles/prosilver/template/index_body.html)</change>
+							<change>Prevent display of invalid days like February 31st - even if the user selected that option from the pulldown menu on purpose (includes/functions_calendar.php)</change>
+							<change>Fix bug with displaying extra smilies when posting events (includes/functions_calendar.php)</change>
+							<change>Remove ALL_DAY_STARTING - no longer used (language/en/calendar.php, language/en/calendarpost.php)</change>
+							<change>On new event confirmation page, add link to view the newly created event (calendarpost.php)</change>
+						</changelog>
+					</entry>
+					<entry>
+						<date>2009-07-24</date>
+						<rev-version>
+							<major>0</major>
+							<minor>1</minor>
+							<revision>0</revision>
+							<release></release>
+						</rev-version>
+						<changelog lang="en">
+							<change>Added so many new features, it's easiest to list the changed files separate from the list of changed functionality so here goes... New/Edited files in 0.1.0: adm/mods/phpbb_calendar_version.php, adm/style/acp_calendar.html, includes/acp/info/acp_calendar.php, includes/acp/acp_calendar.php, includes/acp/acp_language.php,  includes/acp/acp_styles.php, includes/ucp/info/ucp_main.php, includes/ucp/ucp_main.php, includes/constants.php, includes/functions.php, includes/functions_calendar.php, language/en/acp/permissions_calendar.php, language/en/acp/styles.php, language/en/email/calendar_new_event.txt, language/en/email/calendar_updated_event.txt, language/en/email/calendar_updated_reply.txt, language/en/mods/calendar.php, language/en/calendar.php, language/en/calendarpost.php, language/en/common.php, language/en/ucp.php, styles/prosilver/imageset/en/icon_calendar_delete_all.gif, styles/prosilver/imageset/en/icon_calendar_edit_all.gif, styles/prosilver/imageset/en/imageset.cfg, styles/prosilver/template/calendar_next_events_for_x_days.html, styles/prosilver/template/calendar_next_events_on_index.html, styles/prosilver/template/calendar_post_editor.html, styles/prosilver/template/calendar_post_preview.html, styles/prosilver/template/calendar_view_event.html, styles/prosilver/template/overall_header.html, styles/prosilver/template/sorttable.js, styles/prosilver/template/ucp_main_calendar_myevents.html, styles/prosilver/template/ucp_main_calendar_registration.html, styles/prosilver/theme/buttons.css, styles/prosilver/theme/colours.css, calendar.php, calendarpost.php, cron.php, viewonline.php
+							</change>
+							<change>Add Recurring events</change>
+							<change>Add Event Registration</change>
+							<change>Add Ability to invite multiple groups to an event</change>
+							<change>Add Custom date/time formatting controlled in calendar ACP</change>
+							<change>Add Ability to display events only on their start date</change>
+							<change>Add Ability to display a list of upcoming events for the next X days</change>
+							<change>Add Ability to display a list of upcoming events (that the user has registered for) for the next X days</change>
+							<change>Add Detailed display for calendar on who is online page</change>
+							<change>Add New permission option to invite groups you're not a member of</change>
+							<change>Add Detailed permissions for ability to create private, group, or public events</change>
+							<change>Add Utility in ACP to move all events +/- one hour (helps when changing forum's dst setting).</change>
+							<change>Add Ability to filter the calendar for events of a specific type</change>
+							<change>Add UCP module to "Manage my events"</change>
+							<change>Add UCP module to "Manage event registration"</change>
+							<change>Add Ability to "watch" the calendar</change>
+							<change>Add Ability to "watch" specific events</change>
+							<change>Fix end of year bug (phpversion specific) use Y not o!</change>
+							<change>Moved public events to default position</change>
+							<change>Fix bug with hidden groups</change>
+							<change>Provide contrib file to clean up birthdays without leading whitespace</change>
+						</changelog>
+					</entry>
+				</history>
+
+		<link-group>
+			<link type="parent" href="../install.xml" lang="en">Main install file</link>
+			<link type="template" href="prosilver.xml" lang="en">Prosilver</link>
+			<link type="contrib" href="upgrade_from_0_0_8.xml" lang="en">Upgrade Install from 0.0.8</link>
+			<link type="contrib" href="../contrib/subsilver_readme.txt" lang="en">Information about Subsilver</link>
+			<link type="contrib" href="../contrib/cleanup_birthdays_readme.txt" lang="en">Information about birthdays converted from phpbb2</link>
+			<link type="contrib" href="../contrib/MSSQL_readme.txt" lang="en">Information MSSQL users</link>
+			<link type="contrib" href="../contrib/MySQL40_readme.txt" lang="en">Information MySQL40 users</link>
+			<link type="contrib" href="../contrib/Postgres_readme.txt" lang="en">Information Postgres users</link>
+			<link type="contrib" href="../contrib/sorttable_readme.txt" lang="en">Information about a sort table addin for event registration.</link>
+			<link type="contrib" href="../contrib/us_holidays__readme.txt" lang="en">Information about installing US holidays in your calendar.</link>
+			<link type="template-lang" href="../contrib/zh_cmn_hant/zh_cmn_hant.xml" lang="zh_cmn_hant">Chinese (zh_cmn_hant) translation from wang5555</link>
+			<link type="template-lang" href="../contrib/de/install_de.xml" lang="de">German (de) translation from passat3233</link>
+		</link-group>
+	</header>
+	
+	<action-group>
+		<copy>
+			<file from="root/styles/prosilver/imageset/en/icon_calendar_delete_all.gif" to="styles/prosilver/imageset/en/icon_calendar_delete_all.gif" />
+			<file from="root/styles/prosilver/imageset/en/icon_calendar_edit_all.gif" to="styles/prosilver/imageset/en/icon_calendar_edit_all.gif" />
+			<file from="root/styles/prosilver/imageset/en/prosilver_day_icon.gif" to="styles/prosilver/imageset/en/prosilver_day_icon.gif" />
+			<file from="root/styles/prosilver/imageset/en/prosilver_month_icon.gif" to="styles/prosilver/imageset/en/prosilver_month_icon.gif" />
+			<file from="root/styles/prosilver/imageset/en/prosilver_new_star_icon.gif" to="styles/prosilver/imageset/en/prosilver_new_star_icon.gif" />
+			<file from="root/styles/prosilver/imageset/en/prosilver_week_icon.gif" to="styles/prosilver/imageset/en/prosilver_week_icon.gif" />
+			<file from="root/styles/prosilver/template/calendar.html" to="styles/prosilver/template/calendar.html" />
+			<file from="root/styles/prosilver/template/calendar_next_events_for_x_days.html" to="styles/prosilver/template/calendar_next_events_for_x_days.html" />
+			<file from="root/styles/prosilver/template/calendar_next_events_on_index.html" to="styles/prosilver/template/calendar_next_events_on_index.html" />
+			<file from="root/styles/prosilver/template/calendar_post_body.html" to="styles/prosilver/template/calendar_post_body.html" />
+			<file from="root/styles/prosilver/template/calendar_post_buttons.html" to="styles/prosilver/template/calendar_post_buttons.html" />
+			<file from="root/styles/prosilver/template/calendar_post_editor.html" to="styles/prosilver/template/calendar_post_editor.html" />
+			<file from="root/styles/prosilver/template/calendar_post_preview.html" to="styles/prosilver/template/calendar_post_preview.html" />
+			<file from="root/styles/prosilver/template/calendar_view_day.html" to="styles/prosilver/template/calendar_view_day.html" />
+			<file from="root/styles/prosilver/template/calendar_view_event.html" to="styles/prosilver/template/calendar_view_event.html" />
+			<file from="root/styles/prosilver/template/calendar_week_on_index.html" to="styles/prosilver/template/calendar_week_on_index.html" />
+			<file from="root/styles/prosilver/template/sorttable.js" to="styles/prosilver/template/sorttable.js" />
+			<file from="root/styles/prosilver/template/ucp_main_calendar_myevents.html" to="styles/prosilver/template/ucp_main_calendar_myevents.html" />
+			<file from="root/styles/prosilver/template/ucp_main_calendar_registration.html" to="styles/prosilver/template/ucp_main_calendar_registration.html" />
+		</copy>
+		<open src="styles/prosilver/imageset/en/imageset.cfg">
+			<edit>
+				<comment lang="en"><![CDATA[Define recurring event icons in imageset]]></comment>
+				<find><![CDATA[img_icon_post_edit = icon_post_edit.gif*20*42]]></find>
+				<action type="after-add"><![CDATA[img_icon_calendar_edit_all = icon_calendar_edit_all.gif*20*61
+img_icon_calendar_delete_all = icon_calendar_delete_all.gif*20*40]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/overall_footer.html">
+			<edit>
+				<comment lang="en"><![CDATA[Add calendar subscription links]]></comment>
+				<find><![CDATA[<!-- IF U_WATCH_TOPIC --><li <!-- IF S_WATCHING_TOPIC -->class="icon-unsubscribe"<!-- ELSE -->class="icon-subscribe"<!-- ENDIF -->><a href="{U_WATCH_TOPIC}" title="{L_WATCH_TOPIC}">{L_WATCH_TOPIC}</a></li><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF U_WATCH_EVENT --><li <!-- IF S_WATCHING_EVENT -->class="icon-unsubscribe"<!-- ELSE -->class="icon-subscribe"<!-- ENDIF -->><a href="{U_WATCH_EVENT}" title="{L_WATCH_EVENT}">{L_WATCH_EVENT}</a></li><!-- ENDIF -->
+					<!-- IF U_WATCH_CALENDAR --><li <!-- IF S_WATCHING_CALENDAR -->class="icon-unsubscribe"<!-- ELSE -->class="icon-subscribe"<!-- ENDIF -->><a href="{U_WATCH_CALENDAR}" title="{L_WATCH_CALENDAR}">{L_WATCH_CALENDAR}</a></li><!-- ENDIF -->
+]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<comment lang="en"><![CDATA[Add sorttable script when displaying rsvps]]></comment>
+				<find><![CDATA[<script type="text/javascript" src="{T_TEMPLATE_PATH}/forum_fn.js"></script>]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_CALENDAR_RSVPS -->
+<script src="{T_TEMPLATE_PATH}/sorttable.js"></script>
+<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/theme/buttons.css">
+			<edit>
+				<comment lang="en"><![CDATA[Add recurring event icons]]></comment>
+				<find><![CDATA[ul.profile-icons li.edit-icon	{ width: {IMG_ICON_POST_EDIT_WIDTH}px; height: {IMG_ICON_POST_EDIT_HEIGHT}px; }]]></find>
+				<action type="after-add"><![CDATA[ul.profile-icons li.edit-all-icon	{ width: {IMG_ICON_CALENDAR_EDIT_ALL_WIDTH}px; height: {IMG_ICON_CALENDAR_EDIT_ALL_HEIGHT}px; }
+ul.profile-icons li.delete-all-icon	{ width: {IMG_ICON_CALENDAR_DELETE_ALL_WIDTH}px; height: {IMG_ICON_CALENDAR_DELETE_ALL_HEIGHT}px; }]]></action>
+			</edit>
+		</open>
+		<open src="styles/prosilver/theme/colours.css">
+			<edit>
+				<comment lang="en"><![CDATA[Define recurring event icon data]]></comment>
+				<find><![CDATA[.edit-icon, .edit-icon a			{ background-image: url("{IMG_ICON_POST_EDIT_SRC}"); }]]></find>
+				<action type="after-add"><![CDATA[.edit-all-icon, .edit-all-icon a			{ background-image: url("{IMG_ICON_CALENDAR_EDIT_ALL_SRC}"); }
+.delete-all-icon, .delete-all-icon a			{ background-image: url("{IMG_ICON_CALENDAR_DELETE_ALL_SRC}"); }]]></action>
+			</edit>
+		</open>				
+		<diy-instructions lang="en"><![CDATA[
+After installing the prosilver style changes (or any style changes in phpbb), 
+you need to refresh the style's theme, imageset, and templates before the 
+changes will be visable.  Start by entering the ACP and go to the "Styles" tab 
+and select "Templates" from the list of style components on the left. Find your 
+style name in the list of installed templates, and click the link to "Refresh" 
+your style's template. Confirm that "Yes" you really eant to clear the cached 
+version of your template. Now select "Themes" from the list of style components 
+on the left. Find your style name in the list of installed themes and click on 
+the link to "Refresh" your style's theme. Confirm that "Yes" you really want to 
+clear the cached version of your theme. Finally select "Imagesets" from the 
+list of style componenets, and refresh your imageset. Now return to the general 
+tab and click the "Run now" button next to where it says "Purge the cache". 
+When you return to your calendar and refresh the page, you should be able to 
+see the changes you just installed to the style.
+
+]]></diy-instructions>
+	</action-group>
+</mod>

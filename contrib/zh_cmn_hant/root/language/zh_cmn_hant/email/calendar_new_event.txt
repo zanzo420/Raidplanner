@@ -1,0 +1,16 @@
+Subject: 新的事件已經被增加到行事曆
+
+親愛的 {USERNAME}：
+
+事件「{EVENT_SUBJECT}」已經被增加到行事曆。
+
+要檢視行事曆，請點選下列連結：
+{U_CALENDAR}
+
+要檢視此事件，請點選下列連結：
+{U_EVENT}
+
+如果您不想要再接收行事曆新事件的通知，那麼請點選這裡：
+{U_UNWATCH_CALENDAR}
+
+{EMAIL_SIG}

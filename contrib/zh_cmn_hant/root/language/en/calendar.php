@@ -3,11 +3,11 @@
 *
 * calendar [English]
 *
-* @author alightner
+* @author alightner alightner@hotmail.com
 *
 * @package phpBB Calendar
 * @version CVS/SVN: $Id: $
-* @copyright (c) 2009 alightner
+* @copyright (c) 2008 alightner
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */

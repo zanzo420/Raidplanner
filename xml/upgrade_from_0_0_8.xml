@@ -10,36 +10,7 @@
 		
 		<description lang="en"><![CDATA[A calendar MOD for phpBB to allow users to post events for public or private view within phpBB.
 
-Completed Tasks in Detail:
-* Includes both All Day and Timed Events
-
-* Event View - filled with all event details (who's invited, who created the event, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc) 
-
-* Month View - can jump to any month via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types and event names only. Click on the day's number to add a new event on that day
-
-* Week View - can jump to any week via next and prev links, or jump randomly via pulldown menus. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.
-
-* Day View - can jump to any day via next and prev links, or jump randomly via pulldown menus. Includes a Graphical display of events on a timeline - lets you quickly see schedule conflicts etc. Lists birthdays, event types, names, and times. Click on the day's number to add a new event on that day.
-
-* Support for BBCode and Smilies 
-
-* Birthday Support - Using phpBB3 Birthdays 
-
-* Personal Events - the ability to create personal events is controlled by a permission.
-
-* Group Events - the ability to create personal events is controlled by a permission.
-
-* Public Events - the ability to create personal events is controlled by a permission.
-
-* Make events bold if you are event creator - Let's you quickly see events most important to you.
-
-* List of Upcoming Events on index - in the ACP you can specify whether or not you want to display the upcoming events on the index (and if so how many events to list). You also have the option to list the current week view on the index.
-
-* Detailed Permissions - You can control who has permission to view, create, edit, delete, and moderate events. 
-
-* Auto pruning of past events - From the ACP you control how often events are pruned, and how old they have to be before they are added to the delete list.
-
-* Support for handyman's "mod version check" mod: http://www.phpbb.com/community/viewtopic.php?f=69&t=691155
+New features in 0.1.0:
 
 * Recurring events - events will be occurrenceable with 12 different options:
 1) A: Day [X] of [Month Name] every [Y] Year(s)
@@ -138,12 +109,6 @@ Recurring events are populated by a cron job, and you can edit how often the cro
 				
 				---------------------------------------------------
 				
-				Special thanks to:
-				
-				ThunderCrew and Gremlinn for helping test 0.1.0
-								
-				---------------------------------------------------
-				
 				Other notes:
 				 
 				This mod is NOT recommended for beginners, because it is still in development and may have many updates released.
@@ -159,14 +124,7 @@ Recurring events are populated by a cron job, and you can edit how often the cro
 				<username>alightner</username>
 				<homepage>http://www.phpbbcalendarmod.com</homepage>
       		<contributions-group>
-      		  <contributions status="current" from="2007-09-07" position="Developer"/>
-      		</contributions-group>			 				
-			</author>
-			<author>
-				<realname>T. Farmer</realname>
-				<username>SpaceDoG</username>
-      		<contributions-group>
-      		  <contributions status="past" from="2007-09-06" to="2007-10-29" position="Developer"/>
+      		  <contributions status="current" position="Developer"/>
       		</contributions-group>			 				
 			</author>
 		</author-group>
@@ -175,7 +133,7 @@ Recurring events are populated by a cron job, and you can edit how often the cro
 		
 		<installation>
 			<level>intermediate</level>
-			<time>2700</time>
+			<time>1800</time>
 			<target-version>3.0.5</target-version>
 		</installation>
 
@@ -378,36 +336,27 @@ Added 'INVALID_EVENT' string to language\en\calendar.php.</change>
 				</history>
 
 		<link-group>
-			<link type="template" href="xml/prosilver.xml" lang="en">Prosilver</link>
-			<link type="contrib" href="xml/upgrade_from_0_0_8.xml" lang="en">Upgrade Install from 0.0.8</link>
-			<link type="contrib" href="xml/prosilver_upgrade_from_0_0_8.xml" lang="en">Upgrade Prosilver from 0.0.8</link>
-			<link type="contrib" href="contrib/subsilver_readme.txt" lang="en">Information about Subsilver</link>
-			<link type="contrib" href="contrib/cleanup_birthdays_readme.txt" lang="en">Information about birthdays converted from phpbb2</link>
-			<link type="contrib" href="contrib/MSSQL_readme.txt" lang="en">Information MSSQL users</link>
-			<link type="contrib" href="contrib/MySQL40_readme.txt" lang="en">Information MySQL40 users</link>
-			<link type="contrib" href="contrib/Postgres_readme.txt" lang="en">Information Postgres users</link>
-			<link type="contrib" href="contrib/sorttable_readme.txt" lang="en">Information about a sort table addin for event registration.</link>
-			<link type="contrib" href="contrib/us_holidays__readme.txt" lang="en">Information about installing US holidays in your calendar.</link>
-			<link type="template-lang" href="contrib/zh_cmn_hant/zh_cmn_hant.xml" lang="zh_cmn_hant">Chinese (zh_cmn_hant) translation from wang5555</link>
-			<link type="template-lang" href="contrib/de/install_de.xml" lang="de">German (de) translation from passat3233</link>
-
+			<link type="parent" href="../index.xml" lang="en">Main install file</link>
+			<link type="template" href="prosilver.xml" lang="en">Prosilver</link>
+			<link type="contrib" href="prosilver_upgrade_from_0_0_8.xml" lang="en">Upgrade Prosilver from 0.0.8</link>
+			<link type="contrib" href="../contrib/subsilver_readme.txt" lang="en">Information about Subsilver</link>
+			<link type="contrib" href="../contrib/cleanup_birthdays_readme.txt" lang="en">Information about birthdays converted from phpbb2</link>
+			<link type="contrib" href="../contrib/MSSQL_readme.txt" lang="en">Information MSSQL users</link>
+			<link type="contrib" href="../contrib/MySQL40_readme.txt" lang="en">Information MySQL40 users</link>
+			<link type="contrib" href="../contrib/Postgres_readme.txt" lang="en">Information Postgres users</link>
+			<link type="contrib" href="../contrib/sorttable_readme.txt" lang="en">Information about a sort table addin for event registration.</link>
+			<link type="contrib" href="../contrib/us_holidays__readme.txt" lang="en">Information about installing US holidays in your calendar.</link>
+			<link type="template-lang" href="../contrib/zh_cmn_hant/zh_cmn_hant.xml" lang="zh_cmn_hant">Chinese (zh_cmn_hant) translation from wang5555</link>
+			<link type="template-lang" href="../contrib/de/install_de.xml" lang="de">German (de) translation from passat3233</link>
 		</link-group>
 	</header>
 	
 	<action-group>
 		<sql><![CDATA[/* WARNING: do NOT execute the SQL commands on the phpbb_acl_options table more 
-than once if you're upgrading or trying to repair a previous installation of the calendar mod.
-Executing this command more than once will add duplicate entries to the table 
+than once.  Executing this command more than once will add duplicate entries to the table 
 breaking your current permissions and causing the calendar to malfunction */
 
-INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('a_calendar', 1, 0, 0),
-('m_calendar_edit_other_users_events', 1, 0, 0),
-('m_calendar_delete_other_users_events', 1, 0, 0),
-('u_calendar_view_events', 1, 0, 0),
-('u_calendar_edit_events', 1, 0, 0),
-('u_calendar_delete_events', 1, 0, 0),
-('u_calendar_create_public_events', 1, 0, 0),
-('u_calendar_create_group_events', 1, 0, 0),
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('u_calendar_create_public_events', 1, 0, 0),
 ('u_calendar_create_private_events', 1, 0, 0),
 ('u_calendar_nonmember_groups', 1, 0, 0),
 ('u_calendar_track_rsvps', 1, 0, 0),
@@ -417,21 +366,10 @@ INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) V
 ('u_calendar_create_recurring_events', 1, 0, 0),
 ('m_calendar_edit_other_users_rsvps', 1, 0, 0);
 
-CREATE TABLE IF NOT EXISTS `phpbb_calendar_config` (
-  `config_name` varchar(255) NOT NULL,
-  `config_value` varchar(255) NOT NULL
-);
+UPDATE phpbb_acl_options SET auth_option = 'u_calendar_create_group_events' where auth_option = 'u_calendar_create_events';
+
 
 INSERT INTO `phpbb_calendar_config` (`config_name`, `config_value`) VALUES 
-('first_day_of_week', '0'),
-('index_display_week', '0'),
-('index_display_next_events', '5'),
-('hour_mode', '12'),
-('display_truncated_name', '0'),
-('prune_frequency', '0'),
-('last_prune', '0'),
-('prune_limit', '2592000'),
-('display_hidden_groups', '0'),
 ('time_format','h:i a'),
 ('date_format','M d, Y'),
 ('date_time_format','M d, Y h:i a'),
@@ -440,45 +378,18 @@ INSERT INTO `phpbb_calendar_config` (`config_name`, `config_value`) VALUES
 ('last_populate','0'),
 ('populate_limit','2592000');
 
-CREATE TABLE IF NOT EXISTS `phpbb_calendar_event_types` (
-  `etype_id` tinyint(3) unsigned NOT NULL auto_increment,
-  `etype_index` tinyint(3) unsigned NOT NULL default '0',
-  `etype_full_name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL default '',
-  `etype_display_name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL default '',
-  `etype_color` varchar(6) character set utf8 collate utf8_bin NOT NULL default '',
-  `etype_image` varchar(255) NOT NULL,
-  PRIMARY KEY  (`etype_id`)
-);
-INSERT INTO `phpbb_calendar_event_types` (`etype_id`,`etype_index`,`etype_full_name`,`etype_display_name`,`etype_color`,`etype_image`) VALUES 
- (1,1,'Generic Event','','','');
 
-CREATE TABLE IF NOT EXISTS `phpbb_calendar_events` (
-  `event_id` mediumint(8) unsigned NOT NULL auto_increment,
-  `etype_id` tinyint(4) NOT NULL,
-  `sort_timestamp` bigint(20) unsigned NOT NULL,
-  `event_start_time` bigint(20) unsigned NOT NULL,
-  `event_end_time` bigint(20) unsigned NOT NULL,
-  `event_all_day` tinyint(2) NOT NULL default '0',
-  `event_day` varchar(10) character set utf8 collate utf8_bin NOT NULL default '',
-  `event_subject` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL default '',
-  `event_body` longblob NOT NULL,
-  `poster_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-  `event_access_level` tinyint(1) NOT NULL default '0',
-  `group_id` mediumint(8) UNSIGNED DEFAULT '0' NOT NULL,
-  `group_id_list` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL default ',',
-  `enable_bbcode` tinyint(1) unsigned NOT NULL default '1',
-  `enable_smilies` tinyint(1) unsigned NOT NULL default '1',
-  `enable_magic_url` tinyint(1) unsigned NOT NULL default '1',
-  `bbcode_bitfield` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
-  `bbcode_uid` varchar(8) character set utf8 collate utf8_bin NOT NULL,
-  `track_rsvps` tinyint(1) unsigned NOT NULL default '0',
-  `allow_guests` tinyint(1) unsigned NOT NULL default '0',
-  `rsvp_yes` mediumint(8) unsigned NOT NULL default '0',
-  `rsvp_no` mediumint(8) unsigned NOT NULL default '0',
-  `rsvp_maybe` mediumint(8) unsigned NOT NULL default '0',
-  `recurr_id` mediumint(8) unsigned NOT NULL default '0',
-  PRIMARY KEY  (`event_id`)
-);
+ALTER TABLE `phpbb_calendar_events` CHANGE `event_id` `event_id` mediumint(8) unsigned NOT NULL auto_increment;
+
+ALTER TABLE `phpbb_calendar_events` 
+ ADD COLUMN `group_id_list` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL default ',' AFTER `group_id`,
+ ADD COLUMN `track_rsvps` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `bbcode_uid`,
+ ADD COLUMN `allow_guests` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `track_rsvps`,
+ ADD COLUMN `rsvp_yes` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 AFTER `allow_guests`,
+ ADD COLUMN `rsvp_no` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 AFTER `rsvp_yes`,
+ ADD COLUMN `rsvp_maybe` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 AFTER `rsvp_no`,
+ ADD COLUMN `recurr_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 AFTER `rsvp_maybe`;
+
 
 CREATE TABLE IF NOT EXISTS `phpbb_calendar_recurring_events` (
   `recurr_id` mediumint(8) unsigned NOT NULL auto_increment,
@@ -547,7 +458,6 @@ CREATE TABLE IF NOT EXISTS `phpbb_calendar_watch` (
   KEY `user_id` (`user_id`),
   KEY `notify_stat` (`notify_status`)
 );
-
 ]]></sql>
 
 		<copy>
@@ -568,16 +478,6 @@ CREATE TABLE IF NOT EXISTS `phpbb_calendar_watch` (
 			<file from="root/calendarpost.php" to="calendarpost.php" />
 
 		</copy>
-		<open src="language/en/acp/common.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define ACP calendar strings]]></comment>
-				<find><![CDATA[=> 'Spiders/Robots',]]></find>
-				<action type="after-add"><![CDATA[    'ACP_CALENDAR'				=> 'Calendar',
-    'ACP_CALENDAR_SETTINGS'				=> 'Calendar Settings',
-    'ACP_CALENDAR_DELETE_EVENT_TYPE'	=> 'Delete event type',
-    'ACP_CALENDAR_ETYPES'				=> 'Manage Calendar Event Types',]]></action>
-			</edit>
-		</open>
 		<open src="language/en/acp/styles.php">
 			<edit>
 				<comment lang="en"><![CDATA[Define recurring event icons for prosilver style]]></comment>
@@ -585,22 +485,8 @@ CREATE TABLE IF NOT EXISTS `phpbb_calendar_watch` (
 				<action type="after-add"><![CDATA[	'IMG_ICON_CALENDAR_EDIT_ALL'	=> 'Edit all posts',
 	'IMG_ICON_CALENDAR_DELETE_ALL'	=> 'Delete all posts',]]></action>
 			</edit>
-			<edit>
-				<comment lang="en"><![CDATA[Define main calendar icons for prosilver style]]></comment>
-				<find><![CDATA['IMG_ICON_USER_WARN'		=> 'Warn user',]]></find>
-				<action type="after-add"><![CDATA[	'IMG_BUTTON_CALENDAR_NEW'	=> 'New Event',
-	'IMG_BUTTON_CALENDAR_DAY'	=> 'View Day',
-	'IMG_BUTTON_CALENDAR_WEEK'	=> 'View Week',
-	'IMG_BUTTON_CALENDAR_MONTH'	=> 'View Month',]]></action>
-			</edit>
 		</open>
 		<open src="language/en/common.php">
-			<edit>
-				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
-				<find><![CDATA[=> 'Bytes',]]></find>
-				<action type="after-add"><![CDATA[	'CALENDAR'				=> 'Calendar',
-]]></action>
-			</edit>
 			<edit>
 				<comment lang="en"><![CDATA[Define Calendar view online strings]]></comment>
 				<find><![CDATA['VIEWED'					=> 'Viewed',
@@ -639,8 +525,6 @@ CREATE TABLE IF NOT EXISTS `phpbb_calendar_watch` (
 				<inline-edit>
 					<inline-find><![CDATA['icon_post_edit',]]></inline-find>
 					<inline-action type="after-add"><![CDATA[ 'icon_calendar_edit_all', 'icon_calendar_delete_all',]]></inline-action>
-					<inline-find><![CDATA['button_topic_reply',]]></inline-find>
-					<inline-action type="after-add"><![CDATA[ 'button_calendar_new', 'button_calendar_day', 'button_calendar_week', 'button_calendar_month',]]></inline-action>
 				</inline-edit>
 			</edit>
 		</open>
@@ -651,8 +535,6 @@ CREATE TABLE IF NOT EXISTS `phpbb_calendar_watch` (
 				<inline-edit>
 					<inline-find><![CDATA['icon_post_edit',]]></inline-find>
 					<inline-action type="after-add"><![CDATA[ 'icon_calendar_edit_all', 'icon_calendar_delete_all',]]></inline-action>
-					<inline-find><![CDATA['button_topic_reply',]]></inline-find>
-					<inline-action type="after-add"><![CDATA[ 'button_calendar_new', 'button_calendar_day', 'button_calendar_week', 'button_calendar_month',]]></inline-action>
 				</inline-edit>
 			</edit>
 		</open>
@@ -698,11 +580,8 @@ CREATE TABLE IF NOT EXISTS `phpbb_calendar_watch` (
 		<open src="includes/constants.php">
 			<edit>
 				<comment lang="en"><![CDATA[Defines Calendar Table Names]]></comment>
-				<find><![CDATA[define('BOTS_TABLE',				$table_prefix . 'bots');]]></find>
-				<action type="after-add"><![CDATA[define('CALENDAR_CONFIG_TABLE',		$table_prefix . 'calendar_config');
-define('CALENDAR_EVENTS_TABLE',		$table_prefix . 'calendar_events');
-define('CALENDAR_EVENT_TYPES_TABLE',	$table_prefix . 'calendar_event_types');
-define('CALENDAR_RSVP_TABLE',		$table_prefix . 'calendar_rsvps');
+				<find><![CDATA[define('CALENDAR_EVENT_TYPES_TABLE',	$table_prefix . 'calendar_event_types');]]></find>
+				<action type="after-add"><![CDATA[define('CALENDAR_RSVP_TABLE',		$table_prefix . 'calendar_rsvps');
 define('CALENDAR_RECURRING_EVENTS_TABLE',	$table_prefix . 'calendar_recurring_events');
 define('CALENDAR_EVENTS_WATCH',		$table_prefix . 'calendar_events_watch');
 define('CALENDAR_WATCH',			$table_prefix . 'calendar_watch');
@@ -711,66 +590,18 @@ define('CALENDAR_WATCH',			$table_prefix . 'calendar_watch');
 		</open>
 		<open src="includes/functions.php">
 			<edit>
-				<comment lang="en"><![CDATA[Define calendar.php URL with session id]]></comment>
-				<find><![CDATA['U_PROFILE'				=> append_sid("{$phpbb_root_path}ucp.$phpEx"),]]></find>
-				<action type="after-add"><![CDATA['U_CALENDAR'				=> append_sid("{$phpbb_root_path}calendar.$phpEx"),]]></action>
-			</edit>
-			<edit>
 				<comment lang="en"><![CDATA[Call calendar cron jobs when needed]]></comment>
 				<find><![CDATA[if ($cron_type)]]></find>
-						<action type="before-add"><![CDATA[		else if( prune_calendar_required() )
-		{
-			$cron_type = 'prune_calendar';
-		}
-		else if( populate_calendar_required() )
+						<action type="before-add"><![CDATA[		else if( populate_calendar_required() )
 		{
 			$cron_type = 'populate_calendar';
 		}]]></action>
-			</edit>
-			<edit>
-				<comment lang="en"><![CDATA[Not specific to calendar mod, but some users complained that the alt text was being displayed in firefox when the cron job. This hack will prevent the firefox alt text problem.  For more detailed information go to http://www.phpbb.com/community/viewtopic.php?f=70&t=666195&start=1110#p4894745]]></comment>
-				<find><![CDATA[$template->assign_var('RUN_CRON_TASK', '<img src="' . append_sid($phpbb_root_path . 'cron.' . $phpEx, 'cron_type=' . $cron_type) . '" width="1" height="1" alt="cron" />');]]></find>
-				<action type="replace-with"><![CDATA[$template->assign_var('RUN_CRON_TASK', '<img src="' . append_sid($phpbb_root_path . 'cron.' . $phpEx, 'cron_type=' . $cron_type) . '" width="1" height="1"  />');]]></action>
 			</edit>
 			<edit>				
 				<comment lang="en"><![CDATA[Define functions that check when calendar cron jobs are needed]]></comment>
 				<find><![CDATA[/**
 * Closing the cache object and the database]]></find>
 				<action type="before-add"><![CDATA[/**
-* Do we need to prune the calendar yet?
-*/
-function prune_calendar_required()
-{
-	global $db, $sql, $config;
-	$prune_calendar_freq = 0;
-	$sql = 'SELECT * FROM ' . CALENDAR_CONFIG_TABLE ."
-			WHERE config_name ='prune_frequency'";
-	$result = $db->sql_query($sql);
-	if($row = $db->sql_fetchrow($result))
-	{
-		$prune_calendar_freq = $row['config_value'];
-	}
-	$db->sql_freeresult($result);
-	if( $prune_calendar_freq > 0 )
-	{
-		$last_calendar_prune = 0;
-		$sql = 'SELECT * FROM ' . CALENDAR_CONFIG_TABLE ."
-				WHERE config_name ='last_prune'";
-		$result = $db->sql_query($sql);
-		if($row = $db->sql_fetchrow($result))
-		{
-			$last_calendar_prune = $row['config_value'];
-		}
-		$db->sql_freeresult($result);
-		if( time() - $prune_calendar_freq > $last_calendar_prune )
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-/**
 * Do we need to populate the calendar yet?
 */
 function populate_calendar_required()
@@ -808,36 +639,16 @@ function populate_calendar_required()
 		</open>
 		<open src="cron.php">
 			<edit>
-				<comment lang="en"><![CDATA[Add auto prune/populate event support]]></comment>
+				<comment lang="en"><![CDATA[Add auto populate event support]]></comment>
 				<find><![CDATA[}
 
 // Unloading cache and closing db after having done the dirty work.]]></find>
-				<action type="before-add"><![CDATA[	case 'prune_calendar':
-
-		include_once($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
-		prune_calendar();
-
-	break;
-	case 'populate_calendar':
+				<action type="before-add"><![CDATA[	case 'populate_calendar':
 
 		include_once($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);
 		populate_calendar(0);
 
 	break;
-]]></action>
-			</edit>
-		</open>
-		<open src="index.php">
-			<edit>
-				<comment lang="en"><![CDATA[Include functions_calendar so we can later display the current week or next events on the index]]></comment>
-				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[include($phpbb_root_path . 'includes/functions_calendar.' . $phpEx);]]></action>
-			</edit>
-			<edit>
-				<comment lang="en"><![CDATA[Displays current week or next events on index]]></comment>
-				<find><![CDATA[// Assign index specific vars]]></find>
-				<action type="before-add"><![CDATA[// Generate calendar week view or next events if required ...
-calendar_display_calendar_on_index();
 ]]></action>
 			</edit>
 		</open>
@@ -898,75 +709,34 @@ calendar_display_calendar_on_index();
 		<diy-instructions lang="en"><![CDATA[To use this mod you must first execute the SQL statements.  Then upload 
 all of the new and changed files from the instructions above.  Open the 
 prosilver.xml file and follow those instructions to install 
-the calendar user interface.  Finally enter your ACP and go to the 
-"System" tab and under module management select "Administration Control 
-Panel" and install the two Calendar modules: "Calendar Settings" and 
-"Manage Event Calendar Types".  
+the calendar user interface.  If upgrading from 0.0.8 to 0.1.0, it is assumed
+that you already have the modules installed in the ACP.  However there
+are numerous new permission options in 0.1.0, so you should take some time
+initializing the permissions again.  For example, the old "can create events"
+user level permission was replaced by "can create group events", but if you 
+want users to be able to create private, or public events again, you'll have
+to manually re-enable those new permission options.
 
-Where you choose to install the modules is a matter of personal choice.
-FOR BEGINNERS who don't know anything about modules and want their modules to
-be in the same place as alightner's (so it matches alightner's screenshots) 
-follow these instructions carefully (MORE ADVANCED USERS CAN SKIP TO THE 
-NEXT PARAGRAPH).  Start in the ACP -> System -> Module Management -> 
-Administration Control Panel.  Click on "General" (it should be the first 
-item in the list).  Now click on "Board Configuration".  Scroll to the bottom 
-of the page where there's a pull down menu next to a button that says 
-"Add module".  Choose "Calendar Settings" and click the "Add module" button.  
-Choose "Yes" on the confirmation page.  Click on the link to go back to the 
-previous page.  Now choose "Manage Event Calendar Types" from the same 
-pulldown menu and again click the "Add module" button.  Click "yes" to
-confirm, then again click the link to go back to the previous page.
-You've successfully added the modules, but you still need to enable them.
-Click on the link that says "Enable" to the right of "Calendar Settings".
-Now click "Enable" to the right of "Manage Event Calendar Types".
-
-
-After installing new modules, you won't be able to set your calendar
-module permissions until you purge your cache in the ACP.  
-Return to the ACP's general tab and purge the cache.  Now go over to the 
-Permissions tab and give yourself permission to administrate the calendar 
-(if you skip this step you won't have permission to access the new calendar 
-modules in the ACP).  Now purge your cache again to force the new modules 
-to display in the ACP if you don't see them already.  You had control 
-over where you installed the modules, so they could be new tabs in your ACP or 
-you could have installed them under existing tabs, so where you go 
-to access the new mods is determined by where you installed them, and 
-it's entirely a personal preference. (if you followed the instructions
-above for beginners you'll find them under the "General" tab in the 
-"Board Configuration" section)
-
-Go to the "Calendar Settings" module where you can specify what day 
-your week display begins on (Sunday start, Monday Start, etc).  You 
-may also choose to display the current week on the index, or if you 
-prefer a list of upcoming events.  Choose the options most appropriate
+Go to the "Calendar Settings" module where you can specify how far into
+the future you want recurring events to be generated on the calendar.  The
+default is set to 30 days, so if you create a monthly or yearly event, you will
+only see the first occurrence in the calendar, unless you increase the 
+"auto-populate limit".  Also if you set the populate frequency to 0, recurring
+events will never get populated in the calendar.  Choose the options most appropriate
 for your site.
-
-Under "Manage Calendar Event Types" you may add, edit, or delete the 
-different event types for your calendar.  The event type full name is 
-what the user selects from the pull down menu when creating an event, 
-the display name is what's actually shown in the calendar views.  The 
-display name may be null (used to save space in the calendar display) if 
-you have a null display name it's advised you at least specify a color 
-or image icon to visually tell one event type from another when viewing 
-the calendar.
-
-Finally, go to the permissions tab and assign the rest of calendar 
-permissions you want.  On the user level there are options to view, 
-create, edit, and delete events.  On the moderator level there are 
-options to edit and delete events created by other users.  
-In the admin level is the option to manage calendar settings and 
-event types in the ACP.  
 
 Once you have your calendar settings, event types, and permissions set 
 up you are ready to begin using the new calendar.
 
-There are two optional modules in the user control panel for this
+There are two new optional modules in the user control panel for this
 mod as well.  If you want to install/enable them go to 
 System -> User Control Panel.  Next to the "Add module" button is the list
 of available modules.  The two modules for the calendar are under the 
 "Overview [ucp_main]" group and are titled "Manage event registration"
-and "Manage my events".  
+and "Manage my events".  After enabling new modules for the UCP, you must
+purge your cache before they will appear.
 
-]]></diy-instructions>
+]]>
+</diy-instructions>
 	</action-group>
 </mod>
