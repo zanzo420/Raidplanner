@@ -400,7 +400,7 @@ class rpraid
 				$this->signups_allowed = false;
 			}
 			
-			//if raid invite time is in the pas then raid is signups are locked.
+			//if raid invite time is in the past then raid signups are locked.
 			$this->locked = false;
 			if($this->invite_time < time())
 			{
@@ -414,8 +414,13 @@ class rpraid
 			//get all that signed unavailable 
 			$this->get_unavailable();
 			unset ($row);
-			
-			// lock signup pane if your char is already registered for a role
+
+			// lock signup pane if you have no characters bound to your account
+			if(count ($this->mychars) == 0)
+			{
+				$this->locked = true;
+			}
+						// lock signup pane if your char is already registered for a role
 			foreach($this->raidroles as $rid => $myrole)
 			{
 				if(is_array($myrole['role_signups']))
@@ -1856,6 +1861,7 @@ class rpraid
 					$this->auth_canedit = false;
 				}
 				
+				// @todo testing 
 				// if raid expired then no edits possible even if user can edit own raids...
 				// this way officers cant fiddle with statistics
 				if (time() + $user->timezone + $user->dst - date('Z') - $this->end_time > $config['rp_default_expiretime']*60)
