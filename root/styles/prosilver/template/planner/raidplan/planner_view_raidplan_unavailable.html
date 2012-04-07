@@ -14,15 +14,15 @@
 	<strong><span style="color:{unavailable.COLORCODE}"><a href="{unavailable.U_MEMBERDKP}">{unavailable.CHARNAME}</a></span></strong></span> <br />
 	{L_DKP}: {unavailable.DKP_CURRENT}, {L_ATTENDANCE}: {unavailable.ATTENDANCEP1}<br />
 	{unavailable.POST_TIME}<br />
-	<span class="modalinput">{unavailable.DETAILS}</span> <br />
+	<span>{unavailable.DETAILS}</span>
+	<br />
+	<hr />
 	<!-- IF unavailable.S_REQUEUE_SIGNUP -->
 	<div id="confirmaction{raidroles.confirmations.SIGNUP_ID}" style="text-align:right;">
-		<img src="{T_IMAGESET_PATH}/planner/icon_queue.png" alt="{L_AVAILABLE}" class="modalInput_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" 
-		rel="#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" />
+		<input type="image" id="open_now" src="{T_IMAGESET_PATH}/planner/icon_queue.png"  alt="{L_AVAILABLE}"  />
 	</div>
 	<!-- ENDIF -->
 </div>
-
 <!-- END unavailable -->
 
 
@@ -31,9 +31,8 @@
 </div>
 </div>
 
-<!-- [+] tooltip -->
 <!-- BEGIN unavailable -->
-<div id="prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" class="bbtooltip">
+<div id="prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" class="roleunavailable_signup">
 	<div class="bbinner">
 		<div class="t"></div>
 		<br />
@@ -50,14 +49,14 @@
 				<dd>&nbsp;
 				</dd>
 				<dt>&nbsp;</dt><dd>&nbsp;</dd>
-				<dt>{L_CALENDAR_WILL_ATTEND}</dt>
+				<dt>&nbsp;<strong>{L_CALENDAR_WILL_ATTEND}</strong></dt>
 				<dd>
 					<select name='signup_val_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}' id='signup_val_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}'>
 						<option value='2'>{L_AVAILABLE}</option>
 						<option value='1'>{L_MAYBE}</option>
 					</select>
 				</dd>
-				<dt>{L_RAIDROLE}</dt>
+				<dt>&nbsp;<strong>{L_RAIDROLE}</strong></dt>
 					<dd>
 					<select id="signuprole_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" name="signuprole_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}">
 					<!-- BEGIN raidroles -->
@@ -65,7 +64,7 @@
 					</select>
 				</dd>
 				<dt>&nbsp;<br />
-				{L_COMMENTS}</dt>
+				&nbsp;<strong>{L_COMMENTS}</strong></dt>
 				<dd>			
 					<textarea class="commentedit" name="signup_detail_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}" rows="4" cols="25">{unavailable.DETAILS}</textarea>
 				</dd>
@@ -80,18 +79,24 @@
 	<div class="b"><div></div></div> 
 </div>
 <script type="text/javascript">
-	jQuery.noConflict();
-	jQuery(document).ready(function() 
+jQuery(document).ready( function() 
 	{
 
-	var triggers_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID} = $(".modalInput_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay({
+	jQuery("#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay({
+		 top: 260,
 		mask: {
 			color: '#262626',
 			loadSpeed: 200,
-			opacity: 0.9
+			opacity: 0.1
 		},
  		closeOnClick: true,
-	})
+ 		load: false
+	});
+
+	jQuery("#open_now").click(function() {
+		jQuery("#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay().load();
+	  });
+
 	
 	jQuery("#editsignup_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").submit(function(e)
 	{
@@ -100,8 +105,9 @@
 		triggers_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}.eq(1).overlay().close();
 		return e.preventDefault();
 	});
+
 	});
 </script>
 <!-- END unavailable -->
-<!-- [-] tooltip -->
+
 <!-- [-] UNAVAILABLE SIGNUPS -->
