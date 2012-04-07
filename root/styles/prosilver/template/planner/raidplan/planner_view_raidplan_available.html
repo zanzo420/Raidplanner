@@ -1,6 +1,5 @@
 <!-- [+] AVAILABLE SIGNUPS -->
 <h4><img src="{T_IMAGESET_PATH}/planner/icon_queue.png" alt="{L_AVAILABLE}"></img>&nbsp;{L_AVAILABLE}</h4>
-
 <div class="panel bg2">
 <div class="inner"><span class="corners-top"><span></span></span>
 <div style="width:95%; margin-left:auto;margin-right:auto;text-align:left" > 
@@ -24,22 +23,24 @@
 	{L_DKP} : {raidroles.signups.DKP_CURRENT}, {L_ATTENDANCE} : {raidroles.signups.ATTENDANCEP1}<br />
 	{raidroles.signups.POST_TIME}<br />
 	<span class="modalinput">{raidroles.signups.DETAILS}</span><br /> 
+	<br />
+	<hr />
+
+	<div style="text-align:right; background-color:transparent;">
+		<!-- IF raidroles.signups.S_EDIT_SIGNUP -->
+		<input type="image" id="editaction_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" src="{T_IMAGESET_PATH}/planner/icon_edit.png"  alt="{L_EDIT}"  />
+		<!-- ENDIF -->
+		<!-- IF raidroles.signups.S_DELETE_SIGNUP -->
+			<a href="{raidroles.signups.U_DELETE}"><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></a>
+			<input type="hidden" name="keycheck" value="{raidroles.signups.DELETEKEY}">
+		<!-- ENDIF -->
+		<!-- IF raidroles.signups.S_CANCONFIRM -->
+			<a href="{raidroles.signups.U_CONFIRM}"><img src="{T_IMAGESET_PATH}/planner/icon_signed_up.png" alt="{L_CONFIRMED}"></a>
+		<!-- ENDIF -->
+	</div>
 </div>
 
-<div id="signupaction{raidroles.signups.SIGNUP_ID}" style="text-align:right; background-color:transparent;">
-	<!-- IF raidroles.signups.S_EDIT_SIGNUP -->
-	<img src="{T_IMAGESET_PATH}/planner/icon_edit.png" alt="{L_EDIT}" class="modalInput_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}"" class="#prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" />
-	<!-- ENDIF -->
-	<!-- IF raidroles.signups.S_DELETE_SIGNUP -->
-		<a href="{raidroles.signups.U_DELETE}"><img src="{T_IMAGESET_PATH}/planner/icon_cancel.png" alt="{L_NOTAVAILABLE}"></a>
-		<input type="hidden" name="keycheck" value="{raidroles.signups.DELETEKEY}">
-	<!-- ENDIF -->
-	<!-- IF raidroles.signups.S_CANCONFIRM -->
-		<a href="{raidroles.signups.U_CONFIRM}"><img src="{T_IMAGESET_PATH}/planner/icon_signed_up.png" alt="{L_CONFIRMED}"></a>
-	<!-- ENDIF -->
-</div>
 <br />
-
 <!-- END signups -->
 
 </div>
@@ -50,13 +51,9 @@
 </div>
 </div>
 
-<!-- [+] tooltip -->
 <!-- BEGIN raidroles -->
 <!-- BEGIN signups -->
-<div id="prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" class="bbtooltip">
-	<div class="bbinner">
-		<div class="t"></div>
-		<br />
+<div id="prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" class="overlaysignup">
 		<form id="editsignup_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" name="editsignup_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}"
 			  method="post" action="{raidroles.signups.S_SIGNUP_EDIT_ACTION}">
 			<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="" />&nbsp;<!-- ELSE --><!-- ENDIF -->
@@ -68,22 +65,26 @@
 			<input type="submit" accesskey="s" name="signmeup{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}" value="{L_SUBMIT}" class="button1" />
 		</form>
 		<br />
-	</div>
-	<div class="b"><div></div></div> 
 </div>
 <script type="text/javascript">
-	jQuery.noConflict();
-	jQuery(document).ready(function() 
+jQuery(document).ready( function() 
 	{
 
-	var triggers_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID} = $(".modalInput_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").overlay({
+	jQuery("#prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").overlay({
+		 top: 260,
 		mask: {
 			color: '#262626',
 			loadSpeed: 200,
-			opacity: 0.9
+			opacity: 0.1
 		},
  		closeOnClick: true,
-	})
+ 		load: false
+	});
+	
+	jQuery("#editaction_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").click(function() {
+		jQuery("#prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").overlay().load();
+	  });
+
 	
 	jQuery("#editsignup_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").submit(function(e)
 	{
@@ -91,14 +92,12 @@
 		jQuery.post("{raidroles.signups.S_SIGNUP_EDIT_ACTION}".serialize());
 		triggers_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}.eq(1).overlay().close();
 		return e.preventDefault();
-		
-	});
-	
 	});
 
-	
+	});
 </script>
+
 <!-- END signups -->
 <!-- END raidroles -->
-<!-- [-] tooltip -->
+
 <!-- [-] AVAILABLE SIGNUPS -->
