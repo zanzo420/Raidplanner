@@ -423,7 +423,6 @@ $versions = array(
                   	'user_id' => $user->data['user_id'] ),          
            ))),
                       
-        'custom' => array('purgecaches'),
         
         ),
         
@@ -441,10 +440,9 @@ $versions = array(
 	      // adding some configs
 		'config_add' => array(
 			array('rp_show_portal', 1, true),
-			
 			),
         	 
-        
+		'custom' => array('purgecaches', 'versionupdater'),        
         ),     
 );
 
@@ -484,6 +482,47 @@ function purgecaches($action, $version)
     $umil->cache_purge('auth');
     
     return 'UMIL_CACHECLEARED';
+}
+
+/**
+ * this function fills the plugin table.
+ *
+ * @param string $action
+ * @param string $version
+ * @return string
+ */
+function versionupdater($action, $version)
+{
+	global $db, $table_prefix, $user, $umil, $bbdkp_table_prefix, $phpbb_root_path, $phpEx;
+	switch ($action)
+	{
+		case 'install' :
+		case 'update' :
+			$umil->db->sql_query('DELETE FROM ' . $table_prefix . "bbdkp_plugins WHERE name = 'raidplanner'");	
+			// We insert new data in the plugin table
+			$umil->table_row_insert($table_prefix . 'bbdkp_plugins',
+			array(
+				array( 
+					'name'  => 'raidplanner', 
+					'value'  => '1', 
+					'version'  => $version, 								
+					'orginal_copyright'  => 'Sajaki', 				
+					'bbdkp_copyright'  => 'bbDKP Team', 				
+					),
+			));
+			
+			return array('command' => sprintf($user->lang['RP_UPD_MOD'], $version) , 'result' => 'SUCCESS');
+			
+			break;
+		
+		case 'uninstall' :
+			$umil->db->sql_query('DELETE FROM ' . $table_prefix . "bbdkp_plugins WHERE name = 'apply'");
+			return array(
+					'command' => sprintf($user->lang['RP_UNINSTALL_MOD'], $version) ,  
+					'result' => 'SUCCESS');
+			break;
+	
+	}
 }
 
 

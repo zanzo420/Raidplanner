@@ -75,9 +75,11 @@
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
+			<file from="root/styles/prosilver/template/dkp/jquery.js" to="styles/prosilver/template/dkp/jquery.js"/>			
+			<file from="root/styles/prosilver/template/dkp/jquery.tools.min.js" to="styles/prosilver/template/dkp/jquery.tools.min.js"/>						
 			<file from="root/styles/prosilver/theme/images/dkp/left_arrow.png" to="styles/prosilver/theme/images/dkp/left_arrow.png"/>
 			<file from="root/styles/prosilver/theme/images/dkp/right_arrow.png" to="styles/prosilver/theme/images/dkp/right_arrow.png"/>
-			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css "/>						
+			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>						
 			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		
