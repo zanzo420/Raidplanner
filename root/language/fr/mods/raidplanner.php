@@ -78,6 +78,8 @@ $lang = array_merge($lang, array(
 	'RPSETTINGS'							=> 'Options', 
 	'RPSETTINGS_UPDATED'					=> 'Paramètres Raidplanner modifiés avec succès',
 	'ADVRPSETTINGS_UPDATED'					=> 'Paramètres Raidplanner avancées modifiés avec succès', 
+	'RP_UPD_MOD'							=> 'Raidplanner mis à jour à %s', 
+	'RP_UNINSTALL_MOD'						=>  'Raidplanner désinstallé', 
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'		=> 'Le rôle %s a été supprimé.', 
