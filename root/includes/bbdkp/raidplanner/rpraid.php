@@ -591,22 +591,52 @@ class rpraid
 			$submit	= (isset($_POST['addraid'])) ? true : false;
 			if($submit)
 			{
-				// collect data
-				$this->addraidplan($cal);
-				// check access
-				$this->checkauth_canadd();
-				if(!$this->auth_canadd)
-				{	// gtfo
-					trigger_error('USER_CANNOT_POST_RAIDPLAN');
+ 				
+				if (confirm_box(true))
+				{
+					
+					//get string
+					$str = request_var('raidobject', '');
+					$str = str_replace('#', '"', $str);
+					$raidplanobj = unserialize($str);
+					$raidplanobj->storeplan(0);
+					// store the raid roles.
+					$raidplanobj->store_raidroles(0);
+					//make object
+					$raidplanobj->make_obj();
+					// display it
+					$raidplanobj->display();
+					return 0;
+					
 				}
- 				// store it
-				$this->storeplan(0);
-				// store the raid roles.
-				$this->store_raidroles(0);
-				//make object
-				$this->make_obj();
-				// display it
-				$this->display();
+				else
+				{
+					
+					// collect data
+					$this->addraidplan($cal);
+					// check access
+					$this->checkauth_canadd();
+					if(!$this->auth_canadd)
+					{	// gtfo
+						trigger_error('USER_CANNOT_POST_RAIDPLAN');
+					}
+	 				// store it
+					$a  = serialize($this);
+					$a = str_replace('"', '#', $a);
+					$s_hidden_fields = build_hidden_fields(array(
+							'addraid'	=> true,
+							'raidobject'	=> $a
+						)
+					);
+
+					$template->assign_vars(array(
+						'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
+					);
+
+					confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
+				}
+				
+				
 				return 0;
 			}
 		}
@@ -2046,8 +2076,9 @@ class rpraid
 				}
 				
 			}
+			$db->sql_freeresult($result);
 		}
-		$db->sql_freeresult($result);
+		
 		unset($roleid);
 		unset($role);
 
