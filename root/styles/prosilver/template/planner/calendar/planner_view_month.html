@@ -117,12 +117,24 @@ jQuery(document).ready( function()
 						{L_NOTAVAILABLE} :
 						{calendar_days.raidplans.CURR_NO_COUNT}/{calendar_days.raidplans.RAID_TOTAL} ({calendar_days.raidplans.CURR_NOPCT})<br />
 						
-       					<!-- IF calendar_days.raidplans.S_LOCKED -->
-       					<br /><p class="error">{L_LOCKED}</p>
+						<!-- IF calendar_days.raidplans.S_LOCKED -->
+    					<p class="rp_locked">{L_LOCKED}</p>
+      					<!-- ENDIF  -->
+						<!-- IF calendar_days.raidplans.S_SIGNED_UP -->
+      					<p class="rp_signed_up">{L_SIGNED_UP}</p>
+      					<!-- ENDIF  -->
+       					<!-- IF calendar_days.raidplans.S_FROZEN -->
+       					<p class="rp_frozen">{L_FROZEN}</p>
        					<!-- ENDIF  -->
-       						
-       					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER  && ! calendar_days.raidplans.S_LOCKED -->
-       					<hr />
+       					<!-- IF calendar_days.raidplans.S_NOCHAR -->
+       					<p class="rp_nochars">{L_NOCHAR}</p>
+       					<!-- ENDIF  -->
+       					<!-- IF calendar_days.raidplans.S_SIGNED_OFF -->
+       					<p class="rp_signedoff">{L_SIGNED_OFF}</p>
+       					<!-- ENDIF  -->
+       					
+       					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER  && ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR  && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF -->
+       					<br />
       					<form method="post" action="{calendar_days.raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{calendar_days.raidplans.RAID_ID}" id="signup_form{calendar_days.raidplans.RAID_ID}">
        					<fieldset>
 						<dl>
@@ -160,9 +172,9 @@ jQuery(document).ready( function()
 						<dd><input type="hidden" name="hidden_signup_id{calendar_days.raidplans.RAID_ID}" id="hidden_signup_id{calendar_days.raidplans.RAID_ID}" value="{calendar_days.raidplans.CURR_SIGNUP_ID}" />
 							<input type="submit" name="signmeup{calendar_days.raidplans.RAID_ID}" value="{L_SUBMIT}" class="button1" /></dd>
 						</dl>
-					</fieldset>
-					</form>
-					<!-- ENDIF -->
+						</fieldset>
+						</form>
+						<!-- ENDIF -->
 				</div>
 			</div>
 			<div class="b"><div></div></div> 

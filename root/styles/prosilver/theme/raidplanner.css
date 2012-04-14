@@ -28,6 +28,35 @@ hr.hrCal {
 	border-top-color: #cadceb;
 }
 
+/* tooltip text color for raid signup status */
+.rp_signed_up
+{
+	color: #00EE55;	
+	font-weight: bolder;
+}
+
+.rp_nochars
+{
+	color: #FF8822;	
+}
+
+.rp_frozen
+{
+	color: #00CCFF;	
+}
+
+.rp_locked
+{
+	color: #FF3388;	
+}
+
+.rp_signedoff
+{
+	color: #FF3388;	
+}
+
+
+
 /* The from and to times take up a lot of space in the calendar display. Use this to shrink them */
 
 .smCalText {
