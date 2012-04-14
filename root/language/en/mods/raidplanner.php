@@ -87,8 +87,10 @@ $lang = array_merge($lang, array(
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'		=> 'The role %s was deleted.', 
-	'CONFIRM_DELETE_ROLE'		=> 'Please confirm you want to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
-    'DELETE_RAIDPLAN_CONFIRM'	=> 'Please confirm you want to delete this Raidplan.',
+	'CONFIRM_DELETE_ROLE'		=> 'Please confirm to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
+    'DELETE_RAIDPLAN_CONFIRM'	=> 'Please confirm to delete this Raidplan.',
+	'CONFIRM_ADDRAID'			=> 'Please confirm add this new raidplan.',
+	'CONFIRM_UPDATERAID'		=> 'Please confirm to edit this raidplan.',
 	
 	'CHOOSEPROFILE'				=> 'Choose Raidprofile', 
 	'RAIDROLES'					=> 'Raid Roles', 
