@@ -49,6 +49,7 @@ switch( $view_mode )
 		switch($mode)
 		{
 			case 'signup':
+				// add a new signup
 				if(isset($_POST['signmeup' . $raidplan_id]))
 				{
 					if (!class_exists('rpsignup', false))
@@ -62,6 +63,7 @@ switch( $view_mode )
 				}
 				break;
 			case 'delsign':
+				// delete a signup
 				if (!class_exists('rpsignup', false))
 				{
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
@@ -74,6 +76,7 @@ switch( $view_mode )
 				$raid->display();
 				break;
 			case 'editsign':
+				// edit a signup comment				
 				if (!class_exists('rpsignup', false))
 				{
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
@@ -86,6 +89,7 @@ switch( $view_mode )
 				$raid->display();
 				break;				
 			case 'requeue':
+				// requeue for a raid role
 				if (!class_exists('rpsignup', false))
 				{
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
@@ -97,6 +101,7 @@ switch( $view_mode )
 				$raid->display();
 				break;		
 			case 'confirm':
+				// confirm a member for a raid role
 				if (!class_exists('rpsignup', false))
 				{
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
@@ -108,14 +113,17 @@ switch( $view_mode )
 				$raid->display();
 				break;	
 			case 'showadd':
+				// show the newraid or editraid form
 				$raid = new rpraid($raidplan_id);
 				$raid->showadd($cal, $raidplan_id);
 				break;	
 			case 'delete':
+				// delete a raid				
 				$raid = new rpraid($raidplan_id);
 				$raid->delete();
 				break;			
 			default:
+				// show the raid view form
 				$raid = new rpraid($raidplan_id);
 				$raid->display();
 				break;

@@ -85,7 +85,9 @@ $lang = array_merge($lang, array(
 	'ROLE_DELETE_SUCCESS'		=> 'Le rôle %s a été supprimé.', 
 	'CONFIRM_DELETE_ROLE'		=> 'Veuillez confirmer la suppression du rôle %s.', 
     'DELETE_RAIDPLAN_CONFIRM'	=> 'Veuillez confirmer la suppression de ce rendez-vous.',
-	
+	'CONFIRM_ADDRAID'			=> 'Veuillez confirmer ce rendez-vous.',
+	'CONFIRM_UPDATERAID'		=> 'Veuillez confirmer la mise à jour de ce rendez-vous.',
+		
 	'CHOOSEPROFILE'				=> 'Choisir Rôle', 
 	'RAIDROLES'					=> 'Rôles', 
 	'RAIDROLE'					=> 'Rôle', 
