@@ -112,13 +112,16 @@ if (isset($config['bbdkp_raidplanner']))
 				<comment lang="en"><![CDATA[Include class]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
 				<action type="after-add"><![CDATA[
-				// [+]Raidplanner
-				if (!class_exists('rpweek', false))
+// [+]Raidplanner
+if (!class_exists('rpweek', false))
 {
-	// display the entire week
-	define('IN_BBDKP', true);
-	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
-	$user->add_lang ( array ('mods/raidplanner'));
+	if ($config['rp_index_display_week'] == 1)
+	{	
+		// display the entire week
+		define('IN_BBDKP', true);
+		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		$user->add_lang ( array ('mods/raidplanner'));
+	}
 }
 // [-]Raidplanner]]></action>
 			</edit>
@@ -127,9 +130,12 @@ if (isset($config['bbdkp_raidplanner']))
 				<find><![CDATA[// Assign index specific vars]]></find>
 				<action type="before-add"><![CDATA[
 // [+]Raidplanner
-$user->add_lang ( array ('mods/raidplanner'));
-$cal = new rpweek();
-$cal->display();
+if ($config['rp_index_display_week'] == 1)
+{
+	$user->add_lang ( array ('mods/raidplanner'));
+	$cal = new rpweek();
+	$cal->display();
+}
 // [-]Raidplanner
 ]]></action>
 			</edit>
