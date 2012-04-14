@@ -314,6 +314,9 @@ class rpraid
 			{
 				trigger_error( 'NOT_AUTHORISED' );
 			}
+			$this->checkauth_canedit();
+			$this->checkauth_candelete();
+			$this->checkauth_canadd();
 			
 			// now go add raid properties
 			$this->event_type= $row['etype_id'];
@@ -2161,9 +2164,7 @@ class rpraid
 				}
 				
 			}
-
 		}
-		
 	}
 	
 	/**
@@ -2183,9 +2184,12 @@ class rpraid
 				$this->auth_candelete = true;
 
 				// is raidleader trying to delete other raid ?
-				if ( !( ($user->data['user_id'] == $this->poster) && $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
+				if ($user->data['user_id'] != $this->poster) 
 				{
-					$this->auth_candelete = false;
+					if (! $auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
+					{
+						$this->auth_candelete = false;
+					}
 				}
 			}
 			
