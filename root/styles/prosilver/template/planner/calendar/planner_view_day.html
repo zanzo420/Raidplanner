@@ -29,7 +29,14 @@ jQuery(document).ready( function()
     	<h1 style="color:#dfc065; white-space:nowrap;">{CALENDAR_HEADER}</h1>
     	</li>
     </ul>
-
+	<ul class="profile-icons" style="float: right;">
+	<!-- IF ADD_LINK -->
+	<li class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></li>
+	<!-- ENDIF -->
+	<li class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></li>
+	<li class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></li>
+	<li class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></li>
+	</ul>
   <table style="width: 100%; text-align: center"><tr><td style="width: 100%; text-align: center; margin-left: auto; margin-right: auto;">
   <table class="table1" style="width: 100%" cellspacing="0" cellpadding="0" border="0">
     <!-- IF .time_headers -->
@@ -61,7 +68,8 @@ jQuery(document).ready( function()
           			<span class="smCalText">
           				<!-- IF calendar_days.raidplans.SHOW_TIME -->
           				<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
-          				<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />
+          				<!-- ELSE -->
+          				<!-- IF raidplans.S_CANSIGNUP -->{L_INVITE}: {raidplans.INVITE_TIME} <br /><!-- ENDIF -->
           				{L_FROM_TIME}: {raidplans.START_TIME} <br />
           				{L_TO_TIME}: {raidplans.END_TIME} <br />
           				{raidplans.TZ} <br />
@@ -78,13 +86,15 @@ jQuery(document).ready( function()
 							<div style="float: left; width:10%;">&nbsp;</div>
 							<div style="float: left; width:60%;"><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
 							<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}<!-- ELSE -->
-							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
-          					<br />{L_TO_TIME}: {raidplans.END_TIME}
+							<!-- IF raidplans.S_CANSIGNUP -->{L_INVITE}: {raidplans.INVITE_TIME} <br /><!-- ENDIF -->
+							{L_FROM_TIME}: {raidplans.START_TIME}<br />
+							{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF -->
           					<br />
           					</div>
           					<div style="clear: both"></div>
 							<br />
+							<!-- IF raidplans.S_CANSIGNUP -->
 							<strong>{L_SIGNUPS}</strong>
 							<br />
 							{L_CONFIRMED}
@@ -96,7 +106,7 @@ jQuery(document).ready( function()
 							{L_NOTAVAILABLE} :
 							{raidplans.CURR_NO_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_NOPCT})<br />
 							<br />
-							
+							<!-- ENDIF -->
 							<!-- IF calendar_days.raidplans.S_LOCKED -->
        						<p class="rp_locked">{L_LOCKED}</p>
        						<!-- ENDIF  -->
@@ -106,14 +116,16 @@ jQuery(document).ready( function()
        				 		<!-- IF calendar_days.raidplans.S_FROZEN -->
        						<p class="rp_frozen">{L_FROZEN}</p>
        						<!-- ENDIF  -->
-       						<!-- IF calendar_days.raidplans.S_NOCHAR -->
+       						<!-- IF calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_ANON -->
        						<p class="rp_nochars">{L_NOCHAR}</p>
        						<!-- ENDIF  -->
         					<!-- IF calendar_days.raidplans.S_SIGNED_OFF -->
        						<p class="rp_signedoff">{L_SIGNED_OFF}</p>
        						<!-- ENDIF  -->
-       					      					       					
-          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER &&  ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF -->
+							<!-- IF calendar_days.raidplans.S_CONFIRMED -->
+							<p class="rp_confirmed">{L_CONFIRMED}</p>
+							<!-- ENDIF  -->       					      					       					
+          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER &&  ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF  && ! calendar_days.raidplans.S_CONFIRMED -->
           					<hr />
          						<form method="post" action="{raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{raidplans.RAID_ID}" id="signup_form{raidplans.RAID_ID}">
           						<fieldset>
@@ -182,9 +194,5 @@ jQuery(document).ready( function()
 </div>
 </div>
 
-<div class="buttons">
-<!-- IF S_ADD_LINK --><div class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></div><!-- ENDIF -->
-<div class="planner-week-icon"><a href="{WEEK_VIEW_URL}" title="{L_WEEK}"><span></span></a></div>
-<div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></div>
-</div>
+
 
