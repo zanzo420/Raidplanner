@@ -1668,6 +1668,8 @@ class rpraid
 			'S_NOCHAR'			=> $this->nochar,
 			'S_SIGNED_UP'		=> $this->signed_up, 
 			'S_SIGNED_OFF'		=> $this->signed_off, 
+			'S_CANSIGNUP'		=> $this->signups_allowed, 
+		 	'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
 		 
 			'RAID_TOTAL'		=> $total_needed,
 			'TZ'				=> $user->lang['tz'][$tz], 
@@ -1718,8 +1720,6 @@ class rpraid
 			'DAY_VIEW_URL'		=> $day_view_url,
 			'WEEK_VIEW_URL'		=> $week_view_url,
 			'MONTH_VIEW_URL'	=> $month_view_url,
-			'S_CANSIGNUP'		=> $this->signups_allowed, 
-			'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 			)
 		);
 		

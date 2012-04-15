@@ -29,7 +29,14 @@ jQuery(document).ready( function()
     	<h1 style="color:#dfc065; white-space:nowrap;">{CALENDAR_HEADER}</h1>
     	</li>
     </ul>
-
+	<ul class="profile-icons" style="float: right;">
+	<!-- IF ADD_LINK -->
+	<li class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></li>
+	<!-- ENDIF -->
+	<li class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></li>
+	<li class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></li>
+	<li class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></li>
+	</ul>
   <table style="width: 100%; text-align: center"><tr><td style="width: 100%; text-align: center; margin-left: auto; margin-right: auto;">
   <table class="table1" style="width: 100%" cellspacing="0" cellpadding="0" border="0">
     <!-- IF .time_headers -->
@@ -61,7 +68,8 @@ jQuery(document).ready( function()
           			<span class="smCalText">
           				<!-- IF calendar_days.raidplans.SHOW_TIME -->
           				<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}
-          				<!-- ELSE -->{L_INVITE}: {raidplans.INVITE_TIME} <br />
+          				<!-- ELSE -->
+          				<!-- IF raidplans.S_CANSIGNUP -->{L_INVITE}: {raidplans.INVITE_TIME} <br /><!-- ENDIF -->
           				{L_FROM_TIME}: {raidplans.START_TIME} <br />
           				{L_TO_TIME}: {raidplans.END_TIME} <br />
           				{raidplans.TZ} <br />
@@ -184,9 +192,5 @@ jQuery(document).ready( function()
 </div>
 </div>
 
-<div class="buttons">
-<!-- IF S_ADD_LINK --><div class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></div><!-- ENDIF -->
-<div class="planner-week-icon"><a href="{WEEK_VIEW_URL}" title="{L_WEEK}"><span></span></a></div>
-<div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></div>
-</div>
+
 
