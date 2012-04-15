@@ -28,6 +28,35 @@ hr.hrCal {
 	border-top-color: #cadceb;
 }
 
+/* tooltip text color for raid signup status */
+.rp_signed_up
+{
+	color: #00EE55;	
+	font-weight: bolder;
+}
+
+.rp_nochars
+{
+	color: #FF8822;	
+}
+
+.rp_frozen
+{
+	color: #00CCFF;	
+}
+
+.rp_locked
+{
+	color: #FF3388;	
+}
+
+.rp_signedoff
+{
+	color: #FF3388;	
+}
+
+
+
 /* The from and to times take up a lot of space in the calendar display. Use this to shrink them */
 
 .smCalText {
@@ -47,6 +76,11 @@ hr.hrCal {
 }
 
 .rolesignupheader {
+	border:1px solid #666;
+    border:1px solid rgba(82, 82, 82, 0.698);
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    
 	padding-top: 2px;
     padding-right: 2px;
     padding-bottom: 2px;
@@ -66,6 +100,15 @@ hr.hrCal {
 
     
 .rolesignupbody {
+    border:1px solid #666;
+    border:1px solid rgba(82, 82, 82, 0.698);
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    	
+	-moz-box-shadow: 10px 10px 5px #888;
+	-webkit-box-shadow: 10px 10px 5px #888;
+	box-shadow: 10px 10px 5px #888;
+
 	margin: 1%;
     padding-top: 2px;
     padding-right: 2px;
@@ -80,6 +123,15 @@ hr.hrCal {
 }
 
 .roleunavailable {
+    border:1px solid #666;
+    border:1px solid rgba(82, 82, 82, 0.698);
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+		
+	-moz-box-shadow: 10px 10px 5px #888;
+	-webkit-box-shadow: 10px 10px 5px #888;
+	box-shadow: 10px 10px 5px #888;
+    
 	background-color:#FFFFFF;
 	width:160px; 
 	float:left; 
@@ -95,7 +147,20 @@ hr.hrCal {
 
 }
 
-
+.overlaysignup
+{
+    display:none;
+    width:300px;
+    border:10px solid #666;
+    border:10px solid rgba(82, 82, 82, 0.698);
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    padding:5px;
+    background-color:#000;
+    color:#fff;
+    font-family:"lucida grande",tahoma,verdana,arial,sans-serif
+}
+ 
 
 /* Calendar view */
 
@@ -243,14 +308,14 @@ fieldset.rpfields dl {
 }
 
 .buttons div.planner-edit-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/icon_post_edit.gif");
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
 	width: 42px;
 	height: 20px;
 	
 }
 
 .buttons div.planner-delete-icon {
-	background-image: url("{T_IMAGESET_PATH}/icon_post_delete.gif");
+	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
 	width: 20px;
 	height: 20px;
 	

@@ -102,6 +102,16 @@ abstract class calendar
 		$this->date['prev_month'] = $this->date['month'] - 1;
 		$this->date['next_month'] = $this->date['month'] + 1;
 		
+		if(!function_exists('cal_days_in_month'))
+		{
+ 			function cal_days_in_month($calendar,$month, $year)
+			{
+				// $calendar just gets ignored, assume gregorian
+				// calculate number of days in a month
+					return $month == 2 ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29))) : (($month - 1) % 7 % 2 ? 30 : 31);
+			} 
+	  	}
+	  
 		$this->days_in_month = cal_days_in_month(CAL_GREGORIAN, $this->date['month_no'], $this->date['year']);
 		
 		//set day names

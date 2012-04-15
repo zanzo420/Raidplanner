@@ -55,7 +55,8 @@ class rpmonth extends calendar
 	
 		$number_days = date("t", mktime( 0,0,0,$this->date['month_no'], $this->date['day'], $this->date['year']));
 	
-		$calendar_header_txt = $user->lang['MONTH_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
+		$calendar_header_txt = $user->lang['MONTH_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], 
+		$user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
 		
 		$counter = 0;
 		// include raid class
@@ -65,7 +66,7 @@ class rpmonth extends calendar
 		}
 		$rpraid = new rpraid();
 		
-		// array of raid days
+		// fill array of raid days
 		$firstday = $this->Get1DoM($this->timestamp);
 		$lastday =  $this->GetLDoM($this->timestamp);
 		
@@ -189,6 +190,8 @@ class rpmonth extends calendar
 						{
 							if (isset($rpraid))
 							{
+								// note not recreating a new rpraid object for each date. that would take too much mem.
+								// we just reuse the same object and reset its properties in make_obj							
 								$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
 								foreach($raidplan_output as $raid )
 								{

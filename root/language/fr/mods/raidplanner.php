@@ -78,12 +78,16 @@ $lang = array_merge($lang, array(
 	'RPSETTINGS'							=> 'Options', 
 	'RPSETTINGS_UPDATED'					=> 'Paramètres Raidplanner modifiés avec succès',
 	'ADVRPSETTINGS_UPDATED'					=> 'Paramètres Raidplanner avancées modifiés avec succès', 
+	'RP_UPD_MOD'							=> 'Raidplanner mis à jour à %s', 
+	'RP_UNINSTALL_MOD'						=>  'Raidplanner désinstallé', 
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'		=> 'Le rôle %s a été supprimé.', 
 	'CONFIRM_DELETE_ROLE'		=> 'Veuillez confirmer la suppression du rôle %s.', 
     'DELETE_RAIDPLAN_CONFIRM'	=> 'Veuillez confirmer la suppression de ce rendez-vous.',
-	
+	'CONFIRM_ADDRAID'			=> 'Veuillez confirmer ce rendez-vous.',
+	'CONFIRM_UPDATERAID'		=> 'Veuillez confirmer la mise à jour de ce rendez-vous.',
+		
 	'CHOOSEPROFILE'				=> 'Choisir Rôle', 
 	'RAIDROLES'					=> 'Rôles', 
 	'RAIDROLE'					=> 'Rôle', 
@@ -167,7 +171,12 @@ $lang = array_merge($lang, array(
 	'MONTH'					=> 'Mois',
 	'MONTH_OF'				=> 'Mois de ',
 	'MY_EVENTS'				=> 'Mes Raids',
-
+	'LOCKED'				=> 'Bloqué', 
+	'FROZEN'				=> 'Raid fermé',
+	'NOCHAR'				=> 'Pas de Caractère', 
+	'SIGNED_UP'				=> 'Inscrit', 
+	'SIGNED_OFF'			=> 'Désinscrit', 
+	
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'Vous devez vous conecter afin de pouvoir ajouter/éditer/supprimer des rendez-vous.',
 
