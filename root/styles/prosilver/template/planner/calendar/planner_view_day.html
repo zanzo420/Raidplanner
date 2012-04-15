@@ -78,13 +78,15 @@ jQuery(document).ready( function()
 							<div style="float: left; width:10%;">&nbsp;</div>
 							<div style="float: left; width:60%;"><h4>{calendar_days.raidplans.EVENT_SUBJECT}</h4>
 							<!-- IF raidplans.ALL_DAY -->{L_ALL_DAY}<!-- ELSE -->
-							{L_INVITE}: {raidplans.INVITE_TIME} <br />{L_FROM_TIME}: {raidplans.START_TIME}
-          					<br />{L_TO_TIME}: {raidplans.END_TIME}
+							<!-- IF raidplans.S_CANSIGNUP -->{L_INVITE}: {raidplans.INVITE_TIME} <br /><!-- ENDIF -->
+							{L_FROM_TIME}: {raidplans.START_TIME}<br />
+							{L_TO_TIME}: {raidplans.END_TIME}
           					<!-- ENDIF -->
           					<br />
           					</div>
           					<div style="clear: both"></div>
 							<br />
+							<!-- IF raidplans.S_CANSIGNUP -->
 							<strong>{L_SIGNUPS}</strong>
 							<br />
 							{L_CONFIRMED}
@@ -96,7 +98,7 @@ jQuery(document).ready( function()
 							{L_NOTAVAILABLE} :
 							{raidplans.CURR_NO_COUNT}/{raidplans.RAID_TOTAL} ({raidplans.CURR_NOPCT})<br />
 							<br />
-							
+							<!-- ENDIF -->
 							<!-- IF calendar_days.raidplans.S_LOCKED -->
        						<p class="rp_locked">{L_LOCKED}</p>
        						<!-- ENDIF  -->
