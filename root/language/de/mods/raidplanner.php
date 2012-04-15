@@ -116,7 +116,7 @@ $lang = array_merge($lang, array(
 	'CALENDAR_WILL_ATTEND'	=> 'Signup as',
 
 	'CANNOTSIGNUP'			=> 'you cannot sign up because you have no DKP characters linked to your account.',
-	
+	'CLOCK'					=> 'Time',	
 	'RAIDCHARACTER'			=> 'Raidcharacter', 
 	'COL_HEADCOUNT'			=> 'Count',
 	'COL_WILL_ATTEND'		=> 'Will Attend?',
@@ -128,7 +128,7 @@ $lang = array_merge($lang, array(
 	'DECLINE'				=> 'Decline', 
 	'DELETE_ALL_EVENTS'		=> 'Delete all occurrences of this raid.',
 	'DETAILS'				=> 'Details',
-	'DELETE_RAIDPLAN'			=> 'Delete raid',
+	'DELETE_RAIDPLAN'		=> 'Delete raid',
 
 	'EDIT'					=> 'Edit',
 	'EDIT_ALL_EVENTS'		=> 'Edit all occurrences of this raid.',
@@ -159,6 +159,7 @@ $lang = array_merge($lang, array(
 	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring raids must have a frequency greater than or equal to 1',
 	'FROZEN_TIME'			=> 'Freeze Raid time.',
 	'FROZEN_EXPLAIN'		=> 'Freeze the raid x hours before Start time. Permissions differ per role',
+
 	'EXPIRE_TIME'			=> 'Expire Raid Time',
 	'EXPIRE_EXPLAIN'		=> 'Expire raids x hours after Raid start time. Permissions differ per role. ',
  
@@ -176,6 +177,11 @@ $lang = array_merge($lang, array(
 	'MONTH'					=> 'Month',
 	'MONTH_OF'				=> 'Month of ',
 	'MY_EVENTS'				=> 'My Raids',
+	'LOCKED'				=> 'Locked', 
+	'FROZEN'				=> 'Raid is Frozen',
+	'NOCHAR'				=> 'No Character', 
+	'SIGNED_UP'				=> 'Signed Up', 
+	'SIGNED_OFF'			=> 'Signed off', 
 
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'You need to login in order to add/edit/delete raids.',
@@ -270,8 +276,9 @@ $lang = array_merge($lang, array(
 	'WEEK'						=> 'Week',
 	'WEEK_OF'					=> 'Week of ',
 	
-	'ZERO_LENGTH_RAIDPLAN'			=> 'The raid cannot end at the same time it starts.',
-	'ERROR_RAIDSTARTBEFORENOW'			=> 'Cannot add raids in the past.',
+	'ZERO_LENGTH_RAIDPLAN'		=> 'The raid cannot end at the same time it starts.',
+	'ERROR_RAIDSTARTBEFORENOW'	=> 'Cannot add raids in the past.',
+	'ERROR_NOCANVAS'			=> 'Your browser does not support Canvas/HTML5.', 
 
 	'ZEROTH_FROM'				=> '0th from ',
 	'numbertext'			=> array(
@@ -308,6 +315,7 @@ $lang = array_merge($lang, array(
 		'30'	=> '30th',
 		'31'	=> '31st',
 		'n'		=> 'nth' ),
+
 
 ));
 

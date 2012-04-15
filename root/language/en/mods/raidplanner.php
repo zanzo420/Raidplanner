@@ -83,7 +83,7 @@ $lang = array_merge($lang, array(
 	'RPSETTINGS_UPDATED'					=> 'Raidplanner settings updated successfully',
 	'ADVRPSETTINGS_UPDATED'					=> 'Advanced Raidplanner settings updated successfully', 
 	'RP_UPD_MOD'							=> 'Raidplanner updated to %s', 
-	'RP_UNINSTALL_MOD'						=>  'Raidplanner uninstalled', 
+	'RP_UNINSTALL_MOD'						=> 'Raidplanner uninstalled', 
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'		=> 'The role %s was deleted.', 
@@ -127,7 +127,7 @@ $lang = array_merge($lang, array(
 	'DECLINE'				=> 'Decline', 
 	'DELETE_ALL_EVENTS'		=> 'Delete all occurrences of this raid.',
 	'DETAILS'				=> 'Details',
-	'DELETE_RAIDPLAN'			=> 'Delete raid',
+	'DELETE_RAIDPLAN'		=> 'Delete raid',
 
 	'EDIT'					=> 'Edit',
 	'EDIT_ALL_EVENTS'		=> 'Edit all occurrences of this raid.',
@@ -159,8 +159,6 @@ $lang = array_merge($lang, array(
 	'FROZEN_TIME'			=> 'Freeze Raid time.',
 	'FROZEN_EXPLAIN'		=> 'Freeze the raid x hours before Start time. Permissions differ per role',
 
-	'FROZEN'				=> 'Frozen',
-
 	'EXPIRE_TIME'			=> 'Expire Raid Time',
 	'EXPIRE_EXPLAIN'		=> 'Expire raids x hours after Raid start time. Permissions differ per role. ',
  
@@ -179,6 +177,10 @@ $lang = array_merge($lang, array(
 	'MONTH_OF'				=> 'Month of ',
 	'MY_EVENTS'				=> 'My Raids',
 	'LOCKED'				=> 'Locked', 
+	'FROZEN'				=> 'Raid is Frozen',
+	'NOCHAR'				=> 'No Character', 
+	'SIGNED_UP'				=> 'Signed Up', 
+	'SIGNED_OFF'			=> 'Signed off', 
 
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'You need to login in order to add/edit/delete raids.',

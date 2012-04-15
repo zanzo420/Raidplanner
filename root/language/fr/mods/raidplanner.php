@@ -171,7 +171,12 @@ $lang = array_merge($lang, array(
 	'MONTH'					=> 'Mois',
 	'MONTH_OF'				=> 'Mois de ',
 	'MY_EVENTS'				=> 'Mes Raids',
-
+	'LOCKED'				=> 'Bloqué', 
+	'FROZEN'				=> 'Raid fermé',
+	'NOCHAR'				=> 'Pas de Caractère', 
+	'SIGNED_UP'				=> 'Inscrit', 
+	'SIGNED_OFF'			=> 'Désinscrit', 
+	
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'Vous devez vous conecter afin de pouvoir ajouter/éditer/supprimer des rendez-vous.',
 
