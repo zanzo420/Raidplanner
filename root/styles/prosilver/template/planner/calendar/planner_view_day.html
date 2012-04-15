@@ -124,8 +124,11 @@ jQuery(document).ready( function()
        						<!-- ENDIF  -->
 							<!-- IF calendar_days.raidplans.S_CONFIRMED -->
 							<p class="rp_confirmed">{L_CONFIRMED}</p>
-							<!-- ENDIF  -->       					      					       					
-          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER &&  ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF  && ! calendar_days.raidplans.S_CONFIRMED -->
+							<!-- ENDIF  -->       	
+							<!-- IF calendar_days.raidplans.S_SIGNUPMAYBE -->
+							<p class="rp_maybe">{L_MAYBE}</p>
+							<!-- ENDIF  -->		
+          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER &&  ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF  && ! calendar_days.raidplans.S_CONFIRMED   && ! calendar_days.raidplans.S_SIGNUPMAYBE -->
           					<hr />
          						<form method="post" action="{raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{raidplans.RAID_ID}" id="signup_form{raidplans.RAID_ID}">
           						<fieldset>
