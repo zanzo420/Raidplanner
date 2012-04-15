@@ -1,29 +1,30 @@
 <!-- [+] raidplan view -->
+
 <div class="forabg">
 <span class="corners-inner-top"><span></span></span>
 <div style="width:10%; float: left;">
 <img src="{EVENT_IMAGE}" alt="{ETYPE_DISPLAY_NAME}" width="48" height="48" /> 
 </div>
 <div class="blockhead" style="width:60%; float: left;">
-<h4 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR} <!-- ELSE --> #dfc065 <!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h4>
+<h1 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!-- ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h1>
 </div>
+
 <div style="width:30%; float: right;">
-<div class="buttons" style="float: right;">
+<ul class="profile-icons" style="float: right;">
 <!-- IF ADD_LINK -->
-<div class="planner-new-icon"><a href="{ADD_LINK}"
-	title="{L_NEW_EVENT}"><span></span></a></div>
+<li class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></li>
 <!-- ENDIF -->
 <!-- IF U_EDIT -->
-<div class="planner-edit-icon"><a href="{U_EDIT}" title="{L_EDIT_POST}"><span></span></a></div>
+<li class="planner-edit-icon"><a href="{U_EDIT}" title="{L_EDIT_POST}"><span></span></a></li>
 <!-- ENDIF -->
 <!-- IF U_DELETE -->
-<div class="planner-delete-icon"><a href="{U_DELETE}"
-	title="{L_DELETE_POST}"><span></span></a></div>
+<li class="planner-delete-icon"><a href="{U_DELETE}" title="{L_DELETE_POST}"><span></span></a></li>
 <!-- ENDIF -->
-<div class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></div>
-<div class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></div>
-<div class="planner-month-icon"><a href="{MONTH_VIEW_URL}" 	title="{L_MONTH}"><span></span></a></div>
-</div>
+<li class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></li>
+<li class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></li>
+<li class="planner-month-icon"><a href="{MONTH_VIEW_URL}" 	title="{L_MONTH}"><span></span></a></li>
+</ul>
+
 </div>
 <span class="corners-inner-bottom"><span></span></span>
 </div>
@@ -35,7 +36,8 @@
 <!-- raid message -->
 <div class="raidplanbody">
 <div class="content">
-<p>{SUBJECT}</p><br/>
+<p>{SUBJECT}</p>
+<br/>
 {MESSAGE}
 </div>
 </div>
@@ -48,10 +50,12 @@
 <dt><strong>{L_EVENT_CREATED_BY}</strong></dt>
 <dd>{POSTER}</dd>
 </dl>
+<!-- IF S_CANSIGNUP -->
 <dl>
 <dt><strong>{L_INVITE_TIME}</strong></dt>
 <dd>{INVITE_TIME}</dd>
 </dl>
+<!-- ENDIF -->
 <dl>
 <dt><strong>{L_START_TIME}</strong></dt>
 <dd>{START_TIME}</dd>
@@ -69,7 +73,7 @@
 <!-- ENDIF -->
 </fieldset>
 </div>
-
+<!-- IF S_CANSIGNUP -->
 <div style="width:48%; float: left;">
 
 <fieldset class="rpfields">
@@ -100,9 +104,11 @@
 <!-- ENDIF -->
 </fieldset>
 </div>
+<!-- ENDIF -->
 
 <span class="corners-bottom"><span></span></span></div>
 </div>
+<!-- IF S_CANSIGNUP -->
 <br/>
 <!-- INCLUDE planner/raidplan/planner_view_raidplan_confirmed.html -->
 <br/>
@@ -112,7 +118,7 @@
 <br/>
 <!-- INCLUDE planner/raidplan/planner_view_raidplan_signup.html -->
 <br/>
- 
- 
 <hr />
+<!-- ENDIF --> 
+ 
 <!-- [-] raidplan view -->

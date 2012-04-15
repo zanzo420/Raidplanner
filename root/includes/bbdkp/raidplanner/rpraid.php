@@ -217,7 +217,13 @@ class rpraid
 	 * @var boolean
 	 */
 	public $signed_off;
-
+	
+	/**
+	 * If you currently confirmed
+	 *
+	 * @var boolean
+	 */
+	public $confirmed;
 	
 	/**
 	 * constructor
@@ -282,6 +288,7 @@ class rpraid
 			$this->signups_allowed=false;
 			$this->locked= true;
 			$this->frozen= true;
+			$this->confirmed=false;
 			$this->nochar= true;
 			$this->signed_up=true;
 			$this->signed_off=true;
@@ -307,6 +314,9 @@ class rpraid
 			{
 				trigger_error( 'NOT_AUTHORISED' );
 			}
+			$this->checkauth_canedit();
+			$this->checkauth_candelete();
+			$this->checkauth_canadd();
 			
 			// now go add raid properties
 			$this->event_type= $row['etype_id'];
@@ -389,6 +399,27 @@ class rpraid
 						}
 					}
 				}
+				
+				if(is_array($myrole['role_confirmations']))
+				{
+					foreach($myrole['role_confirmations'] as $asignup)
+					{
+						if(isset($this->mychars))
+						{
+							foreach($this->mychars as $chid => $mychar)
+							{
+								if($mychar['id'] == $asignup['dkpmemberid'])
+								{
+									$this->confirmed = true;
+									
+								}
+							}
+											
+						}
+					}
+				}
+				
+				
 			}
 			
 			// also lock signup pane if your char is signed off
@@ -503,8 +534,15 @@ class rpraid
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		
 		$submit	= (isset($_POST['addraid'])) ? true : false;
+		$delete	= (isset($_POST['delete'])) ? true : false;
+		$update	= (isset($_POST['updateraid'])) ? true : false;
 		
-		if($raidplan_id != 0)
+		if($delete)
+		{
+			$this->raidplan_delete();
+		}
+		
+		if($raidplan_id !=0)
 		{
 			$mode='edit';
 			// edit existing plan
@@ -514,9 +552,11 @@ class rpraid
 				trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
 			}
 			
+			$this->checkauth_candelete();
+		
 			// action URL 
 			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id."&amp;mode=showadd");
-			if($submit)
+			if($update)
 			{
 				
 				// confirm this edit
@@ -560,7 +600,8 @@ class rpraid
 				
 			}
 		}
-		else 
+		
+		if($submit)
 		{
 			$mode='new';
 			// add new plan
@@ -943,55 +984,12 @@ class rpraid
 			$db->sql_freeresult($result);
 		}
 		
-		
 		//set rsvp flag to checked by default
 		$track_signups = 'checked="checked"';
 		
 		$message = generate_text_for_edit($this->body, 
 		(isset($this->bbcode['uid']) ? $this->bbcode['uid'] : ''), 
 		(isset($this->bbcode['bitfield']) ? $this->bbcode['bitfield'] : '') , 7);
-		
-		$template->assign_vars(array(
-			'L_POST_A'					=> $page_title,
-			'SUBJECT'					=> $this->subject,
-			'MESSAGE'					=> $message['text'],
-			'INVITE_HOUR_SEL'			=> $hour_invite_selcode, 
-			'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
-		
-			'START_HOUR_SEL'			=> $hour_start_selcode,
-			'START_MIN_SEL'				=> $min_start_sel_code,
-		
-			'END_HOUR_SEL'				=> $hour_end_selcode,
-			'END_MIN_SEL'				=> $min_end_sel_code,
-		
-			'ENDDAYSEL'					=> $monthend_sel_code .' '. $dayend_sel_code . ' ' . $year_sel_code, 
-			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
-			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
-			'EVENT_GROUP_SEL'			=> $group_sel_code,
-		
-			'DAY_VIEW_URL'				=> $day_view_url,
-			'WEEK_VIEW_URL'				=> $week_view_url,
-			'MONTH_VIEW_URL'			=> $month_view_url,
-
-			'TRACK_RSVP_CHECK'			=> $track_signups,
-			
-			//'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
-			//'S_UPDATE_RECURRING_OPTIONS'=> $raidplan_data['s_update_recurring_options'],
-			//'RECURRING_EVENT_CHECK'		=> $recurr_raidplan_check,
-			//'RECURRING_EVENT_TYPE_SEL'	=> $recurr_raidplan_freq_sel_code,
-			//'RECURRING_EVENT_FREQ_IN'	=> $recurr_raidplan_freq_val_code,
-			//'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
-			//'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
-			//'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
-		
-			'S_POST_ACTION'				=> $s_action,
-			'RAIDPLAN_ID'				=> $this->id,
-		
-			//javascript alerts
-			'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
-			'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx),
-		)
-		);
 		
 		// HTML, BBCode, Smilies, Images and Flash status
 		$bbcode_status	= ($config['allow_bbcode']) ? true : false;
@@ -1006,9 +1004,49 @@ class rpraid
 			$cal->generate_calendar_smilies('inline');
 		}
 		
-		$quote_status	= false;
-		
 		$template->assign_vars(array(
+			'S_POST_ACTION'				=> $s_action,
+			'RAIDPLAN_ID'				=> $this->id,
+			'S_EDIT'					=> ($mode == 'edit') ? true : false, 
+			'S_DELETE_ALLOWED'			=> $this->auth_candelete, 
+			'S_BBCODE_ALLOWED'			=> $bbcode_status,
+			'S_SMILIES_ALLOWED'			=> $smilies_status,
+			'S_LINKS_ALLOWED'			=> $url_status,
+			'S_BBCODE_IMG'				=> $img_status,
+			'S_BBCODE_URL'				=> $url_status,
+			'S_BBCODE_FLASH'			=> $flash_status,
+			'S_BBCODE_QUOTE'			=> false,
+			'S_PLANNER_ADD'				=> true,
+		
+			'L_POST_A'					=> $page_title,
+			'SUBJECT'					=> $this->subject,
+			'MESSAGE'					=> $message['text'],
+			'INVITE_HOUR_SEL'			=> $hour_invite_selcode, 
+			'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
+		
+			'START_HOUR_SEL'			=> $hour_start_selcode,
+			'START_MIN_SEL'				=> $min_start_sel_code,
+			'END_HOUR_SEL'				=> $hour_end_selcode,
+			'END_MIN_SEL'				=> $min_end_sel_code,
+			'ENDDAYSEL'					=> $monthend_sel_code .' '. $dayend_sel_code . ' ' . $year_sel_code, 
+			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
+			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
+			'EVENT_GROUP_SEL'			=> $group_sel_code,
+			'DAY_VIEW_URL'				=> $day_view_url,
+			'WEEK_VIEW_URL'				=> $week_view_url,
+			'MONTH_VIEW_URL'			=> $month_view_url,
+
+			'TRACK_RSVP_CHECK'			=> $track_signups,
+			
+			//'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
+			//'S_UPDATE_RECURRING_OPTIONS'=> $raidplan_data['s_update_recurring_options'],
+			//'RECURRING_EVENT_CHECK'		=> $recurr_raidplan_check,
+			//'RECURRING_EVENT_TYPE_SEL'	=> $recurr_raidplan_freq_sel_code,
+			//'RECURRING_EVENT_FREQ_IN'	=> $recurr_raidplan_freq_val_code,
+			//'END_RECURR_MONTH_SEL'		=> $end_recurr_month_sel_code,
+			//'END_RECURR_DAY_SEL'		=> $end_recurr_day_sel_code,
+			//'END_RECURR_YEAR_SEL'		=> $end_recurr_year_sel_code,
+
 			'BBCODE_STATUS'				=> ($bbcode_status) ? 
 				sprintf($user->lang['BBCODE_IS_ON'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>') : 
 				sprintf($user->lang['BBCODE_IS_OFF'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>'),
@@ -1016,18 +1054,11 @@ class rpraid
 			'FLASH_STATUS'				=> ($flash_status) ? $user->lang['FLASH_IS_ON'] : $user->lang['FLASH_IS_OFF'],
 			'SMILIES_STATUS'			=> ($smilies_status) ? $user->lang['SMILIES_ARE_ON'] : $user->lang['SMILIES_ARE_OFF'],
 			'URL_STATUS'				=> ($bbcode_status && $url_status) ? $user->lang['URL_IS_ON'] : $user->lang['URL_IS_OFF'],
-		
-			//'S_DELETE_ALLOWED'		=> $allow_delete,
-			'S_BBCODE_ALLOWED'			=> $bbcode_status,
-			'S_SMILIES_ALLOWED'			=> $smilies_status,
-			'S_LINKS_ALLOWED'			=> $url_status,
-			'S_BBCODE_IMG'				=> $img_status,
-			'S_BBCODE_URL'				=> $url_status,
-			'S_BBCODE_FLASH'			=> $flash_status,
-			'S_BBCODE_QUOTE'			=> $quote_status,
-			'S_PLANNER_ADD'				=> true,
-		)
-		);
+
+			//javascript alerts
+			'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
+			'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx),
+		));
 		
 		// Build custom bbcodes array
 		display_custom_bbcodes();
@@ -1275,7 +1306,7 @@ class rpraid
 	 * delete a Raid plan
 	 *
 	 */
-	public function delete()
+	public function raidplan_delete()
 	{
 		// recheck if user can delete
 		global $user, $db, $phpbb_root_path, $phpEx;
@@ -1285,13 +1316,6 @@ class rpraid
 		{
 			trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
 		}
-	
-		$s_hidden_fields = build_hidden_fields(array(
-				'raidplan_id'=> $this->id,
-				'page'	=> 'planner',
-				'view'	=> 'raidplan',
-				'mode'	=> 'delete')
-		);
 	
 		if (confirm_box(true))
 		{
@@ -1332,7 +1356,15 @@ class rpraid
 		}
 		else
 		{
-			confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
+			$s_hidden_fields = build_hidden_fields(array(
+					'raidplan_id'=> $this->id,
+					'page'	=> 'planner',
+					'view'	=> 'raidplan',
+					'mode'	=> 'delete')
+			);
+			
+			return confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
+			
 		}
 		
 		
@@ -1667,6 +1699,9 @@ class rpraid
 			'S_NOCHAR'			=> $this->nochar,
 			'S_SIGNED_UP'		=> $this->signed_up, 
 			'S_SIGNED_OFF'		=> $this->signed_off, 
+			'S_CONFIRMED'		=> $this->confirmed, 
+			'S_CANSIGNUP'		=> $this->signups_allowed, 
+		 	'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
 		 
 			'RAID_TOTAL'		=> $total_needed,
 			'TZ'				=> $user->lang['tz'][$tz], 
@@ -1717,8 +1752,6 @@ class rpraid
 			'DAY_VIEW_URL'		=> $day_view_url,
 			'WEEK_VIEW_URL'		=> $week_view_url,
 			'MONTH_VIEW_URL'	=> $month_view_url,
-			'S_CANSIGNUP'		=> $this->signups_allowed, 
-			'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 			)
 		);
 		
@@ -1867,13 +1900,6 @@ class rpraid
 					}
 				}
 				
-				//if no chars the you cannot sign up !
-				if(count($userchars)==0)
-				{
-					$this->signups_allowed = false; 	
-					
-				}
-				
 				foreach($this->raidroles as $key => $role)
 				{
 					$rolesinfo[] = array(
@@ -1910,13 +1936,17 @@ class rpraid
 				'EVENT_ID'  			=> $this->id,
 
 				// for popup
+				'S_ANON'				=> ($user->data['user_id'] == ANONYMOUS) ? true : false, 
 				'S_LOCKED'				=> $this->locked,
 				'S_FROZEN'				=> $this->frozen,
 				'S_NOCHAR'				=> $this->nochar,
 				'S_SIGNED_UP'			=> $this->signed_up, 
 				'S_SIGNED_OFF'			=> $this->signed_off, 	
-
+				'S_CONFIRMED'			=> $this->confirmed,
+				'S_CANSIGNUP'			=> $this->signups_allowed, 
+				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 				'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id. "&amp;mode=signup"), 
+
 				'INVITE_TIME'  			=> $user->format_date($this->invite_time, $correct_format, true), 
 				'START_TIME'			=> $user->format_date($this->start_time, $correct_format, true),
 				'END_TIME' 				=> $user->format_date($this->end_time, $correct_format, true),
@@ -1925,8 +1955,6 @@ class rpraid
 				'ALL_DAY'				=> ($this->all_day == 1  ) ? true : false,
 				'SHOW_TIME'				=> ($mode == "day" || $mode == "week" ) ? true : false, 
 				'COUNTER'				=> $raidplan_counter++, 
-				'S_CANSIGNUP'			=> $this->signups_allowed, 
-				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 			
 				'RAID_TOTAL'			=> $total_needed,
 			
@@ -1947,8 +1975,6 @@ class rpraid
 				'CURR_NOPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) *100 : 0)),
 			
 				'CURR_TOTAL_COUNT'  	=> $this->signups['yes'] + $this->signups['maybe'],
-				
-			
 			
 			);
 			
@@ -2138,9 +2164,7 @@ class rpraid
 				}
 				
 			}
-
 		}
-		
 	}
 	
 	/**
@@ -2160,9 +2184,12 @@ class rpraid
 				$this->auth_candelete = true;
 
 				// is raidleader trying to delete other raid ?
-				if ( !( ($user->data['user_id'] == $this->poster) && $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
+				if ($user->data['user_id'] != $this->poster) 
 				{
-					$this->auth_candelete = false;
+					if (! $auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
+					{
+						$this->auth_candelete = false;
+					}
 				}
 			}
 			

@@ -120,7 +120,10 @@ switch( $view_mode )
 			case 'delete':
 				// delete a raid				
 				$raid = new rpraid($raidplan_id);
-				$raid->delete();
+				if(!$raid->raidplan_delete())
+				{
+					$raid->display();
+				}
 				break;			
 			default:
 				// show the raid view form
