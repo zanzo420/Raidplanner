@@ -130,31 +130,33 @@ jQuery(document).ready( function()
 				<br />
 				<!-- ENDIF -->
 				<!-- IF calendar_days.raidplans.S_LOCKED -->
-  					<p class="rp_locked">{L_LOCKED}</p>
-    					<!-- ENDIF  -->
+				<p class="rp_locked">{L_LOCKED}</p>
+				<!-- ENDIF  -->
 				<!-- IF calendar_days.raidplans.S_SIGNED_UP -->
-    					<p class="rp_signed_up">{L_SIGNED_UP}</p>
-    					<!-- ENDIF  -->
-     					<!-- IF calendar_days.raidplans.S_FROZEN -->
-     					<p class="rp_frozen">{L_FROZEN}</p>
-     					<!-- ENDIF  -->
-     					<!-- IF calendar_days.raidplans.S_NOCHAR -->
-     					<p class="rp_nochars">{L_NOCHAR}</p>
-     					<!-- ENDIF  -->
-     					<!-- IF calendar_days.raidplans.S_SIGNED_OFF -->
-     					<p class="rp_signedoff">{L_SIGNED_OFF}</p>
-     					<!-- ENDIF  -->
-     					
-     					<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER  && ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR  && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF -->
-     					<br />
-    					<form method="post" action="{calendar_days.raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{calendar_days.raidplans.RAID_ID}" id="signup_form{calendar_days.raidplans.RAID_ID}">
-     					<fieldset>
+				<p class="rp_signed_up">{L_SIGNED_UP}</p>
+				<!-- ENDIF  -->
+				<!-- IF calendar_days.raidplans.S_FROZEN -->
+				<p class="rp_frozen">{L_FROZEN}</p>
+				<!-- ENDIF  -->
+				<!-- IF calendar_days.raidplans.S_NOCHAR  && ! calendar_days.raidplans.S_ANON -->
+				<p class="rp_nochars">{L_NOCHAR}</p>
+				<!-- ENDIF  -->
+				<!-- IF calendar_days.raidplans.S_SIGNED_OFF -->
+				<p class="rp_signedoff">{L_SIGNED_OFF}</p>
+				<!-- ENDIF  -->
+				<!-- IF calendar_days.raidplans.S_CONFIRMED -->
+				<p class="rp_confirmed">{L_CONFIRMED}</p>
+				<!-- ENDIF  -->
+				<!-- IF calendar_days.raidplans.S_CANSIGNUP && calendar_days.raidplans.S_LEGITUSER  && ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR  && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF  && ! calendar_days.raidplans.S_CONFIRMED -->
+ 				<br />
+				<form method="post" action="{calendar_days.raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{calendar_days.raidplans.RAID_ID}" id="signup_form{calendar_days.raidplans.RAID_ID}">
+				<fieldset>
 				<dl>
 				<dt>{L_RAIDCHARACTER}</dt>
 				<dd>
 				<select id="signupchar{calendar_days.raidplans.RAID_ID}" name="signupchar{calendar_days.raidplans.RAID_ID}">
 				<!-- BEGIN userchars -->
-					<option value='{calendar_days.raidplans.userchars.MEMBER_ID}'>{calendar_days.raidplans.userchars.MEMBER_NAME}</option><!-- END userchars -->
+				<option value='{calendar_days.raidplans.userchars.MEMBER_ID}'>{calendar_days.raidplans.userchars.MEMBER_NAME}</option><!-- END userchars -->
 				</select>
 				</dd>
 				

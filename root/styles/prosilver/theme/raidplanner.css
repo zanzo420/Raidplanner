@@ -32,7 +32,6 @@ hr.hrCal {
 .rp_signed_up
 {
 	color: #00EE55;	
-	font-weight: bolder;
 }
 
 .rp_nochars
@@ -55,6 +54,11 @@ hr.hrCal {
 	color: #FF3388;	
 }
 
+.rp_confirmed
+{
+	color: #00EE55;	
+	font-weight: bolder;
+}
 
 
 /* The from and to times take up a lot of space in the calendar display. Use this to shrink them */

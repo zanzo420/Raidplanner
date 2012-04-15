@@ -116,14 +116,16 @@ jQuery(document).ready( function()
        				 		<!-- IF calendar_days.raidplans.S_FROZEN -->
        						<p class="rp_frozen">{L_FROZEN}</p>
        						<!-- ENDIF  -->
-       						<!-- IF calendar_days.raidplans.S_NOCHAR -->
+       						<!-- IF calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_ANON -->
        						<p class="rp_nochars">{L_NOCHAR}</p>
        						<!-- ENDIF  -->
         					<!-- IF calendar_days.raidplans.S_SIGNED_OFF -->
        						<p class="rp_signedoff">{L_SIGNED_OFF}</p>
        						<!-- ENDIF  -->
-       					      					       					
-          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER &&  ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF -->
+							<!-- IF calendar_days.raidplans.S_CONFIRMED -->
+							<p class="rp_confirmed">{L_CONFIRMED}</p>
+							<!-- ENDIF  -->       					      					       					
+          					<!-- IF raidplans.S_CANSIGNUP && raidplans.S_LEGITUSER &&  ! calendar_days.raidplans.S_LOCKED && ! calendar_days.raidplans.S_FROZEN && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_UP && ! calendar_days.raidplans.S_NOCHAR && ! calendar_days.raidplans.S_SIGNED_OFF  && ! calendar_days.raidplans.S_CONFIRMED -->
           					<hr />
          						<form method="post" action="{raidplans.S_SIGNUP_MODE_ACTION}" name="signup_form{raidplans.RAID_ID}" id="signup_form{raidplans.RAID_ID}">
           						<fieldset>

@@ -217,7 +217,13 @@ class rpraid
 	 * @var boolean
 	 */
 	public $signed_off;
-
+	
+	/**
+	 * If you currently confirmed
+	 *
+	 * @var boolean
+	 */
+	public $confirmed;
 	
 	/**
 	 * constructor
@@ -282,6 +288,7 @@ class rpraid
 			$this->signups_allowed=false;
 			$this->locked= true;
 			$this->frozen= true;
+			$this->confirmed=false;
 			$this->nochar= true;
 			$this->signed_up=true;
 			$this->signed_off=true;
@@ -389,6 +396,27 @@ class rpraid
 						}
 					}
 				}
+				
+				if(is_array($myrole['role_confirmations']))
+				{
+					foreach($myrole['role_confirmations'] as $asignup)
+					{
+						if(isset($this->mychars))
+						{
+							foreach($this->mychars as $chid => $mychar)
+							{
+								if($mychar['id'] == $asignup['dkpmemberid'])
+								{
+									$this->confirmed = true;
+									
+								}
+							}
+											
+						}
+					}
+				}
+				
+				
 			}
 			
 			// also lock signup pane if your char is signed off
@@ -1668,6 +1696,7 @@ class rpraid
 			'S_NOCHAR'			=> $this->nochar,
 			'S_SIGNED_UP'		=> $this->signed_up, 
 			'S_SIGNED_OFF'		=> $this->signed_off, 
+			'S_CONFIRMED'		=> $this->confirmed, 
 			'S_CANSIGNUP'		=> $this->signups_allowed, 
 		 	'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
 		 
@@ -1868,13 +1897,6 @@ class rpraid
 					}
 				}
 				
-				//if no chars the you cannot sign up !
-				if(count($userchars)==0)
-				{
-					$this->signups_allowed = false; 	
-					
-				}
-				
 				foreach($this->raidroles as $key => $role)
 				{
 					$rolesinfo[] = array(
@@ -1911,13 +1933,17 @@ class rpraid
 				'EVENT_ID'  			=> $this->id,
 
 				// for popup
+				'S_ANON'				=> ($user->data['user_id'] == ANONYMOUS) ? true : false, 
 				'S_LOCKED'				=> $this->locked,
 				'S_FROZEN'				=> $this->frozen,
 				'S_NOCHAR'				=> $this->nochar,
 				'S_SIGNED_UP'			=> $this->signed_up, 
 				'S_SIGNED_OFF'			=> $this->signed_off, 	
-
+				'S_CONFIRMED'			=> $this->confirmed,
+				'S_CANSIGNUP'			=> $this->signups_allowed, 
+				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 				'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id. "&amp;mode=signup"), 
+
 				'INVITE_TIME'  			=> $user->format_date($this->invite_time, $correct_format, true), 
 				'START_TIME'			=> $user->format_date($this->start_time, $correct_format, true),
 				'END_TIME' 				=> $user->format_date($this->end_time, $correct_format, true),
@@ -1926,8 +1952,6 @@ class rpraid
 				'ALL_DAY'				=> ($this->all_day == 1  ) ? true : false,
 				'SHOW_TIME'				=> ($mode == "day" || $mode == "week" ) ? true : false, 
 				'COUNTER'				=> $raidplan_counter++, 
-				'S_CANSIGNUP'			=> $this->signups_allowed, 
-				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 			
 				'RAID_TOTAL'			=> $total_needed,
 			
@@ -1948,8 +1972,6 @@ class rpraid
 				'CURR_NOPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($this->signups['no']) /  $total_needed, 2) *100 : 0)),
 			
 				'CURR_TOTAL_COUNT'  	=> $this->signups['yes'] + $this->signups['maybe'],
-				
-			
 			
 			);
 			
