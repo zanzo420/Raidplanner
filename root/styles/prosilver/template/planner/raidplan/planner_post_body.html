@@ -1,4 +1,4 @@
-<form id="postform" name="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
+<form id="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
 
 <div class="navbar raidplanner_bg">
 	<div class="inner"><span class="corners-inner-top"><span></span></span>
@@ -23,12 +23,14 @@
 
 <fieldset class="submit-buttons">
 	<input type="hidden" name="hidden_raidplanid" value="{RAIDPLAN_ID}" />
-	<!-- IF S_DELETE_ALLOWED -->
+	<!-- IF S_EDIT && S_DELETE_ALLOWED -->
 	<input type="submit" accesskey="d" tabindex="7" name="delete" id="delete" value="{L_DELETE}" class="button1" />&nbsp;
 	<!-- ENDIF -->
-	<!-- IF S_SAVE_ALLOWED -->
-	<input type="submit" accesskey="k" tabindex="8" name="save" value="{L_SAVE}" class="button2" />&nbsp;
-	<!-- ENDIF -->
+	
+	<!-- IF S_EDIT && S_DELETE_ALLOWED -->
+	<input type="submit" accesskey="s" tabindex="6" name="updateraid" value="{L_UPDATE}" class="button1" />&nbsp;
+	<!-- ELSE -->
 	<input type="submit" accesskey="s" tabindex="6" name="addraid" value="{L_SUBMIT}" class="button1" />&nbsp;
+	<!-- ENDIF -->
 </fieldset>
 </form>

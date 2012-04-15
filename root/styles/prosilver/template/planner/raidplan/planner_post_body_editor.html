@@ -9,7 +9,6 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 </script>
 
 <!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
-  
 <!-- IF S_POST_ACTION -->
 
 <div class="panel bg2">
@@ -17,43 +16,42 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 <span class="corners-top"><span></span></span>
 
 <div style="width:100%; clear:both;">
-
+<h2>{L_SUBJECT}</h2>
 <fieldset class="fields1">
-  	<dl style="clear: left;">
-		<dt><label for="subject">{L_SUBJECT}:</label></dt>
-		<dd><input type="text" name="subject" id="subject" size="50" maxlength="100" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" /></dd>
-	</dl>
-</fieldset>
+<p>
+<input type="text" name="subject" id="subject" size="100" maxlength="100" tabindex="2" value="{SUBJECT}" class="inputbox autowidth" />
+</p>
 <!-- INCLUDE planner/raidplan/planner_post_body_editor_buttons.html -->
-		<div id="smiley-box">
-			<!-- IF S_SMILIES_ALLOWED and .smiley -->
-				<strong>{L_SMILIES}</strong><br />
-				<!-- BEGIN smiley -->
-					<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" 
-					height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
-				<!-- END smiley -->
-			<!-- ENDIF -->
-			<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
-				<br /><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'HEIGHT=350,resizable=yes,scrollbars=yes,WIDTH=300'); return false;">{L_MORE_SMILIES}</a>
-			<!-- ENDIF -->
-	
-			<!-- IF BBCODE_STATUS -->
-			<!-- IF .smiley --><hr /><!-- ENDIF -->
-			{BBCODE_STATUS}<br />
-			<!-- IF S_BBCODE_ALLOWED -->
-				{IMG_STATUS}<br />
-				{FLASH_STATUS}<br />
-				{URL_STATUS}<br />
-				{SMILIES_STATUS}
-			<!-- ENDIF -->
-			<!-- ENDIF -->
-		</div>
+<div id="smiley-box">
+	<!-- IF S_SMILIES_ALLOWED and .smiley -->
+		<strong>{L_SMILIES}</strong><br />
+		<!-- BEGIN smiley -->
+			<a href="#" onclick="insert_text('{smiley.A_SMILEY_CODE}', true); return false;"><img src="{smiley.SMILEY_IMG}" width="{smiley.SMILEY_WIDTH}" 
+			height="{smiley.SMILEY_HEIGHT}" alt="{smiley.SMILEY_CODE}" title="{smiley.SMILEY_DESC}" /></a>
+		<!-- END smiley -->
+	<!-- ENDIF -->
+	<!-- IF S_SHOW_SMILEY_LINK and S_SMILIES_ALLOWED-->
+		<br /><a href="{U_MORE_SMILIES}" onclick="window.open('{U_MORE_SMILIES}', '_phpbbsmilies', 'HEIGHT=350,resizable=yes,scrollbars=yes,WIDTH=300'); return false;">{L_MORE_SMILIES}</a>
+	<!-- ENDIF -->
 
-		<div id="message-box">
-			<textarea name="message" id="message" rows="10" cols="60" tabindex="3" onselect="storeCaret(this);" 
-			onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
-		</div>
+	<!-- IF BBCODE_STATUS -->
+	<!-- IF .smiley --><hr /><!-- ENDIF -->
+	{BBCODE_STATUS}<br />
+	<!-- IF S_BBCODE_ALLOWED -->
+		{IMG_STATUS}<br />
 
+		{FLASH_STATUS}<br />
+		{URL_STATUS}<br />
+		{SMILIES_STATUS}
+	<!-- ENDIF -->
+	<!-- ENDIF -->
+</div>
+
+<div id="message-box">
+	<textarea name="message" id="message" rows="10" cols="60" tabindex="3" onselect="storeCaret(this);" 
+	onclick="storeCaret(this);" onkeyup="storeCaret(this);" class="inputbox">{MESSAGE}</textarea>
+</div>
+</fieldset>
 </div>
 
 <span class="corners-bottom"><span></span></span>
@@ -71,10 +69,11 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 <div class="panel bg2" id="raidinfo-panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
-  <h3>{L_RAIDINFO}</h3>
-  <fieldset class="fields1">
+  <fieldset>
+
+   <h2>{L_RAIDINFO}</h2>
   	<br/>
-	<!-- fetch the event types from bbDKP -->
+		<!-- fetch the event types from bbDKP -->
 	<dl style="clear: left;">
 		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
 		<dd>
@@ -90,7 +89,7 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		</dd>
 	</dl>
 	<dl style="clear: left;">
-		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
+		<dt><label>{L_EVENT_GROUP}:</label></dt>
 		<dd>{EVENT_GROUP_SEL}</dd>
 	</dl>
   </fieldset>
@@ -99,29 +98,41 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 </div>
 </div>
 
-<div class="panel bg2" id="raidroles-panel">
+<div class="panel bg2" id="raidroles-panel" class="ucp-main">
 <div class="inner">
 <span class="corners-top"><span></span></span>
- <h3>{L_RAIDROLES}</h3>
-	<fieldset class="fields1">
-		<br/>
-		<dl style="clear: left;">
+
+<fieldset>
+<!-- IF ! S_EDIT -->
+<h2>{L_TRACK_SIGNUPS}</h2>
+ <dl style="clear: left;">
+	<dt><label>{L_TRACK_SIGNUPS}:</label>{L_TRACK_SIGNUPS_EXPLAIN}</dt>
+	<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
+</dl> 
+<!-- ENDIF -->
+
+ <h2>{L_RAIDROLES}</h2>
+		<dl>
 		<dt><label>{L_CHOOSEPROFILE}</label>  </dt>
 		<dd>
 		<input type="radio" name="raidcomposition" onclick="update_roles(1);" value="1" checked /> {L_RAIDPROFILE1}
      	<input type="radio" name="raidcomposition" onclick="update_roles(2);" value="2"/> {L_RAIDPROFILE2}
 		</dd>
+		</dl>
+		<br/>
 		<div id="raidroles">
-	<!-- BEGIN raidroles -->
+		<dl>
+		<!-- BEGIN raidroles -->
 		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
 		<dd>
 			<input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
 			<input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" />
 		</dd>
-	<!-- END raidroles -->
+		<!-- END raidroles -->
+		</dl>
 		</div>
-	</dl>
-	</fieldset>
+</fieldset>
+	
 <span class="corners-bottom"><span></span></span>
 </div>
 </div> 
@@ -130,8 +141,8 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 <div class="inner">
 <span class="corners-top"><span></span></span>
 
-<h3>{L_RAIDWHEN}</h3>
-<fieldset class="fields1"> 
+<fieldset> 
+		<h2>{L_RAIDWHEN}</h2>
 	  
 		<dl style="clear: right;">
 			<dt><label for="calinvHr">{L_RAID_INVITE_TIME}:</label></dt>
@@ -155,12 +166,6 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 				<select name='calEndMn' id='calEndMn'>{END_MIN_SEL}</select>
 			</dd>
 		</dl>
-				
-		<dl style="clear: left;">
-		<dt><label>{L_TRACK_SIGNUPS}:</label></dt>
-		<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
-		</dl> 
-	
     </fieldset>
  
 <span class="corners-bottom"><span></span></span>
