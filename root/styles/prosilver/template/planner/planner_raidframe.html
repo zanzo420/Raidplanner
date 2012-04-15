@@ -1,13 +1,13 @@
-<!-- IF S_SHOW_WELCOME_MSG -->
-<div class="panel">
-<div class="inner">
+<div class="forabg" >
 <span class="corners-top"><span></span></span>
-{WELCOME_MSG}
-<br />{CURRENT_TIME} {TZ}
+<ul class="topiclist">
+<li class="header">
+	<h1 style="color:#dfc065; white-space:nowrap;"><!-- IF S_PLANNER_ADD -->{L_NEWRAID}<!-- ELSE -->{L_RAIDPLANNER}<!-- ENDIF -->
+</h1>
+</li>
+</ul>
 <span class="corners-bottom"><span></span></span>
 </div>
-</div>
-<!-- ENDIF -->
 
 <!-- left sidebar -->
 <div style="float: left; width: 0%; margin-left:0.5%">
@@ -17,14 +17,17 @@
 
 <div style="float: left; width: 79%; margin-left:0.5%; margin-right:0.5%">
 
+
+
+<!-- IF S_SHOW_WELCOME_MSG -->
 <div class="panel">
 <div class="inner">
 <span class="corners-top"><span></span></span>
-
-<!-- IF S_PLANNER_ADD -->
-<h3>{L_NEWRAID}</h3>
-<!-- ELSE -->
-<h3>{L_RAIDPLANNER}</h3>
+{WELCOME_MSG}
+<br />{CURRENT_TIME} {TZ}
+<span class="corners-bottom"><span></span></span>
+</div>
+</div>
 <!-- ENDIF -->
 
 <!-- IF S_PLANNER_DAY || S_PLANNER_WEEK || S_PLANNER_MONTH -->
@@ -59,10 +62,6 @@
 <!-- IF S_PLANNER_WEEK_ON_INDEX -->
 	<!-- INCLUDE planner/calendar/planner_week_on_index.html -->
 <!-- ENDIF -->
-
-<span class="corners-bottom"><span></span></span>
-</div>
-</div>
 
 </div>
 
