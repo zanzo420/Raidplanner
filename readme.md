@@ -2,7 +2,7 @@ http://bbdkp.github.com/Raidplanner/
 
 Support : http://www.bbdkp.com/viewforum.php?f=61
 
-#Raidplanner v0.3.1
+#Raidplanner v0.4.0
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
@@ -19,6 +19,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	with approved, available and not available sections. 
 *	Raidmembers can change their comments, or change their signup from available to not available.
 *	Raidleaders can approve or deny raidmembers
+*   tooltip shows current status of your signup
 
 ##### Views
 *	Raidplan view - filled with all Raidplan details (who's invited, who created the Raidplan, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc)
@@ -35,11 +36,8 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 #### ACP
 *	Auto pruning of past Raidplans - From the ACP you control how often Raidplans are pruned, and how old they have to be before they are added to the delete list.
+
 *	Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred date/time format, so you can display just the time in hours where it makes sense (like in the week view) or the whole date+time (like in the display Raidplan)
-
-*	Ability to display Raidplans only on their start date - obviously the day view is a graphical display of all things going on, and Raidplans will display in the day view even if not on the start date with this setting turned on. However it's great for things like a week view with an Raidplan that starts at 10pm and ends at 2am the next day, because it will only display on the first day.
-
-*	Utility in ACP to move all Raidplans +/- one hour (helps when changing forum's dst setting). When you create an Raidplan it's stored in an absolute time, and if the forum (and/or users) change their dst settings they may suddenly see all the Raidplans appear off by one hour, now there's a utility to move ALL Raidplans in the calendar forward or back by one hour to help correct things when you change your DST.
 
 *	UCP module that displays upcoming Raidplans (that the user has registered for) for the next X days.
 

@@ -60,6 +60,11 @@ hr.hrCal {
 	font-weight: bolder;
 }
 
+.rp_maybe
+{
+	color: #EEFF00;	
+}
+
 
 /* The from and to times take up a lot of space in the calendar display. Use this to shrink them */
 
@@ -181,6 +186,12 @@ table.table1 tbody td.bg1.calMon {
 	padding-right: 4px;
 }
 
+.calMonH ul li {
+	font-family :sans-serif;
+	font-size: 14px;
+}
+
+
 /* today and highlighted day */
 table.table1 tbody td.bg2.calMon {
 	padding-top: 2px;
@@ -265,12 +276,21 @@ fieldset.rpfields dl {
 }
 
 /* imagesets */
+ul.profile-icons li {
+    margin-bottom: 0;
+    margin-left: 1px;
+    margin-right: 1px;
+    margin-top: 0;
+}
+
+
 ul.profile-icons li a {
 	width: 100%;
 	height: 100%;
     background-repeat: no-repeat;
     background-size: auto auto;
 }
+
 ul.profile-icons li.planner-new-icon {
 	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
 	width: 16px;
@@ -329,8 +349,8 @@ ul.profile-icons li.planner-delete-icon {
 	width: 20px;
 	height: 20px;
     margin-bottom: 0;
-    margin-left: 3px;
-    margin-right: 3px;
+    margin-left: 1px;
+    margin-right: 1px;
     margin-top: 0;
     float: left;
     background-position: 0 0;
