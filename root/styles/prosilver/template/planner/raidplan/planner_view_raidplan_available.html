@@ -19,11 +19,15 @@
 	<strong>{raidroles.signups.POSTER_URL}</strong><br />
 	<span><!-- IF raidroles.signups.S_RACE_IMAGE_EXISTS --><img src="{raidroles.signups.RACE_IMAGE}" alt="race_{raidroles.signups.CHARNAME}" />&nbsp;<!-- ELSE --><!-- ENDIF -->
 	<!-- IF raidroles.signups.S_CLASS_IMAGE_EXISTS --><img src="{raidroles.signups.CLASS_IMAGE}" alt="class_{raidroles.signups.CHARNAME}" /><!-- ELSE -->&nbsp;<!-- ENDIF -->
-	<strong><span style="color:{raidroles.signups.COLORCODE}"><a href="{raidroles.signups.U_MEMBERDKP}">{raidroles.signups.CHARNAME}</a></span></strong></span> <br />
+	<strong><span style="color:{raidroles.signups.COLORCODE}"><a href="{raidroles.signups.U_MEMBERDKP}">{raidroles.signups.CHARNAME}</a></span></strong>
+	</span><br />
 	{L_DKP} : {raidroles.signups.DKP_CURRENT}, {L_ATTENDANCE} : {raidroles.signups.ATTENDANCEP1}<br />
-	{raidroles.signups.POST_TIME}<br />
+	{raidroles.signups.POST_TIME}><br />
+	<!-- IF S_SIGNUPMAYBE -->
+	<span><img src="{T_IMAGESET_PATH}/planner/danger.png" alt="{L_MAYBE}" /></a> {raidroles.signups.VALUE_TXT}</span><br />
+	<!-- ENDIF -->
 	<span>{raidroles.signups.DETAILS}</span><br /> 
-
+	
 	<!-- IF raidroles.signups.S_EDIT_SIGNUP || raidroles.signups.S_DELETE_SIGNUP || raidroles.signups.S_CANCONFIRM -->
 	<br />
 	<hr />

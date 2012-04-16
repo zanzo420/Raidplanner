@@ -161,7 +161,7 @@ class rpweek extends calendar
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
 			$calendar_days['MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
-	
+			
 			if( ($true_j == $this->date['day']) &&
 			    ($true_m == $this->date['month_no']) &&
 			    ($true_y == $this->date['year']) )

@@ -205,11 +205,19 @@ class rpraid
 	public $nochar;
 	
 	/**
-	 * If you currently signed up
+	 * If you currently signed up as available
 	 *
 	 * @var boolean
 	 */
 	public $signed_up;
+	
+	/**
+	 * If you currently signed up as maybe
+	 *
+	 * @var boolean
+	 */
+	public $signed_up_maybe;
+	
 	
 	/**
 	 * If you are currently signed off
@@ -378,8 +386,9 @@ class rpraid
 			$this->locked = false;
 			
 			// are you currently signed up for a raidplan ?
-			$this->signed_up = false;		
 			// check it, and lock signup pane if your char is already registered for a role
+			$this->signed_up = false;
+			$this->signed_up_maybe = false;
 			foreach($this->raidroles as $rid => $myrole)
 			{
 				if(is_array($myrole['role_signups']))
@@ -392,7 +401,16 @@ class rpraid
 							{
 								if($mychar['id'] == $asignup['dkpmemberid'])
 								{
-									$this->signed_up = true;
+									switch ($asignup['signup_val'])
+									{
+										case 1:
+											$this->signed_up_maybe = true;
+											break;
+										case 2:
+											$this->signed_up = true;
+											break;
+									}
+									
 								}
 							}
 											
@@ -600,14 +618,11 @@ class rpraid
 				
 			}
 		}
-		
-		if($submit)
+		else
 		{
 			$mode='new';
 			// add new plan
 			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd");
-
-			$submit	= (isset($_POST['addraid'])) ? true : false;
 			if($submit)
 			{
  				
@@ -1597,6 +1612,7 @@ class rpraid
 						'S_RACE_IMAGE_EXISTS' => (strlen($signupdetail->raceimg) > 1) ? true : false, 
 						'S_DELETE_SIGNUP'	=> 	$candeletesignup, 
 						'S_EDIT_SIGNUP' 	=> $caneditsignup,
+						'S_SIGNUPMAYBE'		=> $this->signed_up_maybe,
 						'S_SIGNUP_EDIT_ACTION' => $editsignupurl, 
 						'U_DELETE'			=> $deletesignupurl, 
 						'DELETEKEY' 		=> $deletekey, 
@@ -1702,7 +1718,7 @@ class rpraid
 			'S_CONFIRMED'		=> $this->confirmed, 
 			'S_CANSIGNUP'		=> $this->signups_allowed, 
 		 	'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
-		 
+		 	'S_SIGNUPMAYBE'		=> $this->signed_up_maybe,
 			'RAID_TOTAL'		=> $total_needed,
 			'TZ'				=> $user->lang['tz'][$tz], 
 		
@@ -1943,6 +1959,7 @@ class rpraid
 				'S_SIGNED_UP'			=> $this->signed_up, 
 				'S_SIGNED_OFF'			=> $this->signed_off, 	
 				'S_CONFIRMED'			=> $this->confirmed,
+				'S_SIGNUPMAYBE'			=> $this->signed_up_maybe,
 				'S_CANSIGNUP'			=> $this->signups_allowed, 
 				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
 				'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id. "&amp;mode=signup"), 
