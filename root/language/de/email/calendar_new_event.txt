@@ -1,16 +1,16 @@
-Betrifft: Ein neues Ereignis wurde im Raidplaner angelegd. 
+Betreff: Ein neues Ereignis wurde im Raidplaner angelegt. 
 
-Gruss {USERNAME},
+Hallo {USERNAME},
 
-Das Ereignis "{EVENT_SUBJECT}" ist neu entstanden im Planer.
+das Ereignis "{EVENT_SUBJECT}" ist im Planer neu entstanden.
 
-Um den Planer zu sehen bitten folge diesen Link: 
+Um den Planer zu sehen, folge diesen Link: 
 {U_CALENDAR}
 
-Um das Ereignis zu sehen bitte folge diesen Link:
+Um das Ereignis zu sehen, folge diesen Link:
 {U_EVENT}
 
-Falls du nicht mehr auf den laufenden gehalten werden willst über Planerereignisse dann clicke hier:
+Falls du nicht mehr über Planerereignisse auf den laufenden gehalten werden willst, dann klicke hier:
 {U_UNWATCH_CALENDAR}
 
 {EMAIL_SIG}
