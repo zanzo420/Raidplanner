@@ -82,32 +82,32 @@ $lang = array_merge($lang, array(
 	
 	
 	/* moderator permissions */
-	'acl_m_raidplanner_edit_other_users_raidplans'	=> array('lang' => 'Kann von anderen Benutzern erstellte Raidpläne bearbeiten', 'cat' => 'raidplanner'),
-	'acl_m_raidplanner_delete_other_users_raidplans'	=> array('lang' => 'Kann von anderen Benutzern erstellte Raidpläne löschen', 'cat' => 'raidplanner'),
+	'acl_m_raidplanner_edit_other_users_raidplans'	=> array('lang' => 'Kann von anderen Benutzern erstellte RaidplÃ¤ne bearbeiten', 'cat' => 'raidplanner'),
+	'acl_m_raidplanner_delete_other_users_raidplans'	=> array('lang' => 'Kann von anderen Benutzern erstellte RaidplÃ¤ne lÃ¶schen', 'cat' => 'raidplanner'),
 	'acl_m_raidplanner_edit_other_users_signups'	=> array('lang' => 'Kann von anderen Benutzern erstellte Antworten bearbeiten', 'cat' => 'raidplanner'),
 	
 	
 	/* User Permissions */
 	// allows creating raids
-	'acl_u_raidplanner_create_raidplans'			=> array('lang' => 'Kann Raidpläne erstellen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_raidplans'			=> array('lang' => 'Kann RaidplÃ¤ne erstellen', 'cat' => 'raidplanner'),
 	// allows group raidplans where only usergroups can subscribe
-	'acl_u_raidplanner_create_group_raidplans'	=> array('lang' => 'Kann Gruppe Raidpläne erstellen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_group_raidplans'	=> array('lang' => 'Kann Gruppe RaidplÃ¤ne erstellen', 'cat' => 'raidplanner'),
 	// allows public raidplans where every member can subscribe 
-	'acl_u_raidplanner_create_public_raidplans'	=> array('lang' => 'Kann öffentlichen Raidpläne erstellen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_public_raidplans'	=> array('lang' => 'Kann Ã¶ffentlichen RaidplÃ¤ne erstellen', 'cat' => 'raidplanner'),
 	// allows private raidplans - only for you - eg hairdresser
-	'acl_u_raidplanner_create_private_raidplans'	=> array('lang' => 'Kann privaten Raidpläne erstellen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_private_raidplans'	=> array('lang' => 'Kann privaten RaidplÃ¤ne erstellen', 'cat' => 'raidplanner'),
 	// can create raidplans that recur
-	'acl_u_raidplanner_create_recurring_raidplans' => array('lang' => 'Kann wiederkehrende Raidpläne erstellen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_create_recurring_raidplans' => array('lang' => 'Kann wiederkehrende RaidplÃ¤ne erstellen', 'cat' => 'raidplanner'),
 	// allows deleting raids
-	'acl_u_raidplanner_delete_raidplans'			=> array('lang' => 'Kann Raidpläne löschen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_delete_raidplans'			=> array('lang' => 'Kann RaidplÃ¤ne lÃ¶schen', 'cat' => 'raidplanner'),
 	// allows editing raids that you created
-	'acl_u_raidplanner_edit_raidplans'			=> array('lang' => 'Kann Raidpläne bearbeiten', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_edit_raidplans'			=> array('lang' => 'Kann RaidplÃ¤ne bearbeiten', 'cat' => 'raidplanner'),
 	// allows signing up to raids
-	'acl_u_raidplanner_signup_raidplans'			=> array('lang' => 'Kann sich für Raidpläne anmelden', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_signup_raidplans'			=> array('lang' => 'Kann sich fÃ¼r RaidplÃ¤ne anmelden', 'cat' => 'raidplanner'),
 	// allows viewing raids
-	'acl_u_raidplanner_view_raidplans'			=> array('lang' => 'Kann Raidpläne sehen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_view_raidplans'			=> array('lang' => 'Kann RaidplÃ¤ne sehen', 'cat' => 'raidplanner'),
 	// view raid participation
-	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Kann die Kopfzahl für von anderen Benutzern erstellte Raidpläne sehen', 'cat' => 'raidplanner'),
+	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Kann die Kopfzahl fÃ¼r von anderen Benutzern erstellte RaidplÃ¤ne sehen', 'cat' => 'raidplanner'),
 
 
 ));

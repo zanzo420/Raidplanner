@@ -29,7 +29,7 @@ $lang = array_merge($lang, array(
 	'ACP_CAT_RAIDPLANNER' 				=> 'Raidplaner', //main tab 
 	'ACP_RAIDPLANNER' 					=> 'Raidplaner', //category
 	'ACP_RAIDPLANNER_SETTINGS'  		=> 'Raidplanereinstellungen', 	//module
-	'ACP_RAIDPLANNER_SETTINGS_EXPLAIN' 	=> 'Hier konfigurierst du die Raid Planer Einstellungen',
+	'ACP_RAIDPLANNER_SETTINGS_EXPLAIN' 	=> 'Hier konfigurierst du den Raidplaner',
 	'ACP_RAIDPLANNER_EVENTSETTINGS'		=> 'Ereigniseinstellungen', //module
 ));
 
