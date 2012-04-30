@@ -10,7 +10,7 @@ Um den Planer zu sehen, folge diesen Link:
 Um das Ereignis zu sehen, folge diesen Link:
 {U_EVENT}
 
-Falls du nicht mehr über Planerereignisse auf den laufenden gehalten werden willst, dann klicke hier:
+Falls du nicht mehr über Planerereignisse auf den laufenden gehalten werden willst, klicke hier:
 {U_UNWATCH_CALENDAR}
 
 {EMAIL_SIG}

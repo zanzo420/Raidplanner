@@ -7,7 +7,7 @@ das Ereignis "{EVENT_SUBJECT}" wurde aktualisiert.
 Um das Ereignis zu sehen, folge diesen Link:
 {U_EVENT}
 
-Falls du nicht mehr über Planerereignisse auf den laufenden gehalten werden willst, dann klicke hier:
+Falls du nicht mehr über Planerereignisse auf den laufenden gehalten werden willst, klicke hier:
 {U_UNWATCH_EVENT}
 
 {EMAIL_SIG}
