@@ -1,11 +1,12 @@
 <?php
 /**
- * bbdkp ucp language file 
+ * bbdkp ucp language file [German]
  * 
  * @package bbDkp
  * @copyright 2010 bbdkp <https://www.github.com/bbDKP>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version $Id$
+ * @translation killerpommes
  * 
  */
 
@@ -25,7 +26,7 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-    'UCP_MAIN_RAIDPLANNER_REGISTRATION'	=> 'Raid Registration',
+    'UCP_MAIN_RAIDPLANNER_REGISTRATION'	=> 'Raidanmeldung',
 
 ));
 
