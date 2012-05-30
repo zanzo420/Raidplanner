@@ -89,7 +89,7 @@ class rpblocks
 		// get top signups
 		$sql_array = array(
 	    	'SELECT'    => ' count(s.dkpmember_id) as countsignups, s.dkpmember_id, m.member_id, m.member_name, m.member_level,  
-		    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+		    				 m.member_gender_id, a.image_female, a.image_male, 
 		    				 l.name as member_class , c.imagename, c.colorcode ', 
 	    	'FROM'      => array(
 		        RP_SIGNUPS	 		=> 's',
@@ -110,7 +110,7 @@ class rpblocks
 							  AND m.game_id = c.game_id and m.game_id = a.game_id and m.game_id = l.game_id", 
 
 			'GROUP_BY'	=>  's.dkpmember_id, m.member_id, m.member_name, m.member_level,  
-		    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+		    				 m.member_gender_id, a.image_female, a.image_male, 
 		    				 l.name, c.imagename, c.colorcode', 
 		    
 		   	'ORDER_BY'	=> 	'count(s.dkpmember_id) DESC'

@@ -100,7 +100,7 @@ class rpsignup
 		// get memberinfo
 		$sql_array = array(
 	    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
-		    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+		    				 m.member_gender_id, a.image_female, a.image_male, 
 		    				 l.name as member_class , c.imagename, c.colorcode ', 
 	    	'FROM'      => array(
 		        RP_SIGNUPS	 		=> 's',
@@ -130,7 +130,7 @@ class rpsignup
 		$this->classname = $row['member_class'];
 		$this->imagename = (strlen($row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $row['imagename'] . ".png" : '';
 		$this->colorcode = $row['colorcode'];
-		$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male_small'] : $row['image_female_small']);
+		$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male'] : $row['image_female']);
 		$this->raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/race_images/" . $race_image . ".png" : '';
 		$this->level =  $row['member_level'];
 		$this->genderid = $row['member_gender_id'];
