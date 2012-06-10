@@ -45,7 +45,7 @@ if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 0.4.0';
+$mod_name = 'Raidplanner 0.5.0';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -442,8 +442,13 @@ $versions = array(
 			array('rp_show_portal', 1, true),
 			),
         	 
-		'custom' => array('purgecaches', 'versionupdater'),        
-        ),     
+        ),    
+        '0.5.0' => array(
+        	// php fixes
+			'custom' => array('purgecaches', 'versionupdater'),                	
+        ),    
+        
+         
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.

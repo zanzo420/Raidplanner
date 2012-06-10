@@ -2,7 +2,7 @@ http://bbdkp.github.com/Raidplanner/
 
 Support : http://www.bbdkp.com/viewforum.php?f=61
 
-#Raidplanner v0.4.0
+#Raidplanner v0.5.0
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
@@ -49,7 +49,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	Once installed, you will find the ACP module added under the raid section in bbdkp ACP.</li>
 
 ### Requirements
-*	bbDKP 1.2.6-PL5 or higher with Wow installed
+*	bbDKP 1.2.7 or higher with Wow installed
 *	phpBB 3.0.10
 
 
