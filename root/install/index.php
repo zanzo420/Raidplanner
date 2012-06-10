@@ -444,8 +444,85 @@ $versions = array(
         	 
         ),    
         '0.5.0' => array(
-        	// php fixes
-			'custom' => array('purgecaches', 'versionupdater'),                	
+			
+			'table_add' => array(
+
+        	array(
+              		'phpbb_rp_teams' , array(
+                    'COLUMNS'        => array(
+                        'teams_id'    	   => array('INT:8', NULL, 'auto_increment'),
+                        'team_name'        => array('VCHAR_UNI', ''),
+              			'team_needed'     => array('INT:8', 0),
+                    ),
+                    'PRIMARY_KEY'    => 'teams_id'), 
+                ),
+                
+        	array(
+              		'phpbb_rp_teamsizes' , array(
+                    'COLUMNS'        => array(
+                        'role_id'    	  => array('INT:8', 0),
+                        'teams_id'     	  => array('INT:8', 0),
+              			'team_needed'     => array('INT:8', 0),
+                    ),
+                    ), 
+                ),                
+        	),
+        	
+        	'table_column_remove' => array(
+        	
+	        	array('phpbb_rp_roles', 'role_needed1'),
+		       	array('phpbb_rp_roles', 'role_needed2'),
+        	),
+        	
+        	 'table_row_insert'	=> array(
+
+        	array('phpbb_rp_teams',
+	           array(
+	                  array('team_name' => '8man',  'team_needed' => 8),
+	                  array('team_name' => '10man', 'team_needed' => 10),          
+	                  array('team_name' => '20man', 'team_needed' => 20),
+	                  array('team_name' => '25man', 'team_needed' => 25),
+	           		)
+	           ),
+           
+        	array('phpbb_rp_teamsizes',
+	           array(
+	                  array('role_id' => 1,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 2,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 3,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 4,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 5,  'teams_id' => 1, 'team_needed' => 2),
+	                  array('role_id' => 6,  'teams_id' => 1, 'team_needed' => 2),
+	                  
+	                  array('role_id' => 1,  'teams_id' => 2, 'team_needed' => 3),
+	                  array('role_id' => 2,  'teams_id' => 2, 'team_needed' => 1),
+	                  array('role_id' => 3,  'teams_id' => 2, 'team_needed' => 1),
+	                  array('role_id' => 4,  'teams_id' => 2, 'team_needed' => 1),
+	                  array('role_id' => 5,  'teams_id' => 2, 'team_needed' => 2),
+	                  array('role_id' => 6,  'teams_id' => 2, 'team_needed' => 2),
+	                  
+	                  array('role_id' => 1,  'teams_id' => 3, 'team_needed' => 5),
+	                  array('role_id' => 2,  'teams_id' => 3, 'team_needed' => 2),
+	                  array('role_id' => 3,  'teams_id' => 3, 'team_needed' => 2),
+	                  array('role_id' => 4,  'teams_id' => 3, 'team_needed' => 2),
+	                  array('role_id' => 5,  'teams_id' => 3, 'team_needed' => 4),
+	                  array('role_id' => 6,  'teams_id' => 3, 'team_needed' => 5),
+	                  
+	                  array('role_id' => 1,  'teams_id' => 4, 'team_needed' => 7),
+	                  array('role_id' => 2,  'teams_id' => 4, 'team_needed' => 3),
+	                  array('role_id' => 3,  'teams_id' => 4, 'team_needed' => 2),
+	                  array('role_id' => 4,  'teams_id' => 4, 'team_needed' => 2),
+	                  array('role_id' => 5,  'teams_id' => 4, 'team_needed' => 5),
+	                  array('role_id' => 6,  'teams_id' => 4, 'team_needed' => 6),
+
+	                  )
+	           ),
+	           
+           ),
+		
+        	
+			'custom' => array('upd050', 'purgecaches', 'versionupdater'),                	
+        
         ),    
         
          
@@ -478,7 +555,7 @@ function encode_announcement($text)
  */
 function purgecaches($action, $version)
 {
-    global $db, $table_prefix, $umil, $bbdkp_table_prefix;
+    global $umil;
     
     $umil->cache_purge();
     $umil->cache_purge('imageset');
