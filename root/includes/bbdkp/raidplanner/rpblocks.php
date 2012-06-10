@@ -89,7 +89,7 @@ class rpblocks
 		// get top signups
 		$sql_array = array(
 	    	'SELECT'    => ' count(s.dkpmember_id) as countsignups, s.dkpmember_id, m.member_id, m.member_name, m.member_level,  
-		    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+		    				 m.member_gender_id, a.image_female, a.image_male, 
 		    				 l.name as member_class , c.imagename, c.colorcode ', 
 	    	'FROM'      => array(
 		        RP_SIGNUPS	 		=> 's',
@@ -110,7 +110,7 @@ class rpblocks
 							  AND m.game_id = c.game_id and m.game_id = a.game_id and m.game_id = l.game_id", 
 
 			'GROUP_BY'	=>  's.dkpmember_id, m.member_id, m.member_name, m.member_level,  
-		    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+		    				 m.member_gender_id, a.image_female, a.image_male, 
 		    				 l.name, c.imagename, c.colorcode', 
 		    
 		   	'ORDER_BY'	=> 	'count(s.dkpmember_id) DESC'
@@ -127,7 +127,7 @@ class rpblocks
 			$classname = $row['member_class'];
 			$imagename = (strlen($row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $row['imagename'] . ".png" : '';
 			$colorcode = $row['colorcode'];
-			$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male_small'] : $row['image_female_small']);
+			$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male'] : $row['image_female']);
 			$raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/race_images/" . $race_image . ".png" : '';
 			$level =  $row['member_level'];
 			$countsignups =  $row['countsignups'];
