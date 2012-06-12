@@ -202,7 +202,7 @@ $lang = array_merge($lang, array(
 	'PAGE_TITLE'			=> 'Calendar',
 	'PM'						=> 'PM',
 	'PRIVATE_RAIDPLAN'			=> 'This raid is private.  You must be invited and logged in to view this raid.',
-
+	'ROLESIZE'				=> 'Needed', 
 	'RAIDROLES'				=> 'Raid Roles' ,
 	'RAIDROLE'				=> 'Raid Role' ,
 	'ACP_RAIDROLES_EXPLAIN'	=> 'Set every role needed in Raids' ,
@@ -217,6 +217,8 @@ $lang = array_merge($lang, array(
 	'RAIDWHEN'				=> 'When ?' ,
 	'RAIDREPEAT'			=> 'Repeat ?' ,
 	'RAIDLEADER'			=> 'Raidleader' ,
+	'EDITEAMNAME'			=> 'Edit Teamname', 
+	'EDIROLENEED'			=> 'Edit role need', 
 
 	'RECURRING_RAIDPLAN'			=> 'Recurring raid',
 	'RECURRING_EVENT_TYPE'			=> 'Recurrence Type: ',
