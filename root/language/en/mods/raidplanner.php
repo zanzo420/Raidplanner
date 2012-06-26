@@ -86,8 +86,15 @@ $lang = array_merge($lang, array(
 	'RP_UNINSTALL_MOD'						=> 'Raidplanner uninstalled', 
 	
 	//confirms
-	'ROLE_DELETE_SUCCESS'		=> 'The role %s was deleted.', 
+	'RETURN_RP'					=> 'Return to Raidplanner Settings', 
+	'ROLE_DELETE_SUCCESS'		=> 'The role %s was deleted.',
+	'ROLE_ADD_SUCCESS'			=> 'The role %s was added.',
+	'ROLE_UPDATE_SUCCESS'		=> 'The role %s was updated.', 
+	'TEAM_DELETE_SUCCESS'		=> 'The Team %s was deleted.',
+	'TEAM_ADD_SUCCESS'			=> 'The Team %s was added.',
+	'TEAM_UPDATE_SUCCESS'		=> 'The Team %s was updated.', 
 	'CONFIRM_DELETE_ROLE'		=> 'Please confirm to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
+    'CONFIRM_DELETE_TEAM'		=> 'Please confirm to delete Team %s. If there are scheduled raids with this team then it can‘t be deleted.',
     'DELETE_RAIDPLAN_CONFIRM'	=> 'Please confirm to delete this Raidplan.',
 	'CONFIRM_ADDRAID'			=> 'Please confirm add this new raidplan.',
 	'CONFIRM_UPDATERAID'		=> 'Please confirm to edit this raidplan.',

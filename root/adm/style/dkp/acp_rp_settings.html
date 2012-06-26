@@ -36,7 +36,7 @@ else
 
 <p>{L_ACP_RAIDROLES_EXPLAIN}</p>
 
-<table style="width:300px">
+<table style="width:70%">
 <thead>
 	<th>{L_RAIDROLE}</th>
 	<th>{L_COLOR}</th>
@@ -46,9 +46,7 @@ else
 </thead>
   <tfoot>
   <tr class="row2">
-  <td>{L_EDITRAIDROLES}</td>
-  <td></td>
-  <td></td>
+  <td style="text-align: right" colspan="3">{L_EDITRAIDROLES}</td>
   <td style="text-align: center">
   	<input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
   </td>
@@ -83,12 +81,13 @@ else
 
 </fieldset>
 
+<form id="rpteams" name="rpteams" method="post" action="{U_ACTION}" >
 
 <fieldset><legend>{L_RAIDTEAMS}</legend>
 <p>{L_ACP_RAIDTEAMS_EXPLAIN}</p>
 
 
-<table style="width:300px">
+<table style="width:70%">
 <thead>
 	<th>{L_TEAMNAME}</th>
 	<th>{L_TEAMSIZE}</th>
@@ -98,23 +97,22 @@ else
   
   <tfoot>
   <tr class="row2">
-  <td>{L_EDITEAMNAME}</td>
-  <td></td>
+  <td style="text-align: right" colspan="2">{L_EDITEAMNAME}</td>
   <td style="text-align: center">
-  	<input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
+  	<input class="button2" name="teamupdate" type="submit" value="{L_EDIT}" />
   </td>
   </tr>
     <tr class="row2">
-    <td><input type="text" name="newrole_color" value="" class="autowidth" /></td>
-    <td><input type="text" name="newrole_icon" value="" class="autowidth" /></td>    
-    <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
+    <td><input type="text" name="newteamname" value="" class="medium" /></td>
+    <td style="text-align: center"><input type="text" name="newteamsize" value="" class="medium" /></td>    
+    <td style="text-align: center"> <input class="button2" name="teamadd" type="submit" value="{L_ADD}" /></td>
   </tr>
   </tfoot>
 <tbody>
   <!-- BEGIN team_row -->
   <tr class="row1">
-    <td><input type="text" name="role_color[{team_row.ROLE_ID}]" value="{team_row.ROLECOLOR}" class="medium" /></td>
-    <td><input type="text" name="role_icon[{team_row.ROLE_ID}]" value="{team_row.ROLEICON}" class="medium" /></td>
+    <td><input type="text" name="team_name[{team_row.TEAM_ID}]" value="{team_row.TEAMNAME}" class="medium" /></td>
+    <td style="text-align: center"><input type="text" name="team_size[{team_row.TEAM_ID}]" value="{team_row.TEAMSIZE}" class="medium" /></td>
     <td style="text-align: center" ><a href="{team_row.U_DELETE}">{ICON_DELETE}</a></td>
   </tr>
   <!-- END team_row -->
@@ -122,41 +120,53 @@ else
   
 </table>
 
-
+{S_FORM_TOKEN}
 
 </fieldset>
+</form>
+
+<form id="rpteamsize" name="rpteamsize" method="post" action="{U_ACTION}" >
 
 <fieldset><legend>{L_RAIDSIZES}</legend>
 <p>{L_ACP_RAIDSIZES_EXPLAIN}</p>
 
-
-<table style="width:300px">
+<table style="width:50%">
 <thead>
-	<th>{L_TEAMNAME}</th>
-	<th>{L_RAIDROLE}</th>
-	<th>{L_ROLESIZE}</th>
-    <th style="text-align: center" width="5%">{L_ACTION}</th>
+	<tr>
+	<th style="width: 30%">{L_TEAMNAME}</th>
+	<th style="width: 40%">{L_RAIDROLE}</th>
+	<th style="width: 20%">{L_ROLESIZE}</th>
   </tr>
 </thead>
+  <tfoot>
+  <tr style="text-align: left" class="row2">
+	<td colspan="3">
+	<input type="submit" name="update_raidrolesize" value="{L_SUBMIT}" class="button1" />
+    <input type="reset" name="reset" value="{L_RESET}" class="button2" />
+	</td>
+  </tr>
 <tbody>
+  
+  <!-- BEGIN team_row -->
+  <tr class="row2">
+    <td colspan="2"><strong>{team_row.TEAMNAME}</strong></td>
+    <td><strong>{team_row.TEAMSIZE}</strong></td>
+  </tr>  
   <!-- BEGIN teamsize_row -->
   <tr class="row1">
-  <td colspan="0"><h4>{teamsize_row.TEAMNAME}</h4></td>
+    <td>{team_row.TEAMNAME}</td>
+    <td>{team_row.teamsize_row.ROLENAME}</td>
+    <td><input type="text" name="teamsize[{team_row.TEAM_ID}][{team_row.teamsize_row.ROLE_ID}]" value="{team_row.teamsize_row.ROLESIZE}" class="medium" />&nbsp;{team_row.teamsize_row.ROLEPCT}%</td>
   </tr>
-  <!-- BEGIN teamrole_row -->
-  <tr class="row1">
-    <td>{teamsize_row.teamrole_row.TEAMNAME}</td>
-    <td>{teamsize_row.teamrole_row.ROLENAME}</td>
-    <td><input type="text" name="teamsize[{teamsize_row.teamrole_row.TEAM_ID}][{teamsize_row.ROLE_ID}]" value="{teamsize_row.teamrole_row.NEEDED}" class="medium" /></td>
-    <td style="text-align: center" ><a href="{teamsize_row.teamrole_row.U_UPDATE}">{ICON_UPDATE}</a></td>
-  </tr>
-  <!-- END teamrole_row -->
   <!-- END teamsize_row -->
+  
+  <!-- END team_row -->
   </tbody>
   
 </table>
 
 </fieldset>
+</form>
 
 
 
@@ -251,8 +261,9 @@ else
 </div>
 </fieldset>
 
-<fieldset><legend><a href="javascript:toggle_rpsettings();">{L_RPADVANCEDOPTIONS}</a></legend>
-<div id="rpsettingsdisplay">
+<fieldset><legend>{L_RPADVANCEDOPTIONS}</legend>
+<div>
+
 <form id="rpsettingsadv" name="rpsettingsadv" method="post" action="{U_ACTION}" >
 <div class="tablewrap">
    

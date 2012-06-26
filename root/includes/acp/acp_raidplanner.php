@@ -35,6 +35,9 @@ class acp_raidplanner
 		}
 		
 		$this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );
+		
+		$link = '<br /><a href="' . $this->u_action . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+		
 		$action	= request_var('action', '');
 		
 		
@@ -46,11 +49,15 @@ class acp_raidplanner
 				$deleterole = (request_var('roledelete', '') != '') ? true : false;
 				$addrole = (isset($_POST['roleadd'])) ? true : false;
 				
+				$updateteam = (isset($_POST['teamupdate'])) ? true : false;
+				$deleteteam = (request_var('teamdelete', '') != '') ? true : false;
+				$addteam = (isset($_POST['teamadd'])) ? true : false;
+
 				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
 				$updateadv	= (isset($_POST['update_rp_settings_adv'])) ? true : false;
 
 				// check the form key
-				if ($updateroles || $addrole || $update || $updateadv)
+				if ($updateroles || $addrole || $update || $updateadv || $updateteam || $addteam )
 				{
 					if (!check_form_key('acp_raidplanner'))
 					{
@@ -62,16 +69,12 @@ class acp_raidplanner
 				if( $updateroles)
 				{
 					$rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
-					$roleneed1 = request_var('role_need1', array( 0 => 0));
-					$roleneed2 = request_var('role_need2', array( 0 => 0));
 					$rolecolor = request_var('role_color', array( 0 => ''));
 					$roleicon = request_var('role_icon', array( 0 => ''));
 					foreach ( $rolenames as $role_id => $role_name )
 					{
 						$data = array(
 						    'role_name'     	=> $role_name,
-						    'role_needed1'     	=> $roleneed1[$role_id],
-						 	'role_needed2'     	=> $roleneed2[$role_id],
 							'role_color'     	=> $rolecolor[$role_id],
 							'role_icon'     	=> $roleicon[$role_id],
 						);
@@ -81,23 +84,69 @@ class acp_raidplanner
    						 $db->sql_query($sql); 		
 						
 					}
+
+					$success_message = sprintf($user->lang['ROLE_UPDATE_SUCCESS'], $role_id);
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
 				}
 				
-				//user pressed add
+				//user pressed edit team
+				if( $updateteam)
+				{
+					$teamnames = utf8_normalize_nfc(request_var('team_name', array( 0 => ''), true));
+					$teamsize = request_var('team_size', array( 0 => ''));
+					foreach ( $teamnames as $team_id => $teamname )
+					{
+						$data = array(
+						    'team_name'     	=> $teamname,
+							'team_needed'     	=> $teamsize[$team_id],
+						);
+
+						 $sql = 'UPDATE ' . RP_TEAMS . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
+					   	     WHERE teams_id=' . (int) $team_id; 
+   						 $db->sql_query($sql); 		
+						
+					}
+
+					$success_message = sprintf($user->lang['TEAM_UPDATE_SUCCESS'], $role_id);
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
+				}
+				
+				//user pressed add role
 				if($addrole)
 				{
 					$data = array(
 					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
-						'role_needed1'   => request_var('newrole_need1', 0),
-						'role_needed2'   => request_var('newrole_need2', 0),
 						'role_color'     => request_var('newrole_color', ''),
 						'role_icon'     => request_var('newrole_icon', ''),
 					);
 
 					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
-   					$db->sql_query($sql); 			
-				}		
+   					$db->sql_query($sql); 		
 
+   					$success_message = sprintf($user->lang['ROLE_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newrole', 'New role', true)));
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
+					
+				}		
+				
+				//user pressed add team
+				if($addteam)
+				{
+					$data = array(
+					    'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
+						'team_needed'     => request_var('newteamsize', ''),
+					);
+
+					$sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
+   					$db->sql_query($sql); 		
+
+   					$success_message = sprintf($user->lang['TEAM_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newteamname', 'New Team', true)));
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
+					
+				}	
 				
 				//used pressed red cross to delete role
 				if ($deleterole) 
@@ -109,7 +158,9 @@ class acp_raidplanner
 							$sql = 'delete from ' . RP_ROLES . ' where role_id = ' . request_var('hiddenroleid', 0) ;
 							$db->sql_query($sql);
 							
-							trigger_error(sprintf($user->lang['ROLE_DELETE_SUCCESS'], request_var('hiddenroleid', 0)), E_USER_WARNING);
+							meta_refresh(1, $this->u_action);
+							trigger_error(sprintf($user->lang['ROLE_DELETE_SUCCESS'], request_var('hiddenroleid', 0)) . $link, E_USER_WARNING);
+					
 						}
 						else
 						{
@@ -125,6 +176,35 @@ class acp_raidplanner
 						
 				}
 				
+				//used pressed red cross to delete team
+				if ($deleteteam) 
+				{
+						// ask for permission
+						if (confirm_box(true))
+						{
+							// @todo check if there are scheduled raids with this team, ask permission
+							$sql = 'delete from ' . RP_TEAMS . ' where teams_id = ' . request_var('hiddenteamid', 0) ;
+							$db->sql_query($sql);
+							
+							meta_refresh(1, $this->u_action);
+							trigger_error(sprintf($user->lang['TEAM_DELETE_SUCCESS'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
+					
+						}
+						else
+						{
+							// get field content
+							$s_hidden_fields = build_hidden_fields(array(
+								// set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
+								'teamdelete'	=> 1,
+								'hiddenteamid'	=> request_var('teams_id', 0),
+								)
+							);
+							confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_TEAM'], request_var('teams_id', 0)), $s_hidden_fields);
+						}
+						
+				}
+				
+				// update general settings
 				if($update)
 				{
 					
@@ -243,13 +323,71 @@ class acp_raidplanner
 					
 				}
 
-				$sel_monday = "";
-				$sel_tuesday = "";
-				$sel_wednesday = "";
-				$sel_thursday = "";
-				$sel_friday = "";
-				$sel_saturday = "";
-				$sel_sunday = "";
+				// build form
+				
+				// select raid roles
+				$sql = 'SELECT * FROM ' . RP_ROLES . '
+						ORDER BY role_id';
+				$db->sql_query($sql);
+				$result = $db->sql_query($sql);
+				$total_roles = 0;
+				while ( $row = $db->sql_fetchrow($result) )
+                {
+                	$total_roles++;
+                    $template->assign_block_vars('role_row', array(
+                    	'ROLE_ID' 		=> $row['role_id'],
+                        'ROLENAME' 		=> $row['role_name'],
+                    	'ROLECOLOR' 	=> $row['role_color'],
+                    	'ROLEICON' 		=> $row['role_icon'],
+                    	'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
+                    	'ROLE_ICON' 	=> (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
+                    	'U_DELETE' 		=> $this->u_action. '&amp;roledelete=1&amp;delrole_id=' . $row['role_id'],
+                    	));
+                }
+                $db->sql_freeresult($result);
+				
+				// select raid teams
+				$sql = 'SELECT * FROM ' . RP_TEAMS . '
+						ORDER BY teams_id';	
+				$db->sql_query($sql);
+				$result1 = $db->sql_query($sql);
+				
+				$total_teams = 0;
+				while ( $row = $db->sql_fetchrow($result1) )
+                {
+                	$total_teams++;
+                    $template->assign_block_vars('team_row', array(
+                    	'TEAM_ID' 		=> $row['teams_id'],
+                        'TEAMNAME' 		=> $row['team_name'],
+                    	'TEAMSIZE' 		=> $row['team_needed'],
+                    	'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
+                    	));
+
+	                // select raid composition
+					$sql = 'SELECT a.teams_id, a.role_id, a.team_needed as roles_needed, 
+							b.team_needed, b.team_name, b.team_needed, c.role_name  
+						    FROM ' . RP_TEAMSIZE . ' a, ' . RP_TEAMS . ' b, ' . RP_ROLES . ' c 
+							WHERE a.teams_id=b.teams_id and a.role_id=c.role_id
+							AND a.teams_id = ' . (int) $row['teams_id'] . '
+							ORDER BY teams_id, role_id';	
+					$db->sql_query($sql);
+					$result2 = $db->sql_query($sql);
+					while ( $row2 = $db->sql_fetchrow($result2) )
+	                {
+	                	$total_teams++;
+	                    $template->assign_block_vars('team_row.teamsize_row', array(
+	                        'ROLE_ID' 		=> $row2['role_id'],
+	                    	'ROLENAME' 		=> $row2['role_name'],
+	                    	'TEAMSIZE' 		=> $row2['team_needed'],
+	                    	'ROLESIZE' 		=> $row2['roles_needed'],
+	                    	'ROLEPCT' 		=> round($row2['roles_needed'] / $row2['team_needed'], 2) * 100,
+	                    	));
+	                }
+	                $db->sql_freeresult($result2);
+                }
+                $db->sql_freeresult($result1);                
+                
+				$sel_monday = $sel_tuesday = $sel_wednesday = $sel_thursday = $sel_friday = $sel_saturday = $sel_sunday = "";
 				switch($config['rp_first_day_of_week']  )
 				{
 					case 0:
@@ -344,28 +482,6 @@ class acp_raidplanner
 				}
 				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
 				
-				// select raid roles
-				$sql = 'SELECT * FROM ' . RP_ROLES . '
-						ORDER BY role_id';
-				$db->sql_query($sql);
-				$result = $db->sql_query($sql);
-				$total_roles = 0;
-				while ( $row = $db->sql_fetchrow($result) )
-                {
-                	$total_roles++;
-                    $template->assign_block_vars('role_row', array(
-                    	'ROLE_ID' 		=> $row['role_id'],
-                        'ROLENAME' 		=> $row['role_name'],
-	                    'ROLENEED1' 	=> $row['role_needed1'],
-	                    'ROLENEED2' 	=> $row['role_needed2'],
-                    	'ROLECOLOR' 	=> $row['role_color'],
-                    	'ROLEICON' 		=> $row['role_icon'],
-                    	'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
-                    	'ROLE_ICON' 	=> (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
-                    	'U_DELETE' 		=> $this->u_action. '&roledelete=1&delrole_id=' . $row['role_id'],
-                    	));
-                }
-                $db->sql_freeresult($result);
 			
 				$template->assign_vars(array(
 					'S_RAID_INVITE_HOUR_OPTIONS'		=> $s_event_invite_hh_options,
