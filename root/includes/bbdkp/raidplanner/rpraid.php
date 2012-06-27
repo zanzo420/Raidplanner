@@ -982,7 +982,7 @@ class rpraid
 			
 			// make roles proposal
 			$sql_array = array(
-			    'SELECT'    => 't.team_needed, r.role_id, r.role_name ', 
+			    'SELECT'    => 't.team_needed, r.role_id, r.role_name , r.role_color, r.role_icon ', 
 			    'FROM'      => array(
 			        RP_TEAMSIZE => 't', 
 			        RP_ROLES   	=> 'r'
@@ -996,6 +996,9 @@ class rpraid
 			while ($row = $db->sql_fetchrow($result))
 			{
 			    $template->assign_block_vars('teamsize', array(
+			        'ROLE_COLOR'     => $row['role_color'],
+			    	'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
+			        'ROLE_ICON'      => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
 			        'ROLE_ID'        => $row['role_id'],
 				    'ROLE_NAME'      => $row['role_name'],
 			    	'ROLE_NEEDED'    => $row['team_needed'],

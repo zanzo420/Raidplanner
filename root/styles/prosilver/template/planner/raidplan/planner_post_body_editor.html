@@ -117,7 +117,9 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		<div id="raidroles">
 		<dl>
 		<!-- BEGIN teamsize -->
-		<dt><label for="subject">{teamsize.ROLE_NAME}:</label></dt>
+		<dt>
+		<!-- IF teamsize.S_ROLE_ICON_EXISTS --><img src="{teamsize.ROLE_ICON}" alt="image" /><!-- ENDIF -->&nbsp;
+		<label style="font-weight: normal;"for="subject">{teamsize.ROLE_NAME}:</label></dt>
 		<dd>
 			<input type="hidden" name="role[{teamsize.ROLE_ID}]" value="{teamsize.ROLE_ID}" />
 			<input type="text" name="role_needed[{teamsize.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{teamsize.ROLE_NEEDED}" class="inputbox autowidth" />

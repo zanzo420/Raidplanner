@@ -97,12 +97,20 @@ function update_group_id_state()
 				var role_id = role.getElementsByTagName("role_id")[0].firstChild.nodeValue;
 				var role_name = role.getElementsByTagName("role_name")[0].firstChild.nodeValue;
 				var role_needed = role.getElementsByTagName("role_needed")[0].firstChild.nodeValue;
-				
+				var role_icon = role.getElementsByTagName("role_icon")[0].firstChild.nodeValue;
+				var role_color = role.getElementsByTagName("role_color")[0].firstChild.nodeValue;
+
   				var otitle = document.createElement('dt');
   				
+  				var img1 = document.createElement('img');
+  				img1.setAttribute("src", "./images/raidrole_images/" + role_icon + ".png"); 
+  				img1.setAttribute("alt", "image");
+  				otitle.appendChild(img1);
+  				
   				var oLabel = document.createElement('label');
-				oLabel.innerHTML = role_name + ":";
+				oLabel.innerHTML = " " + role_name + ":";
 				oLabel.setAttribute("for","subject");
+				oLabel.setAttribute("style" ,"font-weight: normal;"); 
 				otitle.appendChild(oLabel);
 				
 				var odef = document.createElement('dd');
@@ -127,6 +135,7 @@ function update_group_id_state()
   	  			/* now insert it in the dom. raidroles in the div anchor */
   				document.getElementById("raidroles").appendChild(otitle);
   				document.getElementById("raidroles").appendChild(odef);
+  				
   			}
   			
 
