@@ -722,7 +722,6 @@ class rpraid
 		$temp_replace_str = 'selected value="'.$this->accesslevel.'">';
 		$level_sel_code = str_replace( $temp_find_str, $temp_replace_str, $level_sel_code );
 		
-		
 		// Find what groups this user is a member of and add them to the list of groups to invite
 		$disp_hidden_groups = $config['rp_display_hidden_groups'];
 		if ( $auth->acl_get('u_raidplanner_nonmember_groups') )
@@ -773,7 +772,6 @@ class rpraid
 		$db->sql_freeresult($result);
 		$group_sel_code .= "</select>\n";
 
-				
 		/**
 		 *	populate Raid invite time select 
 		 */ 
@@ -963,7 +961,49 @@ class rpraid
 		 * make raid composition proposal, always choose primary role first
 		 */ 
 		
-		if($mode=='edit')
+		
+		if($mode != 'edit')
+		{
+			$sql = 'SELECT * FROM ' . RP_TEAMS . '
+					ORDER BY teams_id';	
+			$db->sql_query($sql);
+			$result = $db->sql_query($sql);
+			while ( $row = $db->sql_fetchrow ( $result ) )
+			{
+				$team_id= $row ['teams_id']; 
+				$teamname = $row ['team_name']; 
+				$teamsize = $row ['team_needed']; 
+				$template->assign_block_vars( 'team_row', array (
+				'VALUE' => $row ['teams_id'], 
+				'SELECTED' => ($row ['teams_id'] == $team_id) ? ' selected="selected"' : '', 
+				'OPTION' => $row ['team_name'] . ': ' .  $row['team_needed']));
+			}
+			$db->sql_freeresult($result);
+			
+			// make roles proposal
+			$sql_array = array(
+			    'SELECT'    => 't.team_needed, r.role_id, r.role_name ', 
+			    'FROM'      => array(
+			        RP_TEAMSIZE => 't', 
+			        RP_ROLES   	=> 'r'
+			    ),
+			    'ORDER_BY'  => 'r.role_id', 
+			    'WHERE'  	=> 'r.role_id = t.role_id AND t.teams_id = ' . $team_id
+				);
+			
+			$sql = $db->sql_build_query('SELECT', $sql_array);
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result))
+			{
+			    $template->assign_block_vars('teamsize', array(
+			        'ROLE_ID'        => $row['role_id'],
+				    'ROLE_NAME'      => $row['role_name'],
+			    	'ROLE_NEEDED'    => $row['team_needed'],
+			    ));
+			}
+			$db->sql_freeresult($result);
+		}
+		else
 		{
 			// get roles from instance
 			foreach($this->raidroles as $key => $role)
@@ -976,31 +1016,6 @@ class rpraid
 			}
 			
 		}
-		else
-		{
-			// make roles proposal
-			$sql_array = array(
-			    'SELECT'    => 'r.role_id, r.role_name, role_needed1 ', 
-			    'FROM'      => array(
-			        RP_ROLES   => 'r'
-			    ),
-			    'ORDER_BY'  => 'r.role_id'
-			);
-			$sql = $db->sql_build_query('SELECT', $sql_array);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-			    $template->assign_block_vars('raidroles', array(
-			        'ROLE_ID'        => $row['role_id'],
-				    'ROLE_NAME'      => $row['role_name'],
-			    	'ROLE_NEEDED'    => $row['role_needed1'],
-			    ));
-			}
-			$db->sql_freeresult($result);
-		}
-		
-		//set rsvp flag to checked by default
-		$track_signups = 'checked="checked"';
 		
 		$message = generate_text_for_edit($this->body, 
 		(isset($this->bbcode['uid']) ? $this->bbcode['uid'] : ''), 
@@ -1032,7 +1047,8 @@ class rpraid
 			'S_BBCODE_FLASH'			=> $flash_status,
 			'S_BBCODE_QUOTE'			=> false,
 			'S_PLANNER_ADD'				=> true,
-		
+			'TEAM_NAME'					=> $teamname, 
+			'TEAM_SIZE'					=> $teamsize, 
 			'L_POST_A'					=> $page_title,
 			'SUBJECT'					=> $this->subject,
 			'MESSAGE'					=> $message['text'],
@@ -1051,7 +1067,6 @@ class rpraid
 			'WEEK_VIEW_URL'				=> $week_view_url,
 			'MONTH_VIEW_URL'			=> $month_view_url,
 
-			'TRACK_RSVP_CHECK'			=> $track_signups,
 			
 			//'S_RECURRING_OPTS'			=> $raidplan_data['s_recurring_opts'],
 			//'S_UPDATE_RECURRING_OPTIONS'=> $raidplan_data['s_update_recurring_options'],

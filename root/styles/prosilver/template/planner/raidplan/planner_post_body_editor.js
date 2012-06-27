@@ -59,14 +59,14 @@ function update_group_id_state()
 
   /* ajax function to fill profile, sends call to server */ 
   var xmlhttp; 
-  function update_roles(role)
+  function getteamroles(team_id)
   {
 	  xmlhttp = GetXmlHttpObject();
 	  if (xmlhttp == null)
 	  {
 		  return;  
 	  }
-	   var strURL= ajaxpath + "?role=" + role;
+	   var strURL= ajaxpath + "?team_id=" + team_id;
 	   xmlhttp.onreadystatechange=stateChanged;
 	   xmlhttp.open("GET", strURL, true);
 	   // send to server
@@ -87,15 +87,19 @@ function update_group_id_state()
   			var root = xmlDoc.getElementsByTagName('rolelist')[0];
   			var roles = root.getElementsByTagName("role")
   			document.getElementById('raidroles').innerHTML = "";
+  			
+			var teamname = roles[1].getElementsByTagName("team_name")[0].firstChild.nodeValue;
+			document.getElementById('teamname').innerHTML = '<h3>' + teamname + '</h3>';
+				
   			for (var i = 0; i < roles.length; i++)
   			{
 				var role = roles[i];
 				var role_id = role.getElementsByTagName("role_id")[0].firstChild.nodeValue;
 				var role_name = role.getElementsByTagName("role_name")[0].firstChild.nodeValue;
 				var role_needed = role.getElementsByTagName("role_needed")[0].firstChild.nodeValue;
-
+				
   				var otitle = document.createElement('dt');
-
+  				
   				var oLabel = document.createElement('label');
 				oLabel.innerHTML = role_name + ":";
 				oLabel.setAttribute("for","subject");
@@ -104,11 +108,13 @@ function update_group_id_state()
 				var odef = document.createElement('dd');
 				var oInput1 = document.createElement('input');
 				var oInput2 = document.createElement('input');
-				oInput1.setAttribute("type","hidden");
+				
 				oInput1.setAttribute("name", "role[" + role_id + "]");
+				oInput1.setAttribute("type","hidden");
   				oInput1.setAttribute("value", role_needed);
-  				oInput2.setAttribute("type","text");
+  				
   				oInput2.setAttribute("name", "role_needed[" + role_id + "]");
+  				oInput2.setAttribute("type","text");
   				oInput2.setAttribute("size", "5");
   				oInput2.setAttribute("maxlength", "2");
   				oInput2.setAttribute("tabindex", "2");
