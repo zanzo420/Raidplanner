@@ -53,9 +53,10 @@ class acp_raidplanner
 				$deleteteam = (request_var('teamdelete', '') != '') ? true : false;
 				$addteam = (isset($_POST['teamadd'])) ? true : false;
 
+				$update_raidrolesize = (isset($_POST['update_raidrolesize'])) ? true : false;
 				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
 				$updateadv	= (isset($_POST['update_rp_settings_adv'])) ? true : false;
-
+					
 				// check the form key
 				if ($updateroles || $addrole || $update || $updateadv || $updateteam || $addteam )
 				{
@@ -201,6 +202,44 @@ class acp_raidplanner
 							);
 							confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_TEAM'], request_var('teams_id', 0)), $s_hidden_fields);
 						}
+						
+				}
+				
+				
+				// update teamcomposition
+				if($update_raidrolesize)
+				{
+					$maxteamsize= request_var('maxteamsize', array( 0 => 0), true); 
+					$array = request_var('teamsize', array( 0 => array( 0 => 0)), true);
+					foreach ( $array	 as $team_id => $teamroles )
+					{
+						$teamtotal = 0;
+						foreach ( $teamroles as $role_id => $roleneeded )
+						{
+							$teamtotal += $roleneeded; 		
+						}
+						
+						if ($teamtotal > $maxteamsize[$team_id])
+						{
+							$success_message = sprintf($user->lang['TEAMROLE_UPDATE_FAIL'],$team_id, $maxteamsize[$team_id], $teamtotal);
+							meta_refresh(3, $this->u_action);
+							trigger_error($success_message . $link, E_USER_WARNING);							
+						}
+						
+						$roleneeded= 0;
+						foreach ( $teamroles as $role_id => $roleneeded )
+						{
+							 $sql = 'UPDATE ' . RP_TEAMSIZE . ' 
+							 	 SET team_needed = ' . $roleneeded . '
+						   	     WHERE teams_id=' . (int) $team_id . ' 
+						   	     AND role_id = ' . $role_id; 
+	   						 $db->sql_query($sql);
+						}
+					}
+
+					$success_message = $user->lang['TEAMROLE_UPDATE_SUCCESS'];
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
 						
 				}
 				
@@ -364,23 +403,25 @@ class acp_raidplanner
                     	));
 
 	                // select raid composition
-					$sql = 'SELECT a.teams_id, a.role_id, a.team_needed as roles_needed, 
-							b.team_needed, b.team_name, b.team_needed, c.role_name  
-						    FROM ' . RP_TEAMSIZE . ' a, ' . RP_TEAMS . ' b, ' . RP_ROLES . ' c 
-							WHERE a.teams_id=b.teams_id and a.role_id=c.role_id
-							AND a.teams_id = ' . (int) $row['teams_id'] . '
-							ORDER BY teams_id, role_id';	
+					$sql = 'SELECT a.team_needed as maxneeded, 
+					a.team_name, b.role_name, c.teams_id, c.role_id, c.team_needed
+					FROM ' . RP_TEAMS . ' a 
+					CROSS JOIN ' . RP_ROLES . ' b
+					LEFT JOIN ' . RP_TEAMSIZE . ' c ON c.teams_id=a.teams_id AND b.role_id=c.role_id 
+					WHERE a.teams_id = ' . (int) $row['teams_id'] . '
+					ORDER BY teams_id, role_id';	
+
 					$db->sql_query($sql);
 					$result2 = $db->sql_query($sql);
 					while ( $row2 = $db->sql_fetchrow($result2) )
 	                {
 	                	$total_teams++;
 	                    $template->assign_block_vars('team_row.teamsize_row', array(
-	                        'ROLE_ID' 		=> $row2['role_id'],
+	                        'ROLE_ID' 		=> (int) $row2['role_id'],
 	                    	'ROLENAME' 		=> $row2['role_name'],
-	                    	'TEAMSIZE' 		=> $row2['team_needed'],
-	                    	'ROLESIZE' 		=> $row2['roles_needed'],
-	                    	'ROLEPCT' 		=> round($row2['roles_needed'] / $row2['team_needed'], 2) * 100,
+	                    	'TEAMSIZE' 		=> (int)$row2['maxneeded'],
+	                    	'ROLESIZE' 		=> (int) $row2['team_needed'] == '' ? 0 :$row2['team_needed'],
+	                    	'ROLEPCT' 		=> (double) round($row2['team_needed'] / $row2['maxneeded'], 2) * 100,
 	                    	));
 	                }
 	                $db->sql_freeresult($result2);

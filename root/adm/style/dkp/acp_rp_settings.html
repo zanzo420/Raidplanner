@@ -150,7 +150,9 @@ else
   <!-- BEGIN team_row -->
   <tr class="row2">
     <td colspan="2"><strong>{team_row.TEAMNAME}</strong></td>
-    <td><strong>{team_row.TEAMSIZE}</strong></td>
+    <td><strong>{team_row.TEAMSIZE}</strong>
+    <input type="hidden" name="maxteamsize[{team_row.TEAM_ID}]" value="{team_row.TEAMSIZE}" class="medium" />
+    </td>
   </tr>  
   <!-- BEGIN teamsize_row -->
   <tr class="row1">
@@ -159,7 +161,6 @@ else
     <td><input type="text" name="teamsize[{team_row.TEAM_ID}][{team_row.teamsize_row.ROLE_ID}]" value="{team_row.teamsize_row.ROLESIZE}" class="medium" />&nbsp;{team_row.teamsize_row.ROLEPCT}%</td>
   </tr>
   <!-- END teamsize_row -->
-  
   <!-- END team_row -->
   </tbody>
   
