@@ -637,7 +637,7 @@ class rpraid
 	 				$str  = serialize($this);
 	 				$str1 = base64_encode($str);
 					$s_hidden_fields = build_hidden_fields(array(
-							'addraid'		=> true,
+							'updateraid'	=> true,
 							'raidobject'	=> $str1, 
 							'raidplan_id'	=> $raidplan_id
 						)
@@ -1157,7 +1157,7 @@ class rpraid
 	}
 	
 	/**
-	 * collects data from form, constructs new raidplan object for storage
+	 * collects data from form, constructs raidplan object for insert or update
 	 *
 	 * @param calendar $cal
 	 */
