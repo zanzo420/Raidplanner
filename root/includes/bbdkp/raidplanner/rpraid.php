@@ -135,6 +135,14 @@ class rpraid
 	 */
 	public $raidteam;
 	
+	
+	/**
+	 * Team name 
+	 *
+	 * @var string
+	 */
+	public $raidteamname;
+	
 	/**
 	 * array of raid roles, subarray of signups per role
 	 *
@@ -286,6 +294,7 @@ class rpraid
 			$this->accesslevel=2;
 			$this->group_id=0;
 			$this->raidteam=0;
+			$this->raidteamname="";
 			$this->group_id_list=array();
 			$this->roles= array();
 			$this->signoffs= array();
@@ -377,6 +386,23 @@ class rpraid
 			//get your raid team
 			$this->raidteam = $row['raidteam'];
 			
+			unset ($row);
+			
+			$sql = 'SELECT * FROM ' . RP_TEAMS . '
+					ORDER BY teams_id';	
+			$db->sql_query($sql);
+			$result = $db->sql_query($sql);
+			while ( $row = $db->sql_fetchrow ( $result ) )
+			{
+				if($this->raidteam == (int) $row['teams_id'])
+				{
+					$this->raidteamname = $row ['team_name'];
+					break 1;
+				}
+			}
+			$db->sql_freeresult($result);
+			unset ($row);
+			
 			// get array of raid roles with signups and confirmations per role (available+confirmed)
 			$this->raidroles = array();
 			$this->get_raid_roles();
@@ -386,7 +412,6 @@ class rpraid
 			
 			//get all that signed unavailable 
 			$this->get_unavailable();
-			unset ($row);
 
 			// lock signup pane if you have no characters bound to your account
 			$this->nochar = false;
@@ -971,6 +996,7 @@ class rpraid
 		 */ 
 		if($mode != 'edit')
 		{
+			// new raid 
 			$sql = 'SELECT * FROM ' . RP_TEAMS . '
 					ORDER BY teams_id';	
 			$db->sql_query($sql);
@@ -982,11 +1008,12 @@ class rpraid
 				$teamsize = $row ['team_needed']; 
 				$template->assign_block_vars( 'team_row', array (
 				'VALUE' => $row ['teams_id'], 
-				'SELECTED' => ($row ['teams_id'] == $team_id) ? ' selected="selected"' : '', 
+				'SELECTED' => ' selected="selected"', 
 				'OPTION' => $row ['team_name'] . ': ' .  $row['team_needed']));
 			}
 			$db->sql_freeresult($result);
-			
+			$this->raidteam = $team_id;
+			$this->raidteamname = $teamname;
 			// make roles proposal
 			$sql_array = array(
 			    'SELECT'    => 't.team_needed, r.role_id, r.role_name , r.role_color, r.role_icon ', 
@@ -1017,15 +1044,35 @@ class rpraid
 		}
 		else
 		{
-			// get roles from instance
+			//repopulate dropdown from object
+			$sql = 'SELECT * FROM ' . RP_TEAMS . '
+					ORDER BY teams_id';	
+			$db->sql_query($sql);
+			$result = $db->sql_query($sql);
+			while ( $row = $db->sql_fetchrow ( $result ) )
+			{
+				$template->assign_block_vars( 'team_row', array (
+				'VALUE' 	=> $row ['teams_id'], 
+				'SELECTED' 	=> ($row ['teams_id'] == $this->raidteam) ? ' selected="selected"' : '', 
+				'OPTION' 	=> $row ['team_name'] . ': ' .  $row['team_needed']));
+			}
+			$db->sql_freeresult($result);
+			unset($row);
+						
+			// get roles from object
+			
 			foreach($this->raidroles as $key => $role)
 			{
-				$template->assign_block_vars('raidroles', array(
+				$template->assign_block_vars('teamsize', array(
+			        'ROLE_COLOR'     => $role['role_color'],
+			    	'S_ROLE_ICON_EXISTS'	=>  (strlen($role['role_icon']) > 1) ? true : false,
+			        'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $role['role_icon'] . ".png" : '',
 					'ROLE_ID'        => $key,
 					'ROLE_NAME'      => $role['role_name'],
 					'ROLE_NEEDED'    => $role['role_needed'],
 				));
 			}
+
 			
 		}
 		
@@ -1061,8 +1108,8 @@ class rpraid
 			'S_BBCODE_QUOTE'			=> false,
 			'S_PLANNER_ADD'				=> true,
 			'TEAM_ID'					=> $this->raidteam,
-			'TEAM_NAME'					=> $teamname, 
-			'TEAM_SIZE'					=> $teamsize, 
+			'TEAM_NAME'					=> $this->raidteamname, 
+			//'TEAM_SIZE'				=> $teamsize, 
 			'L_POST_A'					=> $page_title,
 			'SUBJECT'					=> $this->subject,
 			'MESSAGE'					=> $message['text'],
