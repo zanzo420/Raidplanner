@@ -129,6 +129,13 @@ class rpraid
 	public $signoffs= array();
 
 	/**
+	 * raidteam int
+	 *
+	 * @var int
+	 */
+	public $raidteam;
+	
+	/**
 	 * array of raid roles, subarray of signups per role
 	 *
 	 * @var array
@@ -278,6 +285,7 @@ class rpraid
 			$this->poster=0;
 			$this->accesslevel=2;
 			$this->group_id=0;
+			$this->raidteam=0;
 			$this->group_id_list=array();
 			$this->roles= array();
 			$this->signoffs= array();
@@ -456,6 +464,7 @@ class rpraid
 								$this->signed_up = false;
 							}
 						}
+						
 										
 					}
 				}
@@ -621,14 +630,13 @@ class rpraid
 		else
 		{
 			$mode='new';
-			// add new plan
+			// add new raidplan
 			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd");
 			if($submit)
 			{
  				
 				if (confirm_box(true))
 				{
-					
 					//get string
 					$str = request_var('raidobject', '');
 					$str1 = base64_decode($str);
@@ -645,7 +653,6 @@ class rpraid
 				}
 				else
 				{
-					
 					// collect data
 					$this->addraidplan($cal);
 					// check access
@@ -958,10 +965,8 @@ class rpraid
 		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$cal->date['day']."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
 
 		/*
-		 * make raid composition proposal, always choose primary role first
+		 * make raid composition proposal
 		 */ 
-		
-		
 		if($mode != 'edit')
 		{
 			$sql = 'SELECT * FROM ' . RP_TEAMS . '
@@ -970,7 +975,7 @@ class rpraid
 			$result = $db->sql_query($sql);
 			while ( $row = $db->sql_fetchrow ( $result ) )
 			{
-				$team_id= $row ['teams_id']; 
+				$team_id = $row ['teams_id']; 
 				$teamname = $row ['team_name']; 
 				$teamsize = $row ['team_needed']; 
 				$template->assign_block_vars( 'team_row', array (
@@ -1005,6 +1010,8 @@ class rpraid
 			    ));
 			}
 			$db->sql_freeresult($result);
+			
+			
 		}
 		else
 		{
@@ -1037,6 +1044,7 @@ class rpraid
 			$cal->generate_calendar_smilies('inline');
 		}
 		
+		$ajaxpath = append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx);
 		$template->assign_vars(array(
 			'S_POST_ACTION'				=> $s_action,
 			'RAIDPLAN_ID'				=> $this->id,
@@ -1050,6 +1058,7 @@ class rpraid
 			'S_BBCODE_FLASH'			=> $flash_status,
 			'S_BBCODE_QUOTE'			=> false,
 			'S_PLANNER_ADD'				=> true,
+			'TEAM_ID'					=> $this->raidteam,
 			'TEAM_NAME'					=> $teamname, 
 			'TEAM_SIZE'					=> $teamsize, 
 			'L_POST_A'					=> $page_title,
@@ -1090,7 +1099,7 @@ class rpraid
 
 			//javascript alerts
 			'LA_ALERT_OLDBROWSER' 		=> $user->lang['ALERT_OLDBROWSER'],
-			'UA_AJAXHANDLER1'		  	=> append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx),
+			'UA_AJAXHANDLER1'		  	=> $ajaxpath,
 		));
 		
 		// Build custom bbcodes array
@@ -1198,9 +1207,13 @@ class rpraid
 		$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
-			
-		// get wanted raidsize from form
+
+		//get raid team
+		$this->raidteam = request_var('teamselect', request_var('team_id', 0));
+
+		// get selected role array
 		$raidroles = request_var('role_needed', array(0=> 0));
+		
 		foreach($raidroles as $role_id => $needed)
 		{
 			$this->raidroles[$role_id] = array(

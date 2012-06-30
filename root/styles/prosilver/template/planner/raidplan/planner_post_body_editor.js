@@ -66,7 +66,7 @@ function update_group_id_state()
 	  {
 		  return;  
 	  }
-	   var strURL= ajaxpath + "?team_id=" + team_id;
+	   var strURL= ajaxpath + "&team_id=" + team_id;
 	   xmlhttp.onreadystatechange=stateChanged;
 	   xmlhttp.open("GET", strURL, true);
 	   // send to server

@@ -108,18 +108,18 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		<dt><label>{L_CHOOSETEAM}</label>  </dt>
 		<dd>
 		<select name="teamselect" id="teamselect" onchange="return getteamroles(this.value)">{TEAMSELECT}
-	        <!-- BEGIN team_row --><option value="{team_row.VALUE}"{team_row.SELECTED}>{team_row.OPTION}</option>
-	        <!-- END team_row -->
+	        <!-- BEGIN team_row --><option value="{team_row.VALUE}"{team_row.SELECTED}>{team_row.OPTION}</option><!-- END team_row -->
 		</select>
 		</dd>
 		</dl>
+		<input type="hidden" name="team_id" value="{TEAM_ID}" />
 		<div id="teamname"><h3>{TEAM_NAME}</h3></div>
 		<div id="raidroles">
 		<dl>
 		<!-- BEGIN teamsize -->
 		<dt>
 		<!-- IF teamsize.S_ROLE_ICON_EXISTS --><img src="{teamsize.ROLE_ICON}" alt="image" /><!-- ENDIF -->&nbsp;
-		<label style="font-weight: normal;"for="subject">{teamsize.ROLE_NAME}:</label></dt>
+		<label style="font-weight: normal;" for="subject">{teamsize.ROLE_NAME}:</label></dt>
 		<dd>
 			<input type="hidden" name="role[{teamsize.ROLE_ID}]" value="{teamsize.ROLE_ID}" />
 			<input type="text" name="role_needed[{teamsize.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{teamsize.ROLE_NEEDED}" class="inputbox autowidth" />
