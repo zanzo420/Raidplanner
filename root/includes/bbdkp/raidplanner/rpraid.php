@@ -620,6 +620,7 @@ class rpraid
 					$raidplan_id = request_var('raidplan_id', 0);
 					$str1 = base64_decode($str);
 					$raidplanobj = unserialize($str1);
+					
 					// update database
 					$raidplanobj->storeplan($raidplan_id);
 					// store the raid roles.
@@ -633,21 +634,33 @@ class rpraid
 				else 
 				{
 					// collect data
-					$this->addraidplan($cal);
-	 				$str  = serialize($this);
-	 				$str1 = base64_encode($str);
-					$s_hidden_fields = build_hidden_fields(array(
-							'updateraid'	=> true,
-							'raidobject'	=> $str1, 
-							'raidplan_id'	=> $raidplan_id
-						)
-					);
+					$error = $this->addraidplan($cal);
+					
+					// add validations
+					if(count($error) > 0)
+					{
+						trigger_error(implode($error,"<br /> "), E_USER_WARNING);
+					}
+					else
+					{
+		 				$str  = serialize($this);
+		 				$str1 = base64_encode($str);
+						$s_hidden_fields = build_hidden_fields(array(
+								'updateraid'	=> true,
+								'raidobject'	=> $str1, 
+								'raidplan_id'	=> $raidplan_id
+							)
+						);
+	
+						$template->assign_vars(array(
+							'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
+						);
+	
+						confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
+						
+					}
+					
 
-					$template->assign_vars(array(
-						'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
-					);
-
-					confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
 					
 				}
 				
@@ -681,26 +694,34 @@ class rpraid
 				else
 				{
 					// collect data
-					$this->addraidplan($cal);
+					$error = $this->addraidplan($cal);
 					// check access
 					$this->checkauth_canadd();
 					if(!$this->auth_canadd)
 					{	
 						trigger_error('USER_CANNOT_POST_RAIDPLAN');
 					}
-	 				$str  = serialize($this);
-	 				$str1 = base64_encode($str);
-					$s_hidden_fields = build_hidden_fields(array(
-							'addraid'	=> true,
-							'raidobject'	=> $str1
-						)
-					);
-
-					$template->assign_vars(array(
-						'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
-					);
-
-					confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
+					
+					if(count($error) > 0)
+					{
+						trigger_error(implode($error,"<br /> "), E_USER_WARNING);
+					}
+					else
+					{
+		 				$str  = serialize($this);
+		 				$str1 = base64_encode($str);
+						$s_hidden_fields = build_hidden_fields(array(
+								'addraid'	=> true,
+								'raidobject'	=> $str1
+							)
+						);
+	
+						$template->assign_vars(array(
+							'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
+						);
+						confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
+						
+					}
 				}
 				
 				
@@ -1285,6 +1306,7 @@ class rpraid
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 
+		return $error;
 	}
 	
 	/**
