@@ -563,10 +563,7 @@ class rpraid
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
 		
-		$submit	= (isset($_POST['addraid'])) ? true : false;
 		$delete	= (isset($_POST['delete'])) ? true : false;
-		$update	= (isset($_POST['updateraid'])) ? true : false;
-		
 		if($delete)
 		{
 			$this->raidplan_delete();
@@ -574,8 +571,8 @@ class rpraid
 		
 		if($raidplan_id !=0)
 		{
+			// edit or view existing plan
 			$mode='edit';
-			// edit existing plan
 			$this->checkauth_canedit();
 			if(!$this->auth_canedit)
 			{
@@ -586,6 +583,7 @@ class rpraid
 		
 			// action URL 
 			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id."&amp;mode=showadd");
+			$update	= (isset($_POST['updateraid'])) ? true : false;
 			if($update)
 			{
 				
@@ -635,6 +633,7 @@ class rpraid
 			$mode='new';
 			// add new raidplan
 			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd");
+			$submit	= (isset($_POST['addraid'])) ? true : false;
 			if($submit)
 			{
  				
@@ -1156,13 +1155,41 @@ class rpraid
 		
 		$this->accesslevel = request_var('calELevel', 0);
 		
-		// if we selected group access but didn't actually choose group then throw error
-		if( $this->accesslevel == 1 && $num_group_ids < 1 )
+		switch($this->accesslevel)
 		{
-			$error[] = $user->lang['NO_GROUP_SELECTED'];
+			case 0:
+				//personal, no signups
+				$this->signups_allowed = 0; 
+			case 1:
+				$this->signups_allowed = 1; 				
+				// if we selected group access but didn't actually choose a group then throw error
+				if ($num_group_ids < 1)
+				{
+					$error[] = $user->lang['NO_GROUP_SELECTED'];		
+				}
+			case 2:
+				//all
+				$this->signups_allowed = 1; 
 		}
 		
 		//set raid properties
+		
+		//get raid team
+		$this->raidteam = request_var('teamselect', request_var('team_id', 0));
+
+		// get selected role array
+		$raidroles = request_var('role_needed', array(0=> 0));
+		
+		foreach($raidroles as $role_id => $needed)
+		{
+			$this->raidroles[$role_id] = array(
+				'role_needed' => (int) $needed,
+			);
+		}
+		
+		$this->signups['yes'] = 0;
+		$this->signups['no'] = 0;
+		$this->signups['maybe'] = 0;
 		
 		//set event type 
 		$this->event_type = request_var('calEType', 0);
@@ -1211,24 +1238,6 @@ class rpraid
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 
-		//get raid team
-		$this->raidteam = request_var('teamselect', request_var('team_id', 0));
-
-		// get selected role array
-		$raidroles = request_var('role_needed', array(0=> 0));
-		
-		foreach($raidroles as $role_id => $needed)
-		{
-			$this->raidroles[$role_id] = array(
-				'role_needed' => (int) $needed,
-			);
-		}
-		
-		//do we track signups ?
-		$this->signups_allowed = request_var('calTrackRsvps', 0);
-		$this->signups['yes'] = 0;
-		$this->signups['no'] = 0;
-		$this->signups['maybe'] = 0;
 	}
 	
 	/**
