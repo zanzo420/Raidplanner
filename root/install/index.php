@@ -468,8 +468,11 @@ $versions = array(
                 ),                
         	),
         	
+        	'table_column_add' => array(
+				array('phpbb_rp_raids', 'raidteam' , array('INT:8', 0)),
+			),
+
         	'table_column_remove' => array(
-        	
 	        	array('phpbb_rp_roles', 'role_needed1'),
 		       	array('phpbb_rp_roles', 'role_needed2'),
         	),

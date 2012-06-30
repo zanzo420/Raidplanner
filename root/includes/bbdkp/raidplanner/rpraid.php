@@ -374,6 +374,9 @@ class rpraid
 				$this->frozen = true;
 			}
 			
+			//get your raid team
+			$this->raidteam = $row['raidteam'];
+			
 			// get array of raid roles with signups and confirmations per role (available+confirmed)
 			$this->raidroles = array();
 			$this->get_raid_roles();
@@ -1044,7 +1047,7 @@ class rpraid
 			$cal->generate_calendar_smilies('inline');
 		}
 		
-		$ajaxpath = append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx);
+		$ajaxpath = append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx, "ajax=1");
 		$template->assign_vars(array(
 			'S_POST_ACTION'				=> $s_action,
 			'RAIDPLAN_ID'				=> $this->id,
@@ -1247,6 +1250,7 @@ class rpraid
 			'raidplan_end_time'		=> $this->end_time,
 			'raidplan_all_day'		=> $this->all_day,
 			'raidplan_day'			=> $this->day,
+			'raidteam'				=> $this->raidteam, 	
 			'raidplan_subject'		=> $this->subject,
 			'raidplan_body'			=> $this->body,	
 			'poster_id'				=> $this->poster,
