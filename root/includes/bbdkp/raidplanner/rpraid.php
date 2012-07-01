@@ -472,8 +472,6 @@ class rpraid
 						}
 					}
 				}
-				
-				
 			}
 			
 			// also lock signup pane if your char is signed off
@@ -552,7 +550,7 @@ class rpraid
 							$group_data = $db->sql_fetchrow($result);
 							$db->sql_freeresult($result);
 							$temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-							$temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$this->group_id);
+							$temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$group_list[$i]);
 							$temp_color_start = "";
 							$temp_color_end = "";
 							if( $group_data['group_colour'] !== "" )
@@ -1500,7 +1498,7 @@ class rpraid
 	
 	
 	/**
-	 * displays a raid object
+	 * displays a raidplan object
 	 *
 	 */
 	public function display()
@@ -1527,7 +1525,8 @@ class rpraid
 		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
 	    (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
 		{
-			$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". $this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+			$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". 
+			$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		}
 		
 		/* make the url for the delete button */
@@ -1540,20 +1539,25 @@ class rpraid
 				$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		}
 		
-		/* make url for signup action */
-		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;calEid=". $this->id);
-		
 		// url to add raid
 		$add_raidplan_url = "";
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
 		{
-			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$day."&amp;calM=". $month. "&amp;calY=".$year);
+			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
+			$day."&amp;calM=". $month. "&amp;calY=".$year);
 		}
-		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
-		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".$month."&amp;calY=".$year);
-		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+		
+		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".
+		$month."&amp;calY=".$year);
+		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".
+		$month."&amp;calY=".$year);
+		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".
+		$month."&amp;calY=".$year);
 
 		$total_needed = 0;
+		/* make url for signup action */
+		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;calEid=". 
+		$this->id);
 		
 		//display signups only if this is not a personal appointment
 		if($this->accesslevel != 0)
@@ -1739,67 +1743,68 @@ class rpraid
 			}
 			unset($key);
 			unset($role);
-		}
-		
-		// display signoffs
-		foreach($this->signoffs as $key => $signoff)
-		{
-				 	
-			$signoffdetail = new rpsignup();
-			$signoffdetail->getSignup($signoff['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
-			$edit_text_array = generate_text_for_edit( $signoffdetail->comment, $signoffdetail->bbcode['uid'], 7);
 			
-			$requeue=false;
-			$requeueurl="";
-			// allow requeueing your character
-			if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoffdetail->poster_id == $user->data['user_id']  )
+			// display signoffs
+			foreach($this->signoffs as $key => $signoff)
 			{
-				$requeue = true;
-				$requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;calEid=". $this->id . "&amp;signup_id=" . $signoffdetail->signup_id);
-			}
+					 	
+				$signoffdetail = new rpsignup();
+				$signoffdetail->getSignup($signoff['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
+				$edit_text_array = generate_text_for_edit( $signoffdetail->comment, $signoffdetail->bbcode['uid'], 7);
 				
-			$template->assign_block_vars('unavailable', array(
-				'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $signoffdetail->priority_ratio : $signoffdetail->dkp_current,
-				'ATTENDANCEP1'	=> $signoffdetail->attendanceP1,
-				'U_MEMBERDKP'	=> $signoffdetail->dkmemberpurl,
-				'SIGNUP_ID' 	=> $signoff['signup_id'],
-				'RAIDPLAN_ID' 	=> $signoff['raidplan_id'], 
-    			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
-				'POST_TIMESTAMP' => $signoff['signup_time'],
-				'DETAILS' 		=> generate_text_for_display($signoff['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
-				'EDITDETAILS' 	=> $edit_text_array['text'],
-				'POSTER' 		=> $signoff['poster_name'], 
-				'POSTER_URL' 	=> get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
-				'VALUE' 		=> $signoff['signup_val'], 
-				'COLOR' 		=> '#FF0000', 
-				'VALUE_TXT' 	=> $user->lang['NO'], 
-				'CHARNAME'      => $signoff['dkpmembername'],
-				'LEVEL'         => $signoff['level'],
-				'CLASS'         => $signoff['classname'],
-				'COLORCODE'  	=> ($signoff['colorcode'] == '') ? '#123456' : $signoff['colorcode'],
-		        'CLASS_IMAGE' 	=> (strlen($signoff['imagename']) > 1) ? $signoff['imagename']: '',  
-				'S_CLASS_IMAGE_EXISTS' => (strlen($signoff['imagename']) > 1) ? true : false,
-		       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $signoff['raceimg'] : '',  
-				'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 	
-				'S_REQUEUE_ACTION' => $requeueurl,
-				'S_REQUEUE_SIGNUP'	=> $requeue, 
-			 				
-			));
-			
-			foreach($this->raidroles as $key => $role)
-			{
-				$template->assign_block_vars('unavailable.raidroles', array(
-					'ROLE_ID'        => $key,
-					'ROLE_NAME'      => $role['role_name'],
+				$requeue=false;
+				$requeueurl="";
+				// allow requeueing your character
+				if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoffdetail->poster_id == $user->data['user_id']  )
+				{
+					$requeue = true;
+					$requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;calEid=". $this->id . "&amp;signup_id=" . $signoffdetail->signup_id);
+				}
+					
+				$template->assign_block_vars('unavailable', array(
+					'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $signoffdetail->priority_ratio : $signoffdetail->dkp_current,
+					'ATTENDANCEP1'	=> $signoffdetail->attendanceP1,
+					'U_MEMBERDKP'	=> $signoffdetail->dkmemberpurl,
+					'SIGNUP_ID' 	=> $signoff['signup_id'],
+					'RAIDPLAN_ID' 	=> $signoff['raidplan_id'], 
+	    			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
+					'POST_TIMESTAMP' => $signoff['signup_time'],
+					'DETAILS' 		=> generate_text_for_display($signoff['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
+					'EDITDETAILS' 	=> $edit_text_array['text'],
+					'POSTER' 		=> $signoff['poster_name'], 
+					'POSTER_URL' 	=> get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
+					'VALUE' 		=> $signoff['signup_val'], 
+					'COLOR' 		=> '#FF0000', 
+					'VALUE_TXT' 	=> $user->lang['NO'], 
+					'CHARNAME'      => $signoff['dkpmembername'],
+					'LEVEL'         => $signoff['level'],
+					'CLASS'         => $signoff['classname'],
+					'COLORCODE'  	=> ($signoff['colorcode'] == '') ? '#123456' : $signoff['colorcode'],
+			        'CLASS_IMAGE' 	=> (strlen($signoff['imagename']) > 1) ? $signoff['imagename']: '',  
+					'S_CLASS_IMAGE_EXISTS' => (strlen($signoff['imagename']) > 1) ? true : false,
+			       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $signoff['raceimg'] : '',  
+					'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 	
+					'S_REQUEUE_ACTION' => $requeueurl,
+					'S_REQUEUE_SIGNUP'	=> $requeue, 
+				 				
 				));
 				
+				foreach($this->raidroles as $key => $role)
+				{
+					$template->assign_block_vars('unavailable.raidroles', array(
+						'ROLE_ID'        => $key,
+						'ROLE_NAME'      => $role['role_name'],
+					));
+					
+				}
 			}
+			unset($signoff);
+			unset($key);
+			
 		}
 		
-		unset($key);
-		unset($signoff);
 			
-		// fixed content
+		// event image on top
 		if(strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1)
 		{
 			$eventimg = $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png";
@@ -1811,6 +1816,7 @@ class rpraid
 		}
 			
 		// we need to find out the time zone to display
+		// if anon then get board timezone or else get the users timezone
 		if ($user->data['user_id'] == ANONYMOUS)
 		{
 		 	//grab board default
@@ -1871,6 +1877,7 @@ class rpraid
 			'IS_RECURRING'		=> $this->recurr_id,
 			'POSTER'			=> $this->poster_url,
 			'INVITED'			=> $this->invite_list,
+			'TEAM_NAME'			=> $this->raidteamname, 
 			'U_EDIT'			=> $edit_url,
 			'U_DELETE'			=> $delete_url,	
 			

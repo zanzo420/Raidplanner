@@ -1,7 +1,8 @@
 <!-- [+] raidplan view -->
 
-<div class="forabg">
-<span class="corners-inner-top"><span></span></span>
+<div class="panel bg3">
+<div class="inner">
+<span class="corners-top"><span></span></span>
 <div style="width:10%; float: left;">
 <img src="{EVENT_IMAGE}" alt="{ETYPE_DISPLAY_NAME}" width="48" height="48" /> 
 </div>
@@ -26,7 +27,8 @@
 </ul>
 
 </div>
-<span class="corners-inner-bottom"><span></span></span>
+<span class="corners-bottom"><span></span></span>
+</div>
 </div>
 
 <div class="panel bg2">
@@ -37,7 +39,7 @@
 <div class="raidplanbody">
 <div class="content">
 <p>{SUBJECT}</p>
-<br/>
+
 {MESSAGE}
 </div>
 </div>
@@ -77,6 +79,16 @@
 <div style="width:48%; float: left;">
 
 <fieldset class="rpfields">
+
+<dl>
+<dt><strong>{L_INVITE_INFO}</strong></dt>
+<dd><strong>{INVITED}</strong></dd>
+</dl>
+
+<dl>
+<dt><strong>{L_RAIDSIZE}</strong></dt>
+<dd><strong>{TEAM_NAME}</strong></dd>
+</dl>
 
 <dl>
 <dt><strong>{L_CONFIRMED}</strong></dt>
