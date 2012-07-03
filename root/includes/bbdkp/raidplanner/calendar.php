@@ -511,7 +511,7 @@ abstract class calendar
 	** none option is not checked
 	** 
 	** @param $trigger decides what message template to use 
-	**
+	** @param $raidplan plan to report
 	**
 	** @todo add trigger for raidplan add
 	** @todo add trigger for raidplan update
@@ -520,9 +520,9 @@ abstract class calendar
 	** @todo add trigger for raidplan signup unavail -
 	** @todo add trigger for raidplan signup confirm ++
 	**/
-	function raidmessenger($trigger)
+	function raidmessenger($trigger, rpraid $raidplan)
 	{
-		global $auth, $db, $user, $config;
+		global $db, $user, $config;
 		global $phpEx, $phpbb_root_path;
 	
 		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
@@ -532,60 +532,30 @@ abstract class calendar
 		$user_id = $user->data['user_id'];
 		$user_notify = $user->data['user_notify'];
 	
-		$event_data = array();
-		get_event_data( $event_id, $event_data );
-	
-		
 		switch ($trigger)
 		{
 			case 1:
-				// all 
-				$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
-					, u.user_lang FROM ' . USERS_TABLE . ' u
-					WHERE w.user_id = u.user_id <> '.$user_id;
-				$db->sql_query($sql);
-				
+				// all members linked to a phpbb account
+				$sql = 'SELECT DISTINCT u.username, u.user_email, u_user_lang
+						FROM ' . MEMBER_LIST_TABLE . ' l, ' . USERS_TABLE . ' u 
+						WHERE l.phpbb_user_id = u.user_id';
 				break;
 			case 2:
-				$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
-					, u.user_lang FROM ' . USERS_TABLE . ' u
-					WHERE w.user_id = u.user_id <> '.$user_id;
-				$db->sql_query($sql);
-				
-				
-				break;
 			case 3:
-				$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
-					, u.user_lang FROM ' . USERS_TABLE . ' u
-					WHERE w.user_id = u.user_id <> '.$user_id;
-				$db->sql_query($sql);
-				
+				// get raidplan participants
+				$sql = 'SELECT DISTINCT u.username, u.user_email, u_user_lang
+						FROM ' . RP_SIGNUPS . ' l, ' . USERS_TABLE . ' u 
+						WHERE l.poster_id = u.user_id 
+						AND l.raidplan_id = ' . $raidplan->id ;
 				break;
 			case 4:
-				$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
-					, u.user_lang FROM ' . USERS_TABLE . ' u
-					WHERE w.user_id = u.user_id <> '.$user_id;
-				$db->sql_query($sql);
-				
-				
-				break;
 			case 5:
-				
-				$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
-					, u.user_lang FROM ' . USERS_TABLE . ' u
-					WHERE w.user_id = u.user_id <> '.$user_id;
-				$db->sql_query($sql);
-				
+				// get raidleader
+				$sql = 'SELECT DISTINCT u.username, u.user_email, u_user_lang
+						FROM ' . RP_RAIDS_TABLE . ' r, ' . USERS_TABLE . ' u 
+						WHERE r.poster_id = u.user_id 
+						AND r.raidplan_id = ' . $raidplan->id ;
 				break;
-			case 6:
-				
-				$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
-					, u.user_lang FROM ' . USERS_TABLE . ' u
-					WHERE w.user_id = u.user_id <> '.$user_id;
-				$db->sql_query($sql);
-				
-				break;
-				
 		}
 
 		$result = $db->sql_query($sql);
@@ -611,14 +581,10 @@ abstract class calendar
 					case 5:
 						$messenger->template('raidplan_unsign', $row['user_lang']);
 						break;						
-					case 6:
-						$messenger->template('raidplan_confirm', $row['user_lang']);
-						break;						
 						
 				}
 	
 				$messenger->to($row['user_email'], $row['username']);
-				$messenger->im($row['user_jabber'], $row['username']);
 	
 				$messenger->assign_vars(array(
 								'USERNAME'			=> htmlspecialchars_decode($row['username']),
@@ -637,7 +603,59 @@ abstract class calendar
 	}
 		
 		
+	function signupmessenger($trigger, rpsignup $signup)
+	{
+		global $auth, $db, $user, $config;
+		global $phpEx, $phpbb_root_path;
 	
+		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		$messenger = new messenger();
+
+		$user_id = $user->data['user_id'];
+		$user_notify = $user->data['user_notify'];
+	
+		$event_data = array();
+		get_event_data( $event_id, $event_data );
+			
+		$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
+			, u.user_lang FROM ' . USERS_TABLE . ' u
+			WHERE w.user_id = u.user_id <> '.$user_id;
+		$db->sql_query($sql);
+
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+				switch ($trigger)
+				{
+					case 4:
+						$messenger->template('raidplan_newsignup', $row['user_lang']);
+						break;						
+					case 5:
+						$messenger->template('raidplan_unsign', $row['user_lang']);
+						break;						
+					case 6:
+						$messenger->template('raidplan_confirm', $row['user_lang']);
+						break;						
+				}
+				
+				$messenger->im($row['user_jabber'], $row['username']);
+	
+				$messenger->assign_vars(array(
+								'USERNAME'			=> htmlspecialchars_decode($row['username']),
+								'EVENT_SUBJECT'		=> $event_data['event_subject'],
+								'U_UNWATCH_EVENT'	=> generate_board_url() . "/calendar.$phpEx?view=event&calEid=$event_id&calWatchE=0",
+								'U_EVENT'			=> generate_board_url() . "/calendar.$phpEx?view=event&calEid=$event_id", )
+							);
+	
+				$messenger->send($row['user_notify_type']);
+		}
+		$db->sql_freeresult($result);
+		$messenger->save_queue();
+
+		
+	}
+		
 	
 	
 }

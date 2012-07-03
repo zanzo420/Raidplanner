@@ -203,7 +203,6 @@ class rpsignup
 		
 		$sql_array = array();
 		
-		
 		$sql_array['SELECT'] = ' s.*,  m.member_id, m.member_name, m.member_level, m.member_gender_id '; 
 	    $sql_array['FROM'] 	= array(MEMBER_LIST_TABLE 	=> 'm');
 	    $sql_array['LEFT_JOIN'] = array(
