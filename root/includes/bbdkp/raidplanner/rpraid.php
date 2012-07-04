@@ -2545,6 +2545,103 @@ class rpraid
 		
 	}
 	
+	/* raidmessenger
+	**
+	** eventhandler for 
+	** ----------------
+	** raidplan add
+	**   send to all who have a dkp member with points
+	** raidplan update
+	**   send to raidplan participants
+	** raidplan delete
+	**   send to raidplan participants	
+	**
+	** action
+	** ------
+	** messages or emails members 
+	** 
+	** condition 
+	** --------- 
+	** UCP notification checkbox checked (ACP override) 
+	** ACP messenger or email checked
+	** none option is not checked
+	** 
+	** @param $trigger decides what message template to use 
+	** @param $raidplan plan to report
+	**
+	** @todo add trigger for raidplan add
+	** @todo add trigger for raidplan update
+	** @todo add trigger for raidplan delete	
+	**/
+	function raidmessenger($trigger, rpraid $raidplan)
+	{
+		global $db, $user, $config;
+		global $phpEx, $phpbb_root_path;
+	
+		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		$messenger = new messenger();
+
+		$user_id = $user->data['user_id'];
+		$user_notify = $user->data['user_notify'];
+	
+		switch ($trigger)
+		{
+			case 1:
+				// all members linked to a phpbb account
+				$sql = 'SELECT DISTINCT u.username, u.user_email, u_user_lang
+						FROM ' . MEMBER_LIST_TABLE . ' l, ' . USERS_TABLE . ' u 
+						WHERE l.phpbb_user_id = u.user_id';
+				break;
+			case 2:
+			case 3:
+				// get raidplan participants
+				$sql = 'SELECT DISTINCT u.username, u.user_email, u_user_lang
+						FROM ' . RP_SIGNUPS . ' l, ' . USERS_TABLE . ' u 
+						WHERE l.poster_id = u.user_id 
+						AND l.raidplan_id = ' . $raidplan->id ;
+				break;
+		}
+
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			if( $row['notify_status'] == 0 )
+			{
+
+				switch ($trigger)
+				{
+					case 1:
+						$messenger->template('raidplan_add', $row['user_lang']);
+						break;
+					case 2:
+						$messenger->template('raidplan_update', $row['user_lang']);
+						break;						
+					case 3:
+						$messenger->template('raidplan_delete', $row['user_lang']);
+						break;						
+						
+				}
+	
+				$messenger->to($row['user_email'], $row['username']);
+	
+				$messenger->assign_vars(array(
+								'USERNAME'			=> htmlspecialchars_decode($row['username']),
+								'EVENT_SUBJECT'		=> $event_data['event_subject'],
+								'U_UNWATCH_EVENT'	=> generate_board_url() . "/calendar.$phpEx?view=event&calEid=$event_id&calWatchE=0",
+								'U_EVENT'			=> generate_board_url() . "/calendar.$phpEx?view=event&calEid=$event_id", )
+							);
+	
+				$messenger->send($row['user_notify_type']);
+			}
+		}
+		$db->sql_freeresult($result);
+		$messenger->save_queue();
+
+		
+	}
+	
+	
 }
 
 ?>
