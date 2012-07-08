@@ -2590,21 +2590,22 @@ class rpraid
 			{
 				case 1:
 					$messenger->template('raidplan_add', $row['user_lang']);
-					$subject = $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'];
+					$subject = $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
 					break;
 				case 2:
 					$messenger->template('raidplan_update', $row['user_lang']);
-					$subject = $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'];
+					$subject = $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
 					break;						
 				case 3:
 					$messenger->template('raidplan_delete', $row['user_lang']);
-					$subject = $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'];
+					$subject = $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
 					break;						
 			}
 
 		   $messenger->assign_vars(array(
 				'USERNAME'			=> htmlspecialchars_decode($row['username']),
 				'EVENT_SUBJECT'		=> $subject, 
+		   		'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'], 
 				'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
 				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
 				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),

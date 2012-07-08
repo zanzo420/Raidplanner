@@ -575,88 +575,119 @@ class rpsignup
 		return false;
 		
 	}
-	
+
 	/* signupmessenger
 	**
 	** eventhandler for 
 	** ----------------
-	** raidplan new signup +
+	** 4) raidplan new signup +
 	**   send to raidleader
-	** raidplan signup unavail -
+	** 5) raidplan signup unavail -
 	**   send to raidleader
-	** raidplan signup confirm ++
+	** 6) raidplan signup confirm ++
 	**   send to member 
 	**
-	** action
-	** ------
-	** messages or emails members 
-	** 
-	** condition 
-	** --------- 
-	** UCP notification checkbox checked (ACP override) 
-	** ACP messenger or email checked
-	** none option is not checked
-	** 
-	** @param $trigger decides what message template to use 
-	** @param $raidplan plan to report
-	**
-	** @todo add trigger for raidplan new signup +
-	** @todo add trigger for raidplan signup unavail -
-	** @todo add trigger for raidplan signup confirm ++
-	**/
-	function signupmessenger($trigger, rpsignup $signup)
+	*/
+	function signupmessenger($trigger)
 	{
-		global $auth, $db, $user, $config;
+		global $user, $config;
 		global $phpEx, $phpbb_root_path;
-	
+
+		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
-		$messenger = new messenger();
 
-		$user_id = $user->data['user_id'];
-		$user_notify = $user->data['user_notify'];
-	
-		$event_data = array();
-		get_event_data( $event_id, $event_data );
-			
-		$sql = 'SELECT u.username, u.username_clean, u.user_email, u.user_notify_type,
-			, u.user_lang FROM ' . USERS_TABLE . ' u
-			WHERE w.user_id = u.user_id <> '.$user_id;
-		$db->sql_query($sql);
-
-		$result = $db->sql_query($sql);
-		while ($row = $db->sql_fetchrow($result))
+		if (!class_exists('raidmessenger'))
 		{
-				switch ($trigger)
-				{
-					case 4:
-						$messenger->template('raidplan_newsignup', $row['user_lang']);
-						break;						
-					case 5:
-						$messenger->template('raidplan_unsign', $row['user_lang']);
-						break;						
-					case 6:
-						$messenger->template('raidplan_confirm', $row['user_lang']);
-						break;						
-				}
-				
-				$messenger->im($row['user_jabber'], $row['username']);
-	
-				$messenger->assign_vars(array(
-								'USERNAME'			=> htmlspecialchars_decode($row['username']),
-								'EVENT_SUBJECT'		=> $event_data['event_subject'],
-								'U_UNWATCH_EVENT'	=> generate_board_url() . "/calendar.$phpEx?view=event&calEid=$event_id&calWatchE=0",
-								'U_EVENT'			=> generate_board_url() . "/calendar.$phpEx?view=event&calEid=$event_id", )
-							);
-	
-				$messenger->send($row['user_notify_type']);
+			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
 		}
-		$db->sql_freeresult($result);
-		$messenger->save_queue();
+		$rpm = new raidmessenger();
+		$rpm->get_notifiable_users($trigger, $this->raidplan_id, $this->signup_id);
 
+		$emailrecipients = array();
+		$messenger = new messenger();
+		foreach($rpm->send_user_data as $id => $row)
+		{
+			
+			// get template
+			switch ($trigger)
+			{
+				case 4:
+					// send signup to RL				
+					$messenger->template('signup_new', $row['user_lang']);
+					$subject = $user->lang['NEWSIGN'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					break;
+				case 5:
+					// send confirmation to RL and raider
+					$messenger->template('signup_confirm', $row['user_lang']);
+					$subject = $user->lang['CONFIRMSIGN'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					break;						
+				case 6:
+					// send cancellation to RL and raider
+					$messenger->template('signup_unsign', $row['user_lang']);
+					$subject = $user->lang['UNSIGNED'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					break;						
+			}
+
+		   $messenger->assign_vars(array(
+				'USERNAME'			=> htmlspecialchars_decode($row['username']),
+				'EVENT_SUBJECT'		=> $subject, 
+		   		'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'], 
+				'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
+				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
+				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
+				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
+				'U_RAIDPLAN'		=> generate_board_url() . "dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$this->id
+			));
+			
+			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
+			$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
+			
+			$data = array( 
+			    'address_list'      => array('u' => array($row['user_id'] => 'to')),
+			    'from_user_id'      => $user->data['user_id'],
+			    'from_username'     => $user->data['username'],
+			    'icon_id'           => 0,
+			    'from_user_ip'      => $user->data['user_ip'],
+			     
+			    'enable_bbcode'     => true,
+			    'enable_smilies'    => true,
+			    'enable_urls'       => true,
+			    'enable_sig'        => true,
+			
+			    'message'           => $messenger->msg, 
+			    'bbcode_bitfield'   => $this->bbcode['bitfield'],
+			    'bbcode_uid'        => $this->bbcode['uid'],
+			);
+			
+			if($config['rp_pmnotification'] == 1 &&  (int) $row['user_allow_pm'] == 1)
+			{
+				// send a PM
+				submit_pm('post',$subject, $data, false);
+			}
+			
+			if($config['rp_emailnotification'] == 1 && $row['user_email'] != '')
+			{
+				//send email, reuse messenger object
+			   $email = $messenger;
+			   $emailrecipients[]=$row['username'];
+			   $email->to($row['user_email'], $row['username']);
+			   $email->anti_abuse_headers($config, $user);
+			   $email->send(0);
+			}
+			
+		}
+		
+		if($config['rp_emailnotification'] == 1 && isset($email))
+		{
+			$email->save_queue();
+			$emailrecipients = implode(', ', $emailrecipients);
+			add_log('admin', 'LOG_MASS_EMAIL', $emailrecipients);
+		}
+		
 		
 	}
-		
+	
 	
 
 }

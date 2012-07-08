@@ -22,7 +22,7 @@ class raidmessenger
 	 *
 	 * @param int $trigger
 	 */
-	public function get_notifiable_users($trigger, $id)
+	public function get_notifiable_users($trigger, $raidplan_id, $signup_poster = 0)
 	{
 		global $db;
 		switch ($trigger)
@@ -39,14 +39,32 @@ class raidmessenger
 				$sql = 'SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
 						FROM ' . RP_SIGNUPS . ' l, ' . USERS_TABLE . ' u 
 						WHERE l.poster_id = u.user_id 
-						AND l.raidplan_id = ' . $id . '
+						AND l.raidplan_id = ' . $raidplan_id . '
 						UNION 
 						SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
 						FROM ' . RP_RAIDS_TABLE . ' r, ' . USERS_TABLE . ' u 
 						WHERE r.poster_id = u.user_id 
-						AND r.raidplan_id = ' . $id;
+						AND r.raidplan_id = ' . $raidplan_id;
+			case 4:
+				// get raidleader
+				$sql = 'SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
+						FROM ' . RP_RAIDS_TABLE . ' r, ' . USERS_TABLE . ' u 
+						WHERE r.poster_id = u.user_id 
+						AND r.raidplan_id = ' . $$raidplan_id;
+			case 5:
+			case 6:
+				// get raidleader and raider
+				$sql = 'SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
+						FROM ' . RP_SIGNUPS . ' l, ' . USERS_TABLE . ' u 
+						WHERE l.poster_id = u.user_id 
+						AND  l.poster_id = ' . $signup_poster . ' 
+						AND l.raidplan_id = ' . $raidplan_id . '
+						UNION
+						SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
+						FROM ' . RP_RAIDS_TABLE . ' r, ' . USERS_TABLE . ' u 
+						WHERE r.poster_id = u.user_id 
+						AND r.raidplan_id = ' . $raidplan_id;
 				
-				;
 				break;
 		}
 		

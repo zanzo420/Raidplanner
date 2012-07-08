@@ -125,7 +125,6 @@ $lang = array_merge($lang, array(
 	'CALENDAR_EDIT_RAIDPLAN'	=> 'Edit Raid',
 	'CALENDAR_TITLE'			=> 'Planner',
 	'RAIDPLANNER'				=> 'Raid Planner',
-	'NEWRAID'					=> 'New Raid',
 
 	'CALENDAR_NUMBER_ATTEND'=> 'The number of people you are bringing to this raid',
 	'CALENDAR_NUMBER_ATTEND_EXPLAIN'=> '(enter 1 for yourself)',
@@ -139,11 +138,12 @@ $lang = array_merge($lang, array(
 	'COL_WILL_ATTEND'		=> 'Will Attend?',
 	'COMMENTS'				=> 'Comments',
 	'CONFIRMED'				=> 'Confirmed',
-
+	'CONFIRMSIGN'			=> 'Raidrole confirmed',
 	'DAY'					=> 'Day',
 	'DAY_OF'				=> 'Day of ',
 	'DECLINE'				=> 'Decline', 
 	'DELETE_ALL_EVENTS'		=> 'Delete all occurrences of this raid.',
+	'DELRAID'				=> 'Deleted Raid',
 	'DETAILS'				=> 'Details',
 	'DELETE_RAIDPLAN'		=> 'Delete raid',
 
@@ -208,6 +208,8 @@ $lang = array_merge($lang, array(
 	'NEVER'						=> 'Never',
 	'NEW_RAIDPLAN'				=> 'New Raid',
 	'NEW_EVENT'					=> 'New Raid',
+	'NEWRAID'					=> 'New Raid',
+	'NEWSIGN'					=> 'New Signup',
 	'NO_RAIDPLAN'				=> 'The requested raid does not exist.',
 	'NO_EVENT_TYPES'			=> 'The site administrator has not set up raid types for this calendar.  Calendar raid creation has been disabled.',
 	'NO_GROUP_SELECTED'			=> 'There are no groups selected for this group raid.',
@@ -283,8 +285,9 @@ $lang = array_merge($lang, array(
 	'TRACK_SIGNUPS'				=> 'Track attendance',
 	'TRACK_SIGNUPS_ON'			=> 'Attendance tracking is enabled.',
 	'TRACK_SIGNUPS_OFF'			=> 'Attendance tracking is disabled.',
-
+	'UNSIGNED'					=> 'Unsigned from Raid',
 	'UPCOMING_RAIDS'			=> 'Upcoming Raids',
+	'UPDRAID'					=> 'Updated Raid',
 	'USER_CANNOT_VIEW_RAIDPLAN'=> 'You do not have permission to view this raid.',
 	'USER_CANNOT_DELETE_RAIDPLAN'	=> 'You do not have permission to delete raids.',
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'You do not have permission to edit raids.',
