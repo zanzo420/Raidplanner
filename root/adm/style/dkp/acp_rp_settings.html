@@ -176,7 +176,28 @@ else
 <form id="rpsettings" name="rpsettings" method="post" action="{U_ACTION}" >
 
  <div class="tablewrap">
-<dl>
+
+	<dl>
+		<dt><label>{L_SENDPMRP}:</label><br />{L_SENDPMRP_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_pmrp" name="send_pmrp" value="1" {SENDPMRP_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
+		<dt><label>{L_SENDEMAILRP}:</label><br />{L_SENDEMAILRP_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_emailrp" name="send_emailrp" value="1" {SENDEMAILRP_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
+		<dt><label>{L_SENDPMSIGN}:</label><br />{L_SENDPMSIGN_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_pmrp" name="send_pmrp" value="1" {SENDPMSIGN_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
+		<dt><label>{L_SENDEMAILSIGN}:</label><br />{L_SENDEMAILSIGN_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_emailsign" name="send_emailsign" value="1" {SENDEMAILSIGN_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
 		<dt><label>{L_FIRST_DAY}:</label><br />{L_FIRST_DAY_EXPLAIN}</dt>
 		<dd><select name="first_day" id="first_day">
 		  <option value="0" {SEL_MONDAY}>{L_MONDAY}</option>

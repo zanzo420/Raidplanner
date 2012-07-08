@@ -458,6 +458,12 @@ $versions = array(
         ),    
         '0.5.0' => array(
 			
+	      // adding some configs
+			'config_add' => array(
+			array('rp_pmnotification', 1, true),
+			array('rp_emailnotification', 1, true),
+			),
+
 			'table_add' => array(
 
         	array(

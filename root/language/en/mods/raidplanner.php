@@ -84,7 +84,15 @@ $lang = array_merge($lang, array(
 	'ADVRPSETTINGS_UPDATED'					=> 'Advanced Raidplanner settings updated successfully', 
 	'RP_UPD_MOD'							=> 'Raidplanner updated to %s', 
 	'RP_UNINSTALL_MOD'						=> 'Raidplanner uninstalled', 
-	
+	'SENDPMRP'								=> 'Send PM when changes occur', 
+	'SENDPMRP_EXPLAIN'						=> 'Send PM when raidplan added, deleted or updated', 
+	'SENDEMAILRP'							=> 'Send email when Raidplan changes', 
+	'SENDEMAILRP_EXPLAIN'					=> 'Send email when raidplan added, deleted or updated ', 
+	'SENDPMSIGN'							=> 'Send PM when RSVP changes', 
+	'SENDPMSIGN_EXPLAIN'					=> 'Send PM when signup added, confirmed or deleted', 
+	'SENDEMAILSIGN'						=> 'Send email when RSVP changes occur', 
+	'SENDEMAILSIGN_EXPLAIN'				=> 'Send email when signups added, confirmed or deleted', 
+
 	//confirms
 	'RETURN_RP'					=> 'Return to Raidplanner Settings', 
 	'ROLE_DELETE_SUCCESS'		=> 'The role %s was deleted.',
@@ -195,6 +203,7 @@ $lang = array_merge($lang, array(
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'You need to login in order to add/edit/delete raids.',
 
+	// ERRORS
 	'NEGATIVE_LENGTH_RAIDPLAN'		=> 'The raid cannot end before it starts.',
 	'NEVER'						=> 'Never',
 	'NEW_RAIDPLAN'				=> 'New Raid',
@@ -206,6 +215,19 @@ $lang = array_merge($lang, array(
 	'NO_EVENTS_TODAY'			=> 'There are no raids scheduled for this day.',
 	'NO_RAIDS_SCHEDULED'		=> 'No raids scheduled.',
 	'NOTAVAILABLE'				=> 'Not Available', 
+	'MESSAGING_TEMPLATE_MISSING' => 'Failed to open messaging templates directory.', 
+
+	// TEMPLATES
+	'RAIDPLAN_ADD_TEMPLATE'			=> 'Subject: A new event was added to the Raidplanner<br />
+Dear {USERNAME},<br />
+The Raid "{EVENT_SUBJECT}" has been added in the Raidplanner.<br />
+invite time : {START_TIME} {TZ}<br />
+start time : {INVITE_TIME} {TZ}<br />
+end time : {INVITE_TIME} {TZ}<br />
+<br />
+To view or sign up for the event please visit the following link:
+{U_EVENT}<br />
+',
 
 	'OCCURS_EVERY'			=> 'Occurs every',
 	

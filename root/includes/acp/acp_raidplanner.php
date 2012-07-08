@@ -246,6 +246,8 @@ class acp_raidplanner
 				// update general settings
 				if($update)
 				{
+					set_config  ( 'rp_pmnotification',  (isset ( $_POST ['send_pm'] )) ? 1 : 0 , 0);
+					set_config  ( 'rp_emailnotification',  (isset ( $_POST ['send_email'] )) ? 1 : 0 , 0);
 					
 					$first_day	= request_var('first_day', 0);
 					set_config  ( 'rp_first_day_of_week',  $first_day,0);  
@@ -280,7 +282,8 @@ class acp_raidplanner
 							WHERE announcement_id = 1";
 					$db->sql_query($sql);
 					
-					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0); 
+					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0);
+					 
 					
 										
 					$disp_week	= request_var('disp_week', 0);
@@ -541,7 +544,9 @@ class acp_raidplanner
 					'SEL_SATURDAY'		=> $sel_saturday,
 					'SEL_SUNDAY'		=> $sel_sunday,
 					'WELCOME_MESSAGE' 	=> $textarr['text'],
-					'SHOW_NAME'			=> ((int) $config ['rp_show_name'] == 1) ? 'checked="checked"' : "",
+					'SHOW_NAME'				=> ((int) $config ['rp_show_name'] == 1) ? 'checked="checked"' : "",
+					'SENDPM_CHECKED'		=> ((int) $config ['rp_pmnotification'] == 1) ? 'checked="checked"' : "",
+					'SENDEMAIL_CHECKED'		=> ((int) $config ['rp_emailnotification'] == 1) ? 'checked="checked"' : "",
 					'SHOW_WELCOME'		=> ((int) $config ['rp_show_welcomemsg'] == 1) ? 'checked="checked"' : "",
 					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == 1 ) ? "checked='checked'" : '',
 					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == 1 ) ? "disabled='disabled'" : '',
