@@ -1,16 +1,8 @@
-Subject: A new event was added to the Raidplanner
-
 Dear {USERNAME},
 
-The event "{EVENT_SUBJECT}" has been added in the Raidplanner.
-
-To view the calendar please visit the following link:
-{U_CALENDAR}
-
-To view the event please visit the following link:
-{U_EVENT}
-
-If you no longer wish to recieve emails about new Raidplanner events click here:
-{U_UNWATCH_CALENDAR}
+The Raid "{EVENT_SUBJECT}" scheduled to occur at {INVITE_TIME} {TZ} was deleted by {RAIDLEADER}. 
 
 {EMAIL_SIG}
+
+
+

@@ -2569,142 +2569,93 @@ class rpraid
 		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 		if (!class_exists('raidmessenger'))
 		{
-			require("{$phpbb_root_path}includes/bbdkp/raidplanner/rpsignups.$phpEx");
+			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
 		}
-		$rpmessenger = new raidmessenger();
+		$rpm = new raidmessenger();
+		$rpm->get_notifiable_users($trigger);
 		
-		$notifyuserdata = $rpmessenger->getsend_userdata($trigger);
-		
-		if($config['rp_pmnotification'] == 1000)
+		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+
+		$emailrecipients = array();
+		$messenger = new messenger();
+		foreach($rpm->send_user_data as $id => $row)
 		{
-			include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 			
-			foreach($notifyuserdata as $id => $row)
+			// send email
+			switch ($trigger)
 			{
-				
-				if( (int) $row['user_allow_pm'] == 1)
-				{
-					// send a pm
-					$tpl_msg = array();
-					$template_lang = $row['user_lang'];	
-					switch ($trigger)
-					{
-						case 1:
-							$template('raidplan_add', $row['user_lang']);
-							break;
-						case 2:
-							$messenger->template('raidplan_update', $row['user_lang']);
-							break;						
-						case 3:
-							$messenger->template('raidplan_delete', $row['user_lang']);
-							break;						
-					}
-					
-					$tpl_msg[$template_lang . $templatetext] = new template();
-					
-					$tpl = &$tpl_msg[$template_lang . $templatetext];
-	
-					$template_path = (!empty($user->lang_path)) ? $user->lang_path : $phpbb_root_path . 'language/';
-					$template_path .= $template_lang . '/email';
-					$fallback_template_path = false;
-					if ($template_lang !== basename($config['default_lang']))
-					{
-						$fallback_template_path = (!empty($user->lang_path)) ? $user->lang_path : $phpbb_root_path . 'language/';
-						$fallback_template_path .= basename($config['default_lang']) . '/email';
-					}
-					$tpl->set_custom_template($template_path, $template_lang . '_email', $fallback_template_path);
-					$tpl->set_filenames(array(
-						'body'		=> $templatetext . '.txt',
-					));
-					
-					
-				   $tpl_obj->assign_vars(array(
-						'USERNAME'			=> htmlspecialchars_decode($row['username']),
-						'EVENT_SUBJECT'		=> $this->eventlist->events[$this->event_type]['event_name'],
-						'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
-						'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
-						'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
-						'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-						'U_RAIDPLAN'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id)
-					));
-					
-					
-					$tpl_obj = &$this->tpl_msg[$template_lang . $templatetext];
-	
-								
-					$tpl_msg = '';
-					
-					$data = array( 
-					    'address_list'      => array ('u' => array(2 => 'to')),
-					    'from_user_id'      => 2,
-					    'from_username'     => $user->data['username'],
-					    'icon_id'           => 0,
-					    'from_user_ip'      => $user->data['user_ip'],
-					     
-					    'enable_bbcode'     => true,
-					    'enable_smilies'    => true,
-					    'enable_urls'       => true,
-					    'enable_sig'        => true,
-					
-					    'message'           => $this->body,
-					    'bbcode_bitfield'   => $this->bbcode['bitfield'],
-					    'bbcode_uid'        => $this->bbcode['uid'],
-					);
-					
-					submit_pm('post', $this->eventlist->events[$this->event_type]['event_name'], $data, false);
-						
-				}
-	
+				case 1:
+					$messenger->template('raidplan_add', $row['user_lang']);
+					break;
+				case 2:
+					$messenger->template('raidplan_update', $row['user_lang']);
+					break;						
+				case 3:
+					$messenger->template('raidplan_delete', $row['user_lang']);
+					break;						
 			}
-			$db->sql_freeresult($result);
+
+		   $messenger->assign_vars(array(
+				'USERNAME'			=> htmlspecialchars_decode($row['username']),
+				'EVENT_SUBJECT'		=> $this->eventlist->events[$this->event_type]['event_name'],
+				'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
+				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
+				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
+				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
+				'U_RAIDPLAN'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id)
+			));
+			
+			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
+			$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
+			
+			$data = array( 
+			    'address_list'      => array ('u' => array(2 => 'to')),
+			    'from_user_id'      => 2,
+			    'from_username'     => $user->data['username'],
+			    'icon_id'           => 0,
+			    'from_user_ip'      => $user->data['user_ip'],
+			     
+			    'enable_bbcode'     => true,
+			    'enable_smilies'    => true,
+			    'enable_urls'       => true,
+			    'enable_sig'        => true,
+			
+			    'message'           => $messenger->msg, 
+			    'bbcode_bitfield'   => $this->bbcode['bitfield'],
+			    'bbcode_uid'        => $this->bbcode['uid'],
+			);
+			
+			if($config['rp_pmnotification'] == 1 &&  (int) $row['user_allow_pm'] == 1)
+			{
+				// send a PM
+				submit_pm('post', $this->eventlist->events[$this->event_type]['event_name'], $data, false);
+			}
+			
+			if($config['rp_emailnotification'] == 1 && $row['user_email'] != '')
+			{
+				//send email
+			   $email = $messenger;
+			   $emailrecipients[]=$row['username'];
+			   $email->to($row['user_email'], $row['username']);
+			   $email->anti_abuse_headers($config, $user);
+			   $email->send(0);
+			}
+			else
+			{
+				unset($messenger);
+			}
+			
 		}
-	
 		
 		if($config['rp_emailnotification'] == 1)
 		{
-			include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
-			include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
-			
-			$messenger = new messenger();
-			foreach($notifyuserdata as $id => $row)
-			{
-				
-				if( (int) $row['user_allow_massemail'] == 1  && $row['user_email'] != '')
-				{
-					// send email
-					switch ($trigger)
-					{
-						case 1:
-							$messenger->template('raidplan_add', $row['user_lang']);
-							break;
-						case 2:
-							$messenger->template('raidplan_update', $row['user_lang']);
-							break;						
-						case 3:
-							$messenger->template('raidplan_delete', $row['user_lang']);
-							break;						
-					}
-		
-				   $messenger->to($row['user_email'], $row['username']);
-				   $messenger->anti_abuse_headers($config, $user);
-				   $messenger->assign_vars(array(
-									'USERNAME'			=> htmlspecialchars_decode($row['username']),
-									'EVENT_SUBJECT'		=> $this->eventlist->events[$this->event_type]['event_name'],
-									'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
-									'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
-									'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
-									'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-									'U_RAIDPLAN'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id)
-								));
-					
-					// use the '0' option.
-					// '1' option is for 'jabber' but i have no idea what that is
-					$messenger->send(0);
-				}
-			}
-			$messenger->save_queue();
+			$email->save_queue();
+			$emailrecipients = implode(', ', $emailrecipients);
+			add_log('admin', 'LOG_MASS_EMAIL', $emailrecipients);
 		}
-
+		
 		
 	}
 

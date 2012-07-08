@@ -1,0 +1,8 @@
+Dear {USERNAME},
+
+Your have been unsigned to the raid {EVENT_SUBJECT} at invite time : {START_TIME} {TZ}. 
+
+To view this event please visit the following link:
+{U_RAIDPLAN}
+
+{EMAIL_SIG}

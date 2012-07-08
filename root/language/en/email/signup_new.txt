@@ -1,0 +1,11 @@
+Dear {USERNAME},
+
+{RAIDER} signed up to the Raid {EVENT_SUBJECT} using the role {ROLE}
+
+to occur at
+invite time : {START_TIME} {TZ}
+
+To view this event please visit the following link:
+{U_RAIDPLAN}
+
+{EMAIL_SIG}

@@ -1,12 +1,12 @@
 Dear {USERNAME},
 
-A new Raid "{EVENT_SUBJECT}" was added in the Raidplanner.
+Your signup to the raid {EVENT_SUBJECT} using the role {ROLE} was confirmed. 
 
 invite time : {START_TIME} {TZ}
 start time : {INVITE_TIME} {TZ}
 end time : {INVITE_TIME} {TZ}
 
-To view or sign up for this event please visit the following link:
+To view this event please visit the following link:
 {U_RAIDPLAN}
 
 {EMAIL_SIG}

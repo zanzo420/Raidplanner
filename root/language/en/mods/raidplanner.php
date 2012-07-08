@@ -215,22 +215,8 @@ $lang = array_merge($lang, array(
 	'NO_EVENTS_TODAY'			=> 'There are no raids scheduled for this day.',
 	'NO_RAIDS_SCHEDULED'		=> 'No raids scheduled.',
 	'NOTAVAILABLE'				=> 'Not Available', 
-	'MESSAGING_TEMPLATE_MISSING' => 'Failed to open messaging templates directory.', 
-
-	// TEMPLATES
-	'RAIDPLAN_ADD_TEMPLATE'			=> 'Subject: A new event was added to the Raidplanner<br />
-Dear {USERNAME},<br />
-The Raid "{EVENT_SUBJECT}" has been added in the Raidplanner.<br />
-invite time : {START_TIME} {TZ}<br />
-start time : {INVITE_TIME} {TZ}<br />
-end time : {INVITE_TIME} {TZ}<br />
-<br />
-To view or sign up for the event please visit the following link:
-{U_EVENT}<br />
-',
 
 	'OCCURS_EVERY'			=> 'Occurs every',
-	
 	'PAGE_TITLE'			=> 'Calendar',
 	'PM'						=> 'PM',
 	'PRIVATE_RAIDPLAN'			=> 'This raid is private.  You must be invited and logged in to view this raid.',

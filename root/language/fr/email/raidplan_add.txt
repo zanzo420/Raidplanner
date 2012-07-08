@@ -1,16 +1,12 @@
-Subject: A new event was added to the Raidplanner
-
 Dear {USERNAME},
 
-The event "{EVENT_SUBJECT}" has been added in the Raidplanner.
+A new Raid "{EVENT_SUBJECT}" was added in the Raidplanner.
 
-To view the calendar please visit the following link:
-{U_CALENDAR}
+invite time : {START_TIME} {TZ}
+start time : {INVITE_TIME} {TZ}
+end time : {INVITE_TIME} {TZ}
 
-To view the event please visit the following link:
-{U_EVENT}
-
-If you no longer wish to recieve emails about new Raidplanner events click here:
-{U_UNWATCH_CALENDAR}
+To view or sign up for this event please visit the following link:
+{U_RAIDPLAN}
 
 {EMAIL_SIG}

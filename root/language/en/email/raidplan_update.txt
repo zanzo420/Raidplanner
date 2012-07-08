@@ -1,13 +1,10 @@
-Subject: An event has been updated in the calendar
-
 Dear {USERNAME},
 
-The event "{EVENT_SUBJECT}" has been updated in the calendar.
+The Raid "{EVENT_SUBJECT}" was updated in the Raidplanner.
 
-To view this event please visit the following link:
-{U_EVENT}
+new invite time : {START_TIME} {TZ}
+new start time : {INVITE_TIME} {TZ}
+new end time : {INVITE_TIME} {TZ}
 
-If you no longer wish to receive emails about this event click here:
-{U_UNWATCH_EVENT}
-
-{EMAIL_SIG}
+To view or sign up for the event please visit the following link:
+{U_RAIDPLAN}

@@ -29,7 +29,7 @@ class raidmessenger
 	 *
 	 * @param int $trigger
 	 */
-	function getsend_userdata($trigger)
+	public function get_notifiable_users($trigger)
 	{
 		global $db;
 		switch ($trigger)
@@ -51,8 +51,9 @@ class raidmessenger
 		}
 		
 		$result = $db->sql_query($sql);
-		$this->send_user_data = $db->sql_fetchrow($result);
+		$this->send_user_data = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
+		
 	}
 	
 

@@ -1,13 +1,12 @@
-Subject: A new event was added to the Raidplanner
-
 Dear {USERNAME},
 
-The Raid "{EVENT_SUBJECT}" has been added in the Raidplanner.
+A new Raid "{EVENT_SUBJECT}" was added in the Raidplanner.
 
 invite time : {START_TIME} {TZ}
 start time : {INVITE_TIME} {TZ}
 end time : {INVITE_TIME} {TZ}
 
-To view or sign up for the event please visit the following link:
-{U_EVENT}
+To view or sign up for this event please visit the following link:
+{U_RAIDPLAN}
 
+{EMAIL_SIG}
