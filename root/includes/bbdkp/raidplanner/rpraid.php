@@ -2562,21 +2562,20 @@ class rpraid
 	*/
 	function raidmessenger($trigger)
 	{
-		global $db, $user, $config;
+		global $user, $config;
 		global $phpEx, $phpbb_root_path;
 
 		//get vars
 		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+
 		if (!class_exists('raidmessenger'))
 		{
 			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
 		}
 		$rpm = new raidmessenger();
 		$rpm->get_notifiable_users($trigger);
-		
-		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
-		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
-		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 
 		$emailrecipients = array();
 		$messenger = new messenger();
@@ -2588,31 +2587,34 @@ class rpraid
 			{
 				case 1:
 					$messenger->template('raidplan_add', $row['user_lang']);
+					$subject = $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'];
 					break;
 				case 2:
 					$messenger->template('raidplan_update', $row['user_lang']);
+					$subject = $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'];
 					break;						
 				case 3:
 					$messenger->template('raidplan_delete', $row['user_lang']);
+					$subject = $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'];
 					break;						
 			}
 
 		   $messenger->assign_vars(array(
 				'USERNAME'			=> htmlspecialchars_decode($row['username']),
-				'EVENT_SUBJECT'		=> $this->eventlist->events[$this->event_type]['event_name'],
+				'EVENT_SUBJECT'		=> $subject, 
 				'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
 				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
 				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-				'U_RAIDPLAN'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id)
+				'U_RAIDPLAN'		=> generate_board_url() . "dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$this->id
 			));
 			
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
 			$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
 			
 			$data = array( 
-			    'address_list'      => array ('u' => array(2 => 'to')),
-			    'from_user_id'      => 2,
+			    'address_list'      => array('u' => array($row['user_id'] => 'to')),
+			    'from_user_id'      => $user->data['user_id'],
 			    'from_username'     => $user->data['username'],
 			    'icon_id'           => 0,
 			    'from_user_ip'      => $user->data['user_ip'],
@@ -2630,26 +2632,22 @@ class rpraid
 			if($config['rp_pmnotification'] == 1 &&  (int) $row['user_allow_pm'] == 1)
 			{
 				// send a PM
-				submit_pm('post', $this->eventlist->events[$this->event_type]['event_name'], $data, false);
+				submit_pm('post',$subject, $data, false);
 			}
 			
 			if($config['rp_emailnotification'] == 1 && $row['user_email'] != '')
 			{
-				//send email
+				//send email, reuse messenger object
 			   $email = $messenger;
 			   $emailrecipients[]=$row['username'];
 			   $email->to($row['user_email'], $row['username']);
 			   $email->anti_abuse_headers($config, $user);
 			   $email->send(0);
 			}
-			else
-			{
-				unset($messenger);
-			}
 			
 		}
 		
-		if($config['rp_emailnotification'] == 1)
+		if($config['rp_emailnotification'] == 1 && isset($email))
 		{
 			$email->save_queue();
 			$emailrecipients = implode(', ', $emailrecipients);
