@@ -69,9 +69,12 @@
 			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php"/>
 			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php"/>
 			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php"/>
-			<file from="root/language/en/email/calendar_updated_event.txt" to="language/en/email/calendar_updated_event.txt"/>
-			<file from="root/language/en/email/calendar_signup.txt" to="language/en/email/calendar_signup.txt"/>
-			<file from="root/language/en/email/calendar_new_event.txt" to="language/en/email/calendar_new_event.txt"/>
+			<file from="root/language/en/email/raidplan_add.txt" to="language/en/email/raidplan_add.txt"/>
+			<file from="root/language/en/email/raidplan_confirm.txt" to="language/en/email/raidplan_confirm.txt"/>
+			<file from="root/language/en/email/raidplan_delete.txt" to="language/en/email/raidplan_delete.txt"/>
+			<file from="root/language/en/email/raidplan_newsignup.txt" to="language/en/email/raidplan_newsignup.txt"/>
+			<file from="root/language/en/email/raidplan_unsign.txt" to="language/en/email/raidplan_unsign.txt"/>
+			<file from="root/language/en/email/raidplan_update.txt" to="language/en/email/raidplan_update.txt"/>									
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
@@ -163,6 +166,8 @@ define('RP_WATCH',			$table_prefix . 'rp_watch');
 define('RP_ROLES',			$table_prefix . 'rp_roles');
 define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');				
+define('RP_TEAMS',		$table_prefix . 'rp_teams');				
+define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');				
 ]]></action>
 			</edit>
 		</open>
