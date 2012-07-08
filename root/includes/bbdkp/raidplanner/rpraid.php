@@ -2578,7 +2578,7 @@ class rpraid
 			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
 		}
 		$rpm = new raidmessenger();
-		$rpm->get_notifiable_users($trigger);
+		$rpm->get_notifiable_users($trigger, $this->id);
 
 		$emailrecipients = array();
 		$messenger = new messenger();

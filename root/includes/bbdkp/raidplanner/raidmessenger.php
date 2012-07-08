@@ -18,18 +18,11 @@ class raidmessenger
 	public $send_user_data = array();
 	
 	/**
-	 * template
-	 *
-	 * @var array
-	 */
-	public $patterns = array();
-	
-	/**
 	 * initialises array with users who get notified
 	 *
 	 * @param int $trigger
 	 */
-	public function get_notifiable_users($trigger)
+	public function get_notifiable_users($trigger, $id)
 	{
 		global $db;
 		switch ($trigger)
@@ -42,11 +35,18 @@ class raidmessenger
 				break;
 			case 2:
 			case 3:
-				// get raidplan participants
+				// get raidplan participants and raid leader
 				$sql = 'SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
 						FROM ' . RP_SIGNUPS . ' l, ' . USERS_TABLE . ' u 
 						WHERE l.poster_id = u.user_id 
-						AND l.raidplan_id = ' . $this->id ;
+						AND l.raidplan_id = ' . $id . '
+						UNION 
+						SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
+						FROM ' . RP_RAIDS_TABLE . ' r, ' . USERS_TABLE . ' u 
+						WHERE r.poster_id = u.user_id 
+						AND r.raidplan_id = ' . $id;
+				
+				;
 				break;
 		}
 		
