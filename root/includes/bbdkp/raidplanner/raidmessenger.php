@@ -50,7 +50,7 @@ class raidmessenger
 				$sql = 'SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
 						FROM ' . RP_RAIDS_TABLE . ' r, ' . USERS_TABLE . ' u 
 						WHERE r.poster_id = u.user_id 
-						AND r.raidplan_id = ' . $$raidplan_id;
+						AND r.raidplan_id = ' . $raidplan_id;
 			case 5:
 			case 6:
 				// get raidleader and raider

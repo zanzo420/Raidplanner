@@ -258,6 +258,7 @@ class rpsignup
 		generate_text_for_storage($this->comment, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
 		$this->storesignup();
+		
 		return true;
 	}
 	
@@ -424,7 +425,7 @@ class rpsignup
 					$db->sql_query($sql);
 				}
 				$db->sql_transaction('commit');
-		
+				
 				return true;
 				break;
 		}
@@ -496,6 +497,7 @@ class rpsignup
 				return true;
 				break; 
 		}
+		
 		
 		// if already 0 then don't do anything
 		return false;
@@ -588,7 +590,7 @@ class rpsignup
 	**   send to member 
 	**
 	*/
-	function signupmessenger($trigger)
+	function signupmessenger($trigger, rpraid $raidplan)
 	{
 		global $user, $config;
 		global $phpEx, $phpbb_root_path;
@@ -615,29 +617,29 @@ class rpsignup
 				case 4:
 					// send signup to RL				
 					$messenger->template('signup_new', $row['user_lang']);
-					$subject = $user->lang['NEWSIGN'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					$subject = $user->lang['NEWSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
 					break;
 				case 5:
 					// send confirmation to RL and raider
 					$messenger->template('signup_confirm', $row['user_lang']);
-					$subject = $user->lang['CONFIRMSIGN'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					$subject = $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->eventlist->events[$this->event_type]['event_name'] . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
 					break;						
 				case 6:
 					// send cancellation to RL and raider
 					$messenger->template('signup_unsign', $row['user_lang']);
-					$subject = $user->lang['UNSIGNED'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					$subject = $user->lang['UNSIGNED'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
 					break;						
 			}
 
 		   $messenger->assign_vars(array(
 				'USERNAME'			=> htmlspecialchars_decode($row['username']),
 				'EVENT_SUBJECT'		=> $subject, 
-		   		'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'], 
-				'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
-				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
-				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
+		   		'EVENT'				=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'], 
+				'INVITE_TIME'		=> $user->format_date($raidplan->invite_time, $config['rp_date_time_format'], true),
+				'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
+				'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-				'U_RAIDPLAN'		=> generate_board_url() . "dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$this->id
+				'U_RAIDPLAN'		=> generate_board_url() . "dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$raidplan->id
 			));
 			
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
