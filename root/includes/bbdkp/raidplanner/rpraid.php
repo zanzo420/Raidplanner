@@ -1454,6 +1454,8 @@ class rpraid
 			
 			if($raidplan_id != 0)
 			{
+				$this->raidmessenger(3);
+				
 				$db->sql_transaction('begin');
 				
 				// delete all the signups for this raidplan before deleting the raidplan
@@ -1472,11 +1474,13 @@ class rpraid
 				$day = gmdate("d", $this->start_time);
 				$month = gmdate("n", $this->start_time);
 				$year =	gmdate('Y', $this->start_time);
+
 				unset($this);
 				
 				$meta_info = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$month."&amp;calY=".$year);
 				$message = $user->lang['EVENT_DELETED'];
-		
+				
+				
 				meta_refresh(3, $meta_info);
 				$message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $meta_info . '">', '</a>');
 				trigger_error($message);
@@ -2565,7 +2569,6 @@ class rpraid
 		global $user, $config;
 		global $phpEx, $phpbb_root_path;
 
-		//get vars
 		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
@@ -2582,7 +2585,7 @@ class rpraid
 		foreach($rpm->send_user_data as $id => $row)
 		{
 			
-			// send email
+			// get template
 			switch ($trigger)
 			{
 				case 1:
