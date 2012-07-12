@@ -15,9 +15,13 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	3 Raidplan types exist : Public Raidplans (no signup), Raid Raidplans (Signup), and personal Raidplans.
 *	Raidplan event types are picked from bbDKP. if you need new events, set up one in the event list. Event Icons are shown in the raidplan.
 *	Support for BBCode and Smilies
+<<<<<<< HEAD
 *	PM on raidplan addition, update, delete
 *	email on new raid addition, update, delete
 *	acp setting to enable/disable pm/email
+=======
+*	New buttons
+>>>>>>> new buttons for add, edit, push
 
 ##### Inviting and signing up
 *	Confirm Raid Raidplans 
@@ -28,9 +32,13 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	Raidmembers can change their comments, or change their signup from available to not available.
 *	Raidleaders can approve or deny raidmembers
 *   tooltip shows current status of your signup
+<<<<<<< HEAD
 *	PM on new signup, update, unsign
 *	email on new signup, update, unsign
 *	acp setting to enable/disable pm/email
+=======
+*   pm or/and email is sent on signup & raidplan changes/additions
+>>>>>>> new buttons for add, edit, push
 
 ##### Views
 *	Raidplan view - filled with all Raidplan details (who's invited, who created the Raidplan, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc)
