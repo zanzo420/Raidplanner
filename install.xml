@@ -70,11 +70,11 @@
 			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php"/>
 			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php"/>
 			<file from="root/language/en/email/raidplan_add.txt" to="language/en/email/raidplan_add.txt"/>
-			<file from="root/language/en/email/raidplan_confirm.txt" to="language/en/email/raidplan_confirm.txt"/>
+			<file from="root/language/en/email/raidplan_update.txt" to="language/en/email/raidplan_update.txt"/>
 			<file from="root/language/en/email/raidplan_delete.txt" to="language/en/email/raidplan_delete.txt"/>
-			<file from="root/language/en/email/raidplan_newsignup.txt" to="language/en/email/raidplan_newsignup.txt"/>
-			<file from="root/language/en/email/raidplan_unsign.txt" to="language/en/email/raidplan_unsign.txt"/>
-			<file from="root/language/en/email/raidplan_update.txt" to="language/en/email/raidplan_update.txt"/>									
+			<file from="root/language/en/email/signup_confirm.txt" to="language/en/email/signup_confirm.txt"/>
+			<file from="root/language/en/email/signup_unsign.txt" to="language/en/email/signup_unsign.txt"/>
+			<file from="root/language/en/email/signup_new.txt" to="language/en/email/signup_new.txt"/>									
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
