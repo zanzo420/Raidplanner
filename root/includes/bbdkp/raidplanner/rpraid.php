@@ -2584,7 +2584,7 @@ class rpraid
 		$messenger = new messenger();
 		foreach($rpm->send_user_data as $id => $row)
 		{
-			
+			$data=array();
 			// get template
 			switch ($trigger)
 			{
@@ -2601,8 +2601,13 @@ class rpraid
 					$subject = $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
 					break;						
 			}
-
+		   
+		   $userids = array($this->poster);
+		   $rlname = array();
+		   user_get_id_name($userids, $rlname);
+		   
 		   $messenger->assign_vars(array(
+		   		'RAIDLEADER'		=> $rlname[$this->poster],
 				'USERNAME'			=> htmlspecialchars_decode($row['username']),
 				'EVENT_SUBJECT'		=> $subject, 
 		   		'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'], 
@@ -2616,7 +2621,13 @@ class rpraid
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
 			$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
 			
-			$data = array( 
+			$messenger->msg = utf8_normalize_nfc($messenger->msg);
+    		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+    		$allow_bbcode = $allow_smilies = $allow_urls = true;
+    		generate_text_for_storage($messenger->msg, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+    		$messenger->msg = generate_text_for_display($messenger->msg, $uid, $bitfield, $options); 
+    		
+    		$data = array( 
 			    'address_list'      => array('u' => array($row['user_id'] => 'to')),
 			    'from_user_id'      => $user->data['user_id'],
 			    'from_username'     => $user->data['username'],

@@ -1,8 +1,8 @@
 Dear {USERNAME},
 
-Your have been unsigned to the raid {EVENT_SUBJECT} at invite time : {START_TIME} {TZ}. 
+{USERNAME} has unsigned {RAIDER} from the raid {EVENT} occuring at invite time : {START_TIME} {TZ}. 
 
-To view this event please visit the following link:
-{U_RAIDPLAN}
+To view or resignup this event please visit the following link:
+[url]{U_RAIDPLAN}[/url]
 
 {EMAIL_SIG}

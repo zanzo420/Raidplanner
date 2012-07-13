@@ -1,9 +1,9 @@
-Dear {USERNAME},
+Dear {RAIDLEADER},
 
-{RAIDER} signed up to the Raid {EVENT_SUBJECT} using the role {ROLE}
+User {USERNAME} signed up as {RAIDER} to the Raid {EVENT} in role of {ROLE} 
 
-to occur at
-invite time : {START_TIME} {TZ}
+timestamp : {SIGNUP_TIME}
+Raidplan invites scheduled : {START_TIME} {TZ}
 
 To view this event please visit the following link:
 {U_RAIDPLAN}
