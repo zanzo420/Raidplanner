@@ -129,11 +129,19 @@ switch( $view_mode )
 					$raid->display();
 				}
 				break;			
-			default:
-				// show the raid view form
+			case 'push':
+				//push to bbdkp
 				$raid = new rpraid($raidplan_id);
-				$raid->display();
+				if(!$raid->raidplan_push())
+				{
+					$raid->display();
+				}
 				break;
+			default:
+			// show the raid view form
+			$raid = new rpraid($raidplan_id);
+			$raid->display();
+			break;
 		}
 		break;
    case "next":		

@@ -1536,6 +1536,13 @@ class rpraid
 			$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		}
 		
+		// url to push raidplan to bbdkp
+		$push_raidplan_url = '';
+		if ( $auth->acl_gets('u_raidplanner_push'))
+		{
+			$push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=push&amp;calEid=". $this->id);
+		}
+		
 		/* make the url for the delete button */
 		$delete_url = "";
 		$delete_all_url = "";
@@ -1553,6 +1560,7 @@ class rpraid
 			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
 			$day."&amp;calM=". $month. "&amp;calY=".$year);
 		}
+		
 		
 		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".
 		$month."&amp;calY=".$year);
@@ -1885,13 +1893,14 @@ class rpraid
 			'POSTER'			=> $this->poster_url,
 			'INVITED'			=> $this->invite_list,
 			'TEAM_NAME'			=> $this->raidteamname, 
-			'U_EDIT'			=> $edit_url,
-			'U_DELETE'			=> $delete_url,	
+			'U_EDITRAID'		=> $edit_url,
+			'U_DELETERAID'		=> $delete_url,	
+			'U_ADDRAID'			=> $add_raidplan_url,
+			'U_PUSHRAID'		=> $push_raidplan_url,
 			
 			'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
 			'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
 			'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
-			'ADD_LINK'			=> $add_raidplan_url,
 			'DAY_VIEW_URL'		=> $day_view_url,
 			'WEEK_VIEW_URL'		=> $week_view_url,
 			'MONTH_VIEW_URL'	=> $month_view_url,
@@ -2572,6 +2581,7 @@ class rpraid
 		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
 		if (!class_exists('raidmessenger'))
 		{
@@ -2615,7 +2625,7 @@ class rpraid
 				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
 				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-				'U_RAIDPLAN'		=> generate_board_url() . "dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$this->id
+				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$this->id
 			));
 			
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
@@ -2667,6 +2677,152 @@ class rpraid
 			$email->save_queue();
 			$emailrecipients = implode(', ', $emailrecipients);
 			add_log('admin', 'LOG_MASS_EMAIL', $emailrecipients);
+		}
+		
+		
+	}
+	
+
+	/**
+	 * adds raid to bbdkp
+	 *
+	 */
+	public function raidplan_push()
+	{
+		global $db, $user, $config, $template, $phpEx ;
+		if (confirm_box ( true )) 
+		{
+			// recall hidden vars
+			$raid = array(
+				'raid_note' 		=> utf8_normalize_nfc (request_var ( 'hidden_raid_note', ' ', true )), 
+				'raid_event'		=> utf8_normalize_nfc (request_var ( 'hidden_raid_name', ' ', true )), 
+				'raid_value' 		=> request_var ('hidden_raid_value', 0.00 ), 
+				'raid_timebonus'	=> request_var ('hidden_raid_timebonus', 0.00 ),
+				'raid_start' 		=> request_var ('hidden_startraid_date', 0), 
+				'raid_end'			=> request_var ('hidden_endraid_date', 0),
+				'event_id' 			=> request_var ('hidden_event_id', 0),
+				'raid_attendees' 	=> request_var ('hidden_raid_attendees', array ( 0 => 0 )), 
+			); 
+			
+			// Get event info
+			$sql = "SELECT event_id, event_name, event_dkpid, event_value FROM " . EVENTS_TABLE . "  WHERE 
+	                event_id = " . $raid['event_id'];
+			$result = $db->sql_query ( $sql );
+			while ( $row = $db->sql_fetchrow ($result) ) 
+			{
+				if ($raid['raid_value'] == 0.00)
+				{
+					$raid['raid_value'] = max ( $row['event_value'], 0.00 );
+				}
+				
+				$raid['event_dkpid'] = $row['event_dkpid'];
+				$raid['event_name'] = $row['event_name'];
+			}
+			$db->sql_freeresult( $result );
+			
+			/*
+			 * start transaction
+			 */
+			$db->sql_transaction('begin');
+			//
+			// Insert the raid
+			// raid id is auto-increment so it is increased automatically
+			//
+			$query = $db->sql_build_array ( 'INSERT', array (
+					'event_id' 		=> (int) $raid['event_id'], 
+					'raid_start' 	=> (int) $raid['raid_start'],
+					'raid_end' 		=> (int) $raid['raid_end'], 
+					'raid_note' 	=> (string) $raid['raid_note'], 
+					'raid_added_by' => (string) $user->data['username'] ) 
+			);
+			
+			$db->sql_query ( "INSERT INTO " . RAIDS_TABLE . $query );
+			$raid ['raid_id'] = $db->sql_nextid();
+			// Attendee handling
+			
+			// Insert the raid detail
+			$raiddetail = $this->add_raiddetail($raid);
+	
+			//
+			// pass the raidmembers array, raid value, and dkp pool.
+			foreach ( (array) $raid['raid_attendees'] as $member_id )
+			{
+				$this->add_dkp ($raid['raid_value'], $raid['raid_timebonus'], $raid['raid_start'] , $raid['event_dkpid'] , $member_id);
+			}
+			
+			// commit
+			$db->sql_transaction('commit');
+			
+			//
+			// Logging
+			//
+			$log_action = array (
+				'header' => 'L_ACTION_RAID_ADDED', 
+				'id' 			=> $raid ['raid_id'], 
+				'L_EVENT' 		=> $raid['event_name'], 
+				'L_ATTENDEES' 	=> implode ( ', ', $raid ['raid_attendees'] ), 
+				'L_NOTE' 		=> $raid ['raid_note'], 
+				'L_VALUE' 		=> $raid['raid_value'], 
+				'L_ADDED_BY' 	=> $user->data ['username']);
+			
+			$this->log_insert (array(
+				'log_type' 		=> $log_action ['header'], 
+				'log_action' 	=> $log_action ));
+			
+			//
+			// Success message
+			//
+			$success_message = sprintf ( $user->lang ['ADMIN_ADD_RAID_SUCCESS'], 
+				$user->format_date($this->time), $raid['event_name'] ) . '<br />';
+				
+			//
+			// Update active / inactive player status if needed
+			//
+			if ($config ['bbdkp_hide_inactive'] == 1) 
+			{
+				$success_message .= '<br /><br />' . $user->lang ['ADMIN_RAID_SUCCESS_HIDEINACTIVE'];
+				$success_message .= ' ' . (($this->update_player_status ( $raid['event_dkpid'] )) ? 
+					strtolower ( $user->lang ['DONE'] ) : strtolower ( $user->lang ['ERROR'] ));
+			}
+
+			//show message and redirect to raid after 3 seconds
+			$link = append_sid ( "index.$phpEx?i=dkp_raid&amp;mode=editraid&amp;" . URI_RAID . "={$raid ['raid_id']}" );
+	    	meta_refresh(1, $link);
+			trigger_error ( $success_message . $this->link, E_USER_NOTICE );
+				
+		}
+		else
+		{
+			// store raidinfo as hidden vars
+			$raid_attendees = array();
+			foreach($this->raidroles as $key => $role)
+			{
+				 foreach($role['role_confirmations'] as $confirmation)
+				 {
+				 	$raid_attendees[] = $confirmation['signup_id'];
+				 }
+			}
+			
+			$s_hidden_fields = build_hidden_fields(array(
+					'hidden_raid_note' 			=> $this->body, 
+					'hidden_event_id' 			=> $this->event_type,
+					'hidden_raid_event'			=> $this->subject=$row['raidplan_subject'], 
+					'hidden_raid_value' 		=> $this->eventlist->events[$this->event_type]['event_value'],
+					'hidden_raid_timebonus' 	=> 0, 
+					'hidden_startraid_date' 	=> $this->start_time,
+					'hidden_endraid_date' 		=> $this->end_time,  
+					'hidden_raid_attendees' 	=> $raid_attendees, 
+					'add'    					=> true, 
+			)
+			);
+			
+			$sql='SELECT event_name FROM ' . EVENTS_TABLE . ' WHERE event_id = ' . $this->event_type; 
+			$result = $db->sql_query($sql);
+			$eventname = (string) $db->sql_fetchfield('event_name');
+			$db->sql_freeresult($result);
+			
+			confirm_box(false, sprintf($user->lang['CONFIRM_CREATE_RAID'], $eventname) , $s_hidden_fields);				
+			
 		}
 		
 		

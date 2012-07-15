@@ -6,22 +6,22 @@
 <div style="width:10%; float: left;">
 <img src="{EVENT_IMAGE}" alt="{ETYPE_DISPLAY_NAME}" width="48" height="48" /> 
 </div>
-<div class="blockhead" style="width:60%; float: left;">
+<div class="blockhead" style="width:30%; float: left;">
 <h1 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!-- ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h1>
 </div>
 
-<div style="width:30%; float: right;">
+<div style="width:40%; float: right;">
 <ul class="profile-icons" style="float: right;">
-<!-- IF ADD_LINK -->
+<!-- IF U_ADDRAID -->
 <li class="planner-new-button"><a href="{U_ADDRAID}" title="{L_NEW_RAID}"><span></span></a></li>
 <!-- ENDIF -->
-<!-- IF U_EDIT -->
+<!-- IF U_EDITRAID -->
 <li class="planner-edit-button"><a href="{U_EDITRAID}" title="{L_EDIT_RAID}"><span></span></a></li>
 <!-- ENDIF -->
-<!-- IF U_PUSH -->
+<!-- IF U_PUSHRAID -->
 <li class="planner-push-button"><a href="{U_PUSHRAID}" title="{L_PUSH_RAID}"><span></span></a></li>
 <!-- ENDIF -->
-<!-- IF U_DELETE -->
+<!-- IF U_DELETERAID -->
 <li class="planner-delete-button"><a href="{U_DELETERAID}" title="{L_DELETE_RAID}"><span></span></a></li>
 <!-- ENDIF -->
 </ul>

@@ -454,11 +454,24 @@ $versions = array(
 		'config_add' => array(
 			array('rp_show_portal', 1, true),
 			),
-        	 
+
+			
         ),    
         '0.5.0' => array(
+		  // Assign default permissions 
+			// permission to push raidplan
+	   'permission_add' => array(
+			   array('u_raidplanner_push', true),
+	
+	      	),
+
+        'permission_set' => array(
+			// can create raidplans that recur
+			array('ADMINISTRATORS', 'u_raidplanner_push', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_push', 'group', true),
+			),        
 			
-	      // adding some configs
+      	// adding some configs
 			'config_add' => array(
 			array('rp_pmnotification', 1, true),
 			array('rp_emailnotification', 1, true),
