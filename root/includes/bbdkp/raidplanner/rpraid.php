@@ -2725,7 +2725,6 @@ class rpraid
 		}
 		$acp_dkp_raid = new acp_dkp_raid();
 		
-		
 		// check if raid exists in bbdkp
 		if ($this->raid_id > 0)
 		{
@@ -2795,6 +2794,12 @@ class rpraid
 		}
 		else
 		{
+			if($config['rp_rppushmode'] == 1 && $this->signups['confirmed'] > 0 )
+			{
+				// automatic mode, don't ask permisison
+			}
+			
+			
 			//insert
 			if (confirm_box ( true )) 
 			{
@@ -2811,47 +2816,12 @@ class rpraid
 					'raid_attendees' 	=> request_var ('hidden_raid_attendees', array ( 0 => 0 )), 
 				); 
 	
-				$db->sql_transaction('begin');
-	
-				// raid id is auto-increment so it is increased automatically
-				$query = $db->sql_build_array ( 'INSERT', array (
-						'event_id' 		=> (int) $raid['event_id'], 
-						'raid_start' 	=> (int) $raid['raid_start'],
-						'raid_end' 		=> (int) $raid['raid_end'], 
-						'raid_note' 	=> (string) $raid['raid_note'], 
-						'raid_added_by' => (string) $user->data['username'] ) 
-				);
-				
-				$db->sql_query ( "INSERT INTO " . RAIDS_TABLE . $query );
-				$raid ['raid_id'] = $db->sql_nextid();
-				
-				//set raid_id
-				$this->raid_id = $raid ['raid_id'];
-				
-				//store raid_id
-				$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET raid_id = '  . $this->raid_id . ' WHERE raidplan_id = ' . $this->id; 
-				$db->sql_query($sql);
-				
-		        $raid_detail = array();
-				foreach ( $raid['raid_attendees'] as $member_id )
-				{
-					$raid_detail[] = array(
-						'raid_id'      => (int) $raid['raid_id'],
-						'member_id'    => (int) $member_id,
-						'raid_value'   => (float) $raid['raid_value'],
-						'time_bonus'   => (float) $raid['raid_timebonus'],
-						);
-					$acp_dkp_raid->add_dkp ($raid['raid_value'], $raid['raid_timebonus'], $raid['raid_start'] , $raid['dkpid'] , $member_id);
-				}
-				$db->sql_multi_insert(RAID_DETAIL_TABLE, $raid_detail);
-			
-				// commit
-				$db->sql_transaction('commit');
+				$this->exec_pushraid($raid);
 				
 				//
 				// Logging
 				$log_action = array (
-					'header' => 'L_ACTION_RAID_ADDED', 
+					'header' 		=> 'L_ACTION_RAID_ADDED', 
 					'id' 			=> $raid ['raid_id'], 
 					'L_EVENT' 		=> $raid['event_name'], 
 					'L_ATTENDEES' 	=> implode ( ', ', $raid ['raid_attendees'] ), 
@@ -2882,7 +2852,9 @@ class rpraid
 			}
 			else
 			{
+				
 				// store raidinfo as hidden vars
+				// this clears the $_POST array
 				$raid_attendees = array();
 				foreach($this->raidroles as $key => $role)
 				{
@@ -2909,13 +2881,65 @@ class rpraid
 				);
 				
 				confirm_box(false, sprintf($user->lang['CONFIRM_CREATE_RAID'], 
-					$this->eventlist->events[$this->event_type]['event_name']) , $s_hidden_fields);				
+					$this->eventlist->events[$this->event_type]['event_name']) , $s_hidden_fields);			
+					
 				
 			}
 		}
-			
-			
 		
+	}
+	
+	/**
+	 * private subroutine for raidplan_push
+	 *
+	 * @param array $raid
+	 */
+	private function exec_pushraid($raid)
+	{
+		global $db; 
+		
+		if (!class_exists('acp_dkp_raid'))
+		{
+			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
+		}
+		$acp_dkp_raid = new acp_dkp_raid();
+		
+		$db->sql_transaction('begin');
+
+		// raid id is auto-increment so it is increased automatically
+		$query = $db->sql_build_array ( 'INSERT', array (
+				'event_id' 		=> (int) $raid['event_id'], 
+				'raid_start' 	=> (int) $raid['raid_start'],
+				'raid_end' 		=> (int) $raid['raid_end'], 
+				'raid_note' 	=> (string) $raid['raid_note'], 
+				'raid_added_by' => (string) $user->data['username'] ) 
+		);
+		
+		$db->sql_query ( "INSERT INTO " . RAIDS_TABLE . $query );
+		$raid ['raid_id'] = $db->sql_nextid();
+		
+		//set raid_id
+		$this->raid_id = $raid ['raid_id'];
+		
+		//store raid_id
+		$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET raid_id = '  . $this->raid_id . ' WHERE raidplan_id = ' . $this->id; 
+		$db->sql_query($sql);
+		
+        $raid_detail = array();
+		foreach ( $raid['raid_attendees'] as $member_id )
+		{
+			$raid_detail[] = array(
+				'raid_id'      => (int) $raid['raid_id'],
+				'member_id'    => (int) $member_id,
+				'raid_value'   => (float) $raid['raid_value'],
+				'time_bonus'   => (float) $raid['raid_timebonus'],
+				);
+			$acp_dkp_raid->add_dkp ($raid['raid_value'], $raid['raid_timebonus'], $raid['raid_start'] , $raid['dkpid'] , $member_id);
+		}
+		$db->sql_multi_insert(RAID_DETAIL_TABLE, $raid_detail);
+	
+		// commit
+		$db->sql_transaction('commit');
 		
 	}
 

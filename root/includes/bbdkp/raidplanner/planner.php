@@ -113,6 +113,10 @@ switch( $view_mode )
 				$signup = new rpsignup();
 				$signup->confirmsignup($signup_id);
 				$raid = new rpraid($raidplan_id);
+				if($config['rp_rppushmode'] == 1 && $raid->signups['confirmed'] > 0 )
+				{
+					$raid->raidplan_push();
+				}
 				$signup->signupmessenger(5, $raid);
 				$raid->display();
 				break;	
@@ -141,6 +145,7 @@ switch( $view_mode )
 			// show the raid view form
 			$raid = new rpraid($raidplan_id);
 			$raid->display();
+			
 			break;
 		}
 		break;
