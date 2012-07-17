@@ -433,12 +433,15 @@ class rpraid
 			
 			// are you currently signed up for a raidplan ?
 			// check it, and lock signup pane if your char is already registered for a role
+			// setting signed_up, signed_up_maybe,confirmed to true locks popup/pane
 			$this->signed_up = false;
 			$this->signed_up_maybe = false;
 			foreach($this->raidroles as $rid => $myrole)
 			{
+				// there are signups?
 				if(is_array($myrole['role_signups']))
 				{
+					//loop them
 					foreach($myrole['role_signups'] as $signid => $asignup)
 					{
 						if(isset($this->mychars))
@@ -1536,18 +1539,25 @@ class rpraid
 		$month = gmdate("n", $this->start_time);
 		$year =	gmdate('Y', $this->start_time);
 
-		/* make the url for the edit button */
+		/* make the url for the edit button 
+		// show if
+		// user is registered and belongs to u_raidplanner_edit_raidplans usergroup and did create this raid, or belong to group that can edit any raid
+		*/
 		$edit_url = "";
 		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
-	    (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
+	    (($user->data['user_id'] == $this->poster ) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
 		{
 			$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". 
 			$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		}
 		
-		// url to push raidplan to bbdkp
+		// button with url to push raidplan to bbdkp
+		// this appears only if 
+		// 1) rp_rppushmode == 1
+		// 2) the user belongs to group having u_raidplanner_push permission
+		// 3) there are confirmations
 		$push_raidplan_url = '';
-		if ( $auth->acl_gets('u_raidplanner_push'))
+		if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $this->signups['confirmed'] > 0  )
 		{
 			$push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=push&amp;calEid=". $this->id);
 		}
@@ -1618,8 +1628,6 @@ class rpraid
 						'S_ROLE_ICON_EXISTS' => (strlen($role['role_icon']) > 1) ? true : false,
 				       	'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $role['role_icon'] . ".png" : '',
 				 ));
-				 
-
 				 
 				 // loop confirmed signups per role
 				 foreach($role['role_confirmations'] as $confirmation)
@@ -1852,6 +1860,8 @@ class rpraid
 			$tz = (int) $user->data['user_timezone'];
 		}
 
+		
+		
 		$template->assign_vars( array(
 			'S_LOCKED'			=> $this->locked,
 			'S_FROZEN'			=> $this->frozen,
@@ -2582,7 +2592,7 @@ class rpraid
 	**   send to raidplan participants	
 	**
 	*/
-	function raidmessenger($trigger)
+	private function raidmessenger($trigger)
 	{
 		global $user, $config;
 		global $phpEx, $phpbb_root_path;
@@ -2663,13 +2673,13 @@ class rpraid
 			    'bbcode_uid'        => $this->bbcode['uid'],
 			);
 			
-			if($config['rp_pmnotification'] == 1 &&  (int) $row['user_allow_pm'] == 1)
+			if($config['rp_pm_rpchange'] == 1 &&  (int) $row['user_allow_pm'] == 1)
 			{
 				// send a PM
 				submit_pm('post',$subject, $data, false);
 			}
 			
-			if($config['rp_emailnotification'] == 1 && $row['user_email'] != '')
+			if($config['rp_email_rpchange'] == 1 && $row['user_email'] != '')
 			{
 				//send email, reuse messenger object
 			   $email = $messenger;
@@ -2681,7 +2691,7 @@ class rpraid
 			
 		}
 		
-		if($config['rp_emailnotification'] == 1 && isset($email))
+		if($config['rp_email_rpchange'] == 1 && isset($email))
 		{
 			$email->save_queue();
 			$emailrecipients = implode(', ', $emailrecipients);

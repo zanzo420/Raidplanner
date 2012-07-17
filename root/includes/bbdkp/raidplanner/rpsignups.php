@@ -694,13 +694,13 @@ class rpsignup
 		    $data['bbcode_uid']        = $this->bbcode['uid'];
 			
 	   
-			if($config['rp_pmnotification'] == 1 &&  (int) $row['user_allow_pm'] == 1)
+			if($config['rp_pm_signup'] == 1 &&  (int) $row['user_allow_pm'] == 1)
 			{
 				// send a PM
 				submit_pm('post',$subject, $data, false);
 			}
 			
-			if($config['rp_emailnotification'] == 1 && $row['user_email'] != '')
+			if($config['rp_email_signup'] == 1 && $row['user_email'] != '')
 			{
 				//send email, reuse messenger object
 			   $email = $messenger;
@@ -712,7 +712,7 @@ class rpsignup
 				
 		}
 		
-		if($config['rp_emailnotification'] == 1 && isset($email))
+		if($config['rp_email_signup'] == 1 && isset($email))
 		{
 			$email->save_queue();
 			$emailrecipients = implode(', ', $emailrecipients);
