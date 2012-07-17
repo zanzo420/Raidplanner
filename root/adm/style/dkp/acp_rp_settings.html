@@ -307,18 +307,23 @@
 		<dt><label>{L_DATE_TIME_FORMAT}:</label><br />{L_DATE_TIME_FORMAT_EXPLAIN}</dt>
 		<dd><input type="text" name="date_time_format" id="date_time_format" value="{DATE_TIME_FORMAT}"/></dd>
 	</dl>
+	
+	<dl>
+		<dt><label>{L_DISPLAY_NAME}:</label><br /></dt>
+		<dd><input type="checkbox" id="show_name" name="show_name" value="1" {SHOW_NAME} /></dd>
+	</dl>
+	<!-- no pruning  
 	<dl>
 		<dt><label>{L_AUTO_PRUNE_EVENT_FREQUENCY}:</label><br />{L_AUTO_PRUNE_EVENT_FREQUENCY_EXPLAIN}</dt>
 		<dd><input type="text" name="prune_freq" id="prune_freq" value="{PRUNE_FREQ}" /></dd>
 	</dl>
 	<dl>
-		<dt><label>{L_DISPLAY_NAME}:</label><br /></dt>
-		<dd><input type="checkbox" id="show_name" name="show_name" value="1" {SHOW_NAME} /></dd>
-	</dl>
-	<dl>
 		<dt><label>{L_AUTO_PRUNE_EVENT_LIMIT}:</label><br />{L_AUTO_PRUNE_EVENT_LIMIT_EXPLAIN}</dt>
 		<dd><input type="text" name="prune_limit" id="prune_limit" value="{PRUNE_LIMIT}" /></dd>
 	</dl>
+
+	recurring is @todo 
+	
 	<dl>
 		<dt><label>{L_AUTO_POPULATE_EVENT_FREQUENCY}:</label><br />{L_AUTO_POPULATE_EVENT_FREQUENCY_EXPLAIN}</dt>
 		<dd><input type="text" name="populate_freq" id="populate_freq" value="{POPULATE_FREQ}" /></dd>
@@ -327,12 +332,7 @@
 		<dt><label>{L_AUTO_POPULATE_EVENT_LIMIT}:</label><br />{L_AUTO_POPULATE_EVENT_LIMIT_EXPLAIN}</dt>
 		<dd><input type="text" name="populate_limit" id="populate_limit" value="{POPULATE_LIMIT}" /></dd>
 	</dl>
-	<dl>
-		<dt><label>{L_CLICK_PLUS_HOUR}:</label><br />{L_CLICK_PLUS_HOUR_EXPLAIN}</dt>
-		<dd><a href="{U_PLUS_HOUR}">{L_PLUS_HOUR}</a><br />
-		<a href="{U_MINUS_HOUR}">{L_MINUS_HOUR}</a></dd>
-	</dl>
-
+ 	-->
 <fieldset class="quick">
 	{S_FORM_TOKEN}
     <input type="submit" name="update_rp_settings_cal" value="{L_SUBMIT}" class="button1" />
