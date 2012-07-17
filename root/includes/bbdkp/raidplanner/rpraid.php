@@ -254,7 +254,14 @@ class rpraid
 	 * @var unknown_type
 	 */
 	public $raid_id;
-
+	
+	/**
+	 * redirect link for raid
+	 *
+	 * @var string
+	 */
+	public $link; 
+	
 	/**
 	 * constructor
 	 *
@@ -326,6 +333,7 @@ class rpraid
 			$this->signed_off=true;
 			$this->raid_id=0;
 			
+			
 			// populate properties
 			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $this->id;
 			$result = $db->sql_query($sql);
@@ -335,7 +343,8 @@ class rpraid
 			{
 				trigger_error( 'INVALID_RAIDPLAN' );
 			}
-			
+
+			$this->link = generate_board_url() . "/dkp.$phpEx?page=planner&view=raidplan&calEid=" . $this->id;
 			$this->raid_id = $row['raid_id'];
 				
 			// check access
@@ -1551,17 +1560,6 @@ class rpraid
 			$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		}
 		
-		// button with url to push raidplan to bbdkp
-		// this appears only if 
-		// 1) rp_rppushmode == 1
-		// 2) the user belongs to group having u_raidplanner_push permission
-		// 3) there are confirmations
-		$push_raidplan_url = '';
-		if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $this->signups['confirmed'] > 0  )
-		{
-			$push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=push&amp;calEid=". $this->id);
-		}
-		
 		/* make the url for the delete button */
 		$delete_url = "";
 		$delete_all_url = "";
@@ -1835,6 +1833,16 @@ class rpraid
 			
 		}
 		
+		// button with url to push raidplan to bbdkp
+		// this appears only if 
+		// 1) rp_rppushmode == 1
+		// 2) the user belongs to group having u_raidplanner_push permission
+		// 3) there are confirmations
+		$push_raidplan_url = '';
+		if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $this->signups['confirmed'] > 0  )
+		{
+			$push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=push&amp;calEid=". $this->id);
+		}
 			
 		// event image on top
 		if(strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1)
@@ -1925,6 +1933,7 @@ class rpraid
 			'MONTH_VIEW_URL'	=> $month_view_url,
 			)
 		);
+
 		
 	}
 
