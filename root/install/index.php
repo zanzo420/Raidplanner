@@ -44,16 +44,16 @@ if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 }
 
 
-// only allow install when bbDKP 1.2.7 is also installed 
+// only allow install when bbDKP 1.2.8 is also installed 
 if  (!isset ($config['bbdkp_version']) )
 {
     trigger_error('bbDKP must be installed first.');
 }
 else
 {
-	if(version_compare($config['bbdkp_version'], '1.2.7') == -1 ) 
+	if(version_compare($config['bbdkp_version'], '1.2.8') == -1 ) 
 	{
-	    trigger_error('Radplanner 0.5.0 requires bbDKP 1.2.7 or higher.');
+	    trigger_error('Radplanner 0.5.0 requires bbDKP 1.2.8 or higher.');
 	}
 }
 
@@ -473,9 +473,11 @@ $versions = array(
 			
       		// adding some configs
 			'config_add' => array(
-			array('rp_pmnotification', 1, true),
-			array('rp_emailnotification', 1, true),
-			array('rp_automaticpush', 1, true),
+			array('rp_pm_rpchange', 1, true),
+			array('rp_email_rpchange', 1, true),
+			array('rp_pm_signup', 1, true),
+			array('rp_email_signup', 1, true),
+			array('rp_rppushmode', 1, true),
 			),
 
 			'table_add' => array(

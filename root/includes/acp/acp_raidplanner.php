@@ -34,8 +34,7 @@ class acp_raidplanner
 			trigger_error($user->lang['USER_CANNOT_MANAGE_RAIDPLANNER'] );
 		}
 		
-		$this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );	
-		$link = '<br /><a href="' . $this->u_action . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+		$link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
 		$action	= request_var('action', '');
 		
         switch ($mode) 
@@ -52,7 +51,6 @@ class acp_raidplanner
 
 				$update_raidrolesize = (isset($_POST['update_raidrolesize'])) ? true : false;
 				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
-				$update_signup_settings	= (isset($_POST['update_signup_settings'])) ? true : false;
 				
 				$updatecal = (isset($_POST['update_rp_settings_cal'])) ? true : false;
 					
@@ -91,7 +89,7 @@ class acp_raidplanner
 				}
 				
 				//user pressed edit team
-				if( $updateteam)
+				elseif( $updateteam)
 				{
 					$teamnames = utf8_normalize_nfc(request_var('team_name', array( 0 => ''), true));
 					$teamsize = request_var('team_size', array( 0 => ''));
@@ -114,7 +112,7 @@ class acp_raidplanner
 				}
 				
 				//user pressed add role
-				if($addrole)
+				elseif($addrole)
 				{
 					$data = array(
 					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
@@ -132,7 +130,7 @@ class acp_raidplanner
 				}		
 				
 				//user pressed add team
-				if($addteam)
+				elseif($addteam)
 				{
 					$data = array(
 					    'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
@@ -149,7 +147,7 @@ class acp_raidplanner
 				}	
 				
 				//used pressed red cross to delete role
-				if ($deleterole) 
+				elseif ($deleterole) 
 				{
 						// ask for permission
 						if (confirm_box(true))
@@ -177,7 +175,7 @@ class acp_raidplanner
 				}
 				
 				//used pressed red cross to delete team
-				if ($deleteteam) 
+				elseif ($deleteteam) 
 				{
 						// ask for permission
 						if (confirm_box(true))
@@ -206,7 +204,7 @@ class acp_raidplanner
 				
 				
 				// update teamcomposition
-				if($update_raidrolesize)
+				elseif($update_raidrolesize)
 				{
 					$maxteamsize= request_var('maxteamsize', array( 0 => 0), true); 
 					$array = request_var('teamsize', array( 0 => array( 0 => 0)), true);
@@ -243,7 +241,7 @@ class acp_raidplanner
 				}
 				
 				// update Raidplan settings
-				if($update)
+				elseif($update)
 				{
 						
 					$invitehour	= request_var('event_invite_hh', 0) * 60 + request_var('event_invite_mm', 0);
@@ -265,29 +263,41 @@ class acp_raidplanner
 					$disp_upcoming	= request_var('disp_next_raidplans', 0);
 					set_config  ( 'rp_display_next_raidplans',  $disp_upcoming,0);  
 					
+					$send_pm_rpchange=  request_var('send_pm_rpchange', 0);
+					set_config  ( 'rp_pm_rpchange', $send_pm_rpchange, 0) ;
+					
+					$send_email_rpchange = request_var('send_email_rpchange', 0); 
+					set_config  ( 'rp_email_rpchange', $send_email_rpchange, 0) ;
+					
+					$send_pm_signup = request_var('send_pm_signup', 0); 
+					set_config  ( 'rp_pm_signup', $send_pm_signup, 0);
+					
+					$send_email_signup =  request_var('send_email_signup', 0); 
+					set_config  ( 'rp_email_signup', $send_email_signup, 0) ;
+					
+					$push_mode = request_var('push_mode', 0); 
+					set_config  ( 'rp_rppushmode', $push_mode ,0);  
+					$cache->destroy('config');
+					
+					$cache->destroy('config');
+					
 					$message="";
 					$message .= '<br />' . sprintf( $user->lang['RPSETTINGS_UPDATED'], E_USER_NOTICE);
-					trigger_error($message);
 					
-					
+					meta_refresh(1, $this->u_action);
+					trigger_error($message . $link);
 				}
-				
-				if($update_signup_settings)
-				{
-					set_config  ( 'rp_pmnotification',  (isset ( $_POST ['send_pm'] )) ? 1 : 0 , 0);
-					set_config  ( 'rp_emailnotification',  (isset ( $_POST ['send_email'] )) ? 1 : 0 , 0);
-					
-				}
+
 				
 				// move the calendar for daylight savings
-				if( request_var('calPlusHour', 0) == 1)
+				elseif( request_var('calPlusHour', 0) == 1)
 				{
 					$this->move_all_raidplans_by_one_hour( request_var('plusVal', 1));
 					exit;
 				}
 				
 				// update all calendar settings
-				if( $updatecal )
+				elseif( $updatecal )
 				{
 					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0);
 
@@ -316,7 +326,7 @@ class acp_raidplanner
 					$disp_trunc = request_var('disp_trunc', 0);
 					set_config  ( 'rp_display_truncated_name',  $disp_trunc,0);
 					
-					$disp_hidden_groups	= request_var('disp_hidden_groups', 0);
+					$disp_hidden_groups	= request_var('disp_hidden_groups', '');
 					set_config  ( 'rp_display_hidden_groups',  $disp_hidden_groups,0);
 					
 					$disp_raidplans_1_day = request_var('disp_raidplans_1_day', 0);
@@ -357,11 +367,10 @@ class acp_raidplanner
 
 					$cache->destroy('config');
 					
-					$message="";
-					$message .= '<br />' . sprintf( $user->lang['ADVRPSETTINGS_UPDATED'], E_USER_NOTICE);
-					trigger_error($message);
+					$message = '<br />' . sprintf( $user->lang['CALSETTINGS_UPDATED'], E_USER_NOTICE);
 					
-					
+					meta_refresh(1, $this->u_action);
+					trigger_error($message . $link);
 				}
 
 				// build form
@@ -525,7 +534,6 @@ class acp_raidplanner
 				}
 				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
 				
-			
 				$template->assign_vars(array(
 					'S_RAID_INVITE_HOUR_OPTIONS'		=> $s_event_invite_hh_options,
 					'S_RAID_INVITE_MINUTE_OPTIONS'		=> $s_event_invite_mm_options, 
@@ -544,8 +552,6 @@ class acp_raidplanner
 					'SEL_SUNDAY'		=> $sel_sunday,
 					'WELCOME_MESSAGE' 	=> $textarr['text'],
 					'SHOW_NAME'				=> ((int) $config ['rp_show_name'] == 1) ? 'checked="checked"' : "",
-					'SENDPM_CHECKED'		=> ((int) $config ['rp_pmnotification'] == 1) ? 'checked="checked"' : "",
-					'SENDEMAIL_CHECKED'		=> ((int) $config ['rp_emailnotification'] == 1) ? 'checked="checked"' : "",
 					'SHOW_WELCOME'		=> ((int) $config ['rp_show_welcomemsg'] == 1) ? 'checked="checked"' : "",
 					'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == 1 ) ? "checked='checked'" : '',
 					'DISP_NEXT_EVENTS_DISABLED'	=> ( $config['rp_index_display_week'] == 1 ) ? "disabled='disabled'" : '',
@@ -555,6 +561,15 @@ class acp_raidplanner
 					'DISP_TRUNCATED'	=> $config['rp_display_truncated_name'],
 					'DISP_HIDDEN_GROUPS_CHECKED'	=> ($config['rp_display_hidden_groups'] == '1' ) ? "checked='checked'" : '',
 					'DISP_EVENTS_1_DAY_CHECKED'	=> ( $config['rp_disp_raidplans_only_on_start'] == '1' ) ? "checked='checked'" : '',
+					
+					'SEL_AUTOPUSHRAIDPLAN'		=> ((int) $config['rp_rppushmode'] == 0 ) ? "selected='selected'" : '',
+					'SEL_MANUALPUSHRAIDPLAN'		=> ((int) $config['rp_rppushmode'] == 1 ) ? "selected='selected'" : '',
+					'SEL_NOPUSHRAIDPLAN'		=> ((int) $config['rp_rppushmode'] == 2 ) ? "selected='selected'" : '',
+					
+					'SENDPMRP_CHECKED'		=> ((int) $config['rp_pm_rpchange'] == 1) ? "checked='checked'" :'' ,
+					'SENDEMAILRP_CHECKED'	=> ((int) $config['rp_email_rpchange'] == 1) ? "checked='checked'" :'' ,
+					'SENDPMSIGN_CHECKED'	=> ((int) $config['rp_pm_signup'] == 1) ? "checked='checked'" :'' ,
+					'SENDEMAILSIGN_CHECKED'	=> ((int) $config['rp_email_signup'] == 1) ? "checked='checked'" :'' ,
 					'DATE_FORMAT'		=> $config['rp_date_format'],
 					'DATE_TIME_FORMAT'	=> $config['rp_date_time_format'],
 					'TIME_FORMAT'		=> $config['rp_time_format'],
@@ -562,9 +577,9 @@ class acp_raidplanner
 					'PRUNE_LIMIT'		=> (int) $config['rp_prune_limit'] / 86400,
 					'POPULATE_FREQ'		=> (int) $config['rp_populate_frequency'] / 86400,
 					'POPULATE_LIMIT'	=> (int) $config['rp_populate_limit'] / 86400,
-					'U_PLUS_HOUR'		=> $this->u_action."&calPlusHour=1&plusVal=1",
-					'U_MINUS_HOUR'		=> $this->u_action."&calPlusHour=1&plusVal=0",
-					'U_ACTION'			=> $this->u_action,
+					'U_PLUS_HOUR'		=> $this->u_action."&amp;calPlusHour=1&amp;plusVal=1",
+					'U_MINUS_HOUR'		=> $this->u_action."&amp;calPlusHour=1&amp;plusVal=0",
+					'U_ACTION'			=> $this->u_action,					
 					));
 
 				$this->tpl_name = 'dkp/acp_' . $mode;

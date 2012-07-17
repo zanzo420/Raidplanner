@@ -6,42 +6,22 @@
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
  @version $Id$
 //-->
-<script type="text/javascript">
-// <![CDATA[
-function toggle_rpsettings()
-{
-	if (document.getElementById('rpsettingsdisplay'))
-	{
-		document.getElementById('rpsettingsdisplay').style.display = (document.getElementById('rpsettingsdisplay').style.display == 'none') ? 'block' : 'none';
-	}
-}
-
-if (document.addEventListener)
-{
-	document.addEventListener('DOMContentLoaded', toggle_rpsettings, false);
-}
-else
-{
-	window.onload = toggle_rpsettings;
-}
-// ]]>
-</script>
-
 <h1>{L_ACP_RAIDPLANNER_SETTINGS}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
 
 <fieldset><legend>{L_RAIDROLES}</legend>
 
-<form id="rproles" name="rproles" method="post" action="{U_ACTION}" >
+<form id="rproles" method="post" action="{U_ACTION}" >
 
 <p>{L_ACP_RAIDROLES_EXPLAIN}</p>
 
 <table style="width:70%">
 <thead>
+  <tr>
 	<th>{L_RAIDROLE}</th>
 	<th>{L_COLOR}</th>
 	<th>{L_ROLEICON}</th>
-    <th style="text-align: center" width="5%">{L_ACTION}</th>
+    <th style="text-align: center; width:5%">{L_ACTION}</th>
   </tr>
 </thead>
   <tfoot>
@@ -73,15 +53,13 @@ else
   
   
 </table>
-
-<br />
    
 {S_FORM_TOKEN}
 </form>
 
 </fieldset>
 
-<form id="rpteams" name="rpteams" method="post" action="{U_ACTION}" >
+<form id="rpteams" method="post" action="{U_ACTION}" >
 
 <fieldset><legend>{L_RAIDTEAMS}</legend>
 <p>{L_ACP_RAIDTEAMS_EXPLAIN}</p>
@@ -89,9 +67,10 @@ else
 
 <table style="width:70%">
 <thead>
+	<tr>
 	<th>{L_TEAMNAME}</th>
 	<th>{L_TEAMSIZE}</th>
-    <th style="text-align: center" width="5%">{L_ACTION}</th>
+    <th style="text-align: center; width:5%">{L_ACTION}</th>
   </tr>
 </thead>
   
@@ -125,7 +104,7 @@ else
 </fieldset>
 </form>
 
-<form id="rpteamsize" name="rpteamsize" method="post" action="{U_ACTION}" >
+<form id="rpteamsize" method="post" action="{U_ACTION}" >
 
 <fieldset><legend>{L_RAIDSIZES}</legend>
 <p>{L_ACP_RAIDSIZES_EXPLAIN}</p>
@@ -145,6 +124,7 @@ else
     <input type="reset" name="reset" value="{L_RESET}" class="button2" />
 	</td>
   </tr>
+  </tfoot>
 <tbody>
   
   <!-- BEGIN team_row -->
@@ -171,7 +151,7 @@ else
 
 <fieldset><legend>{L_RPSETTINGS}</legend>
 <div>
-<form id="rpsettings" name="rpsettings" method="post" action="{U_ACTION}" >
+<form id="rpsettings" method="post" action="{U_ACTION}" >
 
  <div class="tablewrap">
 
@@ -216,6 +196,35 @@ else
 		<dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" /></dd>
 	</dl>
 	
+	<dl>
+		<dt><label>{L_SENDPMRP}:</label><br />{L_SENDPMRP_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_pm_rpchange" name="send_pm_rpchange" value="1" {SENDPMRP_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
+		<dt><label>{L_SENDEMAILRP}:</label><br />{L_SENDEMAILRP_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_email_rpchange" name="send_email_rpchange" value="1" {SENDEMAILRP_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
+		<dt><label>{L_SENDPMSIGN}:</label><br />{L_SENDPMSIGN_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_pm_signup" name="send_pm_signup" value="1" {SENDPMSIGN_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
+		<dt><label>{L_SENDEMAILSIGN}:</label><br />{L_SENDEMAILSIGN_EXPLAIN}</dt>
+		<dd><input type="checkbox" id="send_email_signup" name="send_email_signup" value="1" {SENDEMAILSIGN_CHECKED}/></dd>
+	</dl>
+	
+	<dl>
+		<dt><label>{L_PUSHRAIDPLAN}:</label><br />{L_PUSHRAIDPLAN_EXPLAIN}</dt>
+		<dd><select name="push_mode" id="push_mode">
+		  <option value="0" {SEL_AUTOPUSHRAIDPLAN}>{L_AUTOPUSH}</option>
+		  <option value="1" {SEL_MANUALPUSHRAIDPLAN}>{L_MANPUSH}</option>
+		  <option value="2" {SEL_NOPUSHRAIDPLAN}>{L_NOPUSH}</option>
+		  </select>
+		</dd>
+	</dl>
 	
    </div>
    
@@ -229,68 +238,14 @@ else
 </div>
 </fieldset>
 
-<fieldset><legend>{L_SIGNUPSETTINGS}</legend>
-<form id="rpsettingsadv" name="rpsettingsadv" method="post" action="{U_ACTION}" >
-<div class="tablewrap">
-
-	
-	<dl>
-		<dt><label>{L_SENDPMRP}:</label><br />{L_SENDPMRP_EXPLAIN}</dt>
-		<dd><input type="checkbox" id="send_pmrp" name="send_pmrp" value="1" {SENDPMRP_CHECKED}/></dd>
-	</dl>
-	
-	<dl>
-		<dt><label>{L_SENDEMAILRP}:</label><br />{L_SENDEMAILRP_EXPLAIN}</dt>
-		<dd><input type="checkbox" id="send_emailrp" name="send_emailrp" value="1" {SENDEMAILRP_CHECKED}/></dd>
-	</dl>
-	
-	<dl>
-		<dt><label>{L_SENDPMSIGN}:</label><br />{L_SENDPMSIGN_EXPLAIN}</dt>
-		<dd><input type="checkbox" id="send_pmrp" name="send_pmrp" value="1" {SENDPMSIGN_CHECKED}/></dd>
-	</dl>
-	
-	<dl>
-		<dt><label>{L_SENDEMAILSIGN}:</label><br />{L_SENDEMAILSIGN_EXPLAIN}</dt>
-		<dd><input type="checkbox" id="send_emailsign" name="send_emailsign" value="1" {SENDEMAILSIGN_CHECKED}/></dd>
-	</dl>
-	
-	<dl>
-		<dt><label>{L_PUSHRAIDPLAN}:</label><br />{L_PUSHRAIDPLAN_EXPLAIN}</dt>
-		<dd><select name="push_mode" id="push_mode">
-		  <option value="0" {SEL_PUSHRAIDPLAN}>{L_AUTOPUSH}</option>
-		  <option value="1" {SEL_PUSHRAIDPLAN}>{L_MANPUSH}</option>
-		  <option value="2" {SEL_PUSHRAIDPLAN}>{L_NOPUSH}</option>
-		  </select>
-		</dd>
-	</dl>
-	
-
-
-</div>
-
-  
-<fieldset class="quick">
-    <input type="submit" name="update_signup_settings" value="{L_SUBMIT}" class="button1" />
-    <input type="reset" name="reset" value="{L_RESET}" class="button2" />
-</fieldset>
-{S_FORM_TOKEN}
-
-
-
-</form>
-
-
-</fieldset>
-
 <fieldset><legend>{L_RPADVANCEDOPTIONS}</legend>
 <div>
 
-<form id="rpsettingscal" name="rpsettingscal" method="post" action="{U_ACTION}" >
+<form id="rpsettingscal" method="post" action="{U_ACTION}" >
 <div class="tablewrap">
    
  	<dl>
-	<dt>    
-	  <label for="show_welcome">{L_RP_SHOW_WELCOME}:</label>
+	<dt><label for="show_welcome">{L_RP_SHOW_WELCOME}:</label></dt>
 	  <dd>
 	  		<input name="show_welcome" type="checkbox" id="show_welcome" value="1" {SHOW_WELCOME} />
    		</dd>
@@ -379,10 +334,10 @@ else
 	</dl>
 
 <fieldset class="quick">
+	{S_FORM_TOKEN}
     <input type="submit" name="update_rp_settings_cal" value="{L_SUBMIT}" class="button1" />
     <input type="reset" name="reset" value="{L_RESET}" class="button2" />
 </fieldset>
-{S_FORM_TOKEN}
 </div>
 </form>
 </div>
