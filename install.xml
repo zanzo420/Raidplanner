@@ -10,8 +10,8 @@
 		<title lang="en"><![CDATA[bbDKP Raidplanner 0.5.0]]></title>
 		<description lang="en"><![CDATA[Raidplanner Installer. 
 		see /docs/install.html and /docs/changelog.html]]></description>
-		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, 
-		support questions are welcome at www.bbdkp.com]]></author-notes>
+		<author-notes lang="en"><![CDATA[Requires bbDKP 1.2.8 to be installed. 
+		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -45,7 +45,7 @@
 			<target-version>3.0.10</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.7</link>
+			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.8</link>
 			<link type="language" href="contrib/fr.xml" lang="en">French</link>
 			<link type="language" href="contrib/fr.xml" lang="fr">Français</link>
 			<link type="language" href="contrib/fr.xml" lang="de">Franzözisch</link>
