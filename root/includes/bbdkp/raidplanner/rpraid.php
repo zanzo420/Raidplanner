@@ -248,6 +248,12 @@ class rpraid
 	 */
 	public $confirmed;
 	
+	/**
+	 * bbdkp raid_id 
+	 *
+	 * @var unknown_type
+	 */
+	public $raid_id;
 
 	/**
 	 * constructor
@@ -318,6 +324,7 @@ class rpraid
 			$this->nochar= true;
 			$this->signed_up=true;
 			$this->signed_off=true;
+			$this->raid_id=0;
 			
 			// populate properties
 			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $this->id;
@@ -329,6 +336,8 @@ class rpraid
 				trigger_error( 'INVALID_RAIDPLAN' );
 			}
 			
+			$this->raid_id = $row['raid_id'];
+				
 			// check access
 			$this->accesslevel=$row['raidplan_access_level'];
 			$this->poster=$row['poster_id'];
@@ -2689,111 +2698,41 @@ class rpraid
 	 */
 	public function raidplan_push()
 	{
-		global $db, $user, $config, $template, $phpEx ;
-		if (confirm_box ( true )) 
+		global $db, $user, $config, $phpbb_root_path, $phpEx ;
+		
+		if (!class_exists('acp_dkp_raid'))
 		{
-			// recall hidden vars
-			$raid = array(
-				'raid_note' 		=> utf8_normalize_nfc (request_var ( 'hidden_raid_note', ' ', true )), 
-				'raid_event'		=> utf8_normalize_nfc (request_var ( 'hidden_raid_name', ' ', true )), 
-				'raid_value' 		=> request_var ('hidden_raid_value', 0.00 ), 
-				'raid_timebonus'	=> request_var ('hidden_raid_timebonus', 0.00 ),
-				'raid_start' 		=> request_var ('hidden_startraid_date', 0), 
-				'raid_end'			=> request_var ('hidden_endraid_date', 0),
-				'event_id' 			=> request_var ('hidden_event_id', 0),
-				'raid_attendees' 	=> request_var ('hidden_raid_attendees', array ( 0 => 0 )), 
-			); 
-			
-			// Get event info
-			$sql = "SELECT event_id, event_name, event_dkpid, event_value FROM " . EVENTS_TABLE . "  WHERE 
-	                event_id = " . $raid['event_id'];
-			$result = $db->sql_query ( $sql );
-			while ( $row = $db->sql_fetchrow ($result) ) 
-			{
-				if ($raid['raid_value'] == 0.00)
-				{
-					$raid['raid_value'] = max ( $row['event_value'], 0.00 );
-				}
-				
-				$raid['event_dkpid'] = $row['event_dkpid'];
-				$raid['event_name'] = $row['event_name'];
-			}
-			$db->sql_freeresult( $result );
-			
-			/*
-			 * start transaction
-			 */
-			$db->sql_transaction('begin');
-			//
-			// Insert the raid
-			// raid id is auto-increment so it is increased automatically
-			//
-			$query = $db->sql_build_array ( 'INSERT', array (
-					'event_id' 		=> (int) $raid['event_id'], 
-					'raid_start' 	=> (int) $raid['raid_start'],
-					'raid_end' 		=> (int) $raid['raid_end'], 
-					'raid_note' 	=> (string) $raid['raid_note'], 
-					'raid_added_by' => (string) $user->data['username'] ) 
-			);
-			
-			$db->sql_query ( "INSERT INTO " . RAIDS_TABLE . $query );
-			$raid ['raid_id'] = $db->sql_nextid();
-			// Attendee handling
-			
-			// Insert the raid detail
-			$raiddetail = $this->add_raiddetail($raid);
-	
-			//
-			// pass the raidmembers array, raid value, and dkp pool.
-			foreach ( (array) $raid['raid_attendees'] as $member_id )
-			{
-				$this->add_dkp ($raid['raid_value'], $raid['raid_timebonus'], $raid['raid_start'] , $raid['event_dkpid'] , $member_id);
-			}
-			
-			// commit
-			$db->sql_transaction('commit');
-			
-			//
-			// Logging
-			//
-			$log_action = array (
-				'header' => 'L_ACTION_RAID_ADDED', 
-				'id' 			=> $raid ['raid_id'], 
-				'L_EVENT' 		=> $raid['event_name'], 
-				'L_ATTENDEES' 	=> implode ( ', ', $raid ['raid_attendees'] ), 
-				'L_NOTE' 		=> $raid ['raid_note'], 
-				'L_VALUE' 		=> $raid['raid_value'], 
-				'L_ADDED_BY' 	=> $user->data ['username']);
-			
-			$this->log_insert (array(
-				'log_type' 		=> $log_action ['header'], 
-				'log_action' 	=> $log_action ));
-			
-			//
-			// Success message
-			//
-			$success_message = sprintf ( $user->lang ['ADMIN_ADD_RAID_SUCCESS'], 
-				$user->format_date($this->time), $raid['event_name'] ) . '<br />';
-				
-			//
-			// Update active / inactive player status if needed
-			//
-			if ($config ['bbdkp_hide_inactive'] == 1) 
-			{
-				$success_message .= '<br /><br />' . $user->lang ['ADMIN_RAID_SUCCESS_HIDEINACTIVE'];
-				$success_message .= ' ' . (($this->update_player_status ( $raid['event_dkpid'] )) ? 
-					strtolower ( $user->lang ['DONE'] ) : strtolower ( $user->lang ['ERROR'] ));
-			}
-
-			//show message and redirect to raid after 3 seconds
-			$link = append_sid ( "index.$phpEx?i=dkp_raid&amp;mode=editraid&amp;" . URI_RAID . "={$raid ['raid_id']}" );
-	    	meta_refresh(1, $link);
-			trigger_error ( $success_message . $this->link, E_USER_NOTICE );
-				
+			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
 		}
-		else
+		$acp_dkp_raid = new acp_dkp_raid();
+		
+		
+		// check if raid exists in bbdkp
+		if ($this->raid_id > 0)
 		{
-			// store raidinfo as hidden vars
+			//update this raid
+			// get old raid data
+			$sql = 	'SELECT raid_start, raid_end, raid_note, raid_updated_by FROM ' . RAIDS_TABLE . ' WHERE raid_id = ' . (int) $this->raid_id;  
+			$result = $db->sql_query ($sql);
+			while ( $row = $db->sql_fetchrow ( $result ) ) 
+			{
+				$old_raid = array (
+					'raid_start' 	=> (int) $row['raid_start'],
+					'raid_end' 		=> (int) $row['raid_end'],
+					'raid_note' 	=> (string) $row['raid_note'], 
+					'raid_updated_by' => (int) $row['raid_updated_by'],
+				);
+			}
+			$db->sql_freeresult($result);
+
+			// Update the raid
+			$query = $db->sql_build_array ( 'UPDATE', array (
+				'raid_start' 		=> $this->start_time, 
+				'raid_end' 			=> $this->end_time, 
+				'raid_note' 		=> $this->body, 
+				'raid_updated_by' 	=> $user->data ['username'] ) );
+			$db->sql_query ( 'UPDATE ' . RAIDS_TABLE . ' SET ' . $query . " WHERE raid_id = " . (int) $this->raid_id );
+			
 			$raid_attendees = array();
 			foreach($this->raidroles as $key => $role)
 			{
@@ -2803,27 +2742,160 @@ class rpraid
 				 }
 			}
 			
-			$s_hidden_fields = build_hidden_fields(array(
-					'hidden_raid_note' 			=> $this->body, 
-					'hidden_event_id' 			=> $this->event_type,
-					'hidden_raid_event'			=> $this->subject=$row['raidplan_subject'], 
-					'hidden_raid_value' 		=> $this->eventlist->events[$this->event_type]['event_value'],
-					'hidden_raid_timebonus' 	=> 0, 
-					'hidden_startraid_date' 	=> $this->start_time,
-					'hidden_endraid_date' 		=> $this->end_time,  
-					'hidden_raid_attendees' 	=> $raid_attendees, 
-					'add'    					=> true, 
-			)
-			);
-			
-			$sql='SELECT event_name FROM ' . EVENTS_TABLE . ' WHERE event_id = ' . $this->event_type; 
-			$result = $db->sql_query($sql);
-			$eventname = (string) $db->sql_fetchfield('event_name');
+			// now check if any of them are not registered in dkp, if they aren’t then add them
+			$dkpregistered = array();
+			$sql = 'SELECT member_id FROM ' . RAID_DETAIL_TABLE . ' WHERE raid_id = ' . (int) $this->raid_id; 			
+			$result = $db->sql_query ($sql);
+			while ($row = $db->sql_fetchrow ($result)) 
+			{
+				$dkpregistered[] = $row['member_id']; 
+			}
 			$db->sql_freeresult($result);
-			
-			confirm_box(false, sprintf($user->lang['CONFIRM_CREATE_RAID'], $eventname) , $s_hidden_fields);				
+			$to_add = array_diff($raid_attendees, $dkpregistered); 
+
+			if (count($to_add) > 0)
+			{
+				foreach($to_add as $member_id)
+				{
+					{
+						$raid_detail[] = array(
+							'raid_id'      => (int) $this->raid_id,
+							'member_id'    => (int) $member_id,
+							'raid_value'   => (float) $this->eventlist->events[$this->event_type]['value'],
+							'time_bonus'   => (float) 0,
+							);
+					}
+					$acp_dkp_raid->add_dkp (
+					$this->eventlist->events[$this->event_type]['value'], 0, $this->start_time , 
+					$this->eventlist->events[$this->event_type]['dkpid'], $member_id);
+				}
+				
+				$db->sql_multi_insert(RAID_DETAIL_TABLE, $raid_detail);
+			}
 			
 		}
+		else
+		{
+			//insert
+			if (confirm_box ( true )) 
+			{
+				// recall hidden vars
+				$raid = array(
+					'raid_note' 		=> utf8_normalize_nfc (request_var ( 'hidden_raid_note', ' ', true )), 
+					'raid_value' 		=> request_var ('hidden_raid_value', 0.00 ), 
+					'raid_timebonus'	=> request_var ('hidden_raid_timebonus', 0.00 ),
+					'raid_start' 		=> request_var ('hidden_startraid_date', 0), 
+					'raid_end'			=> request_var ('hidden_endraid_date', 0),
+					'event_name'		=> utf8_normalize_nfc (request_var ( 'hidden_raid_name', ' ', true )), 
+					'event_id' 			=> request_var ('hidden_event_id', 0),
+					'dkpid'				=> request_var ('hidden_dkpid', 0),
+					'raid_attendees' 	=> request_var ('hidden_raid_attendees', array ( 0 => 0 )), 
+				); 
+	
+				$db->sql_transaction('begin');
+	
+				// raid id is auto-increment so it is increased automatically
+				$query = $db->sql_build_array ( 'INSERT', array (
+						'event_id' 		=> (int) $raid['event_id'], 
+						'raid_start' 	=> (int) $raid['raid_start'],
+						'raid_end' 		=> (int) $raid['raid_end'], 
+						'raid_note' 	=> (string) $raid['raid_note'], 
+						'raid_added_by' => (string) $user->data['username'] ) 
+				);
+				
+				$db->sql_query ( "INSERT INTO " . RAIDS_TABLE . $query );
+				$raid ['raid_id'] = $db->sql_nextid();
+				
+				//set raid_id
+				$this->raid_id = $raid ['raid_id'];
+				
+				//store raid_id
+				$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET raid_id = '  . $this->raid_id . ' WHERE raidplan_id = ' . $this->id; 
+				$db->sql_query($sql);
+				
+		        $raid_detail = array();
+				foreach ( $raid['raid_attendees'] as $member_id )
+				{
+					$raid_detail[] = array(
+						'raid_id'      => (int) $raid['raid_id'],
+						'member_id'    => (int) $member_id,
+						'raid_value'   => (float) $raid['raid_value'],
+						'time_bonus'   => (float) $raid['raid_timebonus'],
+						);
+					$acp_dkp_raid->add_dkp ($raid['raid_value'], $raid['raid_timebonus'], $raid['raid_start'] , $raid['dkpid'] , $member_id);
+				}
+				$db->sql_multi_insert(RAID_DETAIL_TABLE, $raid_detail);
+			
+				// commit
+				$db->sql_transaction('commit');
+				
+				//
+				// Logging
+				$log_action = array (
+					'header' => 'L_ACTION_RAID_ADDED', 
+					'id' 			=> $raid ['raid_id'], 
+					'L_EVENT' 		=> $raid['event_name'], 
+					'L_ATTENDEES' 	=> implode ( ', ', $raid ['raid_attendees'] ), 
+					'L_NOTE' 		=> $raid ['raid_note'], 
+					'L_VALUE' 		=> $raid['raid_value'], 
+					'L_ADDED_BY' 	=> $user->data ['username']);
+				
+				$acp_dkp_raid->log_insert (array(
+					'log_type' 		=> $log_action ['header'], 
+					'log_action' 	=> $log_action ));
+				
+				//
+				// Success message
+				$success_message = sprintf ( $user->lang ['ADMIN_ADD_RAID_SUCCESS'], 
+					$user->format_date($raid['raid_start']), $raid['event_name'] ) . '<br />';
+					
+				//
+				// Update active / inactive player status if needed
+				if ($config ['bbdkp_hide_inactive'] == 1) 
+				{
+					$success_message .= '<br />' . $user->lang ['ADMIN_RAID_SUCCESS_HIDEINACTIVE'];
+					$success_message .= ' ' . (($acp_dkp_raid->update_player_status ( $raid['dkpid'] )) ? 
+						strtolower ( $user->lang ['DONE'] ) : strtolower ( $user->lang ['ERROR'] ));
+				}
+	
+				trigger_error ( $success_message, E_USER_NOTICE );
+					
+			}
+			else
+			{
+				// store raidinfo as hidden vars
+				$raid_attendees = array();
+				foreach($this->raidroles as $key => $role)
+				{
+					 foreach($role['role_confirmations'] as $confirmation)
+					 {
+					 	$raid_attendees[] = $confirmation['signup_id'];
+					 }
+				}
+				
+				// timebonus is hardcoded to zero but could be changed later...
+				$s_hidden_fields = build_hidden_fields(array(
+						'hidden_raid_id' 			=> $this->raid_id,
+						'hidden_raid_note' 			=> $this->body, 
+						'hidden_event_id' 			=> $this->event_type,
+						'hidden_raid_name'			=> $this->eventlist->events[$this->event_type]['event_name'], 
+						'hidden_raid_value' 		=> $this->eventlist->events[$this->event_type]['value'],
+						'hidden_dkpid'				=> $this->eventlist->events[$this->event_type]['dkpid'],
+						'hidden_raid_timebonus' 	=> 0, 
+						'hidden_startraid_date' 	=> $this->start_time,
+						'hidden_endraid_date' 		=> $this->end_time,  
+						'hidden_raid_attendees' 	=> $raid_attendees, 
+						'add'    					=> true, 
+				)
+				);
+				
+				confirm_box(false, sprintf($user->lang['CONFIRM_CREATE_RAID'], 
+					$this->eventlist->events[$this->event_type]['event_name']) , $s_hidden_fields);				
+				
+			}
+		}
+			
+			
 		
 		
 	}

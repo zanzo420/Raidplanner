@@ -471,14 +471,14 @@ $versions = array(
 			array('GLOBAL_MODERATORS', 'u_raidplanner_push', 'group', true),
 			),        
 			
-      	// adding some configs
+      		// adding some configs
 			'config_add' => array(
 			array('rp_pmnotification', 1, true),
 			array('rp_emailnotification', 1, true),
+			array('rp_automaticpush', 1, true),
 			),
 
 			'table_add' => array(
-
         	array(
               		'phpbb_rp_teams' , array(
                     'COLUMNS'        => array(
@@ -502,6 +502,7 @@ $versions = array(
         	
         	'table_column_add' => array(
 				array('phpbb_rp_raids', 'raidteam' , array('INT:8', 0)),
+				array('phpbb_rp_raids', 'raid_id' , array('INT:8', 0)),
 			),
 
         	'table_column_remove' => array(

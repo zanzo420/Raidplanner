@@ -34,12 +34,9 @@ class acp_raidplanner
 			trigger_error($user->lang['USER_CANNOT_MANAGE_RAIDPLANNER'] );
 		}
 		
-		$this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );
-		
+		$this->u_action = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=".$mode );	
 		$link = '<br /><a href="' . $this->u_action . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
-		
 		$action	= request_var('action', '');
-		
 		
         switch ($mode) 
 		{
@@ -55,10 +52,12 @@ class acp_raidplanner
 
 				$update_raidrolesize = (isset($_POST['update_raidrolesize'])) ? true : false;
 				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
-				$updateadv	= (isset($_POST['update_rp_settings_adv'])) ? true : false;
+				$update_signup_settings	= (isset($_POST['update_signup_settings'])) ? true : false;
+				
+				$updatecal = (isset($_POST['update_rp_settings_cal'])) ? true : false;
 					
 				// check the form key
-				if ($updateroles || $addrole || $update || $updateadv || $updateteam || $addteam )
+				if ($updateroles || $addrole || $update || $updatecal || $updateteam || $addteam )
 				{
 					if (!check_form_key('acp_raidplanner'))
 					{
@@ -243,15 +242,10 @@ class acp_raidplanner
 						
 				}
 				
-				// update general settings
+				// update Raidplan settings
 				if($update)
 				{
-					set_config  ( 'rp_pmnotification',  (isset ( $_POST ['send_pm'] )) ? 1 : 0 , 0);
-					set_config  ( 'rp_emailnotification',  (isset ( $_POST ['send_email'] )) ? 1 : 0 , 0);
-					
-					$first_day	= request_var('first_day', 0);
-					set_config  ( 'rp_first_day_of_week',  $first_day,0);  
-					
+						
 					$invitehour	= request_var('event_invite_hh', 0) * 60 + request_var('event_invite_mm', 0);
 					set_config  ( 'rp_default_invite_time',  $invitehour,0);
 					
@@ -267,28 +261,7 @@ class acp_raidplanner
 					$expire_time = request_var('expire_time', 0);
 					set_config  ( 'rp_default_expiretime',  $expire_time,0);  
 					
-					
-					$text = utf8_normalize_nfc(request_var('welcome_message', '', true));
-					
-					$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
-					$allow_bbcode = $allow_urls = $allow_smilies = true;
-					generate_text_for_storage($text, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-
-					$sql = 'UPDATE ' . RP_RAIDPLAN_ANNOUNCEMENT . " SET 
-							announcement_msg = '" . (string) $db->sql_escape($text) . "' , 
-							announcement_timestamp = ".  (int) time() ." , 
-							bbcode_bitfield = 	'".  (string) $bitfield ."' , 
-							bbcode_uid = 		'".  (string) $uid ."'  
-							WHERE announcement_id = 1";
-					$db->sql_query($sql);
-					
-					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0);
-					 
-					
 										
-					$disp_week	= request_var('disp_week', 0);
-					set_config  ( 'rp_index_display_week',  $disp_week,0);  
-					
 					$disp_upcoming	= request_var('disp_next_raidplans', 0);
 					set_config  ( 'rp_display_next_raidplans',  $disp_upcoming,0);  
 					
@@ -299,6 +272,13 @@ class acp_raidplanner
 					
 				}
 				
+				if($update_signup_settings)
+				{
+					set_config  ( 'rp_pmnotification',  (isset ( $_POST ['send_pm'] )) ? 1 : 0 , 0);
+					set_config  ( 'rp_emailnotification',  (isset ( $_POST ['send_email'] )) ? 1 : 0 , 0);
+					
+				}
+				
 				// move the calendar for daylight savings
 				if( request_var('calPlusHour', 0) == 1)
 				{
@@ -306,10 +286,29 @@ class acp_raidplanner
 					exit;
 				}
 				
-				// update all advanced settings
-				if( $updateadv )
+				// update all calendar settings
+				if( $updatecal )
 				{
+					set_config  ( 'rp_show_welcomemsg',  (isset ( $_POST ['show_welcome'] )) ? 1 : 0 , 0);
 
+					$text = utf8_normalize_nfc(request_var('welcome_message', '', true));
+					
+					$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+					$allow_bbcode = $allow_urls = $allow_smilies = true;
+					generate_text_for_storage($text, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+					$sql = 'UPDATE ' . RP_RAIDPLAN_ANNOUNCEMENT . " SET 
+							announcement_msg = '" . (string) $db->sql_escape($text) . "' , 
+							announcement_timestamp = ".  (int) time() ." , 
+							bbcode_bitfield = 	'".  (string) $bitfield ."' , 
+							bbcode_uid = 		'".  (string) $uid ."'  
+							WHERE announcement_id = 1";
+					$db->sql_query($sql);
+					
+					$disp_week	= request_var('disp_week', 0);
+					set_config  ( 'rp_index_display_week',  $disp_week,0);  
+					
+					$first_day	= request_var('first_day', 0);
+					set_config  ( 'rp_first_day_of_week',  $first_day,0);  
 					
 					$hour_mode = request_var('hour_mode', 12);
 					set_config  ( 'rp_hour_mode',  $hour_mode,0);
