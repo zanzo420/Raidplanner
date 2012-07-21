@@ -57,7 +57,7 @@ class raidmessenger
 				$sql = 'SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang
 						FROM ' . RP_SIGNUPS . ' l, ' . USERS_TABLE . ' u 
 						WHERE l.poster_id = u.user_id 
-						AND  l.poster_id = ' . $signup_poster . ' 
+						AND  l.signup_id = ' . $signup_poster . ' 
 						AND l.raidplan_id = ' . $raidplan_id . '
 						UNION
 						SELECT DISTINCT u.username, u.user_allow_massemail, u.user_allow_pm, u.user_id, u.user_email, u.user_lang

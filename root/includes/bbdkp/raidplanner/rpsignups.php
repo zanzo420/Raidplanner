@@ -661,7 +661,7 @@ class rpsignup
 		   		'RAIDLEADER'		=> $rlname[$raidplan->poster],
 				'EVENT_SUBJECT'		=> $subject, 
 		   		'SIGNUP_TIME'		=> $user->format_date($this->signup_time, $config['rp_date_time_format'], true),
-				'USERNAME'			=> htmlspecialchars_decode($row['username']),
+				'USERNAME'			=> htmlspecialchars_decode($user->data['username']),
 		   		'RAIDER'			=> $this->dkpmembername, 
 		   		'EVENT'				=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'], 
 		   		'ROLE'				=> $this->role_name, 
