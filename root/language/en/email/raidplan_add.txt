@@ -1,6 +1,6 @@
 Dear {USERNAME},
 
-A new Raid "{EVENT_SUBJECT}" was added in the Raidplanner.
+A new Raid "{EVENT}" was added in the Raidplanner.
 
 invite time : {START_TIME} {TZ}
 start time : {INVITE_TIME} {TZ}

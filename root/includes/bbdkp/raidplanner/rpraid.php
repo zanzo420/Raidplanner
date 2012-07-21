@@ -2628,15 +2628,15 @@ class rpraid
 			{
 				case 1:
 					$messenger->template('raidplan_add', $row['user_lang']);
-					$subject = $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
 					break;
 				case 2:
 					$messenger->template('raidplan_update', $row['user_lang']);
-					$subject = $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' .$user->format_date($this->start_time, $config['rp_date_time_format'], true);
 					break;						
 				case 3:
 					$messenger->template('raidplan_delete', $row['user_lang']);
-					$subject = $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
 					break;						
 			}
 		   
@@ -2756,7 +2756,7 @@ class rpraid
 			{
 				 foreach($role['role_confirmations'] as $confirmation)
 				 {
-				 	$raid_attendees[] = $confirmation['signup_id'];
+				 	$raid_attendees[] = $confirmation['dkpmemberid'];
 				 }
 			}
 			
@@ -2794,97 +2794,123 @@ class rpraid
 		}
 		else
 		{
-			if($config['rp_rppushmode'] == 1 && $this->signups['confirmed'] > 0 )
+			if($config['rp_rppushmode'] == 0 && $this->signups['confirmed'] > 0 )
 			{
 				// automatic mode, don't ask permisison
-			}
-			
-			
-			//insert
-			if (confirm_box ( true )) 
-			{
-				// recall hidden vars
-				$raid = array(
-					'raid_note' 		=> utf8_normalize_nfc (request_var ( 'hidden_raid_note', ' ', true )), 
-					'raid_value' 		=> request_var ('hidden_raid_value', 0.00 ), 
-					'raid_timebonus'	=> request_var ('hidden_raid_timebonus', 0.00 ),
-					'raid_start' 		=> request_var ('hidden_startraid_date', 0), 
-					'raid_end'			=> request_var ('hidden_endraid_date', 0),
-					'event_name'		=> utf8_normalize_nfc (request_var ( 'hidden_raid_name', ' ', true )), 
-					'event_id' 			=> request_var ('hidden_event_id', 0),
-					'dkpid'				=> request_var ('hidden_dkpid', 0),
-					'raid_attendees' 	=> request_var ('hidden_raid_attendees', array ( 0 => 0 )), 
-				); 
-	
-				$this->exec_pushraid($raid);
-				
-				//
-				// Logging
-				$log_action = array (
-					'header' 		=> 'L_ACTION_RAID_ADDED', 
-					'id' 			=> $raid ['raid_id'], 
-					'L_EVENT' 		=> $raid['event_name'], 
-					'L_ATTENDEES' 	=> implode ( ', ', $raid ['raid_attendees'] ), 
-					'L_NOTE' 		=> $raid ['raid_note'], 
-					'L_VALUE' 		=> $raid['raid_value'], 
-					'L_ADDED_BY' 	=> $user->data ['username']);
-				
-				$acp_dkp_raid->log_insert (array(
-					'log_type' 		=> $log_action ['header'], 
-					'log_action' 	=> $log_action ));
-				
-				//
-				// Success message
-				$success_message = sprintf ( $user->lang ['ADMIN_ADD_RAID_SUCCESS'], 
-					$user->format_date($raid['raid_start']), $raid['event_name'] ) . '<br />';
-					
-				//
-				// Update active / inactive player status if needed
-				if ($config ['bbdkp_hide_inactive'] == 1) 
-				{
-					$success_message .= '<br />' . $user->lang ['ADMIN_RAID_SUCCESS_HIDEINACTIVE'];
-					$success_message .= ' ' . (($acp_dkp_raid->update_player_status ( $raid['dkpid'] )) ? 
-						strtolower ( $user->lang ['DONE'] ) : strtolower ( $user->lang ['ERROR'] ));
-				}
-	
-				trigger_error ( $success_message, E_USER_NOTICE );
-					
-			}
-			else
-			{
-				
-				// store raidinfo as hidden vars
-				// this clears the $_POST array
 				$raid_attendees = array();
 				foreach($this->raidroles as $key => $role)
 				{
 					 foreach($role['role_confirmations'] as $confirmation)
 					 {
-					 	$raid_attendees[] = $confirmation['signup_id'];
+					 	$raid_attendees[] = $confirmation['dkpmemberid'];
 					 }
 				}
 				
 				// timebonus is hardcoded to zero but could be changed later...
-				$s_hidden_fields = build_hidden_fields(array(
-						'hidden_raid_id' 			=> $this->raid_id,
-						'hidden_raid_note' 			=> $this->body, 
-						'hidden_event_id' 			=> $this->event_type,
-						'hidden_raid_name'			=> $this->eventlist->events[$this->event_type]['event_name'], 
-						'hidden_raid_value' 		=> $this->eventlist->events[$this->event_type]['value'],
-						'hidden_dkpid'				=> $this->eventlist->events[$this->event_type]['dkpid'],
-						'hidden_raid_timebonus' 	=> 0, 
-						'hidden_startraid_date' 	=> $this->start_time,
-						'hidden_endraid_date' 		=> $this->end_time,  
-						'hidden_raid_attendees' 	=> $raid_attendees, 
-						'add'    					=> true, 
-				)
+				$raid = array(
+						'raid_note' 				=> $this->body, 
+						'raid_value' 				=> $this->eventlist->events[$this->event_type]['value'],
+						'raid_timebonus' 			=> 0, 
+						'raid_start'			 	=> $this->start_time,
+						'raid_end' 					=> $this->end_time,  
+						'event_name'				=> $this->eventlist->events[$this->event_type]['event_name'], 
+						'event_id' 					=> $this->event_type,
+						'dkpid'						=> $this->eventlist->events[$this->event_type]['dkpid'],
+						'raid_attendees' 			=> $raid_attendees
 				);
-				
-				confirm_box(false, sprintf($user->lang['CONFIRM_CREATE_RAID'], 
-					$this->eventlist->events[$this->event_type]['event_name']) , $s_hidden_fields);			
-					
+				$this->exec_pushraid($raid);
 				
 			}
+			else
+			{
+				
+				//insert
+				if (confirm_box ( true )) 
+				{
+					// recall hidden vars
+					$raid = array(
+						'raid_note' 		=> utf8_normalize_nfc (request_var ( 'hidden_raid_note', ' ', true )), 
+						'raid_value' 		=> request_var ('hidden_raid_value', 0.00 ), 
+						'raid_timebonus'	=> request_var ('hidden_raid_timebonus', 0.00 ),
+						'raid_start' 		=> request_var ('hidden_startraid_date', 0), 
+						'raid_end'			=> request_var ('hidden_endraid_date', 0),
+						'event_name'		=> utf8_normalize_nfc (request_var ( 'hidden_raid_name', ' ', true )), 
+						'event_id' 			=> request_var ('hidden_event_id', 0),
+						'dkpid'				=> request_var ('hidden_dkpid', 0),
+						'raid_attendees' 	=> request_var ('hidden_raid_attendees', array ( 0 => 0 )), 
+					); 
+		
+					$this->exec_pushraid($raid);
+					
+					//
+					// Logging
+					$log_action = array (
+						'header' 		=> 'L_ACTION_RAID_ADDED', 
+						'id' 			=> $this->raid_id, 
+						'L_EVENT' 		=> $raid['event_name'], 
+						'L_ATTENDEES' 	=> implode ( ', ', $raid ['raid_attendees'] ), 
+						'L_NOTE' 		=> $raid ['raid_note'], 
+						'L_VALUE' 		=> $raid['raid_value'], 
+						'L_ADDED_BY' 	=> $user->data ['username']);
+					
+					$acp_dkp_raid->log_insert (array(
+						'log_type' 		=> $log_action ['header'], 
+						'log_action' 	=> $log_action ));
+					
+					//
+					// Success message
+					$success_message = sprintf ( $user->lang ['ADMIN_ADD_RAID_SUCCESS'], 
+						$user->format_date($raid['raid_start']), $raid['event_name'] ) . '<br />';
+						
+					//
+					// Update active / inactive player status if needed
+					if ($config ['bbdkp_hide_inactive'] == 1) 
+					{
+						$success_message .= '<br />' . $user->lang ['ADMIN_RAID_SUCCESS_HIDEINACTIVE'];
+						$success_message .= ' ' . (($acp_dkp_raid->update_player_status ( $raid['dkpid'] )) ? 
+							strtolower ( $user->lang ['DONE'] ) : strtolower ( $user->lang ['ERROR'] ));
+					}
+		
+					trigger_error ( $success_message, E_USER_NOTICE );
+						
+				}
+				else
+				{
+					
+					// store raidinfo as hidden vars
+					// this clears the $_POST array
+					$raid_attendees = array();
+					foreach($this->raidroles as $key => $role)
+					{
+						 foreach($role['role_confirmations'] as $confirmation)
+						 {
+						 	$raid_attendees[] = $confirmation['dkpmemberid'];
+						 }
+					}
+					
+					// timebonus is hardcoded to zero but could be changed later...
+					$s_hidden_fields = build_hidden_fields(array(
+							'hidden_raid_id' 			=> $this->raid_id,
+							'hidden_raid_note' 			=> $this->body, 
+							'hidden_event_id' 			=> $this->event_type,
+							'hidden_raid_name'			=> $this->eventlist->events[$this->event_type]['event_name'], 
+							'hidden_raid_value' 		=> $this->eventlist->events[$this->event_type]['value'],
+							'hidden_dkpid'				=> $this->eventlist->events[$this->event_type]['dkpid'],
+							'hidden_raid_timebonus' 	=> 0, 
+							'hidden_startraid_date' 	=> $this->start_time,
+							'hidden_endraid_date' 		=> $this->end_time,  
+							'hidden_raid_attendees' 	=> $raid_attendees, 
+							'add'    					=> true, 
+					)
+					);
+					
+					confirm_box(false, sprintf($user->lang['CONFIRM_CREATE_RAID'], 
+						$this->eventlist->events[$this->event_type]['event_name']) , $s_hidden_fields);			
+				}
+				
+			}
+			
+			
 		}
 		
 	}
@@ -2896,7 +2922,7 @@ class rpraid
 	 */
 	private function exec_pushraid($raid)
 	{
-		global $db; 
+		global $db, $user; 
 		
 		if (!class_exists('acp_dkp_raid'))
 		{
@@ -2940,6 +2966,7 @@ class rpraid
 	
 		// commit
 		$db->sql_transaction('commit');
+		return $this->raid_id;
 		
 	}
 

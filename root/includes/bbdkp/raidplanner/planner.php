@@ -113,8 +113,9 @@ switch( $view_mode )
 				$signup = new rpsignup();
 				$signup->confirmsignup($signup_id);
 				$raid = new rpraid($raidplan_id);
-				if($config['rp_rppushmode'] == 1 && $raid->signups['confirmed'] > 0 )
+				if($config['rp_rppushmode'] == 0 && $raid->signups['confirmed'] > 0 )
 				{
+					//autopush
 					$raid->raidplan_push();
 				}
 				$signup->signupmessenger(5, $raid);

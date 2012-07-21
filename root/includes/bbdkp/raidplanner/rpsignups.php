@@ -629,14 +629,14 @@ class rpsignup
 				case 4:
 					// send signup to RL				
 					$messenger->template('signup_new', $row['user_lang']);
-					$subject = $user->lang['NEWSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' .$user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => array($raidplan->poster => 'to'));
 					
 					break;
 				case 5:
 					// send confirmation to RL and raider
 					$messenger->template('signup_confirm', $row['user_lang']);
-					$subject = $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => 
 						array(
 							$row['user_id'] => 'to'
@@ -646,7 +646,7 @@ class rpsignup
 				case 6:
 					// send cancellation to RL and raider
 					$messenger->template('signup_unsign', $row['user_lang']);
-					$subject = $user->lang['UNSIGNED'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => 
 						array(
 							$row['user_id'] => 'to'

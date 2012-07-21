@@ -1,6 +1,6 @@
 Dear {USERNAME},
 
-The Raid "{EVENT_SUBJECT}" scheduled to occur at {INVITE_TIME} {TZ} was deleted by {RAIDLEADER}. 
+The Raid "{EVENT}" scheduled to occur at {INVITE_TIME} {TZ} was deleted by {RAIDLEADER}. 
 
 {EMAIL_SIG}
 
