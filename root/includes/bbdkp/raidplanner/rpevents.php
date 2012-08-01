@@ -26,7 +26,7 @@ class rpevents
 	{
 		global $db; 
 		
-		$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' ORDER BY event_id';
+		$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' WHERE event_status = 1 ORDER BY event_id';
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
