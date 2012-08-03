@@ -59,6 +59,7 @@ class rpsignup
 	public $bbcode = array();
 	
 	public $roleid;
+	public $role_name;
 	public $confirm;
 	
 
@@ -97,10 +98,16 @@ class rpsignup
 		$this->confirm = $row['role_confirm'];
 		$this->dkpmemberid = $row['dkpmember_id'];
 		$this->roleid = $row['role_id'];
+		
+		$sql='SELECT role_name FROM ' . RP_ROLES . ' WHERE role_id = ' . $this->roleid;
+		$result = $db->sql_query($sql);
+		$this->role_name = $db->sql_fetchfield('role_name');
+		$db->sql_freeresult($result);
+		
 		// get memberinfo
 		$sql_array = array(
 	    	'SELECT'    => ' s.*, m.member_id, m.member_name, m.member_level,  
-		    				 m.member_gender_id, a.image_female_small, a.image_male_small, 
+		    				 m.member_gender_id, a.image_female, a.image_male, 
 		    				 l.name as member_class , c.imagename, c.colorcode ', 
 	    	'FROM'      => array(
 		        RP_SIGNUPS	 		=> 's',
@@ -130,7 +137,7 @@ class rpsignup
 		$this->classname = $row['member_class'];
 		$this->imagename = (strlen($row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $row['imagename'] . ".png" : '';
 		$this->colorcode = $row['colorcode'];
-		$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male_small'] : $row['image_female_small']);
+		$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male'] : $row['image_female']);
 		$this->raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/race_images/" . $race_image . ".png" : '';
 		$this->level =  $row['member_level'];
 		$this->genderid = $row['member_gender_id'];
@@ -203,7 +210,6 @@ class rpsignup
 		
 		$sql_array = array();
 		
-		
 		$sql_array['SELECT'] = ' s.*,  m.member_id, m.member_name, m.member_level, m.member_gender_id '; 
 	    $sql_array['FROM'] 	= array(MEMBER_LIST_TABLE 	=> 'm');
 	    $sql_array['LEFT_JOIN'] = array(
@@ -259,6 +265,7 @@ class rpsignup
 		generate_text_for_storage($this->comment, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
 		$this->storesignup();
+		
 		return true;
 	}
 	
@@ -355,6 +362,7 @@ class rpsignup
 		unset ($sql_signup);
 		
 		$db->sql_transaction('commit');
+		$this->getSignup($this->signup_id);
 		return true;
 	}
 	
@@ -425,7 +433,7 @@ class rpsignup
 					$db->sql_query($sql);
 				}
 				$db->sql_transaction('commit');
-		
+				
 				return true;
 				break;
 		}
@@ -497,6 +505,7 @@ class rpsignup
 				return true;
 				break; 
 		}
+		
 		
 		// if already 0 then don't do anything
 		return false;
@@ -576,6 +585,143 @@ class rpsignup
 		return false;
 		
 	}
+
+	/* signupmessenger
+	**
+	** eventhandler for 
+	** ----------------
+	** 4) raidplan new signup +
+	**   send to raidleader
+	** 5) raidplan signup unavail -
+	**   send to raidleader
+	** 6) raidplan signup confirm ++
+	**   send to member 
+	**
+	*/
+	function signupmessenger($trigger, rpraid $raidplan)
+	{
+		global $user, $config;
+		global $phpEx, $phpbb_root_path;
+
+		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
+
+		// get recipient data (email, etc)  
+		if (!class_exists('raidmessenger'))
+		{
+			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
+		}
+		
+		$rpm = new raidmessenger();
+		$rpm->get_notifiable_users($trigger, $this->raidplan_id, $this->signup_id);
+		
+		$emailrecipients = array();
+		$messenger = new messenger();
+
+		foreach($rpm->send_user_data as $id => $row)
+		{
+			$data=array();
+			// get template
+			switch ($trigger)
+			{
+				case 4:
+					// send signup to RL				
+					$messenger->template('signup_new', $row['user_lang']);
+					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' .$user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$data['address_list'] = array('u' => array($raidplan->poster => 'to'));
+					
+					break;
+				case 5:
+					// send confirmation to RL and raider
+					$messenger->template('signup_confirm', $row['user_lang']);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$data['address_list'] = array('u' => 
+						array(
+							$row['user_id'] => 'to'
+						));
+					
+					break;						
+				case 6:
+					// send cancellation to RL and raider
+					$messenger->template('signup_unsign', $row['user_lang']);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$data['address_list'] = array('u' => 
+						array(
+							$row['user_id'] => 'to'
+						));
+					break;						
+			}
+		   $userids = array($raidplan->poster);
+		   $rlname = array();
+		   user_get_id_name($userids, $rlname);
+		   
+		   $messenger->assign_vars(array(
+		   		'RAIDLEADER'		=> $rlname[$raidplan->poster],
+				'EVENT_SUBJECT'		=> $subject, 
+		   		'SIGNUP_TIME'		=> $user->format_date($this->signup_time, $config['rp_date_time_format'], true),
+				'USERNAME'			=> htmlspecialchars_decode($user->data['username']),
+		   		'RAIDER'			=> $this->dkpmembername, 
+		   		'EVENT'				=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'], 
+		   		'ROLE'				=> $this->role_name, 
+				'INVITE_TIME'		=> $user->format_date($raidplan->invite_time, $config['rp_date_time_format'], true),
+				'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
+				'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
+				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
+				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$raidplan->id
+			));
+			
+			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
+			$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
+			
+		    $messenger->msg = utf8_normalize_nfc($messenger->msg);
+	   		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
+	   		$allow_bbcode = $allow_smilies = $allow_urls = true;
+	   		generate_text_for_storage($messenger->msg, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
+	   		$messenger->msg = generate_text_for_display($messenger->msg, $uid, $bitfield, $options); 
+			
+			$data['from_user_id']      = $user->data['user_id'];
+		    $data['from_username']     = $user->data['username'];
+		    $data['icon_id']           = 0;
+		    $data['from_user_ip']      = $user->data['user_ip'];
+		    $data['enable_bbcode']     = true;
+		    $data['enable_smilies']    = true;
+		    $data['enable_urls']       = true;
+		    $data['enable_sig']        = true;
+		    $data['message']           = $messenger->msg; 
+		    $data['bbcode_bitfield']   = $this->bbcode['bitfield'];
+		    $data['bbcode_uid']        = $this->bbcode['uid'];
+			
+	   
+			if($config['rp_pm_signup'] == 1 &&  (int) $row['user_allow_pm'] == 1)
+			{
+				// send a PM
+				submit_pm('post',$subject, $data, false);
+			}
+			
+			if($config['rp_email_signup'] == 1 && $row['user_email'] != '')
+			{
+				//send email, reuse messenger object
+			   $email = $messenger;
+			   $emailrecipients[]=$row['username'];
+			   $email->to($row['user_email'], $row['username']);
+			   $email->anti_abuse_headers($config, $user);
+			   $email->send(0);
+			}
+				
+		}
+		
+		if($config['rp_email_signup'] == 1 && isset($email))
+		{
+			$email->save_queue();
+			$emailrecipients = implode(', ', $emailrecipients);
+			add_log('admin', 'LOG_MASS_EMAIL', $emailrecipients);
+		}
+		
+		
+	}
+	
 	
 
 }

@@ -1,0 +1,8 @@
+Dear {USERNAME},
+
+{USERNAME} has unsigned {RAIDER} from the raid {EVENT} occuring at invite time : {START_TIME} {TZ}. 
+
+To view or resignup this event please visit the following link:
+[url]{U_RAIDPLAN}[/url]
+
+{EMAIL_SIG}

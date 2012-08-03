@@ -1,11 +1,12 @@
 <?php
 /**
- * bbdkp acp language file for raidplanner module
+ * bbdkp acp language file for raidplanner module [German]
  * 
  * @package bbDkp
  * @copyright 2010 bbdkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version $Id$
+ * @translation killerpommes
  * 
  */
 
@@ -25,11 +26,11 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ACP_CAT_RAIDPLANNER' 				=> 'Raidplanner', //main tab 
-	'ACP_RAIDPLANNER' 					=> 'Raidplanner', //category
-	'ACP_RAIDPLANNER_SETTINGS'  		=> 'Raidplanner Settings', 	//module
-	'ACP_RAIDPLANNER_SETTINGS_EXPLAIN' 	=> 'Here you can configure Raid Planner settings',
-	'ACP_RAIDPLANNER_EVENTSETTINGS'		=> 'Event Settings', //module
+	'ACP_CAT_RAIDPLANNER' 				=> 'Raidplaner', //main tab 
+	'ACP_RAIDPLANNER' 					=> 'Raidplaner', //category
+	'ACP_RAIDPLANNER_SETTINGS'  		=> 'Raidplanereinstellungen', 	//module
+	'ACP_RAIDPLANNER_SETTINGS_EXPLAIN' 	=> 'Hier konfigurierst du den Raidplaner',
+	'ACP_RAIDPLANNER_EVENTSETTINGS'		=> 'Ereigniseinstellungen', //module
 ));
 
 ?>

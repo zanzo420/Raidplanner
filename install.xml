@@ -7,11 +7,11 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner 0.4.0]]></title>
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.5.0]]></title>
 		<description lang="en"><![CDATA[Raidplanner Installer. 
 		see /docs/install.html and /docs/changelog.html]]></description>
-		<author-notes lang="en"><![CDATA[We hope you get everything working. further development requests, 
-		support questions are welcome at www.bbdkp.com]]></author-notes>
+		<author-notes lang="en"><![CDATA[Requires bbDKP 1.2.8 to be installed. 
+		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -38,14 +38,14 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.4.0</mod-version>
+		<mod-version>0.5.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>600</time>
 			<target-version>3.0.10</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.6</link>
+			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.8</link>
 			<link type="language" href="contrib/fr.xml" lang="en">French</link>
 			<link type="language" href="contrib/fr.xml" lang="fr">Français</link>
 			<link type="language" href="contrib/fr.xml" lang="de">Franzözisch</link>
@@ -69,9 +69,12 @@
 			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php"/>
 			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php"/>
 			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php"/>
-			<file from="root/language/en/email/calendar_updated_event.txt" to="language/en/email/calendar_updated_event.txt"/>
-			<file from="root/language/en/email/calendar_signup.txt" to="language/en/email/calendar_signup.txt"/>
-			<file from="root/language/en/email/calendar_new_event.txt" to="language/en/email/calendar_new_event.txt"/>
+			<file from="root/language/en/email/raidplan_add.txt" to="language/en/email/raidplan_add.txt"/>
+			<file from="root/language/en/email/raidplan_update.txt" to="language/en/email/raidplan_update.txt"/>
+			<file from="root/language/en/email/raidplan_delete.txt" to="language/en/email/raidplan_delete.txt"/>
+			<file from="root/language/en/email/signup_confirm.txt" to="language/en/email/signup_confirm.txt"/>
+			<file from="root/language/en/email/signup_unsign.txt" to="language/en/email/signup_unsign.txt"/>
+			<file from="root/language/en/email/signup_new.txt" to="language/en/email/signup_new.txt"/>									
 			<file from="root/styles/prosilver/imageset/en/planner/*.*" to="styles/prosilver/imageset/en/planner/*.*"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
@@ -163,6 +166,8 @@ define('RP_WATCH',			$table_prefix . 'rp_watch');
 define('RP_ROLES',			$table_prefix . 'rp_roles');
 define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');				
+define('RP_TEAMS',		$table_prefix . 'rp_teams');				
+define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');				
 ]]></action>
 			</edit>
 		</open>

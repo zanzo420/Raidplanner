@@ -7,7 +7,7 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner 0.3.1]]></title>
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.5.0]]></title>
 		<description lang="en"><![CDATA[German languagefiles]]></description>
 		<description lang="fr"><![CDATA[fichiers Allemands]]></description>
 		<description lang="de"><![CDATA[Deutsche Sprachdateien]]></description>
@@ -25,7 +25,7 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.3.1</mod-version>
+		<mod-version>0.5.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
@@ -43,6 +43,34 @@
 			<file from="root/language/de/email/*.*" to="language/de/email/*.*"/>	
 			<file from="root/styles/prosilver/imageset/de/*.*" to="styles/prosilver/imageset/de/*.*"/>
 		</copy>
+	
+			<open src="language/de/common.php">
+			<edit>
+				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
+				<comment lang="de"><![CDATA[Definiere Kalender-String]]></comment>
+				<find><![CDATA[=> 'Bytes',]]></find>
+				<action type="after-add"><![CDATA[    'PLANNER'                => 'Raidplaner',
+]]></action>
+			</edit>
+		</open>
+		<open src="language/de/ucp.php">
+			<edit>
+				<comment lang="en"><![CDATA[Add Raidplanner UCP strings]]></comment>
+				<comment lang="de"><![CDATA[Fügt Raidplaner UCP Strings hinzu]]></comment>
+				<find><![CDATA['DISABLE_CENSORS'			=> 'Wortzensur aktivieren',
+		]]></find>
+				<action type="after-add"><![CDATA[	'DISPLAY_EVENTS_DAYCOUNT'	=> 'Wie viele Tage in die Zukunft willst du anzeigen lassen?',
+		]]></action>
+			</edit>
+			<edit>
+				<comment lang="en"><![CDATA[Define Calendar UCP module name strings]]></comment>
+				<comment lang="de"><![CDATA[Definieren Kalender UCP Modulnamen Strings]]></comment>
+				<find><![CDATA['UCP_MAIN_ATTACHMENTS'		=> 'Dateianhänge verwalten',]]></find>
+				<action type="after-add"><![CDATA[	'UCP_MAIN_RAIDPLANNER_MYEVENTS'	=> 'Verwalte meine Raids',
+			'UCP_MAIN_RAIDPLANNER_REGISTRATION'=> 'Verwalte Raid-Registrierung',
+		]]></action>
+			</edit>
+		</open>
 		<diy-instructions lang="en"><![CDATA[See general install.xml file]]></diy-instructions>
 		<diy-instructions lang="de"><![CDATA[Siehe install.xml]]></diy-instructions>
 	</action-group>

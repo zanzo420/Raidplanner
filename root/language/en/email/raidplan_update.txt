@@ -1,0 +1,10 @@
+Dear {USERNAME},
+
+The Raid "{EVENT}" was updated in the Raidplanner.
+
+new invite time : {START_TIME} {TZ}
+new start time : {INVITE_TIME} {TZ}
+new end time : {INVITE_TIME} {TZ}
+
+To view or sign up for the event please visit the following link:
+{U_RAIDPLAN}

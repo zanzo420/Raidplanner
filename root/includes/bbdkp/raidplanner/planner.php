@@ -59,6 +59,7 @@ switch( $view_mode )
 					$signup = new rpsignup();
 					$signup->signup($raidplan_id);
 					$raid = new rpraid($raidplan_id);
+					$signup->signupmessenger(4, $raid);
 					$raid->display();
 				}
 				break;
@@ -73,6 +74,7 @@ switch( $view_mode )
 				$signup = new rpsignup();
 				$signup->deletesignup($signup_id);
 				$raid = new rpraid($raidplan_id);
+				$signup->signupmessenger(6, $raid);
 				$raid->display();
 				break;
 			case 'editsign':
@@ -98,6 +100,7 @@ switch( $view_mode )
 				$signup = new rpsignup();
 				$signup->requeuesignup($signup_id);
 				$raid = new rpraid($raidplan_id);
+				$signup->signupmessenger(4, $raid);
 				$raid->display();
 				break;		
 			case 'confirm':
@@ -110,6 +113,12 @@ switch( $view_mode )
 				$signup = new rpsignup();
 				$signup->confirmsignup($signup_id);
 				$raid = new rpraid($raidplan_id);
+				if($config['rp_rppushmode'] == 0 && $raid->signups['confirmed'] > 0 )
+				{
+					//autopush
+					$raid->raidplan_push();
+				}
+				$signup->signupmessenger(5, $raid);
 				$raid->display();
 				break;	
 			case 'showadd':
@@ -125,11 +134,20 @@ switch( $view_mode )
 					$raid->display();
 				}
 				break;			
-			default:
-				// show the raid view form
+			case 'push':
+				//push to bbdkp
 				$raid = new rpraid($raidplan_id);
-				$raid->display();
+				if(!$raid->raidplan_push())
+				{
+					$raid->display();
+				}
 				break;
+			default:
+			// show the raid view form
+			$raid = new rpraid($raidplan_id);
+			$raid->display();
+			
+			break;
 		}
 		break;
    case "next":		

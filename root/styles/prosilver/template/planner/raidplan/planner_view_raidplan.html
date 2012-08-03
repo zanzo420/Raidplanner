@@ -1,32 +1,34 @@
 <!-- [+] raidplan view -->
 
-<div class="forabg">
-<span class="corners-inner-top"><span></span></span>
+<div class="panel bg3">
+<div class="inner">
+<span class="corners-top"><span></span></span>
 <div style="width:10%; float: left;">
 <img src="{EVENT_IMAGE}" alt="{ETYPE_DISPLAY_NAME}" width="48" height="48" /> 
 </div>
-<div class="blockhead" style="width:60%; float: left;">
+<div class="blockhead" style="width:30%; float: left;">
 <h1 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!-- ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h1>
 </div>
 
-<div style="width:30%; float: right;">
+<div style="width:40%; float: right;">
 <ul class="profile-icons" style="float: right;">
-<!-- IF ADD_LINK -->
-<li class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></li>
+<!-- IF U_ADDRAID -->
+<li class="planner-new-button"><a href="{U_ADDRAID}" title="{L_NEW_RAID}"><span></span></a></li>
 <!-- ENDIF -->
-<!-- IF U_EDIT -->
-<li class="planner-edit-icon"><a href="{U_EDIT}" title="{L_EDIT_POST}"><span></span></a></li>
+<!-- IF U_EDITRAID -->
+<li class="planner-edit-button"><a href="{U_EDITRAID}" title="{L_EDIT_RAID}"><span></span></a></li>
 <!-- ENDIF -->
-<!-- IF U_DELETE -->
-<li class="planner-delete-icon"><a href="{U_DELETE}" title="{L_DELETE_POST}"><span></span></a></li>
+<!-- IF U_PUSHRAID -->
+<li class="planner-push-button"><a href="{U_PUSHRAID}" title="{L_PUSH_RAID}"><span></span></a></li>
 <!-- ENDIF -->
-<li class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></li>
-<li class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></li>
-<li class="planner-month-icon"><a href="{MONTH_VIEW_URL}" 	title="{L_MONTH}"><span></span></a></li>
+<!-- IF U_DELETERAID -->
+<li class="planner-delete-button"><a href="{U_DELETERAID}" title="{L_DELETE_RAID}"><span></span></a></li>
+<!-- ENDIF -->
 </ul>
 
 </div>
-<span class="corners-inner-bottom"><span></span></span>
+<span class="corners-bottom"><span></span></span>
+</div>
 </div>
 
 <div class="panel bg2">
@@ -37,7 +39,7 @@
 <div class="raidplanbody">
 <div class="content">
 <p>{SUBJECT}</p>
-<br/>
+
 {MESSAGE}
 </div>
 </div>
@@ -77,6 +79,16 @@
 <div style="width:48%; float: left;">
 
 <fieldset class="rpfields">
+
+<dl>
+<dt><strong>{L_INVITE_INFO}</strong></dt>
+<dd><strong>{INVITED}</strong></dd>
+</dl>
+
+<dl>
+<dt><strong>{L_RAIDSIZE}</strong></dt>
+<dd><strong>{TEAM_NAME}</strong></dd>
+</dl>
 
 <dl>
 <dt><strong>{L_CONFIRMED}</strong></dt>

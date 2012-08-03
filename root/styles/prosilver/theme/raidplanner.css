@@ -87,9 +87,9 @@ hr.hrCal {
 .rolesignupheader {
 	border:1px solid #666;
     border:1px solid rgba(82, 82, 82, 0.698);
-    -moz-border-radius:8px;
-    -webkit-border-radius:8px;
-    
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius: 5px;
 	padding-top: 2px;
     padding-right: 2px;
     padding-bottom: 2px;
@@ -113,7 +113,7 @@ hr.hrCal {
     border:1px solid rgba(82, 82, 82, 0.698);
     -moz-border-radius:4px;
     -webkit-border-radius:4px;
-    	
+    border-radius: 4px;   	
 	-moz-box-shadow: 10px 10px 5px #888;
 	-webkit-box-shadow: 10px 10px 5px #888;
 	box-shadow: 10px 10px 5px #888;
@@ -136,7 +136,7 @@ hr.hrCal {
     border:1px solid rgba(82, 82, 82, 0.698);
     -moz-border-radius:4px;
     -webkit-border-radius:4px;
-		
+	border-radius: 4px; 
 	-moz-box-shadow: 10px 10px 5px #888;
 	-webkit-box-shadow: 10px 10px 5px #888;
 	box-shadow: 10px 10px 5px #888;
@@ -164,6 +164,7 @@ hr.hrCal {
     border:10px solid rgba(82, 82, 82, 0.698);
     -moz-border-radius:8px;
     -webkit-border-radius:8px;
+    border-radius: 8px; 
     padding:5px;
     background-color:#000;
     color:#fff;
@@ -298,6 +299,48 @@ ul.profile-icons li.planner-new-icon {
 	text-align: left;
 }
 
+
+ul.profile-icons li.planner-new-button {
+	background: url("{T_IMAGESET_LANG_PATH}/planner/button_new.png") no-repeat;
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-edit-button {
+	background: url("{T_IMAGESET_LANG_PATH}/planner/button_edit.png") no-repeat;
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-push-button {
+	background: url("{T_IMAGESET_LANG_PATH}/planner/button_push.png") no-repeat;
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+
+ul.profile-icons li.planner-edit-icon {
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-delete-button {
+	background: url("{T_IMAGESET_PATH}/planner/button_delete.png") no-repeat;
+	width: 30px;
+	height: 35px;
+	text-align: left;
+}
+
+.planner-delete-icon
+{
+	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
+}
+    
 ul.profile-icons li.planner-day-icon {
 	background: url("{T_IMAGESET_PATH}/planner/calendar_view_day.png") no-repeat;
 	width: 16px;
@@ -319,12 +362,6 @@ ul.profile-icons li.planner-month-icon {
 	text-align: left;
 }
 
-ul.profile-icons li.planner-edit-all-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_edit_all.gif");
-	width: 61px;
-	height: 20px;
-	text-align: left;
-}
 
 ul.profile-icons li.planner-delete-all-icon {
 	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
@@ -333,18 +370,7 @@ ul.profile-icons li.planner-delete-all-icon {
 	text-align: left;
 }
 
-ul.profile-icons li.planner-edit-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
-	width: 42px;
-	height: 20px;
-	
-}
 
-.planner-delete-icon
-{
-	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
-}
-    
 ul.profile-icons li.planner-delete-icon {
 	width: 20px;
 	height: 20px;
@@ -355,8 +381,6 @@ ul.profile-icons li.planner-delete-icon {
     float: left;
     background-position: 0 0;
 }
-
-
 
 ul.profile-icons li.planner-delete-icon a:hover {
     background-repeat: repeat;

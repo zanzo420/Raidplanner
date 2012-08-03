@@ -103,32 +103,28 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 <span class="corners-top"><span></span></span>
 
 <fieldset>
-<!-- IF ! S_EDIT -->
-<h2>{L_TRACK_SIGNUPS}</h2>
- <dl style="clear: left;">
-	<dt><label>{L_TRACK_SIGNUPS}:</label>{L_TRACK_SIGNUPS_EXPLAIN}</dt>
-	<dd><input type='checkbox' name='calTrackRsvps' value='1' {TRACK_RSVP_CHECK} /></dd>
-</dl> 
-<!-- ENDIF -->
-
- <h2>{L_RAIDROLES}</h2>
+ <h2>{L_RAIDTEAM}</h2>
 		<dl>
-		<dt><label>{L_CHOOSEPROFILE}</label>  </dt>
+		<dt><label>{L_CHOOSETEAM}</label>  </dt>
 		<dd>
-		<input type="radio" name="raidcomposition" onclick="update_roles(1);" value="1" checked /> {L_RAIDPROFILE1}
-     	<input type="radio" name="raidcomposition" onclick="update_roles(2);" value="2"/> {L_RAIDPROFILE2}
+		<select name="teamselect" id="teamselect" onchange="return getteamroles(this.value)">{TEAMSELECT}
+	        <!-- BEGIN team_row --><option value="{team_row.VALUE}"{team_row.SELECTED}>{team_row.OPTION}</option><!-- END team_row -->
+		</select>
 		</dd>
 		</dl>
-		<br/>
+		<input type="hidden" name="team_id" value="{TEAM_ID}" />
+		<div id="teamname"><h3>{TEAM_NAME}</h3></div>
 		<div id="raidroles">
 		<dl>
-		<!-- BEGIN raidroles -->
-		<dt><label for="subject">{raidroles.ROLE_NAME}:</label></dt>
+		<!-- BEGIN teamsize -->
+		<dt>
+		<!-- IF teamsize.S_ROLE_ICON_EXISTS --><img src="{teamsize.ROLE_ICON}" alt="image" /><!-- ENDIF -->&nbsp;
+		<label style="font-weight: normal;" for="subject">{teamsize.ROLE_NAME}:</label></dt>
 		<dd>
-			<input type="hidden" name="role[{raidroles.ROLE_ID}]" value="{raidroles.ROLE_ID}" />
-			<input type="text" name="role_needed[{raidroles.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{raidroles.ROLE_NEEDED}" class="inputbox autowidth" />
+			<input type="hidden" name="role[{teamsize.ROLE_ID}]" value="{teamsize.ROLE_ID}" />
+			<input type="text" name="role_needed[{teamsize.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{teamsize.ROLE_NEEDED}" class="inputbox autowidth" />
 		</dd>
-		<!-- END raidroles -->
+		<!-- END teamsize -->
 		</dl>
 		</div>
 </fieldset>

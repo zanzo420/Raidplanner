@@ -1,0 +1,12 @@
+Dear {USERNAME},
+
+A new Raid "{EVENT}" was added in the Raidplanner.
+
+invite time : {START_TIME} {TZ}
+start time : {INVITE_TIME} {TZ}
+end time : {INVITE_TIME} {TZ}
+
+To view or sign up for this event please visit the following link:
+{U_RAIDPLAN}
+
+{EMAIL_SIG}

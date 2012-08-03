@@ -44,8 +44,21 @@ if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 }
 
 
+// only allow install when bbDKP 1.2.8 is also installed 
+if  (!isset ($config['bbdkp_version']) )
+{
+    trigger_error('bbDKP must be installed first.');
+}
+else
+{
+	if(version_compare($config['bbdkp_version'], '1.2.8') == -1 ) 
+	{
+	    trigger_error('Radplanner 0.5.0 requires bbDKP 1.2.8 or higher.');
+	}
+}
+
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 0.4.0';
+$mod_name = 'Raidplanner 0.5.0';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -441,9 +454,116 @@ $versions = array(
 		'config_add' => array(
 			array('rp_show_portal', 1, true),
 			),
-        	 
-		'custom' => array('purgecaches', 'versionupdater'),        
-        ),     
+
+			
+        ),    
+        '0.5.0' => array(
+		  // Assign default permissions 
+			// permission to push raidplan
+	   'permission_add' => array(
+			   array('u_raidplanner_push', true),
+	
+	      	),
+
+        'permission_set' => array(
+			// can create raidplans that recur
+			array('ADMINISTRATORS', 'u_raidplanner_push', 'group', true),
+			array('GLOBAL_MODERATORS', 'u_raidplanner_push', 'group', true),
+			),        
+			
+      		// adding some configs
+			'config_add' => array(
+			array('rp_pm_rpchange', 1, true),
+			array('rp_email_rpchange', 1, true),
+			array('rp_pm_signup', 1, true),
+			array('rp_email_signup', 1, true),
+			array('rp_rppushmode', 1, true),
+			),
+
+			'table_add' => array(
+        	array(
+              		'phpbb_rp_teams' , array(
+                    'COLUMNS'        => array(
+                        'teams_id'    	   => array('INT:8', NULL, 'auto_increment'),
+                        'team_name'        => array('VCHAR_UNI', ''),
+              			'team_needed'     => array('INT:8', 0),
+                    ),
+                    'PRIMARY_KEY'    => 'teams_id'), 
+                ),
+                
+        	array(
+              		'phpbb_rp_teamsizes' , array(
+                    'COLUMNS'        => array(
+                        'role_id'    	  => array('INT:8', 0),
+                        'teams_id'     	  => array('INT:8', 0),
+              			'team_needed'     => array('INT:8', 0),
+                    ),
+                    ), 
+                ),                
+        	),
+        	
+        	'table_column_add' => array(
+				array('phpbb_rp_raids', 'raidteam' , array('INT:8', 0)),
+				array('phpbb_rp_raids', 'raid_id' , array('INT:8', 0)),
+			),
+
+        	'table_column_remove' => array(
+	        	array('phpbb_rp_roles', 'role_needed1'),
+		       	array('phpbb_rp_roles', 'role_needed2'),
+        	),
+        	
+        	 'table_row_insert'	=> array(
+
+        	array('phpbb_rp_teams',
+	           array(
+	                  array('team_name' => '8man',  'team_needed' => 8),
+	                  array('team_name' => '10man', 'team_needed' => 10),          
+	                  array('team_name' => '20man', 'team_needed' => 20),
+	                  array('team_name' => '25man', 'team_needed' => 25),
+	           		)
+	           ),
+           
+        	array('phpbb_rp_teamsizes',
+	           array(
+	                  array('role_id' => 1,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 2,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 3,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 4,  'teams_id' => 1, 'team_needed' => 1),
+	                  array('role_id' => 5,  'teams_id' => 1, 'team_needed' => 2),
+	                  array('role_id' => 6,  'teams_id' => 1, 'team_needed' => 2),
+	                  
+	                  array('role_id' => 1,  'teams_id' => 2, 'team_needed' => 3),
+	                  array('role_id' => 2,  'teams_id' => 2, 'team_needed' => 1),
+	                  array('role_id' => 3,  'teams_id' => 2, 'team_needed' => 1),
+	                  array('role_id' => 4,  'teams_id' => 2, 'team_needed' => 1),
+	                  array('role_id' => 5,  'teams_id' => 2, 'team_needed' => 2),
+	                  array('role_id' => 6,  'teams_id' => 2, 'team_needed' => 2),
+	                  
+	                  array('role_id' => 1,  'teams_id' => 3, 'team_needed' => 5),
+	                  array('role_id' => 2,  'teams_id' => 3, 'team_needed' => 2),
+	                  array('role_id' => 3,  'teams_id' => 3, 'team_needed' => 2),
+	                  array('role_id' => 4,  'teams_id' => 3, 'team_needed' => 2),
+	                  array('role_id' => 5,  'teams_id' => 3, 'team_needed' => 4),
+	                  array('role_id' => 6,  'teams_id' => 3, 'team_needed' => 5),
+	                  
+	                  array('role_id' => 1,  'teams_id' => 4, 'team_needed' => 7),
+	                  array('role_id' => 2,  'teams_id' => 4, 'team_needed' => 3),
+	                  array('role_id' => 3,  'teams_id' => 4, 'team_needed' => 2),
+	                  array('role_id' => 4,  'teams_id' => 4, 'team_needed' => 2),
+	                  array('role_id' => 5,  'teams_id' => 4, 'team_needed' => 5),
+	                  array('role_id' => 6,  'teams_id' => 4, 'team_needed' => 6),
+
+	                  )
+	           ),
+	           
+           ),
+		
+        	
+			'custom' => array('upd050', 'purgecaches', 'versionupdater'),                	
+        
+        ),    
+        
+         
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
@@ -473,7 +593,7 @@ function encode_announcement($text)
  */
 function purgecaches($action, $version)
 {
-    global $db, $table_prefix, $umil, $bbdkp_table_prefix;
+    global $umil;
     
     $umil->cache_purge();
     $umil->cache_purge('imageset');

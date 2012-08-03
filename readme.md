@@ -2,17 +2,29 @@ http://bbdkp.github.com/Raidplanner/
 
 Support : http://www.bbdkp.com/viewforum.php?f=61
 
-#Raidplanner v0.4.0
+#Raidplanner v0.5.0
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
-### Feature list
+### todo list
+*	Recurring Raidplans
+*	create Raidplans as raids in bbDKP
+*	permissions
+
+### General Features
 *	3 Raidplan types exist : Public Raidplans (no signup), Raid Raidplans (Signup), and personal Raidplans.
 *	Raidplan event types are picked from bbDKP. if you need new events, set up one in the event list. Event Icons are shown in the raidplan.
 *	Support for BBCode and Smilies
+<<<<<<< HEAD
+*	PM on raidplan addition, update, delete
+*	email on new raid addition, update, delete
+*	acp setting to enable/disable pm/email
+=======
+*	New buttons
+>>>>>>> new buttons for add, edit, push
 
 ##### Inviting and signing up
-*	Confirm Raid Raidplans and create them as dkp raids
+*	Confirm Raid Raidplans 
 *	Ability to invite multiple groups to an raidplan
 *	Sign up with your Guild characters to raids
 *	Follow up to which raid(s) you signed up in UCP.
@@ -20,6 +32,13 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	Raidmembers can change their comments, or change their signup from available to not available.
 *	Raidleaders can approve or deny raidmembers
 *   tooltip shows current status of your signup
+<<<<<<< HEAD
+*	PM on new signup, update, unsign
+*	email on new signup, update, unsign
+*	acp setting to enable/disable pm/email
+=======
+*   pm or/and email is sent on signup & raidplan changes/additions
+>>>>>>> new buttons for add, edit, push
 
 ##### Views
 *	Raidplan view - filled with all Raidplan details (who's invited, who created the Raidplan, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc)
@@ -36,11 +55,8 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 #### ACP
 *	Auto pruning of past Raidplans - From the ACP you control how often Raidplans are pruned, and how old they have to be before they are added to the delete list.
-
 *	Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred date/time format, so you can display just the time in hours where it makes sense (like in the week view) or the whole date+time (like in the display Raidplan)
-
 *	UCP module that displays upcoming Raidplans (that the user has registered for) for the next X days.
-
 
 ### Installation
 * 	Unzip the zip file into /store/mods/</li>
@@ -49,7 +65,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	Once installed, you will find the ACP module added under the raid section in bbdkp ACP.</li>
 
 ### Requirements
-*	bbDKP 1.2.6-PL5 or higher with Wow installed
+*	bbDKP 1.2.7 or higher with Wow installed
 *	phpBB 3.0.10
 
 
