@@ -22,8 +22,13 @@ if (!defined('IN_PHPBB'))
 $lang = array_merge($lang, array(
 
 	//settings 
+	'ACP_RAIDROLES_EXPLAIN'					=> 'Raidrollen Einstellung', 
+	'ACP_RAIDTEAMS_EXPLAIN'					=> 'Raidteams Einstellung',
+	'ACP_RAIDSIZES_EXPLAIN'					=> 'Raidgrösse Einstellungen',
+ 
     '12_HOURS'								=> '12 Stunden',
     '24_HOURS'								=> '24 Stunden',
+	'ADD_RAID'								=> 'Neuer Raidplan', 
     'AUTO_POPULATE_EVENT_FREQUENCY'			=> 'Auto füllen der wiederkehrende Raids',
     'AUTO_POPULATE_EVENT_FREQUENCY_EXPLAIN'	=> 'Wie oft (in Tagen) sollen wiederkehrenden Raids in dem Kalender gefüllt werden? Hinweis Wenn du 0 wählst, werden wiederkehrenden Raids nie in den Kalender aufgenommen',
     'AUTO_POPULATE_EVENT_LIMIT'				=> 'Auto füllen Grenzwerte',
@@ -40,6 +45,7 @@ $lang = array_merge($lang, array(
     'DATE_TIME_FORMAT'						=> 'Datums-und Zeitformat',
     'DATE_TIME_FORMAT_EXPLAIN'				=> 'versuche &quot;d M, Y h:i a&quot; oder &quot;d M, Y H:i&quot;',
     'DELETE'								=> 'Löschen',
+	'DELETE_RAID'								=> 'Lösche Raidplan',
     'DISPLAY_12_OR_24_HOURS'				=> 'Zeige Zeit Format',
     'DISPLAY_12_OR_24_HOURS_EXPLAIN'		=> 'Sollene die Zeiten im 12-Stunden-Modus mit AM / PM oder 24-Stunden-Modus angezeigt werden? Dies hat keine Auswirkungen auf das ​​Format der Zeiten für den Benutzer - das wird in ihrem Profil eingestellt. Dies hat nur Auswirkungen auf das Pulldown-Menü für die Auswahl der Zeit beim Erstellen / Bearbeiten von Raids und die zeitgesteuerte Überschriften auf der Tage-Kalender Ansicht.',
     'DISPLAY_HIDDEN_GROUPS'					=> 'Zeige versteckte Gruppen',
@@ -53,8 +59,12 @@ $lang = array_merge($lang, array(
     'DISPLAY_NEXT_RAIDS_EXPLAIN'			=> 'Gebe die Anzahl der anzuzeigenden bevorstehenden Raids an.',
     'DISPLAY_TRUNCATED_SUBJECT'				=> 'Kürze Betreff',
     'DISPLAY_TRUNCATED_SUBJECT_EXPLAIN'		=> 'Lange Namen in der Betreffzeile können auf dem Kalender eine Menge Platz gebrauchen. Wie viele Zeichen sollen im Betreff auf dem Kalender angezeigt werden? (0 eingeben, wenn der Titel nicht gekürzt werden soll)',
+    
+    'EDITEAMNAME'							=> 'Bearbeiten Teamnamen', 
     'EDIT'									=> 'Bearbeiten',
+	'EDIT_RAID'								=> 'Raidplan ändern', 
     'EDIT_ETYPE'							=> 'Bearbeite Ereignis',
+    'EDIROLENEED'							=> 'Rollen bearbeiten', 
     'EDIT_ETYPE_EXPLAIN'					=> 'Gebe an wie der Raid-Typ angezeigt werden soll.',
     'FIRST_DAY'								=> 'Erster Tag',
     'FIRST_DAY_EXPLAIN'						=> 'Welcher Tag soll als erster der Woche angezeigt werden?',
@@ -65,11 +75,19 @@ $lang = array_merge($lang, array(
     'MANAGE_ETYPES_EXPLAIN'					=> 'Raid-Typen werden genutzt um den Kalender zu organisieren. Du kannst hier Raid-Typen hinzufügen, bearbeiten, löschen oder sortieren.',
     'MINUS_HOUR'							=> 'Verschiebe alle Raids Minus (-) eine Stunde',
     'MONDAY'								=> 'Montag',
+	'NEW_RAID'								=> 'Neuer Raidplan', 
     'NO_EVENT_TYPE_ERROR'					=> 'Konnte angegebene Raid-Typ nicht finden.',
     'PLUS_HOUR'								=> 'Verschiebe alle Raids Plus (+) eine Stunde',
     'PLUS_HOUR_CONFIRM'						=> 'Bist du sicher, dass alle Raids um %1$s Stunden verschoben werden sollen?',
     'PLUS_HOUR_SUCCESS'						=> 'Erfolgreich alle Raids um %1$s Stunden verschoben.',
 	'ROLEICON'								=> 'Rollen Symbol',
+	'PUSH_RAID'								=> 'Raid Bestätigung',  
+	'AUTOPUSH'								=> 'Auto-Raidbestätigung', 
+	'MANPUSH'								=> 'Manuelle Raidbestätigung', 
+	'NOPUSH'								=> 'Keine Raidbestätigung', 
+	'RETURN_RP'								=> 'Zurück zur Raidplan-Einstellungen', 
+	'PUSHRAIDPLAN'							=> 'Bestätige Raid in bbDKP',
+	'PUSHRAIDPLAN_EXPLAIN'					=> 'Bestätige Raid in bbDKP falls eine Teilnahme bestätigt wurde',  
 	'SATURDAY'								=> 'Samstag',
     'SUNDAY'								=> 'Sonntag',
     'TIME_FORMAT'							=> 'Zeit-Format',
@@ -110,7 +128,7 @@ $lang = array_merge($lang, array(
 	'CALENDAR_TITLE'			=> 'Planer',
 	'RAIDPLANNER'				=> 'Raid Planer',
 	'NEWRAID'					=> 'Neuer Raid',
-
+	'CALSETTINGS_UPDATED'		=> 'Kalendereinstellungen aktualisiert', 
 	'CALENDAR_NUMBER_ATTEND'=> 'Die Zahl der Personen, die du zu diesem Raid mitbringst',
 	'CALENDAR_NUMBER_ATTEND_EXPLAIN'=> '(Wähle 1 für dich)',
 	'CALENDAR_RESPOND'		=> 'Bitte hier Registrieren',
@@ -123,6 +141,9 @@ $lang = array_merge($lang, array(
 	'COL_WILL_ATTEND'		=> 'Wird Teilnehmen?',
 	'COMMENTS'				=> 'Kommentare',
 	'CONFIRMED'				=> 'Bestätigt',
+	'CONFIRM_DELETE_TEAM'	=> 'Bestätige Team', 
+	'CHOOSETEAM'			=> 'wähle Team', 
+	'CONFIRMSIGN'			=> 'bestätige Team',  
 
 	'DAY'					=> 'Tag',
 	'DAY_OF'				=> 'Tag des ', //??
@@ -130,6 +151,7 @@ $lang = array_merge($lang, array(
 	'DELETE_ALL_EVENTS'		=> 'Lösche alle Ereignisse dieses Raids.',
 	'DETAILS'				=> 'Details',
 	'DELETE_RAIDPLAN'		=> 'Lösche raid',
+	'DELRAID'				=> 'Lösche Team', 
 
 	'EDIT'					=> 'Bearbeiten',
 	'EDIT_ALL_EVENTS'		=> 'Bearbeite alle Ereignisse dieses Raids.',
@@ -171,7 +193,7 @@ $lang = array_merge($lang, array(
 	'INVITE_TIME'			=> 'Einlade-Zeit',
 
 	'MESSAGE_BODY_EXPLAIN'		=> 'Geben deine Nachricht ein. Sie kann nicht mehr als <strong>%d</strong> Zeichen beinhalten.',
-
+	'NEWSIGN'				=> 'Neue Teilnahme,',
 	'MAYBE'					=> 'Vielleicht',
 	'AVAILABLE'				=> 'Verfügbar', 
 	'MINUTE'				=> 'Minute', 
@@ -181,9 +203,10 @@ $lang = array_merge($lang, array(
 	'LOCKED'				=> 'Geschlossen', 
 	'FROZEN'				=> 'Raid ist Eingefroren',
 	'NOCHAR'				=> 'Keine Charaktere', 
+	 
 	'SIGNED_UP'				=> 'Registriert', 
 	'SIGNED_OFF'			=> 'Abgemeldet', 
-
+	'SENDPMRP'				=> 'Sende neue PN bei Raidanmeldung', 
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'Du musst dich anmelden, um Raids hinzuzufügen, zu bearbeiten oder zu löschen.',
 
@@ -207,10 +230,13 @@ $lang = array_merge($lang, array(
 
 	'RAIDROLES'				=> 'Raid Rollen' ,
 	'RAIDROLE'				=> 'Raid Rolle' ,
+	'RAIDSIZE'				=> 'Raid Umfang', 
 	'RAIDINFO'				=> 'Raid Info' ,
 	'RAIDWHEN'				=> 'Wann?' ,
 	'RAIDREPEAT'			=> 'Wiederholt sich?' ,
 	'RAIDLEADER'			=> 'Raid Leiter' ,
+	'RAIDTEAM'				=> 'Raid Team', 
+	'RAIDTEAMS'				=> 'Raid Teams', 
 
 	'RECURRING_RAIDPLAN'			=> 'Wiederkehrende Raid',
 	'RECURRING_EVENT_TYPE'			=> 'Wiederholungstyp: ',
@@ -226,10 +252,16 @@ $lang = array_merge($lang, array(
 	'RECURRING_EVENT_CASE_6'    => 'D: Jeden [Y] Tag',
 	
 	'RETURN_CALENDAR'			=> '%sZurück zum Kalender%s',
-
+	'TEAMID'					=> 'TeamId', 
+	'TEAMNAME'					=> 'Teamname', 
+	'TEAMSIZE'					=> 'Teamgrösse', 
+	
+	'RAIDSIZES'					=> 'Raidgrösse', 
 	'RAIDPROFILE1'				=> '10-Mann', 
 	'RAIDPROFILE2'				=> '25-Mann', 
-
+	'ROLESIZE'					=> 'Raidumfang', 
+	'ROLE_ADD_SUCCESS'			=> 'Die Rolle %s wurde beigefügt', 
+	'ROLE_UPDATE_SUCCESS'		=> 'Die Rolle %s wurde aktualisiert',
 	'RP_SHOW_WELCOME'			=> 'Zeige Willkommensnachricht',
 	'RP_WELCOME'				=> 'Willkommensnachricht',
 	'RP_WELCOME_EXPLAIN'		=> 'Nachricht wird über dem Planer angezeigt. Unterstützt BBCodes. ', 
@@ -240,7 +272,19 @@ $lang = array_merge($lang, array(
 	'START_DATE'				=> 'Startdatum',
 	'START_TIME'				=> 'Startzeit',
 	'RAID_DATE'					=> 'Raid Datum',
+
+	'SENDPMRP_EXPLAIN'			=> 'Sende PN wenn neue Raidplaneintrage',
+	'SENDPMRP'					=> 'Nachricht bei Raidplaneintrage',
+	'SENDEMAILRP'				=> 'Email bei Raidplaneintrage',
+	'SENDEMAILRP_EXPLAIN'		=> 'Sende Email wenn neue Raidplaneintrage', 
+	'SENDPMSIGN'				=> 'PN bei Raidplan-anmeldung',
+	'SENDPMSIGN_EXPLAIN'		=> 'Sende PN zu Raidleader bei Raidplan-anmeldung, zu Teilnehmer bei Bestätigung, Zu alle bei Raidplanstornierung', 	 
+	'SENDEMAILSIGN'				=> 'Email bei Raidplan-anmeldung',
+	'SENDEMAILSIGN_EXPLAIN'		=> 'Sende Email zu Raidleader bei Raidplan-anmeldung, zu Teilnehmer bei Bestätigung, Zu alle bei Raidplanstornierung', 	 
 	'SIGN_UP'					=> 'Registrieren',
+	'SIGNUPSETTINGS'			=> 'Registrierungseinstellungen',
+	'SIGNUPSETTINGS_UPDATED'	=> 'Registrierungseinstellungen aktualisiert', 
+	
 	'RAID_INVITE_TIME'			=> 'Einlade-Zeit',
 	'RAID_INVITE_TIME_DEFAULT'	=> 'Standard Raid Einladungszeit',
 	'RAID_START_TIME'			=> 'Startzeit',
@@ -249,6 +293,12 @@ $lang = array_merge($lang, array(
 	'INVITE'					=> 'Einladen', 
 	'DEFAULT_RAID_START_TIME'   => 'Standard Raid-Startzeit',
 	'DEFAULT_RAID_END_TIME'   	=> 'Standard Raid-Endzeit',
+
+	'TEAM_DELETE_SUCCESS'		=> 'Das Team %s wurde gelöscht', 
+	'TEAM_ADD_SUCCESS'			=> 'Das Team %s wurde beigefügt', 
+	'TEAM_UPDATE_SUCCESS'		=> 'Das Team %s wurde aktualisiert', 
+	'TEAMROLE_UPDATE_SUCCESS'	=> 'Die Rollen wurden aktualisiert', 
+	'TEAMROLE_UPDATE_FAIL'		=> 'Aktualisierung der Rollen von Team %s ist gescheitert, Max Grösse überschreitung (%s). ', 
 	'TO_TIME'					=> 'Zu',
 	'TOPSIGNUPS'				=> 'Top Anmeldungen',
 	'TENTATIVE'					=> 'Vorläufig',
@@ -258,6 +308,8 @@ $lang = array_merge($lang, array(
 	'TRACK_SIGNUPS_ON'			=> 'Die Teilnahme Beobachtung ist aktiviert.',
 	'TRACK_SIGNUPS_OFF'			=> 'Die Teilnahme Beobachtung ist deaktiviert.',
 
+	'UNSIGNED'					=> 'Teilnahme absagen',
+	'UPDRAID'					=> 'Raidplan aktualisiert',  
 	'UPCOMING_RAIDS'			=> 'Bevorstehende Raids',
 	'USER_CANNOT_VIEW_RAIDPLAN' => 'Du hast keine Berechtigung, diesen Raid zu sehen.',
 	'USER_CANNOT_DELETE_RAIDPLAN'	=> 'Du hast keine Berechtigung, diesen Raid zu löschen.',
