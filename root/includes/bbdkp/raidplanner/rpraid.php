@@ -1954,63 +1954,40 @@ class rpraid
 		
 		$raidplan_output = array();
 		
-		//find any raidplans on this day
-		$start_temp_date = gmmktime(0,0,0,$month, $day, $year);
-		/* 
-			GMT: Fri, 11 Nov 2011 00:00:00 GMT
-			Your time zone: Fri Nov 11 01:00:00 2011 GMT+1
-		*/
-		
-		switch($mode)
-		{
-			case "up":
-				// get next x upcoming raids  
-				// find all day raidplans since 1 days ago
-				$start_temp_date = $start_temp_date - 30*86400+1;
-				// don't list raidplans more than 2 months in the future
-				$end_temp_date = $start_temp_date + 31536000;
-				// show only this number of raids
-				$x = $config['rp_display_next_raidplans'];
-				break;
-			case "next":
-				// display the upcoming raidplans for the next x number of days
-				$end_temp_date = $start_temp_date + ( $config['rp_display_next_raidplans'] * 86400 );
-				$x = 0;
-				break;
-			default:
-				$end_temp_date = $start_temp_date + 86400;
-				//GMT: Sat, 12 Nov 2011 00:00:00 GMT
-				//Your time zone: Sat Nov 12 01:00:00 2011 GMT+1
-				$x = 0;
-		}
-		
-		// we need to find out the time zone to display
-		if ($user->data['user_id'] == ANONYMOUS)
-		{
-		 	//grab board default
-		 	$tz = $config['board_timezone'];  
-		}
-		else
-		{
-			// get user setting
-			$tz = (int) $user->data['user_timezone'];
-		}
-		$timezone = $user->lang['tz'][$tz]; 
-		
+		$x = 0;
+
 		$raidplan_counter = 0;
-		// build sql 
+		// build sql
+		
+		$day = ($day < 10 ? ' ' .$day : $day);
+		$month = ($month < 10 ? ' ' .$month : $month);
+		
 		$sql_array = array(
    			'SELECT'    => 'r.raidplan_id ',   
 			'FROM'		=> array(RP_RAIDS_TABLE => 'r'), 
-			'WHERE'		=>  '(raidplan_access_level = 2 
-					   OR (r.poster_id = '. $db->sql_escape($user->data['user_id']).' ) OR (r.raidplan_access_level = 1 AND ('. $group_options.')) )  
-					  AND (r.raidplan_start_time >= '. $db->sql_escape($start_temp_date).' AND r.raidplan_start_time <= '. $db->sql_escape($end_temp_date). " )",
+			'WHERE'		=>  "(raidplan_access_level = 2 
+					   OR (r.poster_id = ". $db->sql_escape($user->data['user_id'])." ) 
+					   OR (r.raidplan_access_level = 1 AND (" . $group_options. ")) )  
+					  AND (r.raidplan_day = '". $db->sql_escape($day . '-'. $month . '-' . $year) . "' ) " ,
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC'
 		);
 		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query_limit($sql, $x, 0);
 
+		// we need to find out the time zone to display on tooltip
+		if ($user->data['user_id'] == ANONYMOUS)
+		{
+			//grab board default
+			$tz = $config['board_timezone'];
+		}
+		else
+		{
+			// get user setting
+			$tz = (int) $user->data['user_timezone'];
+		}
+		$timezone = $user->lang['tz'][$tz];
+		
 		while ($row = $db->sql_fetchrow($result))
 		{
 			unset($this);
@@ -2033,24 +2010,15 @@ class rpraid
 			}
 			
 			$pre_padding = 0;
+			$padding = 0;
 			$post_padding = 0;
 			/* if in dayview we need to shift the raid to its time */
 			if($mode =="day")
 			{
-				/* sets the colspan width */
-		        if( $this->start_time > $start_temp_date )
-		        {
-		          // find pre-padding value...
-		          $start_diff = $this->start_time - $start_temp_date;
-		          $pre_padding = round($start_diff/900);
-		        }
-		
-		        if( $this->end_time < $end_temp_date )
-		        {
-		          // find pre-padding value...
-		          $end_diff = $end_temp_date - $this->end_time;
-		          $post_padding = round($end_diff/900);
-		        }
+	          // find padding values 
+	          $pre_padding = 4 * $user->format_date($this->start_time, "H", true);
+	          $padding = 4 * $user->format_date($this->end_time, "H", true) - $pre_padding;
+	          $post_padding = 96 - $padding - $pre_padding;
 			}
 			
 			$rolesinfo = array();
@@ -2106,7 +2074,7 @@ class rpraid
 				'RAID_ID'				=> $this->id,
 				'PRE_PADDING'			=> $pre_padding,
 				'POST_PADDING'			=> $post_padding,
-				'PADDING'				=> 96 - $pre_padding - $post_padding, 
+				'PADDING'				=> $padding, 
 				'ETYPE_DISPLAY_NAME' 	=> $this->eventlist->events[$this->event_type]['event_name'], 
 				'FULL_SUBJECT' 			=> $fsubj,
 				'EVENT_SUBJECT' 		=> $subj, 
@@ -2165,16 +2133,12 @@ class rpraid
 				'raidroles' => $rolesinfo
 			);
 			
-
-			
-
 		}
 		$db->sql_freeresult($result);
 		
 		return $raidplan_output;
 	}	
-	
-	
+
 	/**
 	 * checks if user is allowed to *see* raid
 	 *
@@ -2257,13 +2221,12 @@ class rpraid
 					// public raidplan... everyone is invited
 					$this->auth_cansee = true;
 					break;
-				
 			}
-			
 		}
-		
-		
 	}
+
+	
+	
 	
 	/**
 	 * checks if user can post new raid
@@ -2552,7 +2515,7 @@ class rpraid
 	
 	/**
 	 * gets array with raid days 
-	 *
+	 * @todo fix display bug
 	 * @param int $from
 	 * @param int $end
 	 * 
@@ -2570,17 +2533,23 @@ class rpraid
 			'WHERE'		=>  ' r.raidplan_start_time >= '. $db->sql_escape($from) . ' 
 							 AND r.raidplan_start_time <= '. $db->sql_escape($end) ,
 			'ORDER_BY'	=> 'r.raidplan_start_time ASC');
+		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query($sql);
 		$raiddaylist = array();
 		while ($row = $db->sql_fetchrow($result))
 		{
+			
+			$day = $user->format_date($row['raidplan_start_time'], "d", true);
+			$month =  $user->format_date($row['raidplan_start_time'], "n", true);
+			$year =  $user->format_date($row['raidplan_start_time'], "Y", true);
+			
 			// key is made to be unique
-			$raiddaylist [date("m", $row['raidplan_start_time']) . '-' . date("d", $row['raidplan_start_time']) . '-' . date("Y", $row['raidplan_start_time'])] = array(
-				'sig' => date("m", $row['raidplan_start_time']) . '-' . date("d", $row['raidplan_start_time']) . '-' . date("Y", $row['raidplan_start_time']), 
-				'month' => date("m", $row['raidplan_start_time']),
-				'day' => date("d", $row['raidplan_start_time']),
-				'year' => date("Y", $row['raidplan_start_time'])
+			$raiddaylist [$month . '-' . $day . '-' . $year] = array(
+				'sig' => $month . '-' . $day . '-' . $year, 
+				'month' => $month,
+				'day' => $day,
+				'year' => $year
 			); 
 		}
 		
@@ -2969,7 +2938,6 @@ class rpraid
 		return $this->raid_id;
 		
 	}
-
 	
 }
 
