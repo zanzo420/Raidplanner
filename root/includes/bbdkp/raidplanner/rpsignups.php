@@ -447,8 +447,9 @@ class rpsignup
 	 * delete this signup and change to not available
 	 * 
 	 * @param int $signup_id
+	 * @param object $raid_id (pass byref)
 	 */
-	public function deletesignup($signup_id)
+	public function deletesignup($signup_id, rpraid &$thisraid)
 	{
 		global $db;
 		
@@ -502,6 +503,13 @@ class rpsignup
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);				
 				$db->sql_transaction('commit');
+				
+				if($thisraid->raid_id > 0)
+				{
+					//raid was pushed already
+					$this->exec_decreasedkp_after_unsign($thisraid);
+				}
+				
 				return true;
 				break; 
 		}
@@ -509,6 +517,34 @@ class rpsignup
 		
 		// if already 0 then don't do anything
 		return false;
+	}
+	
+	
+
+	/**
+	 * if confirmed raider is unsigned after raid was pushed,
+	 * decrease dkp points by event standard amount
+	 * @param rpraid $raid
+	 */
+	private function exec_decreasedkp_after_unsign(rpraid &$raid)
+	{
+		global $phpbb_root_path, $phpEx, $db, $user;
+		$dkpid = $raid->eventlist->events[$raid->event_type]['dkpid']; 
+		$eventvalue = $raid->eventlist->events[$raid->event_type]['value'];
+		$raid_start = $raid->start_time;
+		$member_id = $this->dkpmemberid;
+		//decrease dkp points
+		if (!class_exists('acp_dkp_raid'))
+		{
+			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
+		}
+		$acp_dkp_raid = new acp_dkp_raid();
+		$acp_dkp_raid->add_dkp (- $eventvalue, 0, $raid_start ,$dkpid , $member_id);
+		
+		//now delete raid participation record of that user
+		$sql="DELETE FROM " . RAID_DETAIL_TABLE . " WHERE raid_id = " . $raid->id . " AND member_id = " . $member_id;
+		$db->sql_query($sql);
+	
 	}
 	
 	/**

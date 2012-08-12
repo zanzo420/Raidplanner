@@ -906,7 +906,7 @@ class rpraid
 		 *	populate Raid start time pulldown
 		 */ 
 		$hour_start_selcode = "";
-		$presetstarthour = intval( ($this->start_time > 0 ? $user->format_date($this->start_time, 'G', true) * 60: $config['rp_default_invite_time']) / 60);
+		$presetstarthour = intval( ($this->start_time > 0 ? $user->format_date($this->start_time, 'G', true) * 60: $config['rp_default_start_time']) / 60);
 		if( $hour_mode == 12 )
 		{
 			for( $i = 0; $i < 24; $i++ )

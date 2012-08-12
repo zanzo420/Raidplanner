@@ -72,8 +72,9 @@ switch( $view_mode )
 				
 				$signup_id = request_var('signup_id', 0);
 				$signup = new rpsignup();
-				$signup->deletesignup($signup_id);
 				$raid = new rpraid($raidplan_id);
+				
+				$signup->deletesignup($signup_id, $raid);
 				$signup->signupmessenger(6, $raid);
 				$raid->display();
 				break;
@@ -121,11 +122,13 @@ switch( $view_mode )
 				$signup->signupmessenger(5, $raid);
 				$raid->display();
 				break;	
+				
 			case 'showadd':
 				// show the newraid or editraid form
 				$raid = new rpraid($raidplan_id);
 				$raid->showadd($cal, $raidplan_id);
 				break;	
+				
 			case 'delete':
 				// delete a raid				
 				$raid = new rpraid($raidplan_id);
@@ -133,7 +136,8 @@ switch( $view_mode )
 				{
 					$raid->display();
 				}
-				break;			
+				break;	
+						
 			case 'push':
 				//push to bbdkp
 				$raid = new rpraid($raidplan_id);
