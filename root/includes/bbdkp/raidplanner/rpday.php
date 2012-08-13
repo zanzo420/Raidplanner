@@ -48,7 +48,11 @@ class rpday extends calendar
 	{
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
-		$calendar_header_txt = $user->lang['DAY_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], $user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
+		$calendar_header_txt = sprintf($user->lang['LOCAL_DATE_FORMAT'], 
+					$this->date['dayname'],
+					$user->lang['datetime'][$this->date['month']], 
+					$this->date['day'],
+					$this->date['year'] );
 
 		$hour_mode = $config['rp_hour_mode'];
 		if( $hour_mode == 12 )
@@ -146,6 +150,7 @@ class rpday extends calendar
 		
 		$template->assign_vars(array(
 			'BIRTHDAYS'			=> $calendar_days['BIRTHDAYS'],
+			'DAY'				=> $this->date['day'], 
 			'CALENDAR_HEADER'	=> $calendar_header_txt,
 			'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
 			'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),

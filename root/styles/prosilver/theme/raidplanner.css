@@ -246,7 +246,18 @@ td.bg4.calMonH a:hover {
 	text-decoration: none;
 }
 
-/* day css */
+
+/**************** day css ******************/
+h1.daynum  {
+	font-size: 36px;
+	font-family: Century Gothic,Arial Narrow,Trebuchet MS,Andale Mono, sans serif;
+	font-stretch: narrower;
+	font-weight: lighter;
+	margin: 5px;
+	padding: -10px;
+	
+}
+
 table.table1 tbody td.bg1_calDay {
 	background-color: #ECF3F7;
 	border-top-color: #12A3EB;
