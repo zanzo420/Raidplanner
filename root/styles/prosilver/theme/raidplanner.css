@@ -84,6 +84,12 @@ hr.hrCal {
     font-size: 1.3em;
 }
 
+.blockhead h1 {
+	margin-right: 0px;
+	margin-top: 0px;
+}
+
+
 .rolesignupheader {
 	border:1px solid #666;
     border:1px solid rgba(82, 82, 82, 0.698);
