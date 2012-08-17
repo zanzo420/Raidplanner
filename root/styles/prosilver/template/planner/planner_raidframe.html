@@ -2,7 +2,7 @@
 <span class="corners-top"><span></span></span>
 <ul class="topiclist">
 <li class="header">
-	<h1 style="color:#dfc065; white-space:nowrap;"><!-- IF S_PLANNER_ADD -->{L_NEWRAID}<!-- ELSE -->{L_RAIDPLANNER}<!-- ENDIF -->
+<h1 style="color:#dfc065; white-space:nowrap;"><!-- IF S_PLANNER_ADD -->{L_NEWRAID}<!-- ELSE -->{L_RAIDPLANNER}<!-- ENDIF -->
 </h1>
 </li>
 </ul>
@@ -12,41 +12,56 @@
 <!-- left sidebar -->
 <div style="float: left; width: 0%; margin-left:0.5%">
 
-</div>
-<!-- middle div -->
 
+</div>
+
+
+<!-- middle div -->
 <div style="float: left; width: 79%; margin-left:0.5%; margin-right:0.5%">
 
-<!-- IF S_SHOW_WELCOME_MSG -->
+<!-- IF S_PLANNER_DAY || S_PLANNER_WEEK || S_PLANNER_MONTH -->
 <div class="panel">
 <div class="inner">
-<span class="corners-top"><span></span></span>
-{WELCOME_MSG}
-<br />{CURRENT_TIME} {TZ}
-<!-- IF S_PLANNER_RAIDPLAN -->
-<ul class="profile-icons" style="float: right;">
-<li class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></li>
-<li class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></li>
-<li class="planner-month-icon"><a href="{MONTH_VIEW_URL}" 	title="{L_MONTH}"><span></span></a></li>
+<span class="corners-inner-top"><span></span></span>
+
+<div style="float: left; width: 10%">
+<!-- IF ADD_LINK -->
+<ul class="profile-icons" style="float: left;">
+<li class="planner-new-icon"><a href="{ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></li>
 </ul>
 <!-- ENDIF -->
-<span class="corners-bottom"><span></span></span>
 </div>
+
+<div style="float: left; width: 10%">
+<ul class="profile-icons" style="float: right;">
+	<li class="planner-day-icon"><a href="{DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></li>
+	<li class="planner-week-icon"><a href="{WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></li>
+	<li class="planner-month-icon"><a href="{MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></li>
+</ul>
+</div>
+
+<!-- IF ! S_PLANNER_RAIDPLAN -->
+<div style="float: left; width: 50%">
+<div style="float: left;"><a class="prev_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_PREV}"></a>
+</div>
+<form id="viewOpts" method="post" action="{S_POST_ACTION}">
+	<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; 
+	{CALENDAR_VIEW_OPTIONS}
+	<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
+</form>
+<div style="float: left;"><a class="next_planner" title="{L_SHOW_NEXT}" type="button" href="{CALENDAR_NEXT}"></a></div>
 </div>
 <!-- ENDIF -->
+
+
+<span class="corners-inner-bottom"><span></span></span>
+</div>
+
+</div>
+<!-- ENDIF -->
+
+
 <div class="clear"></div>
-<!-- IF S_PLANNER_DAY || S_PLANNER_WEEK || S_PLANNER_MONTH -->
-<div class="navbar raidplanner_bg">
-	<div class="inner"><span class="corners-inner-top"><span></span></span>
-	      	<div style="float: left;"><a class="prev_planner" title="{L_SHOW_PREV}" type="button" href="{CALENDAR_PREV}"></a></div>
-			<form id="viewOpts" method="post" action="{S_POST_ACTION}">
-	      	<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; {CALENDAR_VIEW_OPTIONS}<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button2" /></div>
-	    	</form>
-		    <div style="float: left;"><a class="next_planner" title="{L_SHOW_NEXT}" type="button" href="{CALENDAR_NEXT}"></a></div>
-	    <span class="corners-inner-bottom"><span></span></span>
-    </div>
-</div>
-<!-- ENDIF -->
 
 <!-- IF S_PLANNER_DAY -->
 	<!-- INCLUDE planner/calendar/planner_view_day.html -->
@@ -70,8 +85,13 @@
 
 </div>
 
+
+
+
 <!-- right sidebar -->
 <div style="float: right; width: 19%; margin-right:0.5%">
+<!-- INCLUDE planner/calendar/welcome.html -->
+
 <!-- IF S_PLANNER_UPCOMING -->
 	<!-- INCLUDE planner/raidplan/planner_upcoming.html -->
 <!-- ENDIF -->
