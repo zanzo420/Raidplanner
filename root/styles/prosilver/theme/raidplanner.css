@@ -1,21 +1,245 @@
 /* -------------------------
    raidplanner css
   ------------------------- */
-a.prev_planner {
-	background: transparent url('{T_THEME_PATH}/images/dkp/left_arrow.png') no-repeat scroll 50% 0;
-	display: inline-block;
-	overflow: hidden;
+
+.leather {
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	width: 100%;
+	height: 50px;
+	background-image: url("{T_IMAGESET_PATH}/planner/leather.png");
+	text-align: left;
+}
+
+
+div.calendar-control {
+	display:block;
+	width: 141px; /* breedte */
+	height: 52px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-right:5px;
+	padding-left:0px;
+	background: url("{T_IMAGESET_PATH}/planner/calendar_control_empty.png");
+	background-position : top;
+	background-position: 0 -2px;
+	background-repeat : no-repeat;
+	margin-bottom: 0em;
+	margin-right: 2em;
+	float: left;
+}
+
+	div.calendar-control:hover {
+		background-position: 0 -57px;
+	}
+	
+	div.calendar-control:active {
+		background-position: 0 -57px;
+	}
+
+	div.calendar-control ul { 
+		padding-left : 10px;
+		padding-top : 5px;
+		float: left;
+		list-style-image: none;
+		list-style-position: outside;
+    	list-style-type: none;
+	}
+	
+	div.calendar-control ul li { 
+	    margin-bottom: 0;
+	    margin-left: 4px;
+	    margin-right: 2px;
+	    margin-top: 0;
+		float: left;
+		width: 100%;
+		height: 100%;
+	}
+
+	div.calendar-control ul li.cday { 
+		background: url("{T_IMAGESET_PATH}/planner/calendar_view_day-icon.png");
+		text-align: left;
+		background-size: auto auto;
+		background-repeat: no-repeat;
+		width: 32px;
+	  	height: 32px;
+	}
+
+	div.calendar-control ul li.cweek {  
+		background: url("{T_IMAGESET_PATH}/planner/calendar_view_week-icon.png");
+		text-align: left;
+		background-size: auto auto;
+		background-repeat: no-repeat;
+		width: 32px;
+	  	height: 32px;
+}
+
+	div.calendar-control ul li.cmonth {  
+		background: url("{T_IMAGESET_PATH}/planner/calendar_view_month-icon.png");
+		text-align: left;
+		background-size: auto auto;
+		background-repeat: no-repeat;
+		width: 32px;
+	  	height: 32px;
+}
+
+	div.calendar-control a {
+	    background-repeat: no-repeat;
+	    background-size: auto auto;
+ 		background-position:0 0;
+  		display:block;		
+	    height: 100%;
+	    width: 100%;
+	}
+		div.calendar-control a i {
+		visibility: hidden;
+	}
+
+
+div.calendar-control-right {
+	display:block;
+	width: 141px; /* breedte */
+	height: 52px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-right:5px;
+	padding-left:0px;
+	background: url("{T_IMAGESET_PATH}/planner/calendar_control_empty_right.png");
+	background-position : top;
+	background-position: 0 -2px;
+	background-repeat : no-repeat;
+	margin-bottom: 0em;
+	margin-right: 2em;
+	float: left;
+}
+
+
+/* imagesets */
+ul.profile-icons li {
+    margin-bottom: 0;
+    margin-left: 1px;
+    margin-right: 1px;
+    margin-top: 0;
+}
+
+
+ul.profile-icons li a {
+	width: 100%;
+	height: 100%;
+    background-repeat: no-repeat;
+    background-size: auto auto;
+}
+
+ul.profile-icons li.next-icon {
+	background: url("{T_IMAGESET_PATH}/planner/ArrowRight.png");
 	width: 16px;
 	height: 16px;
 }
 
-a.next_planner {
-	background: transparent url('{T_THEME_PATH}/images/dkp/right_arrow.png') no-repeat scroll 0 0;
-	display: inline-block;
-	overflow: hidden;
+ul.profile-icons li.prev-icon {
+	background: url("{T_IMAGESET_PATH}/planner/ArrowLeft.png");
 	width: 16px;
 	height: 16px;
 }
+
+ul.profile-icons li.planner-new-icon {
+	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+
+ul.profile-icons li.planner-new-button {
+	background: url("{T_IMAGESET_LANG_PATH}/planner/button_new.png") no-repeat;
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-edit-button {
+	background: url("{T_IMAGESET_LANG_PATH}/planner/button_edit.png") no-repeat;
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-push-button {
+	background: url("{T_IMAGESET_LANG_PATH}/planner/button_push.png") no-repeat;
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+
+ul.profile-icons li.planner-edit-icon {
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
+	width: 60px;
+	height: 35px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-delete-button {
+	background: url("{T_IMAGESET_PATH}/planner/button_delete.png") no-repeat;
+	width: 30px;
+	height: 35px;
+	text-align: left;
+}
+
+.planner-delete-icon
+{
+	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
+}
+
+ul.profile-icons li.planner-day-icon {
+	background: url("{T_IMAGESET_PATH}/planner/calendar_view_day.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-week-icon {
+	background: url("{T_IMAGESET_PATH}/planner/calendar_view_week.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+ul.profile-icons li.planner-month-icon {
+	background: url("{T_IMAGESET_PATH}/planner/calendar_view_month.png") no-repeat;
+	width: 16px;
+	height: 16px;
+	text-align: left;
+}
+
+
+ul.profile-icons li.planner-delete-all-icon {
+	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
+	width: 40px;
+	height: 20px;
+	text-align: left;
+}
+
+
+ul.profile-icons li.planner-delete-icon {
+	width: 20px;
+	height: 20px;
+    margin-bottom: 0;
+    margin-left: 1px;
+    margin-right: 1px;
+    margin-top: 0;
+    float: left;
+    background-position: 0 0;
+}
+
+ul.profile-icons li.planner-delete-icon a:hover {
+    background-repeat: repeat;
+    background-position: 0 100%;
+    background-size: auto auto;
+	
+}
+
+
 
 .raidplanner_bg {
     clear: both;
@@ -291,117 +515,4 @@ td.bg3_calDay a:hover {
 /* raid view pane: less space in datalist */
 fieldset.rpfields dl {
 	padding: 0.5px 0;
-}
-
-/* imagesets */
-ul.profile-icons li {
-    margin-bottom: 0;
-    margin-left: 1px;
-    margin-right: 1px;
-    margin-top: 0;
-}
-
-
-ul.profile-icons li a {
-	width: 100%;
-	height: 100%;
-    background-repeat: no-repeat;
-    background-size: auto auto;
-}
-
-ul.profile-icons li.planner-new-icon {
-	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
-	width: 16px;
-	height: 16px;
-	text-align: left;
-}
-
-
-ul.profile-icons li.planner-new-button {
-	background: url("{T_IMAGESET_LANG_PATH}/planner/button_new.png") no-repeat;
-	width: 60px;
-	height: 35px;
-	text-align: left;
-}
-
-ul.profile-icons li.planner-edit-button {
-	background: url("{T_IMAGESET_LANG_PATH}/planner/button_edit.png") no-repeat;
-	width: 60px;
-	height: 35px;
-	text-align: left;
-}
-
-ul.profile-icons li.planner-push-button {
-	background: url("{T_IMAGESET_LANG_PATH}/planner/button_push.png") no-repeat;
-	width: 60px;
-	height: 35px;
-	text-align: left;
-}
-
-
-ul.profile-icons li.planner-edit-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
-	width: 60px;
-	height: 35px;
-	text-align: left;
-}
-
-ul.profile-icons li.planner-delete-button {
-	background: url("{T_IMAGESET_PATH}/planner/button_delete.png") no-repeat;
-	width: 30px;
-	height: 35px;
-	text-align: left;
-}
-
-.planner-delete-icon
-{
-	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
-}
-    
-ul.profile-icons li.planner-day-icon {
-	background: url("{T_IMAGESET_PATH}/planner/calendar_view_day.png") no-repeat;
-	width: 16px;
-	height: 16px;
-	text-align: left;
-}
-
-ul.profile-icons li.planner-week-icon {
-	background: url("{T_IMAGESET_PATH}/planner/calendar_view_week.png") no-repeat;
-	width: 16px;
-	height: 16px;
-	text-align: left;
-}
-
-ul.profile-icons li.planner-month-icon {
-	background: url("{T_IMAGESET_PATH}/planner/calendar_view_month.png") no-repeat;
-	width: 16px;
-	height: 16px;
-	text-align: left;
-}
-
-
-ul.profile-icons li.planner-delete-all-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
-	width: 40px;
-	height: 20px;
-	text-align: left;
-}
-
-
-ul.profile-icons li.planner-delete-icon {
-	width: 20px;
-	height: 20px;
-    margin-bottom: 0;
-    margin-left: 1px;
-    margin-right: 1px;
-    margin-top: 0;
-    float: left;
-    background-position: 0 0;
-}
-
-ul.profile-icons li.planner-delete-icon a:hover {
-    background-repeat: repeat;
-    background-position: 0 100%;
-    background-size: auto auto;
-	
 }
