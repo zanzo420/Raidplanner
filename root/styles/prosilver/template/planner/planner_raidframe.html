@@ -18,7 +18,7 @@
 <!-- middle div -->
 <div style="float: left; width: 79%; margin-left:0.5%; margin-right:0.5%">
 
-<!-- IF S_PLANNER_DAY || S_PLANNER_WEEK || S_PLANNER_MONTH -->
+
 <div class="leather">
 
 <div class="calendar-control">
@@ -37,25 +37,22 @@
 </div>
 <!-- ENDIF -->
 
-<!-- IF ! S_PLANNER_RAIDPLAN -->
-<div style="float: right; width: 45%">
 
-<ul class="profile-icons" style="float: right;">
-<li class="prev-icon"><a title="{L_SHOW_PREV}" href="{CALENDAR_PREV}"><span></span></a></li>
-<li>
-<form id="viewOpts" method="post" action="{S_POST_ACTION}">
-	<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; 
-	{CALENDAR_VIEW_OPTIONS}
-	<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button" /></div>
-</form>
-</li>
-<li class="next-icon"><a title="{L_SHOW_NEXT}" type="button" href="{CALENDAR_NEXT}"><span></span></a></li>
+<div class="calendar-control-right">
+<ul>
+	<li class="prev-icon"><a title="{L_SHOW_PREV}" href="{CALENDAR_PREV}"><span></span></a></li>
+	<li class="datenavigation">
+		<form id="viewOpts" method="post" action="{S_POST_ACTION}">
+		<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; 
+		{CALENDAR_VIEW_OPTIONS}
+		<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button" /></div>
+		</form>
+	</li>
+	<li class="next-icon"><a title="{L_SHOW_NEXT}" type="button" href="{CALENDAR_NEXT}"><span></span></a></li>
 </ul>
 </div>
-<!-- ENDIF -->
-</div>
 
-<!-- ENDIF -->
+</div>
 
 
 <div class="clear"></div>

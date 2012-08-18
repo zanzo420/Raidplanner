@@ -98,49 +98,86 @@ div.calendar-control {
 
 div.calendar-control-right {
 	display:block;
-	width: 141px; /* breedte */
-	height: 52px;
-	padding-top:0px;
+	width: 361px; /* breedte */
+	height: 50px;
+	padding-top:5px;
 	padding-bottom:0px;
 	padding-right:5px;
 	padding-left:0px;
 	background: url("{T_IMAGESET_PATH}/planner/calendar_control_empty_right.png");
 	background-position : top;
-	background-position: 0 -2px;
+	background-position: 0 -3px;
 	background-repeat : no-repeat;
 	margin-bottom: 0em;
-	margin-right: 2em;
-	float: left;
+	float: right;
 }
 
-
-/* imagesets */
-ul.profile-icons li {
-    margin-bottom: 0;
-    margin-left: 1px;
-    margin-right: 1px;
-    margin-top: 0;
+	div.calendar-control-right:hover {
+		background-position: 0 -57px;
+	}
+	
+	div.calendar-control-right:active {
+		background-position: 0 -57px;
+	}
+	 
+	div.calendar-control-right ul { 
+		padding-left : 10px;
+		padding-top : 5px;
+		float: left;
+		list-style-image: none;
+		list-style-position: outside;
+    	list-style-type: none;
+	}
+	
+	div.calendar-control-right ul li {
+	    margin-bottom: 0;
+	    margin-left: 4px;
+	    margin-right: 2px;
+	    margin-top: 0;
+		text-align: left;
+		float: left;
+		width: 100%;
+		height: 100%;
+	}
+	
+	div.calendar-control-right ul li a {
+		width: 100%;
+		height: 100%;
+	    background-repeat: no-repeat;
+	    background-size: auto auto;
+ 		background-position:0 0;
+  		display:block;		
+	}
+	
+	div.calendar-control-right ul li.next-icon {
+		background: url("{T_IMAGESET_PATH}/planner/ArrowRight.png");
+		width: 16px;
+		height: 16px;
+		text-align: left;
+		background-size: auto auto;
+		background-repeat: no-repeat;
+}
+	
+	div.calendar-control-right ul li.datenavigation {
+		width: 300px;
+		height: 32px;
+		text-align: left;
+		background-size: auto auto;
+		background-repeat: no-repeat;
 }
 
+	div.calendar-control-right ul li.prev-icon {
+		background: url("{T_IMAGESET_PATH}/planner/ArrowLeft.png");
+		width: 16px;
+		height: 16px;
+		text-align: left;
+		background-size: auto auto;
+		background-repeat: no-repeat;
+		
+	}
 
-ul.profile-icons li a {
-	width: 100%;
-	height: 100%;
-    background-repeat: no-repeat;
-    background-size: auto auto;
-}
+	
 
-ul.profile-icons li.next-icon {
-	background: url("{T_IMAGESET_PATH}/planner/ArrowRight.png");
-	width: 16px;
-	height: 16px;
-}
-
-ul.profile-icons li.prev-icon {
-	background: url("{T_IMAGESET_PATH}/planner/ArrowLeft.png");
-	width: 16px;
-	height: 16px;
-}
 
 ul.profile-icons li.planner-new-icon {
 	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
