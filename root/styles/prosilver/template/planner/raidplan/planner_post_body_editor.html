@@ -180,7 +180,7 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		 			<option value="{enddayoptions.KEY}" {enddayoptions.SELECTED}>{enddayoptions.VALUE}</option><!-- END enddayoptions -->
 		  		</select>
 
-				<select name='calDEnd' id='calDEnd'>
+				<select name='calMEnd' id='calMEnd'>
 		  			<!-- BEGIN endmonthoptions -->
 		  			<option value="{endmonthoptions.KEY}" {endmonthoptions.SELECTED}>{endmonthoptions.VALUE}</option><!-- END endmonthoptions -->
 		 		 </select>
@@ -195,7 +195,10 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		  			<option value="{endhouroptions.KEY}" {endhouroptions.SELECTED}>{endhouroptions.VALUE}</option><!-- END endhouroptions -->
 				</select>
 				
-				<select name='calEndMn' id='calEndMn'>{END_MIN_SEL}</select>
+				<select name='calEndMn' id='calEndMn'>
+					<!-- BEGIN endminuteoptions -->
+		  			<option value="{endminuteoptions.KEY}" {endhouroptions.SELECTED}>{endminuteoptions.VALUE}</option><!-- END endminuteoptions -->
+				</select>
 			</dd>
 		</dl>
     </fieldset>
