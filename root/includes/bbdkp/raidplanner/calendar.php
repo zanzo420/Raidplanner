@@ -53,15 +53,6 @@ abstract class calendar
 	 */public $days_in_month = 0;
 	
 	/**
-	 * selectors
-	 *
-	 */
-	public $month_sel_code = "";
-	public $day_sel_code = "";
-	public $year_sel_code = "";
-	public $mode_sel_code = "";
-	
-	/**
 	 * 
 	 *
 	 * @var unknown_type

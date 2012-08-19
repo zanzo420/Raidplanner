@@ -645,7 +645,7 @@ class rpraid
 					$raidplanobj->storeplan($raidplan_id);
 					// store the raid roles.
 					$raidplanobj->store_raidroles($raidplan_id);
-					//make object
+					//remake object
 					$raidplanobj->make_obj();
 					// display it
 					$raidplanobj->display();
@@ -679,11 +679,7 @@ class rpraid
 						confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
 						
 					}
-					
-
-					
 				}
-				
 			}
 		}
 		else
@@ -743,8 +739,6 @@ class rpraid
 						
 					}
 				}
-				
-				
 				return 0;
 			}
 		}
@@ -847,46 +841,38 @@ class rpraid
 		$db->sql_freeresult($result);
 		$group_sel_code .= "</select>\n";
 
-		/**
-		 *	populate Raid invite time select 
-		 */ 
 		// format and translate to user timezone + dst
 		//$invite_date_txt = $user->format_date($this->invite_time, $config['rp_date_time_format'], true);
 		//$start_date_txt = $user->format_date($this->start_time, $config['rp_date_time_format'], true);
 		//$end_date_txt = $user->format_date($this->end_time, $config['rp_date_time_format'], true);
 		
+		/**
+		 *	populate Raid invite time select 
+		 */ 
 		$hour_mode = $config['rp_hour_mode'];
 		$presetinvhour = intval( ($this->invite_time > 0 ? $user->format_date($this->invite_time, 'G', true) * 60: $config['rp_default_invite_time']) / 60);
-		$hour_invite_selcode = "";
-		if( $hour_mode == 12 )
+		for( $i = 0; $i < 24; $i++ )
 		{
-			for( $i = 0; $i < 24; $i++ )
+			$selected = ($i == $presetinvhour ) ? ' selected="selected"' : '';
+			$mod_12 = $i % 12;
+			if( $mod_12 == 0 )
 			{
-				$selected = ($i == $presetinvhour ) ? ' selected="selected"' : '';
-				$mod_12 = $i % 12;
-				if( $mod_12 == 0 )
-				{
-					$mod_12 = 12;
-				}
-				$am_pm = $user->lang['PM'];
-				if( $i < 12 )
-				{
-					$am_pm = $user->lang['AM'];
-				}
-				$hour_invite_selcode .= '<option value="'.$i.'"'.$selected.'>'.$mod_12.' '.$am_pm.'</option>';
+				$mod_12 = 12;
 			}
-		}
-		else
-		{
-			for( $i = 0; $i < 24; $i++ )
+			$am_pm = $user->lang['PM'];
+			if( $i < 12 )
 			{
-				$selected = ($i == $presetinvhour) ? ' selected="selected"' : '';
-				$hour_invite_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+				$am_pm = $user->lang['AM'];
 			}
+			$template->assign_block_vars('invhouroptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> ($hour_mode == 12) ? $mod_12.' '.$am_pm : $i,
+					'SELECTED' 	=> ($i == $presetinvhour) ? ' selected="selected"' : '',
+			));
+			
 		}
 		
 		// minute
-		$min_invite_sel_code = "";
 		if ( $this->invite_time > 0 )
 		{
 			$presetinvmin = $user->format_date($this->invite_time, 'i', true);
@@ -896,47 +882,44 @@ class rpraid
 			$presetinvmin = (int) $config['rp_default_invite_time'] - ($presetinvhour * 60) ;
 		}
 		
-		for( $i = 0; $i < 59; $i++ )
+		for( $i = 0; $i <= 59; $i++ )
 		{
-			$selected = ($i == $presetinvmin ) ? ' selected="selected"' : '';
-			$min_invite_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			$template->assign_block_vars('invminoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $i,
+					'SELECTED' 	=> ($i == $presetinvmin) ? ' selected="selected"' : '',
+			));
 		}
 		
+		
 		/**
-		 *	populate Raid start time pulldown
+		 *	populate Raid start hour pulldown
 		 */ 
 		$hour_start_selcode = "";
 		$presetstarthour = intval( ($this->start_time > 0 ? $user->format_date($this->start_time, 'G', true) * 60: $config['rp_default_start_time']) / 60);
-		if( $hour_mode == 12 )
+		for( $i = 0; $i < 24; $i++ )
 		{
-			for( $i = 0; $i < 24; $i++ )
+			$mod_12 = $i % 12;
+			if( $mod_12 == 0 )
 			{
-				$selected = ($i == $presetstarthour) ? ' selected="selected"' : '';
-				$mod_12 = $i % 12;
-				if( $mod_12 == 0 )
-				{
-					$mod_12 = 12;
-				}
-				$am_pm = $user->lang['PM'];
-				if( $i < 12 )
-				{
-					$am_pm = $user->lang['AM'];
-				}
-				$hour_start_selcode .= '<option value="'.$i.'"'.$selected.'>'.$mod_12.' '.$am_pm.'</option>';
+				$mod_12 = 12;
 			}
-		}
-		else
-		{
-			for( $i = 0; $i < 24; $i++ )
+			$am_pm = $user->lang['PM'];
+			if( $i < 12 )
 			{
-				$selected = ($i == $presetstarthour) ? ' selected="selected"' : '';
-				$hour_start_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+				$am_pm = $user->lang['AM'];
 			}
+			$template->assign_block_vars('starthouroptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> ($hour_mode == 12) ? $mod_12.' '.$am_pm : $i, 
+					'SELECTED' 	=> ($i == $presetstarthour) ? ' selected="selected"' : '',
+			));
+			
 		}
 		
-		
-		$min_start_sel_code = "";
-		
+		/**
+		 *	populate Raid start minute pulldown
+		 */
 		if($mode=='edit')
 		{
 			$presetstartmin = $user->format_date($this->start_time, 'i', true);
@@ -946,45 +929,74 @@ class rpraid
 			$presetstartmin = (int) $config['rp_default_start_time'] - ($presetstarthour * 60) ;
 		}
 		
-		for( $i = 0; $i < 59; $i++ )
+		for( $i = 0; $i <= 59; $i++ )
 		{
-			$selected = ($i == $presetstartmin ) ? ' selected="selected"' : '';
-			$min_start_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			$template->assign_block_vars('startminoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $i,
+					'SELECTED' 	=> ($i == $presetstartmin ) ? ' selected="selected"' : '',
+			));
 		}
 		
 		/**
-		 *	populate Raid END time pulldown 
-		 */ 
-		$hour_end_selcode = "";
-		$presetendhour = intval( ($this->end_time > 0 ? $user->format_date($this->end_time, 'G', true) * 60: $config['rp_default_end_time']) / 60);
-		if( $hour_mode == 12 )
+		 * populate end day pulldown
+		 */
+		for( $i = 1; $i <= $cal->days_in_month; $i++ )
 		{
-			for( $i = 0; $i < 24; $i++ )
-			{
-				$selected = ($i == $presetendhour) ? ' selected="selected"' : '';
-				$mod_12 = $i % 12;
-				if( $mod_12 == 0 )
-				{
-					$mod_12 = 12;
-				}
-				$am_pm = $user->lang['PM'];
-				if( $i < 12 )
-				{
-					$am_pm = $user->lang['AM'];
-				}
-				$hour_end_selcode .= '<option value="'.$i.'"'.$selected.'>'.$mod_12.' '.$am_pm.'</option>';
-			}
-		}
-		else
-		{
-			for( $i = 0; $i < 24; $i++ )
-			{
-				$selected = ($i == $presetendhour) ? ' selected="selected"' : '';
-				$hour_end_selcode .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
-			}
+			$template->assign_block_vars('enddayoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $i,
+					'SELECTED' 	=> ( (int) $cal->date['day'] == $i ) ? ' selected="selected"' : '',
+			));
 		}
 		
-		$min_end_sel_code = "";
+		// month dropdown
+		for( $i = 1; $i <= 12; $i++ )
+		{
+			$template->assign_block_vars('endmonthoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $user->lang['datetime'][$cal->month_names[$i]],
+					'SELECTED' 	=> ($cal->date['month_no'] == $i ) ? ' selected="selected"' : '',
+			));
+		}
+		
+		$temp_year	= gmdate('Y');
+		for( $i = $temp_year-1; $i < ($temp_year+5); $i++ )
+		{
+			$template->assign_block_vars('endyearoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $i,
+					'SELECTED' 	=> ( (int) $cal->date['year'] == $i ) ? ' selected="selected"' : '',
+			));
+		}
+		/**
+		 *	populate Raid END time pulldown 
+		 */ 
+		$presetendhour = intval( ($this->end_time > 0 ? $user->format_date($this->end_time, 'G', true) * 60: $config['rp_default_end_time']) / 60);
+		for( $i = 0; $i < 24; $i++ )
+		{
+			
+			$mod_12 = $i % 12;
+			if( $mod_12 == 0 )
+			{
+				$mod_12 = 12;
+			}
+			$am_pm = $user->lang['PM'];
+			if( $i < 12 )
+			{
+				$am_pm = $user->lang['AM'];
+			}
+
+			$template->assign_block_vars('endhouroptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> ($hour_mode == 12) ? $mod_12.' '.$am_pm : $i, 
+					'SELECTED' 	=> ($i == $presetendhour) ? ' selected="selected"' : '',
+			));
+		}
+		
+		/**
+		 *	populate Raid end minute pulldown
+		 */
 		if ( $this->end_time > 0 )
 		{
 			$presetendmin = $user->format_date($this->end_time, 'i', true);
@@ -994,39 +1006,14 @@ class rpraid
 			$presetendmin = (int) $config['rp_default_end_time'] - ($presetendhour * 60) ;
 		}
 		
-		for( $i = 0; $i < 59; $i++ )
+		for( $i = 0; $i <= 59; $i++ )
 		{
-			$selected = ($i == $presetendmin ) ? ' selected="selected"' : '';
-			$min_end_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			$template->assign_block_vars('endminuteoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $i,
+					'SELECTED' 	=> ($i == $presetendmin) ? ' selected="selected"' : '',
+			));
 		}
-		
-		/**
-		 * populate end day pulldown 
-		 */
-		$monthend_sel_code  = "<select name='calMEnd' id='calMEnd'>\n";
-		for( $i = 1; $i <= 12; $i++ )
-		{
-			$selected = ($cal->date['month_no'] == $i ) ? ' selected="selected"' : '';
-			$monthend_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$user->lang['datetime'][$cal->month_names[$i]].'</option>';
-		}
-		$monthend_sel_code .= "</select>";
-	
-		$dayend_sel_code  = "<select name='calDEnd' id='calDEnd'>";
-		for( $i = 1; $i <= 31; $i++ )
-		{
-			$selected = ( (int) $cal->date['day'] == $i ) ? ' selected="selected"' : '';
-			$dayend_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
-		}
-		$dayend_sel_code .= "</select>";
-	
-		$temp_year	=	gmdate('Y');
-		$year_sel_code  = "<select name='calYEnd' id='calYEnd'>";
-		for( $i = $temp_year-1; $i < ($temp_year+5); $i++ )
-		{
-			$selected = ( (int) $cal->date['year'] == $i ) ? ' selected="selected"' : '';
-			$year_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
-		}
-		$year_sel_code .= "</select>";
 		
 		$day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
 		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
@@ -1134,6 +1121,14 @@ class rpraid
 			$cal->generate_calendar_smilies('inline');
 		}
 		
+		$inv_d = $cal->date['day'];
+		$inv_m = $cal->date['month_no'];
+		$inv_y = $cal->date['year'];
+		
+		$start_hr = request_var('calHr', 0);
+		$start_mn = request_var('calMn', 0);
+		$start_date = gmmktime(0, 0, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
+		
 		$ajaxpath = append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx, "ajax=1");
 		$template->assign_vars(array(
 			'S_POST_ACTION'				=> $s_action,
@@ -1154,14 +1149,8 @@ class rpraid
 			'L_POST_A'					=> $page_title,
 			'SUBJECT'					=> $this->subject,
 			'MESSAGE'					=> $message['text'],
-			'INVITE_HOUR_SEL'			=> $hour_invite_selcode, 
-			'INVITE_MIN_SEL'			=> $min_invite_sel_code, 
-		
+			'START_DATE'				=> $user->format_date($start_date, $config['rp_date_format'], true),
 			'START_HOUR_SEL'			=> $hour_start_selcode,
-			'START_MIN_SEL'				=> $min_start_sel_code,
-			'END_HOUR_SEL'				=> $hour_end_selcode,
-			'END_MIN_SEL'				=> $min_end_sel_code,
-			'ENDDAYSEL'					=> $monthend_sel_code .' '. $dayend_sel_code . ' ' . $year_sel_code, 
 			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
 			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
 			'EVENT_GROUP_SEL'			=> $group_sel_code,
@@ -1283,11 +1272,12 @@ class rpraid
 		$this->event_type = request_var('calEType', 0);
 		
 		// set timesx
-		$inv_d = request_var('calD', 0);
-		$inv_m = request_var('calM', 0);
-		$inv_y = request_var('calY', 0);
+		// @todo get date in template
+		$inv_d = request_var('hiddenCalD', $cal->date['day']);
+		$inv_m = request_var('hiddenCalM', $cal->date['month_no']);
+		$inv_y = request_var('hiddenCalY', $cal->date['year']);
 		
-		//convert user times to UCT-GMT. all dates are stored in GMT
+		//convert user times to UCT-GMT. all dates are stored in GMT and time is displayed in user board timezone
 		$inv_hr = request_var('calinvHr', 0);
 		$inv_mn = request_var('calinvMn', 0);
 		$this->invite_time = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
@@ -1910,6 +1900,7 @@ class rpraid
 		
 			'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
 			'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
+			'START_DATE'		=> $user->format_date($this->start_time, $config['rp_date_format'], true),
 			'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
 
 			'U_SIGNUP_MODE_ACTION' => $signup_url,  

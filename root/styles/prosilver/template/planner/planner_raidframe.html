@@ -2,22 +2,21 @@
 <span class="corners-top"><span></span></span>
 <ul class="topiclist">
 <li class="header">
-<h1 style="color:#dfc065; white-space:nowrap;"><!-- IF S_PLANNER_ADD -->{L_NEWRAID}<!-- ELSE -->{L_RAIDPLANNER}<!-- ENDIF -->
+<h1 style="color:#dfc065; white-space:nowrap;">
+<!-- IF S_PLANNER_ADD -->{L_NEWRAID} {L_ON} {START_DATE}<!-- ELSE -->{L_RAIDPLANNER}<!-- ENDIF -->
 </h1>
 </li>
 </ul>
 <span class="corners-bottom"><span></span></span>
 </div>
 
-<!-- left sidebar -->
+<!-- left section -->
 <div style="float: left; width: 0%; margin-left:0.5%">
-
 
 </div>
 
-<!-- middle div -->
+<!-- middle section -->
 <div style="float: left; width: 79%; margin-left:0.5%; margin-right:0.5%">
-
 
 <div class="leather">
 
@@ -43,8 +42,24 @@
 	<li class="prev-icon"><a title="{L_SHOW_PREV}" href="{CALENDAR_PREV}"><span></span></a></li>
 	<li class="datenavigation">
 		<form id="viewOpts" method="post" action="{S_POST_ACTION}">
-		<div style="float: left;"> {MODE_VIEW_OPTIONS} &nbsp; 
-		{CALENDAR_VIEW_OPTIONS}
+		<div style="float: left;">
+		<select name="view" id="view">
+		<!-- BEGIN viewoptions -->
+		<option value="{viewoptions.KEY}" {viewoptions.SELECTED}>{viewoptions.VALUE}</option><!-- END viewoptions -->
+		</select>
+		  &nbsp; 
+		  <select name='calD' id='calD'>
+		 	<!-- BEGIN dayoptions -->
+		 	<option value="{dayoptions.KEY}" {dayoptions.SELECTED}>{dayoptions.VALUE}</option><!-- END dayoptions -->
+		  </select>
+		  <select name='calM' id='calM'>
+		  	<!-- BEGIN monthoptions -->
+		  	<option value="{monthoptions.KEY}" {monthoptions.SELECTED}>{monthoptions.VALUE}</option><!-- END monthoptions -->
+		  </select>
+		  <select name='calY' id='calY'>
+		  	<!-- BEGIN yearoptions -->
+		  	<option value="{yearoptions.KEY}" {yearoptions.SELECTED}>{yearoptions.VALUE}</option><!-- END yearoptions -->
+		  </select>
 		<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button" /></div>
 		</form>
 	</li>
@@ -53,7 +68,6 @@
 </div>
 
 </div>
-
 
 <div class="clear"></div>
 <!-- IF S_PLANNER_DAY -->
@@ -75,13 +89,10 @@
 <!-- IF S_PLANNER_WEEK_ON_INDEX -->
 	<!-- INCLUDE planner/calendar/planner_week_on_index.html -->
 <!-- ENDIF -->
-
 </div>
 
 
-
-
-<!-- right sidebar -->
+<!-- right section -->
 <div style="float: right; width: 19%; margin-right:0.5%">
 <!-- INCLUDE planner/calendar/welcome.html -->
 
