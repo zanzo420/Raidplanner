@@ -1,8 +1,8 @@
-Dear {USERNAME},
+Hallo {USERNAME},
 
-{USERNAME} has unsigned {RAIDER} from the raid {EVENT} occuring at invite time : {START_TIME} {TZ}. 
+Ihre Eintragung als {RAIDER} zum Raid {EVENT} um {START_TIME} {TZ} wurde annuliert durch {USERNAME}. 
 
-To view or resignup this event please visit the following link:
+Zum nachschauen bitte folgen sie diesen Link : 
 [url]{U_RAIDPLAN}[/url]
 
 {EMAIL_SIG}

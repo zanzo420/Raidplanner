@@ -106,6 +106,8 @@ $lang = array_merge($lang, array(
 	'acl_u_raidplanner_view_raidplans'			=> array('lang' => 'Peut voir des rendez-vous', 'cat' => 'raidplanner'),
 	// view raid participation
 	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Peut voir des rendez-vous', 'cat' => 'raidplanner'),
+	// push raid
+	'acl_u_raidplanner_push' => array('lang' => 'Peut pousser des rendez-vous vers BBDKP (Push)', 'cat' => 'raidplanner'),
 ));
 
 ?>

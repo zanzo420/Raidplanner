@@ -23,6 +23,7 @@ $lang = array_merge($lang, array(
 	//settings 
     '12_HOURS'								=> '12 hours',
     '24_HOURS'								=> '24 hours',
+	'ON'									=> ' on ', 
     'AUTO_POPULATE_EVENT_FREQUENCY'			=> 'Auto Populate Recurring Raids',
     'AUTO_POPULATE_EVENT_FREQUENCY_EXPLAIN'	=> 'How often (in days) should recurring raids be populated in the calendar?  Note if you select 0, recurring raids will never get added to the calendar.',
     'AUTO_POPULATE_EVENT_LIMIT'				=> 'Auto Populate Limits',

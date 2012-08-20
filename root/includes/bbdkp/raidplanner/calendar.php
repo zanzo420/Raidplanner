@@ -53,15 +53,6 @@ abstract class calendar
 	 */public $days_in_month = 0;
 	
 	/**
-	 * selectors
-	 *
-	 */
-	public $month_sel_code = "";
-	public $day_sel_code = "";
-	public $year_sel_code = "";
-	public $mode_sel_code = "";
-	
-	/**
 	 * 
 	 *
 	 * @var unknown_type
@@ -98,6 +89,7 @@ abstract class calendar
 		$this->date['month'] = $this->month_names[ request_var('calM', date("n", time()))] ;
 		$this->date['month_no'] = request_var('calM', date("n", time()) );
 		$this->date['year'] = request_var('calY', date("Y", time()) );
+		$this->date['dayname'] = date('l', strtotime($this->date['year'].'/'.$this->date['month_no']."/".$this->date['day'])); 
 		
 		$this->date['prev_month'] = $this->date['month'] - 1;
 		$this->date['next_month'] = $this->date['month'] + 1;

@@ -1,11 +1,11 @@
-Dear {RAIDLEADER},
+Hallo {RAIDLEADER},
 
-User {USERNAME} signed up as {RAIDER} to the Raid {EVENT} in role of {ROLE} 
+{USERNAME} Hat sich eingetragen als {RAIDER} zum Raid {EVENT} in der role als {ROLE} 
 
-timestamp : {SIGNUP_TIME}
-Raidplan invites scheduled : {START_TIME} {TZ}
+Eintragungszeit : {SIGNUP_TIME}
+Anfang der Einladungen : {START_TIME} {TZ}
 
-To view this event please visit the following link:
+Zum Nachschauen bitte folgen sie diesen Link : 
 {U_RAIDPLAN}
 
 {EMAIL_SIG}

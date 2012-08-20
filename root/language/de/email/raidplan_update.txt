@@ -1,10 +1,10 @@
-Dear {USERNAME},
+Hallo {USERNAME},
 
-The Raid "{EVENT_SUBJECT}" was updated in the Raidplanner.
+Den Raid "{EVENT_SUBJECT}" wurde aktualisiert im Kalender.
 
-new invite time : {START_TIME} {TZ}
-new start time : {INVITE_TIME} {TZ}
-new end time : {INVITE_TIME} {TZ}
+Neue Einladungszeitbeginn : {START_TIME} {TZ}
+Neue Anfangszeit : {INVITE_TIME} {TZ}
+Neue Endezeit : {INVITE_TIME} {TZ}
 
-To view or sign up for the event please visit the following link:
+Zum nachschauen oder zur teilnahme zu diesen Raid bitte folgen sie den folgenden Link:
 {U_RAIDPLAN}

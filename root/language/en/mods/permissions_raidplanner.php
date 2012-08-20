@@ -107,7 +107,8 @@ $lang = array_merge($lang, array(
 	'acl_u_raidplanner_view_raidplans'			=> array('lang' => 'Can view raidplans', 'cat' => 'raidplanner'),
 	// view raid participation
 	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Can view the headcount for raidplans created by other users', 'cat' => 'raidplanner'),
-
+	// insert in bbDKP
+	'acl_u_raidplanner_push' 					=> array('lang' => 'Can insert raidplan into BBDKP (Push)', 'cat' => 'raidplanner'),
 
 ));
 

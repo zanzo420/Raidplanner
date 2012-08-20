@@ -60,9 +60,15 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 
 <div id="tabs">
 	<ul>
-		<li id="raidinfo-panel-tab" class="activetab"><a href="#tabs" onclick="subPanels('raidinfo-panel'); return false;"><span>{L_RAIDINFO}</span></a></li>
-		<li id="raidroles-panel-tab"><a href="#tabs" onclick="subPanels('raidroles-panel'); return false;"><span>{L_RAIDROLES}</span></a></li>
-		<li id="raidwhen-panel-tab"><a href="#tabs" onclick="subPanels('raidwhen-panel'); return false;"><span>{L_RAIDWHEN}</span></a></li>
+		<li id="raidinfo-panel-tab" class="activetab"><a href="#tabs" onclick="subPanels('raidinfo-panel'); return false;"><span style="padding-bottom: 7px;">
+		<img src="{T_IMAGESET_PATH}/planner/Locations.png" />
+		{L_RAIDINFO}</span></a></li>
+		<li id="raidroles-panel-tab"><a href="#tabs" onclick="subPanels('raidroles-panel'); return false;"><span style="padding-bottom: 7px;">
+		<img src="{T_IMAGESET_PATH}/planner/Resources.png" />
+		{L_RAIDROLES}</span></a></li>
+		<li id="raidwhen-panel-tab"><a href="#tabs" onclick="subPanels('raidwhen-panel'); return false;"><span style="padding-bottom: 7px;">
+		<img src="{T_IMAGESET_PATH}/planner/watch.png" />
+		{L_RAIDWHEN}</span></a></li>
 	</ul>
 </div>
 		
@@ -98,7 +104,7 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 </div>
 </div>
 
-<div class="panel bg2" id="raidroles-panel" class="ucp-main">
+<div class="panel bg2" id="raidroles-panel" >
 <div class="inner">
 <span class="corners-top"><span></span></span>
 
@@ -143,23 +149,56 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		<dl style="clear: right;">
 			<dt><label for="calinvHr">{L_RAID_INVITE_TIME}:</label></dt>
 			<dd>
-				<select name='calinvHr' id='calinvHr'>{INVITE_HOUR_SEL}</select>
-				<select name='calinvMn' id='calinvMn'>{INVITE_MIN_SEL}</select>
+				<select name='calinvHr' id='calinvHr'>
+					<!-- BEGIN invhouroptions -->
+		 			<option value="{invhouroptions.KEY}" {invhouroptions.SELECTED}>{invhouroptions.VALUE}</option><!-- END invhouroptions -->
+				</select>
+				<select name='calinvMn' id='calinvMn'>
+					<!-- BEGIN invminoptions -->
+		 			<option value="{invminoptions.KEY}" {invminoptions.SELECTED}>{invminoptions.VALUE}</option><!-- END invminoptions -->
+				</select>
 			</dd>
 		</dl>
 		<dl style="clear: right;">
 			<dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
 			<dd>
-				<select name='calHr' id='calHr'>{START_HOUR_SEL}</select>
-				<select name='calMn' id='calMn'>{START_MIN_SEL}</select>
+				<select name='calHr' id='calHr'>
+					<!-- BEGIN starthouroptions -->
+		 			<option value="{starthouroptions.KEY}" {starthouroptions.SELECTED}>{starthouroptions.VALUE}</option><!-- END starthouroptions -->
+				</select>
+				<select name='calMn' id='calMn'>
+					<!-- BEGIN startminoptions -->
+		 			<option value="{startminoptions.KEY}" {startminoptions.SELECTED}>{startminoptions.VALUE}</option><!-- END startminoptions -->
+				</select>
 			</dd>
 		</dl>
 		<dl style="clear: right;">
 			<dt><label for="calEndHr">{L_RAID_END_TIME}:</label></dt>
 			<dd>
-				{ENDDAYSEL}
-				<select name='calEndHr' id='calEndHr'>{END_HOUR_SEL}</select>
-				<select name='calEndMn' id='calEndMn'>{END_MIN_SEL}</select>
+ 				<select name='calDEnd' id='calDEnd'>
+		 			<!-- BEGIN enddayoptions -->
+		 			<option value="{enddayoptions.KEY}" {enddayoptions.SELECTED}>{enddayoptions.VALUE}</option><!-- END enddayoptions -->
+		  		</select>
+
+				<select name='calMEnd' id='calMEnd'>
+		  			<!-- BEGIN endmonthoptions -->
+		  			<option value="{endmonthoptions.KEY}" {endmonthoptions.SELECTED}>{endmonthoptions.VALUE}</option><!-- END endmonthoptions -->
+		 		 </select>
+				
+				<select name='calYEnd' id='calYEnd'>
+		  			<!-- BEGIN endyearoptions -->
+		  			<option value="{endyearoptions.KEY}" {endyearoptions.SELECTED}>{endyearoptions.VALUE}</option><!-- END endyearoptions -->
+		  		</select>
+				
+				<select name='calEndHr' id='calEndHr'>
+		  			<!-- BEGIN endhouroptions -->
+		  			<option value="{endhouroptions.KEY}" {endhouroptions.SELECTED}>{endhouroptions.VALUE}</option><!-- END endhouroptions -->
+				</select>
+				
+				<select name='calEndMn' id='calEndMn'>
+					<!-- BEGIN endminuteoptions -->
+		  			<option value="{endminuteoptions.KEY}" {endhouroptions.SELECTED}>{endminuteoptions.VALUE}</option><!-- END endminuteoptions -->
+				</select>
 			</dd>
 		</dl>
     </fieldset>

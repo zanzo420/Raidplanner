@@ -211,7 +211,7 @@ $lang = array_merge($lang, array(
 	'NOTAVAILABLE'				=> 'Pas disponible', 
 	'NEWSIGN'					=> 'Nouveau participant', 
 	'OCCURS_EVERY'				=> 'Revient chaque',
-	
+	'ON'						=> ' à ', 
 	'PAGE_TITLE'			=> 'Calendrier',
 	'PM'						=> 'PM',
 	'PRIVATE_RAIDPLAN'			=> 'Ce Raid est privé.  Vous devez être invité pour le voir.',

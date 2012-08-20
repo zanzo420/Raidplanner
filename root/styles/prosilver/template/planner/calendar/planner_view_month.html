@@ -52,15 +52,12 @@ jQuery(document).ready( function()
 			<td class="<!-- IF calendar_days.HEADER_CLASS eq 'highlight' -->bg4 calMonH<!-- ELSE -->bg3 calMonH<!-- ENDIF -->">
 			<ul class="profile-icons" style="float: left;">
 			<li>
-			<!-- IF calendar_days.ADD_LINK --><a href="{calendar_days.ADD_LINK}"><strong>{calendar_days.NUMBER}</strong></a>
-			<!-- ELSE --><strong>{calendar_days.NUMBER}</strong>
-			<!-- ENDIF --></li>
+			<a href="{calendar_days.DAY_VIEW_URL}"><strong>{calendar_days.NUMBER}</strong></a>
+			</li>
 			<!-- IF calendar_days.ADD_LINK  && calendar_days.ADD_RAID_ICON -->
 			<li class="planner-new-icon"><a href="{calendar_days.ADD_LINK}" title="{L_NEW_EVENT}"><span></span></a></li>
 			<!-- ENDIF -->
-			<li class="planner-day-icon"><a href="{calendar_days.DAY_VIEW_URL}" title="{L_DAY}"><span></span></a></li>
-			<li class="planner-week-icon"><a href="{calendar_days.WEEK_VIEW_URL}"  title="{L_WEEK}"><span></span></a></li>
-			<li class="planner-month-icon"><a href="{calendar_days.MONTH_VIEW_URL}" title="{L_MONTH}"><span></span></a></li>
+
 			</ul>
 			</td>
 			</tr>

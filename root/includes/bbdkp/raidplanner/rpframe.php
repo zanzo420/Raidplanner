@@ -72,46 +72,51 @@ class rpframe extends calendar
 		
 		$this->message = generate_text_for_display($text, $bbcode_uid, $bbcode_bitfield, $bbcode_options);
 		
-		// create RP_VIEW_OPTIONS
-		$view_mode=request_var('view', 'month');
-		$this->mode_sel_code = "<select name='view' id='view'>";
-		$this->mode_sel_code .= "<option value='month'>".$user->lang['MONTH']."</option>";
-		$this->mode_sel_code .= "<option value='week'>".$user->lang['WEEK']."</option>";
-		$this->mode_sel_code .= "<option value='day'>".$user->lang['DAY']."</option>";
-		$this->mode_sel_code .= "</select>";
-				
-		$temp_find_str = "value='".$view_mode."'>";
-		$temp_replace_str = "value='".$view_mode."' selected='selected'>";
-		$this->mode_sel_code = str_replace( $temp_find_str, $temp_replace_str, $this->mode_sel_code );
-		
-		// month dropdown
-		$this->month_sel_code  = "<select name='calM' id='calM'>\n";
-		for( $i = 1; $i <= 12; $i++ )
+		$view_mode=request_var("view", "month");
+		$content = array(
+			"month"	=> $user->lang['MONTH'],
+			"week"	=> $user->lang['WEEK'],
+			"day"	=> $user->lang['DAY'],
+			);
+		foreach ($content as $key => $value)
 		{
-			$selected = ($this->date['month_no'] == $i ) ? ' selected="selected"' : '';
-			$this->month_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$user->lang['datetime'][$this->month_names[$i]].'</option>';
+			$template->assign_block_vars('viewoptions', array(
+				'KEY' 		=> $key, 
+				'VALUE' 	=> $value,
+				'SELECTED' 	=> ($view_mode == $key) ? ' selected="selected"' : '', 
+			));
 		}
-		$this->month_sel_code .= "</select>";
 
 		//day dropdown
-		$this->day_sel_code  = "<select name='calD' id='calD'>";
-		$begin = 1;
-		for( $i = $begin; $i <= $this->days_in_month; $i++ )
+		for( $i = 1; $i <= $this->days_in_month; $i++ )
 		{
-			$selected = ( (int) $this->date['day'] == $i ) ? ' selected="selected"' : '';
-			$this->day_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			$template->assign_block_vars('dayoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $i,
+					'SELECTED' 	=> ( (int) $this->date['day'] == $i ) ? ' selected="selected"' : '',
+			));
 		}
-		$this->day_sel_code .= "</select>";
+		
+		// month dropdown
+		for( $i = 1; $i <= 12; $i++ )
+		{
+			$template->assign_block_vars('monthoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $user->lang['datetime'][$this->month_names[$i]],
+					'SELECTED' 	=> ($this->date['month_no'] == $i ) ? ' selected="selected"' : '', 
+			));
+		}
 		
 		//year dropdown
-		$temp_year	=	gmdate('Y');
-		$this->year_sel_code  = "<select name='calY' id='calY'>";
+		$temp_year	= gmdate('Y');
 		for( $i = $temp_year-1; $i < ($temp_year+5); $i++ )
 		{
-			$selected = ( (int) $this->date['year'] == $i ) ? ' selected="selected"' : '';
-			$this->year_sel_code .= '<option value="'.$i.'"'.$selected.'>'.$i.'</option>';
+			$template->assign_block_vars('yearoptions', array(
+					'KEY' 		=> $i,
+					'VALUE' 	=> $i,
+					'SELECTED' 	=> ( (int) $this->date['year'] == $i ) ? ' selected="selected"' : '', 
+			));
 		}
-		$this->year_sel_code .= "</select>";
 
 		// make url of buttons
 		if($view_mode === "week")
@@ -171,11 +176,16 @@ class rpframe extends calendar
 			'TZ'					=> $this->timezone,
 			'S_PLANNER_RAIDFRAME'	=> true,
 			'S_SHOW_WELCOME_MSG'	=> ($config ['rp_show_welcomemsg'] == 1) ? true : false,
-			'MODE_VIEW_OPTIONS' 	=> $this->mode_sel_code, 
-			'CALENDAR_VIEW_OPTIONS' => $this->month_sel_code.' '.$this->day_sel_code.' '.$this->year_sel_code,
 			'CALENDAR_PREV'			=> $prev_link,
 			'CALENDAR_NEXT'			=> $next_link,
 			'WELCOME_MSG'			=> $this->message,
+			'FRAME_CALD'			=> $this->date['day'],
+			'FRAME_CALM'			=> $this->date['month_no'],
+			'FRAME_CALY'			=> $this->date['year'],
+			'DAY_VIEW_URL'  		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
+			'WEEK_VIEW_URL' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
+			'MONTH_VIEW_URL' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
+
 		));
 		
 		

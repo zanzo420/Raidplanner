@@ -1,12 +1,12 @@
-Dear {USERNAME},
+Cher {USERNAME},
 
-Your signup to the raid {EVENT} as {RAIDER} using the role {ROLE} was confirmed by {RAIDLEADER}. 
+Votre inscription pour le raid {EVENT} comme {RAIDER} dans le rôle de {ROLE} a été confirmé par {RAIDLEADER}. 
 
-invite time : {START_TIME} {TZ}
-start time : {INVITE_TIME} {TZ}
-end time : {INVITE_TIME} {TZ}
+début des invitations: {START_TIME} {TZ}
+début du Raid : {INVITE_TIME} {TZ}
+fin prévue : {INVITE_TIME} {TZ}
 
-To view this event please visit the following link:
+Pour consulter ce raid veuillez suivre ce lien : 
 [url]{U_RAIDPLAN}[/url]
 
 {EMAIL_SIG}
