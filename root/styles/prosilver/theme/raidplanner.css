@@ -177,8 +177,6 @@ div.calendar-control-right {
 	}
 
 	
-
-
 ul.profile-icons li.planner-new-icon {
 	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
 	width: 16px;
@@ -188,29 +186,21 @@ ul.profile-icons li.planner-new-icon {
 
 
 ul.profile-icons li.planner-new-button {
-	background: url("{T_IMAGESET_LANG_PATH}/planner/button_new.png") no-repeat;
+	background: url("{T_IMAGESET_PATH}/planner/button_new.png") no-repeat;
 	width: 60px;
 	height: 35px;
 	text-align: left;
 }
 
 ul.profile-icons li.planner-edit-button {
-	background: url("{T_IMAGESET_LANG_PATH}/planner/button_edit.png") no-repeat;
+	background: url("{T_IMAGESET_PATH}/planner/button_edit.png") no-repeat;
 	width: 60px;
 	height: 35px;
 	text-align: left;
 }
 
 ul.profile-icons li.planner-push-button {
-	background: url("{T_IMAGESET_LANG_PATH}/planner/button_push.png") no-repeat;
-	width: 60px;
-	height: 35px;
-	text-align: left;
-}
-
-
-ul.profile-icons li.planner-edit-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_post_edit.gif");
+	background: url("{T_IMAGESET_PATH}/planner/button_push.png") no-repeat;
 	width: 60px;
 	height: 35px;
 	text-align: left;
@@ -246,7 +236,7 @@ ul.profile-icons li.planner-month-icon {
 
 
 .bgraid {
-	background-color: #FF8855;
+	background-color: #CCCCCC;
 	
 }
 ul.profile-icons li.planner-delete-icon {
