@@ -54,10 +54,59 @@ class rpday extends calendar
 					$this->date['day'],
 					$this->date['year'] );
 
+
 		$hour_mode = $config['rp_hour_mode'];
-		if( $hour_mode == 12 )
+
+		// add an url to add raids ?
+		$add_raidplan_url = "";
+		$addlink = false;
+		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 		{
-			for( $i = 0; $i < 24; $i++ )
+				
+			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
+					$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
+		
+			if( (int) $this->date['month_no'] > (int) date('m') || ( (int) $this->date['month_no']  == (int) date('m')  && (int) $this->date['day'] >= (int) date('d') )
+					|| (int) $this->date['year'] > (int) date('Y')
+			)
+			{
+				$addlink = true;
+			}
+		}
+		
+		$calendar_days['BIRTHDAYS'] = "";
+		if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile'))
+		{
+			$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));
+			if(isset($birthdays[$this->date['day']]))
+			{
+				$birthdays = $birthdays[$this->date['day']]['bdays'];
+				$template->assign_block_vars('all_day', 
+					array(
+						'BIRTHDAYS' => (string) $birthdays,
+					));
+			}
+		}
+
+		// Is the user able to view ANY raidplans?
+		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
+		{
+			// get raid info
+			$raidplan_output = array();
+			if (!class_exists('rpraid'))
+			{
+				include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+			}
+			$rpraid = new rpraid();
+			// get all raids on this day
+			$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+		}
+		
+		/* assemble events */ 
+		/* loop every hour */
+		for( $i = 0; $i < 24; $i++ )
+		{
+			if( $hour_mode == 12 )
 			{
 				$time_header['TIME'] = $i % 12;
 				if( $time_header['TIME'] == 0 )
@@ -69,12 +118,8 @@ class rpday extends calendar
 				{
 					$time_header['AM_PM'] = $user->lang['AM'];
 				}
-				$template->assign_block_vars('time_headers', $time_header);
 			}
-		}
-		else
-		{
-			for( $i = 0; $i < 24; $i++ )
+			else
 			{
 				$o = "";
 				if($i < 10 )
@@ -83,84 +128,62 @@ class rpday extends calendar
 				}
 				$time_header['TIME'] = $o . $i;
 				$time_header['AM_PM'] = "";
-				$template->assign_block_vars('time_headers', $time_header);
 			}
-		}
-		
-		$week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
-		$month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
-		$add_raidplan_url = "";
-	
-		$addlink = false;
-		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
-		{
 			
-			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
-			$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
-
-			if( (int) $this->date['month_no'] > (int) date('m') || ( (int) $this->date['month_no']  == (int) date('m')  && (int) $this->date['day'] >= (int) date('d') )
-				|| (int) $this->date['year'] > (int) date('Y')
-			)
-			{
-				$addlink = true;
-			}
-		}
-				
-		$calendar_days['BIRTHDAYS'] = "";
-		$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));
-		if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
-		{
-			if(isset($birthdays[$this->date['day']]))
-			{
-				$calendar_days['BIRTHDAYS'] = $birthdays[$this->date['day']]['bdays'];
-			}
-		}
-		
-		// get raid info
-		if (!class_exists('rpraid'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
-		}
-		$rpraid = new rpraid();
-		
-		$raidplan_output = array();
-		// Is the user able to view ANY raidplans?
-		if ( $auth->acl_get('u_raidplanner_view_raidplans') )
-		{
-			$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
-			foreach($raidplan_output as $raid )
-			{
-				$template->assign_block_vars('raidplans', $raid['raidinfo']);
-				foreach($raid['userchars'] as $key => $char)
-				{
-					$template->assign_block_vars('raidplans.userchars', $char);
-				}
-				unset($char);
-				unset($key);
-				foreach($raid['raidroles'] as $key => $raidrole)
-				{
-					$template->assign_block_vars('raidplans.raidroles', $raidrole);
-				}
-				unset($raidrole);
-				unset($key);
+			$raidslots = array();
 			
-								
+			foreach($raidplan_output as $key => $raid )
+			{
+				if(substr($key, 0,2) == $time_header['TIME'])
+				{
+					$raidslots[$time_header['TIME']] = 1; 
+				}
+			}
+			
+			$template->assign_block_vars('time_slots', 
+				array(
+					'TIME'  	=> $time_header['TIME'], 
+					'AM_PM' 	=> $time_header['AM_PM'],
+					'S_MARKED'	=> (array_key_exists($time_header['TIME'],$raidslots) == true) ? true : false
+				));
+		
+			// loop the raidplans for each hour
+			foreach($raidplan_output as $key => $raid )
+			{
+				//does the raid hour match this hour slot?  
+				if (substr($key, 0,2) == $time_header['TIME'])
+				{
+					// color this timeslot as taken.
+					
+					
+					//add it to template
+					$template->assign_block_vars('time_slots.raidplans', $raid['raidinfo']);
+					
+					foreach($raid['userchars'] as $key => $char)
+					{
+						$template->assign_block_vars('time_slots.raidplans.userchars', $char);
+					}
+					unset($char);
+					unset($key);
+					
+					foreach($raid['raidroles'] as $key => $raidrole)
+					{
+						$template->assign_block_vars('time_slots.raidplans.raidroles', $raidrole);
+					}
+					unset($raidrole);
+					unset($key);
+				}
 			}
 		}
 		
 		$template->assign_vars(array(
+			'CALENDAR_HEADER'	=> $calendar_header_txt,
 			'BIRTHDAYS'			=> $calendar_days['BIRTHDAYS'],
 			'DAY'				=> $this->date['day'], 
-			'CALENDAR_HEADER'	=> $calendar_header_txt,
-			'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
-			'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
 			'ADD_LINK'			=> $add_raidplan_url,
 			'S_ADD_LINK'		=> $addlink,
-			'WEEK_VIEW_URL'		=> $week_view_url,
-			'MONTH_VIEW_URL'	=> $month_view_url,
 			'S_PLANNER_DAY'		=> true,		
-			'S_POST_ACTION'		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;" ),
-			'EVENT_COUNT'		=> sizeof($raidplan_output),
+			'EVENT_COUNT'		=> count($raidplan_output),
 		));
 		
 		

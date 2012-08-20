@@ -597,7 +597,6 @@ class rpraid
 					$this->invite_list = $user->lang['EVERYONE'];
 					break;
 			}
-		
 	}
 	
 	/**
@@ -1979,6 +1978,8 @@ class rpraid
 		}
 		$timezone = $user->lang['tz'][$tz];
 		
+		$rpcounter = 0;
+		
 		while ($row = $db->sql_fetchrow($result))
 		{
 			unset($this);
@@ -2117,8 +2118,11 @@ class rpraid
 				'CURR_TOTAL_COUNT'  	=> $this->signups['yes'] + $this->signups['maybe'],
 			
 			);
+			$rpcounter +=1;
 			
-			$raidplan_output[] = array(
+			$hourslot = $user->format_date($this->invite_time, 'Hi', true);
+			
+			$raidplan_output[$hourslot . '_' . $rpcounter] = array(
 				'raidinfo' => $raidinfo,
 				'userchars' => $userchars,
 				'raidroles' => $rolesinfo

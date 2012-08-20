@@ -223,11 +223,6 @@ ul.profile-icons li.planner-delete-button {
 	text-align: left;
 }
 
-.planner-delete-icon
-{
-	background-image: url("{T_IMAGESET_PATH}/planner/icon_post_delete.gif");
-}
-
 ul.profile-icons li.planner-day-icon {
 	background: url("{T_IMAGESET_PATH}/planner/calendar_view_day.png") no-repeat;
 	width: 16px;
@@ -250,14 +245,10 @@ ul.profile-icons li.planner-month-icon {
 }
 
 
-ul.profile-icons li.planner-delete-all-icon {
-	background-image: url("{T_IMAGESET_LANG_PATH}/planner/icon_calendar_delete_all.gif");
-	width: 40px;
-	height: 20px;
-	text-align: left;
+.bgraid {
+	background-color: #FF8855;
+	
 }
-
-
 ul.profile-icons li.planner-delete-icon {
 	width: 20px;
 	height: 20px;
@@ -275,8 +266,6 @@ ul.profile-icons li.planner-delete-icon a:hover {
     background-size: auto auto;
 	
 }
-
-
 
 .raidplanner_bg {
     clear: both;
@@ -516,7 +505,7 @@ h1.daynum  {
 	font-weight: lighter;
 	margin: 5px;
 	padding: -10px;
-	
+	color: #880066;
 }
 
 table.table1 tbody td.bg1_calDay {
