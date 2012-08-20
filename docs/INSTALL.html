@@ -11,7 +11,7 @@
 <meta name="copyright" content="2009 bbdkp" />
 <meta name="keywords" content="" />
 <meta name="description" content="Raidplanner Installation information" />
-<title>Raid planner &bull; Install Readme</title>
+<title>Raid planner &bull; Beta 6</title>
 <link href="stylesheet.css" rel="stylesheet" type="text/css" media="screen, projection" />
 </head>
 
@@ -47,15 +47,20 @@
 		<p>What is it ? it's a Calendar and Raidplanner for your phpBB3/bbDKP forum, allowing your members to make and sign up to Events you have set up in bbDKP.</p>
 		<p> repository : <a href="https://github.com/bbDKP/Raidplanner">https://github.com/bbDKP/Raidplanner</a> </p>
 		
-		<p>Forked from Alightner's Calendar mod, modified to work with bbDKP. the base code was refactored into functional classes. Hooks into the bbDKP event and guildmembers Table, so bbDKP must be installed before.</p>
+		<p>Forked from Alightner's Calendar mod, added functionality from phpRaider, modified to work with bbDKP. the base code was refactored into functional classes. Hooks into the bbDKP event and guildmembers Table, so bbDKP must be installed before.</p>
 		<p>It has an MODX & UMIL Database installer. No manual installation necessary.</p>
 		
 		<h2>Raid Feature list</h2>
 		<ul>
 		<li>Raid Events pick up new Raid icons from DKP event. </li>
-		<li>Sign up with your Guild characters to raids</li>
+		<li>Sign up with your bbDKP Guild characters to raidplans</li>
+		<li>event notification by email/pm on additions, deletion and/or update</li>		
+		<li>new signup, confirmation notification by email/pm</li>				
 		<li>Follow up to which raid(s) you signed up in UCP.</li>
+		<li>tooltips for signing up</li>		
+		<li>Push Raidplans to bbDKP</li>
 		<li>3 Event types exist : Public events (no signup), Raid events (Signup), and personal events.</li>
+		<li>raid and portal blocks showing upcoming raids, top signups, clock</li>				
 		</ul>
 
 		<h2>Calendar Feature list</h2>
@@ -90,11 +95,6 @@
 		
 		<li>Detailed permissions for ability to create private, group, or public events - now you can give some users the power to
 		 create public events, and others only permission to create private events, or whatever combination makes sense for your forum.</li>
-		
-		<li>Utility in ACP to move all events +/- one hour (helps when changing forum's dst setting). When you create an event 
-		it's stored in an absolute time, and if the forum (and/or users) change their dst settings they may suddenly
-		 see all the events appear off by one hour, now there's a utility to move ALL events in the calendar forward or
-		  back by one hour to help correct things when you change your DST.</li>
 		
 		<li>UCP module that displays upcoming events (that the user has registered for) for the next X days.</li>
 
@@ -168,11 +168,20 @@
 <div class="content">
 <ul>
 
-	<li>0.5.0 2012-08-16</li>
+	<li>0.6.0 2012-08-22</li>
 	<ul>
-	<li>[NEW] new page layout in dayview</li>		
-	<li>[changed] welcome message in block</li>			
-	<li>[FIX] tooltip no longer appears on wrong date</li>			
+	<li>[NEW] new page layout in dayview</li>
+	<li>[NEW] new raidframe calendar type controls</li>	
+	<li>[NEW] new "leatherlook" in planner header</li>			
+	<li>[CHG] calendar date links now link to dayview</li>
+	<li>[CHG] calendar day,week,month icons removed from day box</li>
+	<li>[NEW] new icons for editing, deleting raidplans</li>		
+	<li>[NEW] welcome message moved to block</li>			
+	<li>[FIX] missing language entry for push permission</li>			
+	<li>[FIX] fixed #214 tooltip no longer appears on wrong date</li>		
+	<li>[FIX] fixed #202 : if the confirmed raider is unsigned after raid was pushed,
+exec_decreasedkp_after_unsign decreases dkp points by event standard
+amount
 	</ul>
 	
 	<br />	

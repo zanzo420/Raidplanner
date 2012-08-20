@@ -108,7 +108,8 @@ $lang = array_merge($lang, array(
 	'acl_u_raidplanner_view_raidplans'			=> array('lang' => 'Kann Raidpläne sehen', 'cat' => 'raidplanner'),
 	// view raid participation
 	'acl_u_raidplanner_view_headcount'			=> array('lang' => 'Kann die Kopfzahl für von anderen Benutzern erstellte Raidpläne sehen', 'cat' => 'raidplanner'),
-
+	// push plans
+	'acl_u_raidplanner_push' => array('lang' => 'Kann Raidpläne in BBDKP einfügen(Push)', 'cat' => 'raidplanner'),
 
 ));
 

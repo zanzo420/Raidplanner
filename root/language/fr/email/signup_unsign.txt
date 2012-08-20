@@ -1,8 +1,8 @@
-Dear {USERNAME},
+Cher {USERNAME},
 
-{USERNAME} has unsigned {RAIDER} from the raid {EVENT} occuring at invite time : {START_TIME} {TZ}. 
+{USERNAME} a annulé votre participation comme {RAIDER} du Raid {EVENT} qui aurait commencé à {START_TIME} {TZ}. 
 
-To view or resignup this event please visit the following link:
+Pour consulter ce Raid veuillez suivre le lien suivant : 
 [url]{U_RAIDPLAN}[/url]
 
 {EMAIL_SIG}
