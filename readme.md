@@ -2,7 +2,7 @@ http://bbdkp.github.com/Raidplanner/
 
 Support : http://www.bbdkp.com/viewforum.php?f=61
 
-#Raidplanner v0.5.0
+#Raidplanner v0.6.0
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
@@ -18,6 +18,9 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	acp setting to enable/disable pm/email
 * 	new buttons for add, edit, push
 *	create Raidplans as raids in bbDKP
+*	raid and portal blocks showing upcoming raids, top signups, clock
+*	clear icons for each function
+*	comes in English, french and german
 
 ##### Inviting and signing up
 *	Confirm Raid Raidplans 
