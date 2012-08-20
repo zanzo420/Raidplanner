@@ -41,10 +41,8 @@
 		<copy>
 			<file from="root/language/de/mods/*.*" to="language/de/mods/*.*"/>
 			<file from="root/language/de/email/*.*" to="language/de/email/*.*"/>	
-			<file from="root/styles/prosilver/imageset/de/*.*" to="styles/prosilver/imageset/de/*.*"/>
 		</copy>
-	
-			<open src="language/de/common.php">
+		<open src="language/de/common.php">
 			<edit>
 				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
 				<comment lang="de"><![CDATA[Definiere Kalender-String]]></comment>

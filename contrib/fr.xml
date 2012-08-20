@@ -41,7 +41,6 @@
 		<copy>
 			<file from="root/language/fr/mods/*.*" to="language/fr/mods/*.*"/>
 			<file from="root/language/fr/email/*.*" to="language/fr/email/*.*"/>	
-			<file from="root/styles/prosilver/imageset/fr/*.*" to="styles/prosilver/imageset/fr/*.*"/>
 		</copy>
 		<diy-instructions lang="en"><![CDATA[See general install.xml file]]></diy-instructions>
 		<diy-instructions lang="fr"><![CDATA[voir install.xml]]></diy-instructions>
