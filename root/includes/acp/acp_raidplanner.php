@@ -6,7 +6,7 @@
 * @package bbDkp.acp
 * @copyright (c) 2010 bbdkp http://code.google.com/p/bbdkp/
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* $Id$
+* @version 0.7.0
 *  
 **/
 
@@ -34,7 +34,8 @@ class acp_raidplanner
 			trigger_error($user->lang['USER_CANNOT_MANAGE_RAIDPLANNER'] );
 		}
 		
-		$link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+		$link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;" ) . '"><p>'. 
+			$user->lang['RETURN_RP']. '</p></a>';
 		$action	= request_var('action', '');
 		
         switch ($mode) 
@@ -63,8 +64,30 @@ class acp_raidplanner
 					}
 				}
 				
-				//user pressed edit button
-				if( $updateroles)
+				/********************************/
+				/*   RAID ROLES phpbb_rp_roles	*/
+				/********************************/
+
+				//user pressed add role
+				if($addrole)
+				{
+					$data = array(
+					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
+						'role_color'     => request_var('newrole_color', ''),
+						'role_icon'     => request_var('newrole_icon', ''),
+					);
+
+					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
+   					$db->sql_query($sql); 		
+
+   					$success_message = sprintf($user->lang['ROLE_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newrole', 'New role', true)));
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
+					
+				}		
+				
+				//user pressed edit roles button
+				elseif($updateroles)
 				{
 					$rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
 					$rolecolor = request_var('role_color', array( 0 => ''));
@@ -88,64 +111,6 @@ class acp_raidplanner
 					trigger_error($success_message . $link);
 				}
 				
-				//user pressed edit team
-				elseif( $updateteam)
-				{
-					$teamnames = utf8_normalize_nfc(request_var('team_name', array( 0 => ''), true));
-					$teamsize = request_var('team_size', array( 0 => ''));
-					foreach ( $teamnames as $team_id => $teamname )
-					{
-						$data = array(
-						    'team_name'     	=> $teamname,
-							'team_needed'     	=> $teamsize[$team_id],
-						);
-
-						 $sql = 'UPDATE ' . RP_TEAMS . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
-					   	     WHERE teams_id=' . (int) $team_id; 
-   						 $db->sql_query($sql); 		
-						
-					}
-
-					$success_message = sprintf($user->lang['TEAM_UPDATE_SUCCESS'], $role_id);
-					meta_refresh(1, $this->u_action);
-					trigger_error($success_message . $link);
-				}
-				
-				//user pressed add role
-				elseif($addrole)
-				{
-					$data = array(
-					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
-						'role_color'     => request_var('newrole_color', ''),
-						'role_icon'     => request_var('newrole_icon', ''),
-					);
-
-					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
-   					$db->sql_query($sql); 		
-
-   					$success_message = sprintf($user->lang['ROLE_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newrole', 'New role', true)));
-					meta_refresh(1, $this->u_action);
-					trigger_error($success_message . $link);
-					
-				}		
-				
-				//user pressed add team
-				elseif($addteam)
-				{
-					$data = array(
-					    'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
-						'team_needed'     => request_var('newteamsize', ''),
-					);
-
-					$sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
-   					$db->sql_query($sql); 		
-
-   					$success_message = sprintf($user->lang['TEAM_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newteamname', 'New Team', true)));
-					meta_refresh(1, $this->u_action);
-					trigger_error($success_message . $link);
-					
-				}	
-				
 				//used pressed red cross to delete role
 				elseif ($deleterole) 
 				{
@@ -153,7 +118,7 @@ class acp_raidplanner
 						if (confirm_box(true))
 						{
 							// @todo check if there are scheduled raids with this role, ask permission
-							$sql = 'delete from ' . RP_ROLES . ' where role_id = ' . request_var('hiddenroleid', 0) ;
+							$sql = 'DELETE FROM ' . RP_ROLES . ' WHERE role_id = ' . request_var('hiddenroleid', 0) ;
 							$db->sql_query($sql);
 							
 							meta_refresh(1, $this->u_action);
@@ -174,14 +139,102 @@ class acp_raidplanner
 						
 				}
 				
+				/****************************************/
+				/*        RAID TEAMS  phpbb_rp_teams	*/
+				/****************************************/
+				//user pressed add team
+				elseif($addteam)
+				{
+					$data = array(
+					    'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
+						'team_needed'     => request_var('newteamsize', ''),
+					);
+
+					$sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
+   					$db->sql_query($sql); 		
+					$team_id = $db->sql_nextid();
+					
+   					// get rolelist from template
+   					$rolenames = utf8_normalize_nfc(request_var('rolename_hidden', array( 0 => ''), true));
+   					//insert default value in RP_TEAMS
+   					
+   					$n = 0;
+   					$totalassigned = 0;
+   					$i = 0;
+   					foreach($rolenames as $key => $rolename)
+   					{
+   						$n=0;
+   						$i += 1;
+   						
+   						if($i == count($rolenames))
+ 						{
+ 							// ex: need 40, have 6 slots
+   							$n = $data['team_needed'] - $totalassigned;
+   						}
+   						else
+   						{
+   							if($totalassigned < (int) $data['team_needed'])
+   							{
+   								$n=1;
+   							}
+   							elseif($totalassigned == (int) $data['team_needed']) 
+   							{
+	   							// ex: need only 3, have 6 slots
+	   							$n = $data['team_needed'] - $totalassigned;
+   							}
+   						}
+   						
+   						$totalassigned += $n;
+						   						
+   						$sql_ary[] = array(
+   								'teams_id'      => $team_id,
+   								'role_id'       => $key,
+   								'team_needed'   => $n
+   						);
+   						
+   						
+   					}
+   					$db->sql_multi_insert(RP_TEAMSIZE, $sql_ary);
+   					
+   					$success_message = sprintf($user->lang['TEAM_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newteamname', 'New Team', true)));
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
+					
+				}	
+				
+				//user pressed edit team
+				elseif($updateteam)
+				{
+					$teamnames = utf8_normalize_nfc(request_var('team_name', array( 0 => ''), true));
+					$teamsize = request_var('team_size', array( 0 => ''));
+					foreach ( $teamnames as $team_id => $teamname )
+					{
+						$data = array(
+						    'team_name'     	=> $teamname,
+							'team_needed'     	=> $teamsize[$team_id],
+						);
+
+						 $sql = 'UPDATE ' . RP_TEAMS . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
+					   	     WHERE teams_id=' . (int) $team_id; 
+   						 $db->sql_query($sql); 		
+						
+					}
+
+					$success_message = $user->lang['TEAM_UPDATE_SUCCESS'];
+					meta_refresh(1, $this->u_action);
+					trigger_error($success_message . $link);
+				}
+				
+				
 				//used pressed red cross to delete team
 				elseif ($deleteteam) 
 				{
-						// ask for permission
 						if (confirm_box(true))
 						{
-							// @todo check if there are scheduled raids with this team, ask permission
-							$sql = 'delete from ' . RP_TEAMS . ' where teams_id = ' . request_var('hiddenteamid', 0) ;
+							$sql = 'DELETE from ' . RP_TEAMS . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
+							$db->sql_query($sql);
+							
+							$sql = 'DELETE from ' . RP_TEAMSIZE . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
 							$db->sql_query($sql);
 							
 							meta_refresh(1, $this->u_action);
@@ -190,6 +243,20 @@ class acp_raidplanner
 						}
 						else
 						{
+							// @todo check if there are scheduled raids with this team, ask permission
+							/*
+							 * 
+							  
+							 $sql= "SELECT count(*) as countteam FROM " . RP_RAIDS_TABLE . " WHERE raidteam = " . request_var('teams_id', 0);
+							$result = $db->sql_query($sql);
+							$total_raidplans = (int) $db->sql_fetchfield('countteam');
+							if($total_raidplans  > 0 )
+							{
+								trigger_error(sprintf($user->lang['TEAM_DELETE_FAIL'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
+							}
+							*/
+							
+							
 							// get field content
 							$s_hidden_fields = build_hidden_fields(array(
 								// set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
@@ -197,18 +264,26 @@ class acp_raidplanner
 								'hiddenteamid'	=> request_var('teams_id', 0),
 								)
 							);
+
+							// ask for permission
 							confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_TEAM'], request_var('teams_id', 0)), $s_hidden_fields);
 						}
 						
 				}
 				
+				/******************************************/
+				/*   Team composition  phpbb_rp_teamsize  */
+				/******************************************/
 				
 				// update teamcomposition
 				elseif($update_raidrolesize)
 				{
+					// get max team size from form
 					$maxteamsize= request_var('maxteamsize', array( 0 => 0), true); 
+					// get team compositions from form
 					$array = request_var('teamsize', array( 0 => array( 0 => 0)), true);
-					foreach ( $array	 as $team_id => $teamroles )
+					// 
+					foreach ( $array as $team_id => $teamroles )
 					{
 						$teamtotal = 0;
 						foreach ( $teamroles as $role_id => $roleneeded )
@@ -237,7 +312,6 @@ class acp_raidplanner
 					$success_message = $user->lang['TEAMROLE_UPDATE_SUCCESS'];
 					meta_refresh(1, $this->u_action);
 					trigger_error($success_message . $link);
-						
 				}
 				
 				// update Raidplan settings
@@ -288,14 +362,6 @@ class acp_raidplanner
 					trigger_error($message . $link);
 				}
 
-				
-				// move the calendar for daylight savings
-				elseif( request_var('calPlusHour', 0) == 1)
-				{
-					$this->move_all_raidplans_by_one_hour( request_var('plusVal', 1));
-					exit;
-				}
-				
 				// update all calendar settings
 				elseif( $updatecal )
 				{
@@ -372,7 +438,9 @@ class acp_raidplanner
 					meta_refresh(1, $this->u_action);
 					trigger_error($message . $link);
 				}
-
+				
+				// end of handlers 
+				
 				// build form
 				
 				// select raid roles
@@ -466,60 +534,69 @@ class acp_raidplanner
 				}
 				
 				// build presets for invite hour pulldown
-				$s_event_invite_hh_options = '<option value="0"' . (isset($config['rp_default_invite_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$invhour = intval($config['rp_default_invite_time'] / 60);
 				for ($i = 0; $i <= 23; $i++)
 				{
-					$selected = ($i == $invhour ) ? ' selected="selected"' : '';
-					$s_event_invite_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+					$template->assign_block_vars('event_invite_hh', array(
+							'KEY' 		=> $i,
+							'VALUE' 	=> $i,
+							'SELECTED' 	=> ($i == $invhour ) ? ' selected="selected"' : '',
+					));
 				}
+				
 				// build presets for invite minute pulldown
-				$s_event_invite_mm_options = '<option value="0"' . (isset($config['rp_default_invite_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$invmin = $config['rp_default_invite_time'] - ($invhour*60); 
 				for ($i = 0; $i <= 59; $i++)
 				{
-					$selected = ($i == $invmin ) ? ' selected="selected"' : '';
-					$s_event_invite_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+					$template->assign_block_vars('event_invite_mm', array(
+							'KEY' 		=> $i,
+							'VALUE' 	=> $i,
+							'SELECTED' 	=> ($i == $invmin ) ? ' selected="selected"' : '',
+					));
 				}
 				
 				// build presets for start hour pulldown
-				$s_event_start_hh_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$starthour = intval($config['rp_default_start_time'] / 60);
 				for ($i = 0; $i <= 23; $i++)
 				{
-					$selected = ($i == $starthour ) ? ' selected="selected"' : '';
-					$s_event_start_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+					$template->assign_block_vars('event_start_hh', array(
+							'KEY' 		=> $i,
+							'VALUE' 	=> $i,
+							'SELECTED' 	=> ($i == $starthour ) ? ' selected="selected"' : '',
+					));
 				}
 				
 				// build presets for start minute pulldown
-				$s_event_start_mm_options = '<option value="0"' . (isset($config['rp_default_start_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$startmin =  $config['rp_default_start_time'] - ($starthour* 60); 
 				for ($i = 0; $i <= 59; $i++)
 				{
-					$selected = '';
-					if($i == $startmin)
-					{
-						$selected = ' selected="selected"';
-					}
-					
-					$s_event_start_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+					$template->assign_block_vars('event_start_mm', array(
+							'KEY' 		=> $i,
+							'VALUE' 	=> $i,
+							'SELECTED' 	=> ($i == $startmin ) ? ' selected="selected"' : '',
+					));
 				}	
 				
 				// build presets for end hour pulldown
-				$s_event_end_hh_options = '<option value="0"' . (isset($config['rp_default_end_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$endhour = intval($config['rp_default_end_time'] / 60);
 				for ($i = 0; $i <= 23; $i++)
 				{
-					$selected = ($i == $endhour ) ? ' selected="selected"' : '';
-					$s_event_end_hh_options .= "<option value=\"$i\"$selected>$i</option>";
+					$template->assign_block_vars('event_end_hh', array(
+							'KEY' 		=> $i,
+							'VALUE' 	=> $i,
+							'SELECTED' 	=> ($i == $endhour ) ? ' selected="selected"' : '',
+					));
 				}
+				
 				// build presets for end minute pulldown
-				$s_event_end_mm_options = '<option value="0"' . (isset($config['rp_default_end_time']) ? '': ' selected="selected"' ) . '>--</option>';
 				$endmin = $config['rp_default_end_time'] - ($endhour*60); 
 				for ($i = 0; $i <= 59; $i++)
 				{
-					$selected = ($i == $endmin ) ? ' selected="selected"' : '';
-					$s_event_end_mm_options .= "<option value=\"$i\"$selected>$i</option>";
+					$template->assign_block_vars('event_end_mm', array(
+							'KEY' 		=> $i,
+							'VALUE' 	=> $i,
+							'SELECTED' 	=> ($i == $endmin ) ? ' selected="selected"' : '',
+					));
 				}
 				
 				// get welcome msg
@@ -535,12 +612,6 @@ class acp_raidplanner
 				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
 				
 				$template->assign_vars(array(
-					'S_RAID_INVITE_HOUR_OPTIONS'		=> $s_event_invite_hh_options,
-					'S_RAID_INVITE_MINUTE_OPTIONS'		=> $s_event_invite_mm_options, 
-					'S_RAID_START_HOUR_OPTIONS'			=> $s_event_start_hh_options,
-					'S_RAID_START_MINUTE_OPTIONS'		=> $s_event_start_mm_options,
-					'S_RAID_END_HOUR_OPTIONS'			=> $s_event_end_hh_options,
-					'S_RAID_END_MINUTE_OPTIONS'			=> $s_event_end_mm_options,				
 					'FROZEN_TIME'		=> $config['rp_default_freezetime'],
 					'EXPIRE_TIME'		=> $config['rp_default_expiretime'],
 					'SEL_MONDAY'		=> $sel_monday,
@@ -590,112 +661,6 @@ class acp_raidplanner
 		
 				break;
 			
-		}
-	}
-
-	/**
-	 * moves all raids in the calendar +/- one hour 
-	 * helps when you reset the boards daylight savings time setting. 
-	 * 
-	 */
-	private function move_all_raidplans_by_one_hour( $plusVal )
-	{
-		global $auth, $db, $user, $config, $phpEx, $phpbb_root_path;
-	
-		$s_hidden_fields = build_hidden_fields(array(
-				'mode'		=> 'rp_settings',
-				'i'			=> 'raidplanner',
-				'plusVal'	=> $plusVal,
-				'calPlusHour' => 1,
-				)
-		);
-	
-		$factor = 1;
-		if( $plusVal == 0 )
-		{
-			$factor = -1;
-		}
-		
-		if (confirm_box(true))
-		{
-	
-			/* first populate all recurring raidplans to make sure
-			   the cron job does not run again while we are working. */
-			if (!class_exists('raidplanner_population'))
-			{
-				require($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplanner_population.' . $phpEx);
-			}
-			$rp = new raidplanner_population;
-			$rp->populate_calendar(0);
-	
-			/* next move all recurring raidplans by one hour
-			   (note we will also edit the poster_timezone by one hour
-			   so as not to change the calculation method) */
-			
-			// delete any recurring raidplans that are permanently over
-			$sql = 'SELECT * FROM ' . RP_RECURRING . '
-						ORDER BY recurr_id';
-			$db->sql_query($sql);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$first_occ_time = $row['first_occ_time'] + ($factor * 3600);
-				$final_occ_time = 0;
-				if( $row['final_occ_time'] != 0 )
-				{
-					$final_occ_time = $row['final_occ_time'] + ($factor * 3600);
-				}
-				$last_calc_time = $row['last_calc_time'] + ($factor * 3600);
-				$next_calc_time = $row['next_calc_time'] + ($factor * 3600);
-				$poster_timezone = $row['poster_timezone'] + $factor;
-				$recurr_id = (int) $row['recurr_id'];
-				$sql = 'UPDATE ' . RP_RECURRING . '
-					SET ' . $db->sql_build_array('UPDATE', array(
-						'first_occ_time'	=> (int) $first_occ_time,
-						'final_occ_time'	=> (int) $final_occ_time,
-						'last_calc_time'	=> (int) $last_calc_time,
-						'next_calc_time'	=> (int) $next_calc_time,
-						'poster_timezone'	=> (float) $poster_timezone,
-						)) . "
-					WHERE recurr_id = $recurr_id";
-				$db->sql_query($sql);
-			}
-			$db->sql_freeresult($result);
-	
-			/* finally move each individual raidplan by one hour */
-			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . '
-						ORDER BY raidplan_id';
-			$db->sql_query($sql);
-			$result = $db->sql_query($sql);
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$sort_timestamp = max(0,$row['sort_timestamp'] + ($factor * 3600));
-				$raidplan_invite_time = max(0,$row['raidplan_invite_time'] + ($factor * 3600));
-				$raidplan_start_time = max($row['raidplan_start_time'] + ($factor * 3600),0);
-				$raidplan_end_time = max(0,$row['raidplan_end_time'] + ($factor * 3600));
-				$raidplan_id = $row['raidplan_id'];
-				$sql = 'UPDATE ' . RP_RAIDS_TABLE . '
-					SET ' . $db->sql_build_array('UPDATE', array(
-						'sort_timestamp'	=> (int) $sort_timestamp,
-						'raidplan_invite_time'	=> (int) $raidplan_invite_time,
-						'raidplan_start_time'	=> (int) $raidplan_start_time,
-						'raidplan_end_time'		=> (int) $raidplan_end_time,				
-						)) . "
-					WHERE raidplan_id = $raidplan_id";
-				$db->sql_query($sql);
-			}
-			$db->sql_freeresult($result);
-						 
-			$meta_info = append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_settings" );
-			meta_refresh(3, $meta_info);
-			$message="";
-			$message .= '<br /><br />' . sprintf( $user->lang['PLUS_HOUR_SUCCESS'],(string)$factor);
-			trigger_error($message);
-	
-		}
-		else
-		{
-			confirm_box(false, sprintf( $user->lang['PLUS_HOUR_CONFIRM'],(string)$factor), $s_hidden_fields);
 		}
 	}
 

@@ -4,7 +4,7 @@
  @package bbDkp.acp
  @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
- @version $Id$
+ @version 0.7.0
 //-->
 <h1>{L_ACP_RAIDPLANNER_SETTINGS}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
@@ -51,9 +51,7 @@
   <!-- END role_row -->
   </tbody>
   
-  
 </table>
-   
 {S_FORM_TOKEN}
 </form>
 
@@ -99,7 +97,11 @@
   
 </table>
 
+<span>
+<!-- BEGIN role_row -->
+<input type="hidden" name="rolename_hidden[{role_row.ROLE_ID}]" value="{role_row.ROLENAME}" /><!-- END role_row -->
 {S_FORM_TOKEN}
+</span>
 
 </fieldset>
 </form>
@@ -158,24 +160,44 @@
 	<dl>
     <dt><label>{L_RAID_INVITE_TIME_DEFAULT} (hh-mm):</label></dt>
     <dd>
-		{L_HOUR}: <select id="event_invite_hh" name="event_invite_hh">{S_RAID_INVITE_HOUR_OPTIONS}</select>
-		{L_MINUTE}: <select id="event_invite_mm" name="event_invite_mm">{S_RAID_INVITE_MINUTE_OPTIONS}</select> 
+		{L_HOUR}: 
+		<select id="event_invite_hh" name="event_invite_hh">
+			<!-- BEGIN event_invite_hh -->
+		  		<option value="{event_invite_hh.KEY}" {event_invite_hh.SELECTED}>{event_invite_hh.VALUE}</option><!-- END event_invite_hh -->
+		</select>
+		{L_MINUTE}: 
+		<select id="event_invite_mm" name="event_invite_mm">
+			<!-- BEGIN event_invite_mm -->
+		  		<option value="{event_invite_mm.KEY}" {event_invite_mm.SELECTED}>{event_invite_mm.VALUE}</option><!-- END event_invite_mm -->
+		</select> 
 	</dd>
    </dl> 
 
   <dl>
     <dt><label>{L_DEFAULT_RAID_START_TIME} (hh-mm):</label></dt>
     <dd>
-		{L_HOUR}: <select id="event_start_hh" name="event_start_hh">{S_RAID_START_HOUR_OPTIONS}</select>
-		{L_MINUTE}: <select id="event_start_mm" name="event_start_mm">{S_RAID_START_MINUTE_OPTIONS}</select> 
+		{L_HOUR}: <select id="event_start_hh" name="event_start_hh">
+			<!-- BEGIN event_start_hh -->
+		  		<option value="{event_start_hh.KEY}" {event_start_hh.SELECTED}>{event_start_hh.VALUE}</option><!-- END event_start_hh -->
+		</select>
+		{L_MINUTE}: <select id="event_start_mm" name="event_start_mm">			
+		<!-- BEGIN event_start_mm -->
+		  		<option value="{event_start_mm.KEY}" {event_start_mm.SELECTED}>{event_start_mm.VALUE}</option><!-- END event_start_mm -->
+		</select> 
 	</dd>
    </dl> 
 
    <dl>
     <dt><label>{L_DEFAULT_RAID_END_TIME} (hh-mm):</label></dt>
     <dd>
-		{L_HOUR}: <select id="event_end_hh" name="event_end_hh">{S_RAID_END_HOUR_OPTIONS}</select>
-		{L_MINUTE}: <select id="event_end_mm" name="event_end_mm">{S_RAID_END_MINUTE_OPTIONS}</select> 
+		{L_HOUR}: <select id="event_end_hh" name="event_end_hh">
+		<!-- BEGIN event_end_hh -->
+		  		<option value="{event_end_hh.KEY}" {event_end_hh.SELECTED}>{event_end_hh.VALUE}</option><!-- END event_end_hh -->
+		</select>
+		{L_MINUTE}: <select id="event_end_mm" name="event_end_mm">
+		<!-- BEGIN event_end_mm -->
+		  		<option value="{event_end_mm.KEY}" {event_end_mm.SELECTED}>{event_end_mm.VALUE}</option><!-- END event_end_mm -->
+		</select> 
 	</dd>
 	</dl>
 	
