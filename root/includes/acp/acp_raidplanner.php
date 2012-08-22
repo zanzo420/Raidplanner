@@ -612,6 +612,7 @@ class acp_raidplanner
 				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
 				
 				$template->assign_vars(array(
+					'RAIDPLANNER_VERSION'	=> $config['bbdkp_raidplanner'], 
 					'FROZEN_TIME'		=> $config['rp_default_freezetime'],
 					'EXPIRE_TIME'		=> $config['rp_default_expiretime'],
 					'SEL_MONDAY'		=> $sel_monday,

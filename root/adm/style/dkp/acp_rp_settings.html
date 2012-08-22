@@ -6,16 +6,16 @@
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
  @version 0.7.0
 //-->
-<h1>{L_ACP_RAIDPLANNER_SETTINGS}</h1>
+<h1>{L_ACP_RAIDPLANNER_SETTINGS} {RAIDPLANNER_VERSION}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
-
+<div style= "width:100%">
 <fieldset><legend>{L_RAIDROLES}</legend>
 
 <form id="rproles" method="post" action="{U_ACTION}" >
 
 <p>{L_ACP_RAIDROLES_EXPLAIN}</p>
 
-<table style="width:70%">
+<table style="width:100%">
 <thead>
   <tr>
 	<th>{L_RAIDROLE}</th>
@@ -57,13 +57,15 @@
 
 </fieldset>
 
+</div>
+<div style= "width:100%">
 <form id="rpteams" method="post" action="{U_ACTION}" >
 
 <fieldset><legend>{L_RAIDTEAMS}</legend>
 <p>{L_ACP_RAIDTEAMS_EXPLAIN}</p>
 
 
-<table style="width:70%">
+<table style="width:100%">
 <thead>
 	<tr>
 	<th>{L_TEAMNAME}</th>
@@ -105,18 +107,19 @@
 
 </fieldset>
 </form>
-
+</div>
+<div style= "width:100%">
 <form id="rpteamsize" method="post" action="{U_ACTION}" >
 
 <fieldset><legend>{L_RAIDSIZES}</legend>
 <p>{L_ACP_RAIDSIZES_EXPLAIN}</p>
 
-<table style="width:50%">
+<table style="width:100%">
 <thead>
 	<tr>
-	<th style="width: 30%">{L_TEAMNAME}</th>
-	<th style="width: 40%">{L_RAIDROLE}</th>
-	<th style="width: 20%">{L_ROLESIZE}</th>
+	<th style="width: 20%">{L_TEAMNAME}</th>
+	<th style="width: 30%">{L_RAIDROLE}</th>
+	<th style="width: 30%">{L_ROLESIZE}</th>
   </tr>
 </thead>
   <tfoot>
@@ -140,7 +143,8 @@
   <tr class="row1">
     <td>{team_row.TEAMNAME}</td>
     <td>{team_row.teamsize_row.ROLENAME}</td>
-    <td><input type="text" name="teamsize[{team_row.TEAM_ID}][{team_row.teamsize_row.ROLE_ID}]" value="{team_row.teamsize_row.ROLESIZE}" class="medium" />&nbsp;{team_row.teamsize_row.ROLEPCT}%</td>
+    <td><input type="text" name="teamsize[{team_row.TEAM_ID}][{team_row.teamsize_row.ROLE_ID}]" 
+    value="{team_row.teamsize_row.ROLESIZE}" class="medium" />&nbsp;{team_row.teamsize_row.ROLEPCT}%</td>
   </tr>
   <!-- END teamsize_row -->
   <!-- END team_row -->
@@ -150,7 +154,9 @@
 
 </fieldset>
 </form>
+</div>
 
+<div style= "width:100%">
 <fieldset><legend>{L_RPSETTINGS}</legend>
 <div>
 <form id="rpsettings" method="post" action="{U_ACTION}" >
@@ -259,7 +265,8 @@
 </form>
 </div>
 </fieldset>
-
+</div>
+<div style= "width:100%">
 <fieldset><legend>{L_RPADVANCEDOPTIONS}</legend>
 <div>
 
@@ -364,4 +371,5 @@
 </form>
 </div>
 </fieldset>
+</div>
 <!-- INCLUDE dkp/overall_footer.html -->
