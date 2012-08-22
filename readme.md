@@ -1,8 +1,8 @@
-http://bbdkp.github.com/Raidplanner/
+0.8.0 http://bbdkp.github.com/Raidplanner/
 
 Support : http://www.bbdkp.com/viewforum.php?f=61
 
-#Raidplanner v0.7.0
+#Raidplanner v0.8.0
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
