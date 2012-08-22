@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+*
 */
 
 /**
@@ -329,10 +329,11 @@ class rpraid
 			$this->frozen= true;
 			$this->confirmed=false;
 			$this->nochar= true;
-			$this->signed_up=true;
-			$this->signed_off=true;
+			$this->signed_up=false;
+			$this->signed_off=false;
+			$this->signed_up_maybe=false;
 			$this->raid_id=0;
-			
+			$this->link='';
 			
 			// populate properties
 			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $this->id;
@@ -396,6 +397,7 @@ class rpraid
 			}
 			
 			//if raid invite time is in the past then raid signups are frozen.
+			// @todo might wanna make this optional
 			$this->frozen = false;
 			if($this->invite_time < time())
 			{
@@ -487,10 +489,8 @@ class rpraid
 								if($mychar['id'] == $asignup['dkpmemberid'])
 								{
 									$this->confirmed = true;
-									
 								}
 							}
-											
 						}
 					}
 				}
@@ -512,8 +512,6 @@ class rpraid
 								$this->signed_up = false;
 							}
 						}
-						
-										
 					}
 				}
 			}
@@ -831,8 +829,9 @@ class rpraid
 		}
 	
 		$result = $db->sql_query($sql);
-	
-		$group_sel_code = "<select name='calGroupId[]' id='calGroupId[]' disabled='disabled' multiple='multiple' size='6' >\n";
+		
+		//@todo clean this up
+		$group_sel_code = "<select name='calGroupId[]' id='calGroupId' disabled='disabled' multiple='multiple' size='6' >\n";
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$group_sel_code .= "<option value='" . $row['group_id'] . "'>" . (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) . "</option>\n";
@@ -1213,7 +1212,6 @@ class rpraid
 	    {
 	    	// if only one group pass the groupid
 			$this->group_id = $group_id_array[0];
-	
 	    }
 		elseif( $num_group_ids > 1 )
 		{
@@ -1272,6 +1270,12 @@ class rpraid
 		
 		// set timesx
 		// @todo get date in template
+
+		// @todo put these in one form !!
+		$inv_d1 = request_var('calD', 0);
+		$inv_m1 = request_var('calM', 0);
+		$inv_y1 = request_var('calY', 0);
+		///
 		$inv_d = request_var('hiddenCalD', $cal->date['day']);
 		$inv_m = request_var('hiddenCalM', $cal->date['month_no']);
 		$inv_y = request_var('hiddenCalY', $cal->date['year']);
