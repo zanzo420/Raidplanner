@@ -81,16 +81,20 @@ var ajaxalert = '{LA_ALERT_AJAX}';
   	<br/>
 		<!-- fetch the event types from bbDKP -->
 	<dl style="clear: left;">
-		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
+		<dt><label for="bbdkp_events_options">{L_EVENT_TYPE}:</label></dt>
 		<dd>
-			<select name='calEType' id='calEType'>{EVENT_TYPE_SEL}</select>
+		<select name='bbdkp_events_options' id='bbdkp_events_options'>
+		<!-- BEGIN bbdkp_events_options -->
+	 			<option value="{bbdkp_events_options.KEY}" {bbdkp_events_options.SELECTED}>{bbdkp_events_options.VALUE}</option><!-- END bbdkp_events_options -->
+		</select>	
 	    </dd>
 	</dl>
 	
 	<dl style="clear: left;">
-		<dt><label for="calELevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
-		<dd><select name='calELevel' id='calELevel' onchange='update_group_id_state();'>
-		{EVENT_ACCESS_LEVEL_SEL}
+		<dt><label for="accesslevel_options">{L_EVENT_ACCESS_LEVEL}:</label></dt>
+		<dd><select name='accesslevel_options' id='accesslevel_options' onchange='update_group_id_state();'>
+		<!-- BEGIN accesslevel_options -->
+		 			<option value="{accesslevel_options.KEY}" {accesslevel_options.SELECTED}>{accesslevel_options.VALUE}</option><!-- END accesslevel_options -->
 		</select>
 		</dd>
 	</dl>

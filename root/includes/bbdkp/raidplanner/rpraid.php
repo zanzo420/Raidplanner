@@ -750,7 +750,6 @@ class rpraid
 		$page_title = ($mode=='new') ? $user->lang['CALENDAR_POST_RAIDPLAN'] : $user->lang['CALENDAR_EDIT_RAIDPLAN'];	
 
 		//count events from bbDKP, put them in a pulldown...
-		$e_type_sel_code  = "";
 		foreach( $this->eventlist->events as $eventid => $event)
 		{
 			$selected = '';
@@ -766,27 +765,38 @@ class rpraid
 					$selected = ' selected="selected" ';
 				}
 			}
-			$e_type_sel_code .= '<option value="' . $eventid . '" ' . $selected. ' >'. $event['event_name'].'</option>';
-		}
 
-		// populate raidplan acces level popups
-		$level_sel_code ="";
+			$template->assign_block_vars('bbdkp_events_options', array(
+					'KEY' 		=> $eventid,
+					'VALUE' 	=> $event['event_name'] ,
+					'SELECTED' 	=> $selected,
+			));
+			
+		}
+		
+		// populate raidplan acces level pulldowns
+		$level_sel = array();
 		if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
 		{
-			$level_sel_code .= '<option value="2">'.$user->lang['EVENT_ACCESS_LEVEL_PUBLIC'].'</option>';
+			$level_sel[2] = $user->lang['EVENT_ACCESS_LEVEL_PUBLIC']; 
 		}
 		if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
 		{
-			$level_sel_code .= '<option value="1">'.$user->lang['EVENT_ACCESS_LEVEL_GROUP'].'</option>';
+			$level_sel[1] = $user->lang['EVENT_ACCESS_LEVEL_GROUP'];
 		}
 		if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
 		{
-			$level_sel_code .= '<option value="0">'.$user->lang['EVENT_ACCESS_LEVEL_PERSONAL'].'</option>';
+			$level_sel[0] =  $user->lang['EVENT_ACCESS_LEVEL_PERSONAL'];
 		}
-		// replace accesslevel by instance value
-		$temp_find_str = 'value="'.$this->accesslevel.'">';
-		$temp_replace_str = 'selected value="'.$this->accesslevel.'">';
-		$level_sel_code = str_replace( $temp_find_str, $temp_replace_str, $level_sel_code );
+		
+		foreach($level_sel as $key => $value)
+		{
+			$template->assign_block_vars('accesslevel_options', array(
+					'KEY' 		=> $key,
+					'VALUE' 	=> $value ,
+					'SELECTED' 	=>  ($this->accesslevel == $key) ? ' selected="selected"' : '', 
+			));
+		}
 		
 		// Find what groups this user is a member of and add them to the list of groups to invite
 		$disp_hidden_groups = $config['rp_display_hidden_groups'];
@@ -1151,8 +1161,6 @@ class rpraid
 			'MESSAGE'					=> $message['text'],
 			'START_DATE'				=> $user->format_date($start_date, $config['rp_date_format'], true),
 			'START_HOUR_SEL'			=> $hour_start_selcode,
-			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
-			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
 			'DAY_VIEW_URL'				=> $day_view_url,
 			'WEEK_VIEW_URL'				=> $week_view_url,
 			'MONTH_VIEW_URL'			=> $month_view_url,
@@ -1228,8 +1236,7 @@ class rpraid
 			}
 		}
 		
-		$this->accesslevel = request_var('calELevel', 0);
-		
+		$this->accesslevel = request_var('accesslevel_options', 0);
 		switch($this->accesslevel)
 		{
 			case 0:
@@ -1267,7 +1274,7 @@ class rpraid
 		$this->signups['maybe'] = 0;
 		
 		//set event type 
-		$this->event_type = request_var('calEType', 0);
+		$this->event_type = request_var('bbdkp_events_options', 0);
 		
 		// invite/start date values from pulldown click
 		$inv_d = request_var('calD', 0);
