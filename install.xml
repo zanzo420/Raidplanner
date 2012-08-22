@@ -8,10 +8,13 @@
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[bbDKP Raidplanner 0.8.0]]></title>
-		<description lang="en"><![CDATA[Raidplanner Installer. 
-		see /docs/install.html and /docs/changelog.html]]></description>
-		<author-notes lang="en"><![CDATA[Requires bbDKP 1.2.8-pl2 or higher to be installed. 
-		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></author-notes>
+		<description lang="en"><![CDATA[Raidplanner 0.8.0 plugin for bbDKP 
+		forked from phpbb3 Calendar and phpRaider.
+		see /docs/install.html and /docs/changelog.html
+		Requires bbDKP 1.2.8-pl2 or higher to be installed. 
+		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com
+		]]></description>
+		<author-notes lang="en"><![CDATA[Requires bbDKP 1.2.8-pl2 or higher to be installed.]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
