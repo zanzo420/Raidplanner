@@ -1236,7 +1236,7 @@ class rpraid
 			}
 		}
 		
-		$this->accesslevel = request_var('accesslevel_options', 0);
+		$this->accesslevel = request_var('accesslevel', 0);
 		switch($this->accesslevel)
 		{
 			case 0:
@@ -1274,7 +1274,7 @@ class rpraid
 		$this->signups['maybe'] = 0;
 		
 		//set event type 
-		$this->event_type = request_var('bbdkp_events_options', 0);
+		$this->event_type = request_var('bbdkp_events', 0);
 		
 		// invite/start date values from pulldown click
 		$inv_d = request_var('calD', 0);

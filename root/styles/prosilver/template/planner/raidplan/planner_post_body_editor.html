@@ -81,9 +81,9 @@ var ajaxalert = '{LA_ALERT_AJAX}';
   	<br/>
 		<!-- fetch the event types from bbDKP -->
 	<dl style="clear: left;">
-		<dt><label for="bbdkp_events_options">{L_EVENT_TYPE}:</label></dt>
+		<dt><label for="bbdkp_events">{L_EVENT_TYPE}:</label></dt>
 		<dd>
-		<select name='bbdkp_events_options' id='bbdkp_events_options'>
+		<select name="bbdkp_events" id="bbdkp_events">
 		<!-- BEGIN bbdkp_events_options -->
 	 			<option value="{bbdkp_events_options.KEY}" {bbdkp_events_options.SELECTED}>{bbdkp_events_options.VALUE}</option><!-- END bbdkp_events_options -->
 		</select>	
@@ -91,17 +91,17 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 	</dl>
 	
 	<dl style="clear: left;">
-		<dt><label for="accesslevel_options">{L_EVENT_ACCESS_LEVEL}:</label></dt>
-		<dd><select name='accesslevel_options' id='accesslevel_options' onchange='update_group_id_state();'>
+		<dt><label for="accesslevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
+		<dd><select name="accesslevel" id="accesslevel" onchange="update_group_id_state();">
 		<!-- BEGIN accesslevel_options -->
 		 			<option value="{accesslevel_options.KEY}" {accesslevel_options.SELECTED}>{accesslevel_options.VALUE}</option><!-- END accesslevel_options -->
 		</select>
 		</dd>
 	</dl>
 	<dl style="clear: left;">
-		<dt><label>{L_EVENT_GROUP}:</label></dt>
+		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
 		<dd>
-		<select name='calGroupId[]' id='calGroupId' disabled='disabled' multiple='multiple' size='6' >
+		<select name="calGroupId[]" id="calGroupId" disabled="disabled" multiple="multiple" size="6" >
 			<!-- BEGIN group_sel_options -->
 		 			<option value="{group_sel_options.KEY}" {group_sel_options.SELECTED}>{group_sel_options.VALUE}</option><!-- END group_sel_options -->
 		</select>

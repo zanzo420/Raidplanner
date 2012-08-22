@@ -3,7 +3,7 @@
  */
 function update_group_id_state()
   {
-      if( document.getElementById('calELevel').value == 1 )
+      if( document.getElementById('accesslevel').value == 1 )
       {
           document.getElementById('calGroupId').disabled=false;
       }
