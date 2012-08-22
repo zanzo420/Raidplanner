@@ -61,13 +61,13 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 <div id="tabs">
 	<ul>
 		<li id="raidinfo-panel-tab" class="activetab"><a href="#tabs" onclick="subPanels('raidinfo-panel'); return false;"><span style="padding-bottom: 7px;">
-		<img src="{T_IMAGESET_PATH}/planner/Locations.png" />
+		<img src="{T_IMAGESET_PATH}/planner/Locations.png" alt="{L_EVENT}" />
 		{L_RAIDINFO}</span></a></li>
 		<li id="raidroles-panel-tab"><a href="#tabs" onclick="subPanels('raidroles-panel'); return false;"><span style="padding-bottom: 7px;">
-		<img src="{T_IMAGESET_PATH}/planner/Resources.png" />
+		<img src="{T_IMAGESET_PATH}/planner/Resources.png" alt="{L_ATTENDANCE}"/>
 		{L_RAIDROLES}</span></a></li>
 		<li id="raidwhen-panel-tab"><a href="#tabs" onclick="subPanels('raidwhen-panel'); return false;"><span style="padding-bottom: 7px;">
-		<img src="{T_IMAGESET_PATH}/planner/watch.png" />
+		<img src="{T_IMAGESET_PATH}/planner/watch.png"  alt="{L_TIME}" />
 		{L_RAIDWHEN}</span></a></li>
 	</ul>
 </div>
@@ -81,22 +81,31 @@ var ajaxalert = '{LA_ALERT_AJAX}';
   	<br/>
 		<!-- fetch the event types from bbDKP -->
 	<dl style="clear: left;">
-		<dt><label for="calEType">{L_EVENT_TYPE}:</label></dt>
+		<dt><label for="bbdkp_events">{L_EVENT_TYPE}:</label></dt>
 		<dd>
-			<select name='calEType' id='calEType'>{EVENT_TYPE_SEL}</select>
+		<select name="bbdkp_events" id="bbdkp_events">
+		<!-- BEGIN bbdkp_events_options -->
+	 			<option value="{bbdkp_events_options.KEY}" {bbdkp_events_options.SELECTED}>{bbdkp_events_options.VALUE}</option><!-- END bbdkp_events_options -->
+		</select>	
 	    </dd>
 	</dl>
 	
 	<dl style="clear: left;">
-		<dt><label for="calELevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
-		<dd><select name='calELevel' id='calELevel' onchange='update_group_id_state();'>
-		{EVENT_ACCESS_LEVEL_SEL}
+		<dt><label for="accesslevel">{L_EVENT_ACCESS_LEVEL}:</label></dt>
+		<dd><select name="accesslevel" id="accesslevel" onchange="update_group_id_state();">
+		<!-- BEGIN accesslevel_options -->
+		 			<option value="{accesslevel_options.KEY}" {accesslevel_options.SELECTED}>{accesslevel_options.VALUE}</option><!-- END accesslevel_options -->
 		</select>
 		</dd>
 	</dl>
 	<dl style="clear: left;">
-		<dt><label>{L_EVENT_GROUP}:</label></dt>
-		<dd>{EVENT_GROUP_SEL}</dd>
+		<dt><label for="calGroupId">{L_EVENT_GROUP}:</label></dt>
+		<dd>
+		<select name="calGroupId[]" id="calGroupId" disabled="disabled" multiple="multiple" size="6" >
+			<!-- BEGIN group_sel_options -->
+		 			<option value="{group_sel_options.KEY}" {group_sel_options.SELECTED}>{group_sel_options.VALUE}</option><!-- END group_sel_options -->
+		</select>
+		</dd>
 	</dl>
   </fieldset>
  
@@ -114,7 +123,7 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 		<dt><label>{L_CHOOSETEAM}</label>  </dt>
 		<dd>
 		<select name="teamselect" id="teamselect" onchange="return getteamroles(this.value)">{TEAMSELECT}
-	        <!-- BEGIN team_row --><option value="{team_row.VALUE}"{team_row.SELECTED}>{team_row.OPTION}</option><!-- END team_row -->
+	        <!-- BEGIN team_row --><option value="{team_row.VALUE}" {team_row.SELECTED}>{team_row.OPTION}</option><!-- END team_row -->
 		</select>
 		</dd>
 		</dl>

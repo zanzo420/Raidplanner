@@ -98,7 +98,7 @@ div.calendar-control {
 
 div.calendar-control-right {
 	display:block;
-	width: 361px; /* breedte */
+	width: 285px; /* breedte */
 	height: 50px;
 	padding-top:5px;
 	padding-bottom:0px;
@@ -159,7 +159,7 @@ div.calendar-control-right {
 }
 	
 	div.calendar-control-right ul li.datenavigation {
-		width: 300px;
+		width: 225px;
 		height: 32px;
 		text-align: left;
 		background-size: auto auto;
@@ -173,6 +173,7 @@ div.calendar-control-right {
 		text-align: left;
 		background-size: auto auto;
 		background-repeat: no-repeat;
+		margin-left: 0px;
 		
 	}
 

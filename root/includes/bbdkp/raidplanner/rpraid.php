@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+*
 */
 
 /**
@@ -290,7 +290,7 @@ class rpraid
 	 * make raidplan object for display
 	 * 
 	 */
-	private function make_obj()
+	public function make_obj()
 	{
 			global $db, $user, $config, $phpEx, $phpbb_root_path, $db;
 			
@@ -329,10 +329,11 @@ class rpraid
 			$this->frozen= true;
 			$this->confirmed=false;
 			$this->nochar= true;
-			$this->signed_up=true;
-			$this->signed_off=true;
+			$this->signed_up=false;
+			$this->signed_off=false;
+			$this->signed_up_maybe=false;
 			$this->raid_id=0;
-			
+			$this->link='';
 			
 			// populate properties
 			$sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $this->id;
@@ -344,7 +345,7 @@ class rpraid
 				trigger_error( 'INVALID_RAIDPLAN' );
 			}
 
-			$this->link = generate_board_url() . "/dkp.$phpEx?page=planner&view=raidplan&calEid=" . $this->id;
+			$this->link = generate_board_url() . "/dkp.$phpEx?page=planner&view=raidplan&raidplanid=" . $this->id;
 			$this->raid_id = $row['raid_id'];
 				
 			// check access
@@ -396,6 +397,7 @@ class rpraid
 			}
 			
 			//if raid invite time is in the past then raid signups are frozen.
+			// @todo might wanna make this optional
 			$this->frozen = false;
 			if($this->invite_time < time())
 			{
@@ -487,10 +489,8 @@ class rpraid
 								if($mychar['id'] == $asignup['dkpmemberid'])
 								{
 									$this->confirmed = true;
-									
 								}
 							}
-											
 						}
 					}
 				}
@@ -512,8 +512,6 @@ class rpraid
 								$this->signed_up = false;
 							}
 						}
-						
-										
 					}
 				}
 			}
@@ -626,7 +624,7 @@ class rpraid
 			$this->checkauth_candelete();
 		
 			// action URL 
-			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id."&amp;mode=showadd");
+			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id."&amp;mode=showadd");
 			$update	= (isset($_POST['updateraid'])) ? true : false;
 			if($update)
 			{
@@ -752,7 +750,6 @@ class rpraid
 		$page_title = ($mode=='new') ? $user->lang['CALENDAR_POST_RAIDPLAN'] : $user->lang['CALENDAR_EDIT_RAIDPLAN'];	
 
 		//count events from bbDKP, put them in a pulldown...
-		$e_type_sel_code  = "";
 		foreach( $this->eventlist->events as $eventid => $event)
 		{
 			$selected = '';
@@ -768,27 +765,38 @@ class rpraid
 					$selected = ' selected="selected" ';
 				}
 			}
-			$e_type_sel_code .= '<option value="' . $eventid . '" ' . $selected. ' >'. $event['event_name'].'</option>';
-		}
 
-		// populate raidplan acces level popups
-		$level_sel_code ="";
+			$template->assign_block_vars('bbdkp_events_options', array(
+					'KEY' 		=> $eventid,
+					'VALUE' 	=> $event['event_name'] ,
+					'SELECTED' 	=> $selected,
+			));
+			
+		}
+		
+		// populate raidplan acces level pulldowns
+		$level_sel = array();
 		if( $auth->acl_get('u_raidplanner_create_public_raidplans') )
 		{
-			$level_sel_code .= '<option value="2">'.$user->lang['EVENT_ACCESS_LEVEL_PUBLIC'].'</option>';
+			$level_sel[2] = $user->lang['EVENT_ACCESS_LEVEL_PUBLIC']; 
 		}
 		if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
 		{
-			$level_sel_code .= '<option value="1">'.$user->lang['EVENT_ACCESS_LEVEL_GROUP'].'</option>';
+			$level_sel[1] = $user->lang['EVENT_ACCESS_LEVEL_GROUP'];
 		}
 		if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
 		{
-			$level_sel_code .= '<option value="0">'.$user->lang['EVENT_ACCESS_LEVEL_PERSONAL'].'</option>';
+			$level_sel[0] =  $user->lang['EVENT_ACCESS_LEVEL_PERSONAL'];
 		}
-		// replace accesslevel by instance value
-		$temp_find_str = 'value="'.$this->accesslevel.'">';
-		$temp_replace_str = 'selected value="'.$this->accesslevel.'">';
-		$level_sel_code = str_replace( $temp_find_str, $temp_replace_str, $level_sel_code );
+		
+		foreach($level_sel as $key => $value)
+		{
+			$template->assign_block_vars('accesslevel_options', array(
+					'KEY' 		=> $key,
+					'VALUE' 	=> $value ,
+					'SELECTED' 	=>  ($this->accesslevel == $key) ? ' selected="selected"' : '', 
+			));
+		}
 		
 		// Find what groups this user is a member of and add them to the list of groups to invite
 		$disp_hidden_groups = $config['rp_display_hidden_groups'];
@@ -831,14 +839,17 @@ class rpraid
 		}
 	
 		$result = $db->sql_query($sql);
-	
-		$group_sel_code = "<select name='calGroupId[]' id='calGroupId[]' disabled='disabled' multiple='multiple' size='6' >\n";
+		
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$group_sel_code .= "<option value='" . $row['group_id'] . "'>" . (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) . "</option>\n";
+			$template->assign_block_vars('group_sel_options', array(
+					'KEY' 		=> $row['group_id'],
+					'VALUE' 	=> (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) ,
+					'SELECTED' 	=> '',
+			));
 		}
 		$db->sql_freeresult($result);
-		$group_sel_code .= "</select>\n";
+		
 
 		// format and translate to user timezone + dst
 		//$invite_date_txt = $user->format_date($this->invite_time, $config['rp_date_time_format'], true);
@@ -1150,9 +1161,6 @@ class rpraid
 			'MESSAGE'					=> $message['text'],
 			'START_DATE'				=> $user->format_date($start_date, $config['rp_date_format'], true),
 			'START_HOUR_SEL'			=> $hour_start_selcode,
-			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
-			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
-			'EVENT_GROUP_SEL'			=> $group_sel_code,
 			'DAY_VIEW_URL'				=> $day_view_url,
 			'WEEK_VIEW_URL'				=> $week_view_url,
 			'MONTH_VIEW_URL'			=> $month_view_url,
@@ -1198,7 +1206,7 @@ class rpraid
 		$error = array();
 		
 		// hidden ID
-		$this->id = request_var('calEid', 0);
+		$this->id = request_var('raidplanid', 0);
 		
 		// raidmaster
 		$this->poster = $user->data['user_id']; 
@@ -1213,7 +1221,6 @@ class rpraid
 	    {
 	    	// if only one group pass the groupid
 			$this->group_id = $group_id_array[0];
-	
 	    }
 		elseif( $num_group_ids > 1 )
 		{
@@ -1229,8 +1236,7 @@ class rpraid
 			}
 		}
 		
-		$this->accesslevel = request_var('calELevel', 0);
-		
+		$this->accesslevel = request_var('accesslevel', 0);
 		switch($this->accesslevel)
 		{
 			case 0:
@@ -1268,14 +1274,18 @@ class rpraid
 		$this->signups['maybe'] = 0;
 		
 		//set event type 
-		$this->event_type = request_var('calEType', 0);
+		$this->event_type = request_var('bbdkp_events', 0);
 		
-		// set timesx
-		// @todo get date in template
-		$inv_d = request_var('hiddenCalD', $cal->date['day']);
-		$inv_m = request_var('hiddenCalM', $cal->date['month_no']);
-		$inv_y = request_var('hiddenCalY', $cal->date['year']);
-		
+		// invite/start date values from pulldown click
+		$inv_d = request_var('calD', 0);
+		$inv_m = request_var('calM', 0);
+		$inv_y = request_var('calY', 0);
+
+		/// always overrides invite/start date values from calendar click
+		//$inv_d = request_var('hiddenCalD', $cal->date['day']);
+		//$inv_m = request_var('hiddenCalM', $cal->date['month_no']);
+		//$inv_y = request_var('hiddenCalY', $cal->date['year']);
+			
 		//convert user times to UCT-GMT. all dates are stored in GMT and time is displayed in user board timezone
 		$inv_hr = request_var('calinvHr', 0);
 		$inv_mn = request_var('calinvMn', 0);
@@ -1545,7 +1555,7 @@ class rpraid
 		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
 	    (($user->data['user_id'] == $this->poster ) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
 		{
-			$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". 
+			$edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;raidplanid=". 
 			$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		}
 		
@@ -1555,7 +1565,7 @@ class rpraid
 		if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_raidplans') &&
 		    (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
 		{
-			$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delete&amp;calEid=".
+			$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delete&amp;raidplanid=".
 				$this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
 		}
 		
@@ -1577,7 +1587,7 @@ class rpraid
 
 		$total_needed = 0;
 		/* make url for signup action */
-		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;calEid=". 
+		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;raidplanid=". 
 		$this->id);
 		
 		//display signups only if this is not a personal appointment
@@ -1634,8 +1644,8 @@ class rpraid
 						//@todo calculate frozen
 						$candeleteconf = true;
 						$caneditconf = true;
-						$editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
-						$deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
+						$editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
+						$deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
 					}
 					
 					$signupcolor = '#006B02';
@@ -1672,7 +1682,7 @@ class rpraid
 					));
 						
 				 }
-				 
+
 				 // loop available signups per role
 				 foreach($role['role_signups'] as $signup)
 				 {
@@ -1702,7 +1712,7 @@ class rpraid
 					if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
 					{
 						$canconfirmsignup=true;
-						$confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=confirm&amp;calEid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
+						$confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=confirm&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
 					}
 					
 					// if user can delete other signups or if own signup
@@ -1717,9 +1727,9 @@ class rpraid
 						//@todo calculate frozen
 						$candeletesignup = true;
 						$caneditsignup = true;
-						$editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
+						$editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
 						$deletekey = rand(1, 1000);
-						$deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;calEid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
+						$deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
 					}
 					
 					$template->assign_block_vars('raidroles.signups', array(
@@ -1777,7 +1787,7 @@ class rpraid
 				if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoffdetail->poster_id == $user->data['user_id']  )
 				{
 					$requeue = true;
-					$requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;calEid=". $this->id . "&amp;signup_id=" . $signoffdetail->signup_id);
+					$requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signoffdetail->signup_id);
 				}
 					
 				$template->assign_block_vars('unavailable', array(
@@ -1830,7 +1840,7 @@ class rpraid
 		$push_raidplan_url = '';
 		if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $this->signups['confirmed'] > 0  )
 		{
-			$push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=push&amp;calEid=". $this->id);
+			$push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=push&amp;raidplanid=". $this->id);
 		}
 			
 		// event image on top
@@ -2072,7 +2082,7 @@ class rpraid
 				'EVENT_SUBJECT' 		=> $subj, 
 				'COLOR' 				=> $this->eventlist->events[$this->event_type]['color'],
 				'IMAGE' 				=> $eventimg, 
-				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id), 
+				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id), 
 				'EVENT_ID'  			=> $this->id,
 
 				// for popup
@@ -2086,7 +2096,7 @@ class rpraid
 				'S_SIGNUPMAYBE'			=> $this->signed_up_maybe,
 				'S_CANSIGNUP'			=> $this->signups_allowed, 
 				'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true, 
-				'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$this->id. "&amp;mode=signup"), 
+				'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id. "&amp;mode=signup"), 
 
 				'INVITE_TIME'  			=> $user->format_date($this->invite_time, $correct_format, true), 
 				'START_TIME'			=> $user->format_date($this->start_time, $correct_format, true),
@@ -2510,7 +2520,6 @@ class rpraid
 	
 	/**
 	 * gets array with raid days 
-	 * @todo fix display bug
 	 * @param int $from
 	 * @param int $end
 	 * 
@@ -2617,7 +2626,7 @@ class rpraid
 				'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
 				'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$this->id
+				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$this->id
 			));
 			
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
@@ -2932,6 +2941,35 @@ class rpraid
 		$db->sql_transaction('commit');
 		return $this->raid_id;
 		
+	}
+	
+
+
+	/**
+	 * if confirmed raider is unsigned after raid was pushed,
+	 * decrease dkp points by event standard amount
+	 * @param int $dkpmemberid
+	 */
+	public function exec_decreasedkp_after_unsign($dkpmemberid)
+	{
+		global $phpbb_root_path, $phpEx, $db, $user;
+		$dkpid = $this->eventlist->events[$this->event_type]['dkpid'];
+		$eventvalue = $this->eventlist->events[$this->event_type]['value'];
+		$raid_start = $this->start_time;
+		$raid_id = $this->raid_id;
+		
+		//decrease dkp points
+		if (!class_exists('acp_dkp_raid'))
+		{
+			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
+		}
+		$acp_dkp_raid = new acp_dkp_raid();
+		$acp_dkp_raid->add_dkp (- $eventvalue, 0, $raid_start , $dkpid , $dkpmemberid);
+	
+		//now delete raid participation record of that user
+		$sql="DELETE FROM " . RAID_DETAIL_TABLE . " WHERE raid_id = " . $raid_id . " AND member_id = " . $dkpmemberid;
+		$db->sql_query($sql);
+	
 	}
 	
 }

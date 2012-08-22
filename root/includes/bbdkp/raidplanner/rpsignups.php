@@ -447,9 +447,11 @@ class rpsignup
 	 * delete this signup and change to not available
 	 * 
 	 * @param int $signup_id
-	 * @param object $raid_id (pass byref)
+	 * @param int $raidplan_id
+	 * 
+	 * @return int
 	 */
-	public function deletesignup($signup_id, rpraid &$thisraid)
+	public function deletesignup($signup_id, $raidplan_id)
 	{
 		global $db;
 		
@@ -462,94 +464,59 @@ class rpsignup
 			case 1:
 				// maybe
 				$db->sql_transaction('begin');
-				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_maybe = signup_maybe - 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_maybe = signup_maybe - 1 WHERE raidplan_id = " . $raidplan_id;
 				$db->sql_query($sql);
 				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $raidplan_id .  
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
-				return true;
+				return 1;
 				break;
 			case 2:
 				//yes
 				$db->sql_transaction('begin');
-				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_yes = signup_yes - 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_yes = signup_yes - 1 WHERE raidplan_id = " . $raidplan_id;
 				$db->sql_query($sql);
 				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $raidplan_id .  
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
-				return true;
+				return 2;
 				break; 
 			case 3:
 				
 				//confirmed
 				$db->sql_transaction('begin');
-				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_confirmed = signup_confirmed - 1 WHERE raidplan_id = " . $this->raidplan_id;
+				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_confirmed = signup_confirmed - 1 WHERE raidplan_id = " . $raidplan_id;
 				$db->sql_query($sql);
 				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_confirmed = role_confirmed - 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_confirmed = role_confirmed - 1 WHERE raidplan_id = " . $raidplan_id .  
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
 				
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);				
 				$db->sql_transaction('commit');
-				
-				if($thisraid->raid_id > 0)
-				{
-					//raid was pushed already
-					$this->exec_decreasedkp_after_unsign($thisraid);
-				}
-				
-				return true;
+				return 3;
 				break; 
 		}
 		
 		
 		// if already 0 then don't do anything
-		return false;
-	}
-	
-	
-
-	/**
-	 * if confirmed raider is unsigned after raid was pushed,
-	 * decrease dkp points by event standard amount
-	 * @param rpraid $raid
-	 */
-	private function exec_decreasedkp_after_unsign(rpraid &$raid)
-	{
-		global $phpbb_root_path, $phpEx, $db, $user;
-		$dkpid = $raid->eventlist->events[$raid->event_type]['dkpid']; 
-		$eventvalue = $raid->eventlist->events[$raid->event_type]['value'];
-		$raid_start = $raid->start_time;
-		$member_id = $this->dkpmemberid;
-		//decrease dkp points
-		if (!class_exists('acp_dkp_raid'))
-		{
-			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
-		}
-		$acp_dkp_raid = new acp_dkp_raid();
-		$acp_dkp_raid->add_dkp (- $eventvalue, 0, $raid_start ,$dkpid , $member_id);
-		
-		//now delete raid participation record of that user
-		$sql="DELETE FROM " . RAID_DETAIL_TABLE . " WHERE raid_id = " . $raid->id . " AND member_id = " . $member_id;
-		$db->sql_query($sql);
-	
+		return 0;
 	}
 	
 	/**
 	 * synchronises raidplan stats 
-	 *
+	 * 
 	 */
 	private function signup_sync()
 	{
@@ -705,7 +672,7 @@ class rpsignup
 				'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
 				'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$raidplan->id
+				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id
 			));
 			
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));

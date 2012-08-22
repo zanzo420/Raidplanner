@@ -18,6 +18,10 @@
 <!-- middle section -->
 <div style="float: left; width: 79%; margin-left:0.5%; margin-right:0.5%">
 
+<!-- IF S_PLANNER_ADD -->
+<form id="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
+<!-- ENDIF -->
+
 <div class="leather">
 
 <div class="calendar-control">
@@ -36,18 +40,15 @@
 </div>
 <!-- ENDIF -->
 
-
 <div class="calendar-control-right">
 <ul>
 	<li class="prev-icon"><a title="{L_SHOW_PREV}" href="{CALENDAR_PREV}"><span></span></a></li>
 	<li class="datenavigation">
+		<!-- IF ! S_PLANNER_ADD -->
 		<form id="viewOpts" method="post" action="{S_POST_ACTION}">
+		<!-- ENDIF -->
 		<div style="float: left;">
-		<select name="view" id="view">
-		<!-- BEGIN viewoptions -->
-		<option value="{viewoptions.KEY}" {viewoptions.SELECTED}>{viewoptions.VALUE}</option><!-- END viewoptions -->
-		</select>
-		  &nbsp; 
+		  
 		  <select name='calD' id='calD'>
 		 	<!-- BEGIN dayoptions -->
 		 	<option value="{dayoptions.KEY}" {dayoptions.SELECTED}>{dayoptions.VALUE}</option><!-- END dayoptions -->
@@ -60,16 +61,22 @@
 		  	<!-- BEGIN yearoptions -->
 		  	<option value="{yearoptions.KEY}" {yearoptions.SELECTED}>{yearoptions.VALUE}</option><!-- END yearoptions -->
 		  </select>
-		<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button" /></div>
+		<input type="submit" accesskey="s" tabindex="6" name="post" value="{L_GO}" class="button" />
+		</div>
+		<!-- IF ! S_PLANNER_ADD -->
 		</form>
+		<!-- ENDIF -->
 	</li>
 	<li class="next-icon"><a title="{L_SHOW_NEXT}" type="button" href="{CALENDAR_NEXT}"><span></span></a></li>
 </ul>
 </div>
 
 </div>
+<!-- IF S_PLANNER_ADD -->
+	<!-- INCLUDE planner/raidplan/planner_post_body.html -->
+	</form>
+<!-- ENDIF -->
 
-<div class="clear"></div>
 <!-- IF S_PLANNER_DAY -->
 	<!-- INCLUDE planner/calendar/planner_view_day.html -->
 <!-- ENDIF -->
@@ -83,12 +90,7 @@
 <!-- IF S_PLANNER_RAIDPLAN -->
 	<!-- INCLUDE planner/raidplan/planner_view_raidplan.html -->
 <!-- ENDIF -->
-<!-- IF S_PLANNER_ADD -->
-	<!-- INCLUDE planner/raidplan/planner_post_body.html -->
-<!-- ENDIF -->
-<!-- IF S_PLANNER_WEEK_ON_INDEX -->
-	<!-- INCLUDE planner/calendar/planner_week_on_index.html -->
-<!-- ENDIF -->
+
 </div>
 
 
