@@ -98,7 +98,7 @@ div.calendar-control {
 
 div.calendar-control-right {
 	display:block;
-	width: 295px; /* breedte */
+	width: 285px; /* breedte */
 	height: 50px;
 	padding-top:5px;
 	padding-bottom:0px;
@@ -173,6 +173,7 @@ div.calendar-control-right {
 		text-align: left;
 		background-size: auto auto;
 		background-repeat: no-repeat;
+		margin-left: 0px;
 		
 	}
 
