@@ -830,14 +830,16 @@ class rpraid
 	
 		$result = $db->sql_query($sql);
 		
-		//@todo clean this up
-		$group_sel_code = "<select name='calGroupId[]' id='calGroupId' disabled='disabled' multiple='multiple' size='6' >\n";
 		while ($row = $db->sql_fetchrow($result))
 		{
-			$group_sel_code .= "<option value='" . $row['group_id'] . "'>" . (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) . "</option>\n";
+			$template->assign_block_vars('group_sel_options', array(
+					'KEY' 		=> $row['group_id'],
+					'VALUE' 	=> (($row['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $row['group_name']] : $row['group_name']) ,
+					'SELECTED' 	=> '',
+			));
 		}
 		$db->sql_freeresult($result);
-		$group_sel_code .= "</select>\n";
+		
 
 		// format and translate to user timezone + dst
 		//$invite_date_txt = $user->format_date($this->invite_time, $config['rp_date_time_format'], true);
@@ -1151,7 +1153,6 @@ class rpraid
 			'START_HOUR_SEL'			=> $hour_start_selcode,
 			'EVENT_TYPE_SEL'			=> $e_type_sel_code,
 			'EVENT_ACCESS_LEVEL_SEL'	=> $level_sel_code,
-			'EVENT_GROUP_SEL'			=> $group_sel_code,
 			'DAY_VIEW_URL'				=> $day_view_url,
 			'WEEK_VIEW_URL'				=> $week_view_url,
 			'MONTH_VIEW_URL'			=> $month_view_url,
@@ -1268,18 +1269,16 @@ class rpraid
 		//set event type 
 		$this->event_type = request_var('calEType', 0);
 		
-		// set timesx
-		// @todo get date in template
+		// invite/start date values from pulldown click
+		$inv_d = request_var('calD', 0);
+		$inv_m = request_var('calM', 0);
+		$inv_y = request_var('calY', 0);
 
-		// @todo put these in one form !!
-		$inv_d1 = request_var('calD', 0);
-		$inv_m1 = request_var('calM', 0);
-		$inv_y1 = request_var('calY', 0);
-		///
-		$inv_d = request_var('hiddenCalD', $cal->date['day']);
-		$inv_m = request_var('hiddenCalM', $cal->date['month_no']);
-		$inv_y = request_var('hiddenCalY', $cal->date['year']);
-		
+		/// always overrides invite/start date values from calendar click
+		//$inv_d = request_var('hiddenCalD', $cal->date['day']);
+		//$inv_m = request_var('hiddenCalM', $cal->date['month_no']);
+		//$inv_y = request_var('hiddenCalY', $cal->date['year']);
+			
 		//convert user times to UCT-GMT. all dates are stored in GMT and time is displayed in user board timezone
 		$inv_hr = request_var('calinvHr', 0);
 		$inv_mn = request_var('calinvMn', 0);
@@ -2514,7 +2513,6 @@ class rpraid
 	
 	/**
 	 * gets array with raid days 
-	 * @todo fix display bug
 	 * @param int $from
 	 * @param int $end
 	 * 

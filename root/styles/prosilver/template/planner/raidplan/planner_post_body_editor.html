@@ -96,7 +96,12 @@ var ajaxalert = '{LA_ALERT_AJAX}';
 	</dl>
 	<dl style="clear: left;">
 		<dt><label>{L_EVENT_GROUP}:</label></dt>
-		<dd>{EVENT_GROUP_SEL}</dd>
+		<dd>
+		<select name='calGroupId[]' id='calGroupId' disabled='disabled' multiple='multiple' size='6' >
+			<!-- BEGIN group_sel_options -->
+		 			<option value="{group_sel_options.KEY}" {group_sel_options.SELECTED}>{group_sel_options.VALUE}</option><!-- END group_sel_options -->
+		</select>
+		</dd>
 	</dl>
   </fieldset>
  

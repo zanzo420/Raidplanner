@@ -5,11 +5,11 @@ function update_group_id_state()
   {
       if( document.getElementById('calELevel').value == 1 )
       {
-          document.getElementById('calGroupId[]').disabled=false;
+          document.getElementById('calGroupId').disabled=false;
       }
       else
       {
-          document.getElementById('calGroupId[]').disabled=true;
+          document.getElementById('calGroupId').disabled=true;
       }
   }
 
