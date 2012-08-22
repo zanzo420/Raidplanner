@@ -290,7 +290,7 @@ class rpraid
 	 * make raidplan object for display
 	 * 
 	 */
-	private function make_obj()
+	public function make_obj()
 	{
 			global $db, $user, $config, $phpEx, $phpbb_root_path, $db;
 			
@@ -1682,7 +1682,7 @@ class rpraid
 					));
 						
 				 }
-				 
+
 				 // loop available signups per role
 				 foreach($role['role_signups'] as $signup)
 				 {
@@ -1704,11 +1704,6 @@ class rpraid
 					{
 						$signupcolor = '#006B02';
 						$signuptext = $user->lang['CONFIRMED'];
-					}
-					else
-					{
-						$signupcolor = '#FFFFFF';
-						$signuptext = $user->lang['ERROR'];
 					}
 					
 					// if user can delete other signups ?
@@ -2946,6 +2941,35 @@ class rpraid
 		$db->sql_transaction('commit');
 		return $this->raid_id;
 		
+	}
+	
+
+
+	/**
+	 * if confirmed raider is unsigned after raid was pushed,
+	 * decrease dkp points by event standard amount
+	 * @param int $dkpmemberid
+	 */
+	public function exec_decreasedkp_after_unsign($dkpmemberid)
+	{
+		global $phpbb_root_path, $phpEx, $db, $user;
+		$dkpid = $this->eventlist->events[$this->event_type]['dkpid'];
+		$eventvalue = $this->eventlist->events[$this->event_type]['value'];
+		$raid_start = $this->start_time;
+		$raid_id = $this->raid_id;
+		
+		//decrease dkp points
+		if (!class_exists('acp_dkp_raid'))
+		{
+			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
+		}
+		$acp_dkp_raid = new acp_dkp_raid();
+		$acp_dkp_raid->add_dkp (- $eventvalue, 0, $raid_start , $dkpid , $dkpmemberid);
+	
+		//now delete raid participation record of that user
+		$sql="DELETE FROM " . RAID_DETAIL_TABLE . " WHERE raid_id = " . $raid_id . " AND member_id = " . $dkpmemberid;
+		$db->sql_query($sql);
+	
 	}
 	
 }
