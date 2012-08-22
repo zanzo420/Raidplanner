@@ -43,7 +43,7 @@ switch( $view_mode )
 		{
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
 		}
-		$raidplan_id = request_var('hidden_raidplanid', request_var('calEid', 0));
+		$raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
 		switch($mode)
 		{
 			case 'signup':

@@ -196,7 +196,7 @@ class rpblocks
 			$template->assign_block_vars('upcoming', array(
 				'RAID_ID'				=> $rpraid->id,
 				'EVENTNAME'			 	=> $rpraid->eventlist->events[$rpraid->event_type]['event_name'], 
-				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$rpraid->id), 
+				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$rpraid->id), 
 				'EVENT_ID'  			=> $rpraid->id,
 				'COLOR' 				=> $rpraid->eventlist->events[$rpraid->event_type]['color'],
 				'SUBJECT'				=> censor_text($rpraid->subject),

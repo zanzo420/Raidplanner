@@ -8,7 +8,7 @@
 * @package raidplanner.acp
 * @copyright (c) 2009 bbdkp http://code.google.com/p/bbdkp/
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.8.0
 * 
 *  
 **/
@@ -33,7 +33,7 @@ class acp_raidplanner_info
 		return array(
 			'filename'	=> 'acp_raidplanner',
 			'title'		=> 'ACP_RAIDPLANNER',
-			'version'	=> '0.7.0',
+			'version'	=> '0.8.0',
 			'modes'		=> array(
 				'rp_settings'		=> array('title' => 'ACP_RAIDPLANNER_SETTINGS',  'display' => true, 
 									'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),

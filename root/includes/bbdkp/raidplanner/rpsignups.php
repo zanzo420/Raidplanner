@@ -705,7 +705,7 @@ class rpsignup
 				'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
 				'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
-				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;calEid=".$raidplan->id
+				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id
 			));
 			
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
