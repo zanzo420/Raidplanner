@@ -72,19 +72,6 @@ class rpframe extends calendar
 		$this->message = generate_text_for_display($text, $bbcode_uid, $bbcode_bitfield, $bbcode_options);
 		
 		$view_mode=request_var("view", "month");
-		$content = array(
-			"month"	=> $user->lang['MONTH'],
-			"week"	=> $user->lang['WEEK'],
-			"day"	=> $user->lang['DAY'],
-			);
-		foreach ($content as $key => $value)
-		{
-			$template->assign_block_vars('viewoptions', array(
-				'KEY' 		=> $key, 
-				'VALUE' 	=> $value,
-				'SELECTED' 	=> ($view_mode == $key) ? ' selected="selected"' : '', 
-			));
-		}
 
 		//day dropdown
 		for( $i = 1; $i <= $this->days_in_month; $i++ )

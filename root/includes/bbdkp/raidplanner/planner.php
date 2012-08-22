@@ -23,8 +23,8 @@ if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
 {
 	trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
 }
-
-$view_mode = request_var('view', 'month');
+// GET
+$view_mode = request_var('view', '');
 $mode=request_var('mode', '');
 
 // display header
