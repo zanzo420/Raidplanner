@@ -100,6 +100,7 @@ function update_group_id_state()
 				var role_icon = role.getElementsByTagName("role_icon")[0].firstChild.nodeValue;
 				var role_color = role.getElementsByTagName("role_color")[0].firstChild.nodeValue;
 
+  				var oline = document.createElement('dl');
   				var otitle = document.createElement('dt');
   				
   				var img1 = document.createElement('img');
@@ -133,6 +134,7 @@ function update_group_id_state()
   				odef.appendChild(oInput2);
 
   	  			/* now insert it in the dom. raidroles in the div anchor */
+  				document.getElementById("raidroles").appendChild(oline);
   				document.getElementById("raidroles").appendChild(otitle);
   				document.getElementById("raidroles").appendChild(odef);
   				

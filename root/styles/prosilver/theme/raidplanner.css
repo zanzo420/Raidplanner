@@ -98,7 +98,7 @@ div.calendar-control {
 
 div.calendar-control-right {
 	display:block;
-	width: 285px; /* breedte */
+	width: 380px; /* breedte */
 	height: 50px;
 	padding-top:5px;
 	padding-bottom:0px;
@@ -159,7 +159,7 @@ div.calendar-control-right {
 }
 	
 	div.calendar-control-right ul li.datenavigation {
-		width: 225px;
+		width: 320px;
 		height: 32px;
 		text-align: left;
 		background-size: auto auto;
@@ -177,70 +177,102 @@ div.calendar-control-right {
 		
 	}
 
+
+ul.raidplanner-icons {
+	padding-top: 10px;
+	list-style: none;
+}
+
+/* Rollover state */
+ul.raidplanner-icons li {
+	float: left;
+	margin: 0 2px 3px 0;
+	background-position: 0 100%;
+}
+
+/* Rolloff state */
+ul.raidplanner-icons li a {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background-position: 0 0;
+	opacity: 1;
+    transition: opacity 0.25s ease;
+    -webkit-transition: opacity 0.25s ease;
+    -moz-transition: opacity 0.25s ease;
+    -o-transition: opacity 0.25s ease;
+    -ms-transition: opacity 0.25s ease;
+}
+
+/* Hide <a> text and hide off-state image when rolling over (prevents flicker in IE) */
+ul.raidplanner-icons li span { 
+    display: none; 
+}
+ul.raidplanner-icons li a:hover { 
+    opacity: 0.10;
+}
 	
-ul.profile-icons li.planner-new-icon {
+ul.raidplanner-icons li.planner-new-icon {
 	background: url("{T_IMAGESET_PATH}/planner/date_add.png") no-repeat;
 	width: 16px;
 	height: 16px;
 	text-align: left;
 }
 
-
-ul.profile-icons li.planner-new-button {
+ul.raidplanner-icons li.planner-new-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_new.png") no-repeat;
 	width: 60px;
 	height: 35px;
 	text-align: left;
 }
 
-ul.profile-icons li.planner-edit-button {
+ul.raidplanner-icons li.planner-edit-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_edit.png") no-repeat;
 	width: 60px;
 	height: 35px;
 	text-align: left;
 }
 
-ul.profile-icons li.planner-push-button {
+ul.raidplanner-icons li.planner-push-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_push.png") no-repeat;
 	width: 60px;
 	height: 35px;
 	text-align: left;
 }
 
-ul.profile-icons li.planner-delete-button {
+ul.raidplanner-icons li.planner-delete-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_delete.png") no-repeat;
 	width: 30px;
 	height: 35px;
 	text-align: left;
 }
 
-ul.profile-icons li.planner-day-icon {
+ul.raidplanner-icons li.planner-day-icon {
 	background: url("{T_IMAGESET_PATH}/planner/calendar_view_day.png") no-repeat;
 	width: 16px;
 	height: 16px;
 	text-align: left;
 }
 
-ul.profile-icons li.planner-week-icon {
+ul.raidplanner-icons li.planner-week-icon {
 	background: url("{T_IMAGESET_PATH}/planner/calendar_view_week.png") no-repeat;
 	width: 16px;
 	height: 16px;
 	text-align: left;
 }
 
-ul.profile-icons li.planner-month-icon {
+ul.raidplanner-icons li.planner-month-icon {
 	background: url("{T_IMAGESET_PATH}/planner/calendar_view_month.png") no-repeat;
 	width: 16px;
 	height: 16px;
 	text-align: left;
 }
 
-
 .bgraid {
 	background-color: #CCCCCC;
 	
 }
-ul.profile-icons li.planner-delete-icon {
+ul.raidplanner-icons li.planner-delete-icon {
 	width: 20px;
 	height: 20px;
     margin-bottom: 0;
@@ -251,7 +283,7 @@ ul.profile-icons li.planner-delete-icon {
     background-position: 0 0;
 }
 
-ul.profile-icons li.planner-delete-icon a:hover {
+ul.raidplanner-icons li.planner-delete-icon a:hover {
     background-repeat: repeat;
     background-position: 0 100%;
     background-size: auto auto;
@@ -418,7 +450,10 @@ hr.hrCal {
     font-family:"lucida grande",tahoma,verdana,arial,sans-serif
 }
  
-
+.commentedit
+{
+	width: 290px;
+}
 /* Calendar view */
 
 /* display days in calendar day/month/week view) */

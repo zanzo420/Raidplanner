@@ -31,15 +31,26 @@ jQuery(document).ready( function()
     </ul>
 
   <table class="table1" cellspacing="1" cellpadding="0">
-     <tr class="daynames">
-      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D0}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D1}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D2}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D3}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D4}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D5}</td>
-      <td style="width: 14%; height: 24px; text-align: center" class="bg3">{D6}</td>
+ <thead>
+     <tr>
+      <th style="width: 14%; height: 24px; text-align: center"><h4>{D0}</h4></th>
+      <th style="width: 14%; height: 24px; text-align: center"><h4>{D1}</h4></th>
+      <th style="width: 14%; height: 24px; text-align: center"><h4>{D2}</h4></th>
+      <th style="width: 14%; height: 24px; text-align: center"><h4>{D3}</h4></th>
+      <th style="width: 14%; height: 24px; text-align: center"><h4>{D4}</h4></th>
+      <th style="width: 14%; height: 24px; text-align: center"><h4>{D5}</h4></th>
+      <th style="width: 14%; height: 24px; text-align: center"><h4>{D6}</h4></th>
+
     </tr>
+    </thead>
+	<tfoot>
+	<tr>
+		<th class="footer" colspan=0 style="text-align: left; white-space: nowrap; color:white;" colspan="0">
+			<!-- IF ! .raidplans -->{L_NO_RAIDS_SCHEDULED}<!-- ELSE --><!-- ENDIF -->
+		</th>
+	</tr>
+	</tfoot>    
+    <tbody>
     <!-- BEGIN calendar_days -->
     <!-- IF calendar_days.START_WEEK --><tr style="height: 100px"><!-- ENDIF -->
       <!-- IF calendar_days.DUMMY_DAY -->
@@ -50,7 +61,7 @@ jQuery(document).ready( function()
 		<table style="width: 100%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 			<td class="<!-- IF calendar_days.HEADER_CLASS eq 'highlight' -->bg4 calMonH<!-- ELSE -->bg3 calMonH<!-- ENDIF -->">
-			<ul class="profile-icons" style="float: left;">
+			<ul class="raidplanner-icons" style="float: left;">
 			<li>
 			<a href="{calendar_days.DAY_VIEW_URL}"><strong>{calendar_days.NUMBER}</strong></a>
 			</li>
@@ -198,6 +209,7 @@ jQuery(document).ready( function()
     <!-- IF calendar_days.END_WEEK --></tr><!-- ENDIF -->
 
     <!-- END calendar_days -->
+    </tbody>
   </table>
   
   <span class="corners-inner-bottom"><span></span></span>
