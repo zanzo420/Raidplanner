@@ -45,7 +45,7 @@
 		<installation>
 			<level>easy</level>
 			<time>600</time>
-			<target-version>3.0.10</target-version>
+			<target-version>3.0.11</target-version>
 		</installation>
 		<link-group>
 			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.8-pl2</link>
