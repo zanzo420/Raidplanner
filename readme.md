@@ -2,7 +2,7 @@
 
 Support : http://www.bbdkp.com/viewforum.php?f=61
 
-#Raidplanner v0.8.0
+#Raidplanner v0.9.0
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
@@ -62,7 +62,12 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ### Requirements
 *	bbDKP 1.2.8-pl2 or higher
-*	phpBB 3.0.10
+*	phpBB 3.0.11
 
+### changes
+
+0.9.0
+
+-	changed for phpBB 3.0.11
 
 

@@ -4,9 +4,8 @@
  * @package bbDkp-installer
  * @author sajaki9@gmail.com
  * @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version $Id: installrp.php 1758 2010-11-22 20:24:53Z sajaki9 $
- * 
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+ * v.0.9.0
  */
 
 define('UMIL_AUTO', true);
@@ -53,12 +52,12 @@ else
 {
 	if(version_compare($config['bbdkp_version'], '1.2.8') == -1 ) 
 	{
-	    trigger_error('Radplanner 0.8.0 requires bbDKP 1.2.8 or higher.');
+	    trigger_error('Radplanner 0.9.0 requires bbDKP 1.2.8 or higher.');
 	}
 }
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 0.8.0';
+$mod_name = 'Raidplanner 0.9.0';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -565,18 +564,23 @@ $versions = array(
         
         '0.6.0' => 
         array(
-        	'custom' => array('purgecaches', 'versionupdater'),            
+        	
         ),
          
         '0.7.0' => 
         array(
-        	'custom' => array('purgecaches', 'versionupdater'),            
+        	
         ),
         
         '0.8.0' => 
         array(
-        	'custom' => array('purgecaches', 'versionupdater'),            
+        	
         ),        
+        
+        '0.9.0' => 
+        array(
+        	'custom' => array('purgecaches', 'versionupdater'),            
+        ),  
         
 );
 
