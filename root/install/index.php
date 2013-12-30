@@ -43,16 +43,16 @@ if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 }
 
 
-// only allow install when bbDKP 1.2.8 is also installed 
+// only allow install when bbDKP 1.3.0 is also installed 
 if  (!isset ($config['bbdkp_version']) )
 {
     trigger_error('bbDKP must be installed first.');
 }
 else
 {
-	if(version_compare($config['bbdkp_version'], '1.2.8') == -1 ) 
+	if(version_compare($config['bbdkp_version'], '1.3.0') == -1 ) 
 	{
-	    trigger_error('Radplanner 0.9.0 requires bbDKP 1.2.8 or higher.');
+	    trigger_error('Radplanner 0.9.0 requires bbDKP 1.3.0 or higher.');
 	}
 }
 
