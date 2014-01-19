@@ -8,10 +8,10 @@
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[bbDKP Raidplanner 0.9.0]]></title>
-		<description lang="en"><![CDATA[Raidplanner 0.9.0 plugin for bbDKP 
+		<description lang="en"><![CDATA[Raidplanner 0.9.0 plugin for bbDKP
 		forked from phpbb3 Calendar and phpRaider.
 		see /docs/install.html and /docs/changelog.html
-		Requires bbDKP 1.3.0 or higher to be installed. 
+		Requires bbDKP 1.3.0 or higher to be installed.
 		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></description>
 		<author-notes lang="en"><![CDATA[Requires bbDKP 1.3 or higher to be installed.]]></author-notes>
 		<author-group>
@@ -59,8 +59,8 @@
 	<action-group>
 		<copy>
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html"/>
-			<file from="root/images/raidrole_images/*.*" to="images/raidrole_images/*.*"/>
-			<file from="root/images/event_images/*.*" to="images/event_images/*.*"/>
+			<file from="root/images/bbdkp/raidrole_images/*.*" to="images/bbdkp/raidrole_images/*.*"/>
+			<file from="root/images/bbdkp/event_images/*.*" to="images/bbdkp/event_images/*.*"/>
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>
 			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*"/>
@@ -79,7 +79,6 @@
 			<file from="root/language/en/email/signup_new.txt" to="language/en/email/signup_new.txt"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
-			<file from="root/styles/prosilver/template/dkp/jquery.js" to="styles/prosilver/template/dkp/jquery.js"/>
 			<file from="root/styles/prosilver/template/dkp/jquery.tools.min.js" to="styles/prosilver/template/dkp/jquery.tools.min.js"/>
 			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
 			<file from="root/umil/*.*" to="umil/*.*"/>
@@ -92,7 +91,7 @@
 if (!class_exists('rpweek', false))
 {
 	if ($config['rp_index_display_week'] == 1)
-	{	
+	{
 		// display the entire week
 		define('IN_BBDKP', true);
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
@@ -115,13 +114,13 @@ if ($config['rp_index_display_week'] == 1)
 ]]></action>
 			</edit>
 		</open>
-		<open src="portal.php">
+		<open src="includes/bbdkp/views/views.php">
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner block ]]></comment>
 				<find><![CDATA[	include($phpbb_root_path . 'includes/bbdkp/block/linksblock.' . $phpEx);
 }]]></find>
 				<action type="after-add"><![CDATA[if (isset($config['bbdkp_raidplanner']))
-{	
+{
 	if ($config['rp_show_portal'] == 1)
 	{
 		$user->add_lang(array('mods/raidplanner'));
@@ -142,8 +141,8 @@ if ($config['rp_index_display_week'] == 1)
 				<comment lang="en"><![CDATA[raidplanner link]]></comment>
 				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
 				<comment lang="de"><![CDATA[raidplanner link]]></comment>
-				<find><![CDATA[  <!-- IF U_ACP -->&nbsp; &nbsp; <a href="{U_DKP_ACP}">{L_MENU_ADMIN_PANEL}</a> <!-- ENDIF -->]]></find>
-				<action type="before-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
+				<find><![CDATA[&nbsp; &nbsp;<a href="{U_LISTITEMHIST}">{L_MENU_ITEMHIST}</a>]]></find>
+				<action type="after-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
 ]]></action>
 			</edit>
 		</open>
@@ -165,7 +164,7 @@ if ($config['rp_index_display_week'] == 1)
 				]]></action>
 			</edit>
 		</open>
-		<open src="includes/bbdkp/constants_bbdkp.php">
+		<open src="includes/bbdkp/admin/constants_bbdkp.php">
 			<edit>
 				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
 				<comment lang="fr"><![CDATA[Ajout noms des tables]]></comment>
@@ -178,9 +177,9 @@ define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch');
 define('RP_WATCH',			$table_prefix . 'rp_watch');
 define('RP_ROLES',			$table_prefix . 'rp_roles');
 define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
-define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');				
-define('RP_TEAMS',		$table_prefix . 'rp_teams');				
-define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');				
+define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
+define('RP_TEAMS',		$table_prefix . 'rp_teams');
+define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 ]]></action>
 			</edit>
 		</open>
@@ -228,11 +227,11 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 ]]></action>
 			</edit>
 		</open>
-		<open src="styles/prosilver/template/dkp/news_body.html">
+		<open src="styles/prosilver/template/dkp/portal_body.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to portal page]]></comment>
 				<find><![CDATA[<!-- IF S_DISPLAY_LINKS -->]]></find>
-				<action type="before-add"><![CDATA[		
+				<action type="before-add"><![CDATA[
 <!-- IF S_PLANNER_UPCOMING -->
 <!-- INCLUDE planner/raidplan/planner_upcoming.html -->
 <br/>
