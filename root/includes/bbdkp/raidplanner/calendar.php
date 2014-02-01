@@ -5,9 +5,9 @@
 * @author Sajaki
 * @package bbDKP Raidplanner
 * @copyright (c) 2009 alightner 
-* @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
+* @copyright (c) 2014 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.9.0
 */
 
 /**
@@ -140,10 +140,10 @@ abstract class calendar
 		//GMT: Sat, 12 Nov 2011 00:00:00 GMT
 		//Your time zone: Sat Nov 12 01:00:00 2011 GMT+1
 		global $user;
-		$xdate = gmmktime(0,0,0, gmdate('m',$inDate), 01, gmdate('Y',$inDate)) ;
+		$firstDate = gmmktime(0,0,0, gmdate('m',$inDate), 01, gmdate('Y',$inDate)) ;
 		//GMT: Tue, 01 Nov 2011 00:00:00 GMT
 		// Your time zone: Tue Nov 1 01:00:00 2011 GMT+1
-		return $xdate;
+		return $firstDate;
 	}
 	
 	/**
@@ -185,7 +185,7 @@ abstract class calendar
 	 * @param int $first_day_of_week
 	 * @return int
 	 */
-	protected function get_fday($day, $month, $year)
+	protected function get_firstday($day, $month, $year)
 	{
 		global $config;
 		
@@ -286,12 +286,13 @@ abstract class calendar
 	private function get_sql_group_options()
 	{
 		global $user, $auth, $db;
-	
-		// What groups is this user a member of?
-	
-		/* don't check for hidden group setting -
-		  if the raidplan was made by the admin for a hidden group -
-		  members of the hidden group need to be able to see the raidplan in the calendar */
+
+        /*
+          What groups is this user a member of?
+          don't check for hidden group setting -
+          if raidplan was made by the admin for a hidden group -
+          members of the hidden group need to be able to see the raidplan in the calendar
+        */
 	
 		$sql = 'SELECT g.group_id, g.group_name, g.group_type
 				FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug

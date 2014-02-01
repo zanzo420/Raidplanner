@@ -7,7 +7,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.9.0
 */
 
 
@@ -51,7 +51,7 @@ class rpmonth extends calendar
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 	
 		$this->date['num'] = "01";
-		$this->date['fday'] = $this->get_fday( $this->date['num'], $this->date['month_no'], $this->date['year']);
+		$this->date['fday'] = $this->get_firstday( $this->date['num'], $this->date['month_no'], $this->date['year']);
 	
 		$number_days = date("t", mktime( 0,0,0,$this->date['month_no'], $this->date['day'], $this->date['year']));
 	

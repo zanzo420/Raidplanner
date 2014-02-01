@@ -15,7 +15,7 @@
 div.calendar-control {
 	display:block;
 	width: 141px; /* breedte */
-	height: 52px;
+	height: 48px;
 	padding-top:0px;
 	padding-bottom:0px;
 	padding-right:5px;
@@ -98,8 +98,8 @@ div.calendar-control {
 
 div.calendar-control-right {
 	display:block;
-	width: 380px; /* breedte */
-	height: 50px;
+	width: 290px; /* breedte */
+	height: 48px;
 	padding-top:5px;
 	padding-bottom:0px;
 	padding-right:5px;
@@ -113,11 +113,11 @@ div.calendar-control-right {
 }
 
 	div.calendar-control-right:hover {
-		background-position: 0 -57px;
+		background-position: 0 -59px;
 	}
 	
 	div.calendar-control-right:active {
-		background-position: 0 -57px;
+		background-position: 0 -59px;
 	}
 	 
 	div.calendar-control-right ul { 
@@ -159,7 +159,7 @@ div.calendar-control-right {
 }
 	
 	div.calendar-control-right ul li.datenavigation {
-		width: 320px;
+		width: 225px;
 		height: 32px;
 		text-align: left;
 		background-size: auto auto;
@@ -221,29 +221,29 @@ ul.raidplanner-icons li.planner-new-icon {
 
 ul.raidplanner-icons li.planner-new-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_new.png") no-repeat;
-	width: 60px;
-	height: 35px;
+	width: 45px;
+	height: 38px;
 	text-align: left;
 }
 
 ul.raidplanner-icons li.planner-edit-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_edit.png") no-repeat;
-	width: 60px;
-	height: 35px;
+	width: 45px;
+	height: 38px;
 	text-align: left;
 }
 
 ul.raidplanner-icons li.planner-push-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_push.png") no-repeat;
-	width: 60px;
-	height: 35px;
+	width: 45px;
+	height: 38px;
 	text-align: left;
 }
 
 ul.raidplanner-icons li.planner-delete-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_delete.png") no-repeat;
-	width: 30px;
-	height: 35px;
+	width: 45px;
+	height: 38px;
 	text-align: left;
 }
 
@@ -525,8 +525,7 @@ td.bg4.calMonH a:hover {
 
 /**************** day css ******************/
 h1.daynum  {
-	font-size: 36px;
-	font-family: Century Gothic,Arial Narrow,Trebuchet MS,Andale Mono, sans serif;
+	font-family: Trebuchet MS,Andale Mono, sans serif;
 	font-stretch: narrower;
 	font-weight: lighter;
 	margin: 5px;

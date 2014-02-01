@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*
+* @version 0.9.0
 */
 
 /**
@@ -1070,7 +1070,7 @@ class rpraid
 			    $template->assign_block_vars('teamsize', array(
 			        'ROLE_COLOR'     => $row['role_color'],
 			    	'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
-			        'ROLE_ICON'      => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
+			        'ROLE_ICON'      => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $row['role_icon'] . ".png" : '',
 			        'ROLE_ID'        => $row['role_id'],
 				    'ROLE_NAME'      => $row['role_name'],
 			    	'ROLE_NEEDED'    => $row['team_needed'],
@@ -1104,7 +1104,7 @@ class rpraid
 				$template->assign_block_vars('teamsize', array(
 			        'ROLE_COLOR'     => $role['role_color'],
 			    	'S_ROLE_ICON_EXISTS'	=>  (strlen($role['role_icon']) > 1) ? true : false,
-			        'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $role['role_icon'] . ".png" : '',
+			        'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
 					'ROLE_ID'        => $key,
 					'ROLE_NAME'      => $role['role_name'],
 					'ROLE_NEEDED'    => $role['role_needed'],
@@ -1349,7 +1349,8 @@ class rpraid
 			'raidplan_day'			=> $this->day,
 			'raidteam'				=> $this->raidteam, 	
 			'raidplan_subject'		=> $this->subject,
-			'raidplan_body'			=> $this->body,
+			'raidplan_body'			=> $this->body,	
+			'poster_id'				=> $this->poster,
 			'raidplan_access_level'	=> $this->accesslevel,
 			'group_id'				=> $this->group_id,
 			'group_id_list'			=> $this->group_id_list,
@@ -1622,7 +1623,7 @@ class rpraid
 				    	'ROLE_CONFIRMED' => $role['role_confirmed'],
 						'ROLE_COLOR'	 => $role['role_color'],
 						'S_ROLE_ICON_EXISTS' => (strlen($role['role_icon']) > 1) ? true : false,
-				       	'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $role['role_icon'] . ".png" : '',
+				       	'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
 				 ));
 				 
 				 // loop confirmed signups per role
@@ -1817,7 +1818,7 @@ class rpraid
 				 				
 				));
 				
-				foreach($this->raidroles as $keyr => $role)
+				foreach($this->raidroles as $key => $role)
 				{
 					$template->assign_block_vars('unavailable.raidroles', array(
 						'ROLE_ID'        => $key,
@@ -1845,12 +1846,12 @@ class rpraid
 		// event image on top
 		if(strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1)
 		{
-			$eventimg = $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png";
+			$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png";
 			
 		}
 		else 
 		{
-			$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
+			$eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
 		}
 			
 		// we need to find out the time zone to display
@@ -2062,12 +2063,12 @@ class rpraid
 			
 			if(strlen( $this->eventlist->events[$this->event_type]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist->events[$this->event_type]['imagename'] . ".png";
 				
 			}
 			else 
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
 			}
 			
 			$raidinfo = array(

@@ -7,7 +7,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.9.0
 */
 
 
@@ -53,7 +53,7 @@ class rpweek extends calendar
 		// create next and prev links
 		
 		// get date number 
-		$this->date['fday'] = $this->get_fday($this->date['day'], $this->date['month_no'], $this->date['year']);
+		$this->date['fday'] = $this->get_firstday($this->date['day'], $this->date['month_no'], $this->date['year']);
 	
 		$number_days = 7;
 		$calendar_header_txt = $user->lang['WEEK_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], 

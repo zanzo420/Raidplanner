@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.9.0
 */
 
 /**
@@ -172,6 +172,7 @@ switch( $view_mode )
 			break;
 		}
 		break;
+
    case "next":		
       // display upcoming raidplans
       $template_body = "calendar_next_raidplans_for_x_days.html";

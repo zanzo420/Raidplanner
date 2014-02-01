@@ -6,7 +6,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.9.0
 */
 
 
@@ -158,14 +158,14 @@ class rpday extends calendar
 					//add it to template
 					$template->assign_block_vars('time_slots.raidplans', $raid['raidinfo']);
 					
-					foreach($raid['userchars'] as $keyu => $char)
+					foreach($raid['userchars'] as $key => $char)
 					{
 						$template->assign_block_vars('time_slots.raidplans.userchars', $char);
 					}
 					unset($char);
 					unset($key);
 					
-					foreach($raid['raidroles'] as $keyr => $raidrole)
+					foreach($raid['raidroles'] as $key => $raidrole)
 					{
 						$template->assign_block_vars('time_slots.raidplans.raidroles', $raidrole);
 					}

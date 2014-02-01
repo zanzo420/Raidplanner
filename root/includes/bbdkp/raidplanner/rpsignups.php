@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.9.0
 */
 
 
@@ -135,10 +135,10 @@ class rpsignup
 		
 		$this->dkpmembername = $row['member_name'];
 		$this->classname = $row['member_class'];
-		$this->imagename = (strlen($row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $row['imagename'] . ".png" : '';
+		$this->imagename = (strlen($row['imagename']) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $row['imagename'] . ".png" : '';
 		$this->colorcode = $row['colorcode'];
 		$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male'] : $row['image_female']);
-		$this->raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/race_images/" . $race_image . ".png" : '';
+		$this->raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/bbdkp/race_images/" . $race_image . ".png" : '';
 		$this->level =  $row['member_level'];
 		$this->genderid = $row['member_gender_id'];
 		$this->dkp_current = 0;
