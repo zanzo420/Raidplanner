@@ -130,8 +130,7 @@ $lang = array_merge($lang, array(
 	'ALLOW_GUESTS_ON'			=> 'Members are allowed to bring guests to this raid.',
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this raid.',
 	'AM'						=> 'AM',
-	'AVAILABLE'					=> 'Available',
-	'ATTENDANCE'        		=> 'Attendance', 
+	'ATTENDANCE'        		=> 'Attendance',
 	'CALENDAR_POST_RAIDPLAN'	=> 'Create New Raid',
 	'CALENDAR_EDIT_RAIDPLAN'	=> 'Edit Raid',
 	'CALENDAR_TITLE'			=> 'Planner',
@@ -158,7 +157,6 @@ $lang = array_merge($lang, array(
 	'DETAILS'				=> 'Details',
 	'DELETE_RAIDPLAN'		=> 'Delete raid',
 
-	'EDIT'					=> 'Edit',
 	'EDIT_ALL_EVENTS'		=> 'Edit all occurrences of this raid.',
 	
 	'EMPTY_EVENT_MESSAGE'		=> 'You must enter a message when posting Raids.',
@@ -279,7 +277,6 @@ $lang = array_merge($lang, array(
 	'START_DATE'				=> 'Start Date',
 	'START_TIME'				=> 'Start Time',
 	'RAID_DATE'					=> 'Raid Date',
-	'START_TIME'				=> 'Start Time',
 	'SIGN_UP'					=> 'Sign Up',
 	'RAID_INVITE_TIME'			=> 'Invite Time',
 	'RAID_INVITE_TIME_DEFAULT'	=> 'Default Raid invite time',
@@ -303,7 +300,7 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_DELETE_RAIDPLAN'	=> 'You do not have permission to delete raids.',
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'You do not have permission to edit raids.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'You do not have permission to create raids.',
-	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raids.',
+	'USER_CANNOT_VIEW_RAIDPLANS'	=> 'You do not have permission to view raids.',
 	'USER_ALREADY_SIGNED_UP'	=> '%s is already signed up to this raid.',
 
 	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
@@ -314,7 +311,6 @@ $lang = array_merge($lang, array(
 	'WATCH_EVENT_TURN_ON'		=> 'Watch this raid',
 	'WATCH_EVENT_TURN_OFF'		=> 'Stop watching this raid',
 
-	'WEEK'						=> 'Week',
 	'WEEK_OF'					=> 'Week of ',
 	
 	'ZERO_LENGTH_RAIDPLAN'		=> 'The raid cannot end at the same time it starts.',

@@ -1349,8 +1349,7 @@ class rpraid
 			'raidplan_day'			=> $this->day,
 			'raidteam'				=> $this->raidteam, 	
 			'raidplan_subject'		=> $this->subject,
-			'raidplan_body'			=> $this->body,	
-			'poster_id'				=> $this->poster,
+			'raidplan_body'			=> $this->body,
 			'raidplan_access_level'	=> $this->accesslevel,
 			'group_id'				=> $this->group_id,
 			'group_id_list'			=> $this->group_id_list,
@@ -1818,7 +1817,7 @@ class rpraid
 				 				
 				));
 				
-				foreach($this->raidroles as $key => $role)
+				foreach($this->raidroles as $keyr => $role)
 				{
 					$template->assign_block_vars('unavailable.raidroles', array(
 						'ROLE_ID'        => $key,

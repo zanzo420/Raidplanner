@@ -158,14 +158,14 @@ class rpday extends calendar
 					//add it to template
 					$template->assign_block_vars('time_slots.raidplans', $raid['raidinfo']);
 					
-					foreach($raid['userchars'] as $key => $char)
+					foreach($raid['userchars'] as $keyu => $char)
 					{
 						$template->assign_block_vars('time_slots.raidplans.userchars', $char);
 					}
 					unset($char);
 					unset($key);
 					
-					foreach($raid['raidroles'] as $key => $raidrole)
+					foreach($raid['raidroles'] as $keyr => $raidrole)
 					{
 						$template->assign_block_vars('time_slots.raidplans.raidroles', $raidrole);
 					}
