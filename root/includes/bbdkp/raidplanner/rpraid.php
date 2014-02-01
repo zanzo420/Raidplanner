@@ -16,7 +16,6 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
-
 /**
  * implements a raid plan
  *
@@ -2691,13 +2690,12 @@ class rpraid
 	public function raidplan_push()
 	{
 		global $db, $user, $config, $phpbb_root_path, $phpEx ;
-		
-		if (!class_exists('acp_dkp_raid'))
-		{
-			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
-		}
-		$acp_dkp_raid = new acp_dkp_raid();
-		
+
+        if (!class_exists('\bbdkp\controller\raids\RaidController'))
+        {
+            require("{$phpbb_root_path}includes/bbdkp/controller/raids/RaidController.$phpEx");
+        }
+
 		// check if raid exists in bbdkp
 		if ($this->raid_id > 0)
 		{
@@ -2895,54 +2893,48 @@ class rpraid
 	 */
 	private function exec_pushraid($raid)
 	{
-		global $db, $user; 
-		
-		if (!class_exists('acp_dkp_raid'))
-		{
-			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
-		}
-		$acp_dkp_raid = new acp_dkp_raid();
-		
-		$db->sql_transaction('begin');
+		global $db, $user;
 
-		// raid id is auto-increment so it is increased automatically
-		$query = $db->sql_build_array ( 'INSERT', array (
-				'event_id' 		=> (int) $raid['event_id'], 
-				'raid_start' 	=> (int) $raid['raid_start'],
-				'raid_end' 		=> (int) $raid['raid_end'], 
-				'raid_note' 	=> (string) $raid['raid_note'], 
-				'raid_added_by' => (string) $user->data['username'] ) 
-		);
-		
-		$db->sql_query ( "INSERT INTO " . RAIDS_TABLE . $query );
-		$raid ['raid_id'] = $db->sql_nextid();
-		
-		//set raid_id
-		$this->raid_id = $raid ['raid_id'];
-		
-		//store raid_id
-		$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET raid_id = '  . $this->raid_id . ' WHERE raidplan_id = ' . $this->id; 
-		$db->sql_query($sql);
-		
+        if (!class_exists('\bbdkp\controller\raids\RaidController'))
+        {
+            require("{$phpbb_root_path}includes/bbdkp/controller/raids/RaidController.$phpEx");
+        }
+        if (!class_exists('\bbdkp\controller\points\PointsController'))
+        {
+            require("{$phpbb_root_path}includes/bbdkp/controller/points/PointsController.$phpEx");
+        }
+
+        $RaidController = new \bbdkp\controller\raids\RaidController($raid['dkpid']);
+        $this->RaidController->init_newraid();
+        $event = $this->RaidController->eventinfo[$raid['event_id']];
+        $raidinfo = array(
+            'raid_note' 		=> (string) $raid['raid_note'],
+            'event_id' 			=> $raid['event_id'],
+            'raid_start' 		=> (int) $raid['raid_start'],
+            'raid_end'			=> (int) $raid['raid_end'],
+        );
+
         $raid_detail = array();
 		foreach ( $raid['raid_attendees'] as $member_id )
 		{
 			$raid_detail[] = array(
-				'raid_id'      => (int) $raid['raid_id'],
 				'member_id'    => (int) $member_id,
 				'raid_value'   => (float) $raid['raid_value'],
 				'time_bonus'   => (float) $raid['raid_timebonus'],
 				);
-			$acp_dkp_raid->add_dkp ($raid['raid_value'], $raid['raid_timebonus'], $raid['raid_start'] , $raid['dkpid'] , $member_id);
 		}
-		$db->sql_multi_insert(RAID_DETAIL_TABLE, $raid_detail);
-	
-		// commit
-		$db->sql_transaction('commit');
-		return $this->raid_id;
-		
+
+        $raid_id = $RaidController->add_raid($raidinfo, $raid_detail);
+        $PointsController = new \bbdkp\controller\points\PointsController();
+        $PointsController->add_points($raid_id);
+
+		//store raid_id
+		$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET raid_id = '  . $raid_id . ' WHERE raidplan_id = ' . $this->id;
+		$db->sql_query($sql);
+
+		return $raid_id;
 	}
-	
+
 
 
 	/**
