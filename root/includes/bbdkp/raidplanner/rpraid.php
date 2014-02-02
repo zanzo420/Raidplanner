@@ -396,7 +396,7 @@ class rpraid
 			}
 			
 			//if raid invite time is in the past then raid signups are frozen.
-			// @todo might wanna make this optional
+			// @todo make this optional
 			$this->frozen = false;
 			if($this->invite_time < time())
 			{
@@ -2699,29 +2699,21 @@ class rpraid
 		// check if raid exists in bbdkp
 		if ($this->raid_id > 0)
 		{
-			//update this raid
-			// get old raid data
-			$sql = 	'SELECT raid_start, raid_end, raid_note, raid_updated_by FROM ' . RAIDS_TABLE . ' WHERE raid_id = ' . (int) $this->raid_id;  
-			$result = $db->sql_query ($sql);
-			while ( $row = $db->sql_fetchrow ( $result ) ) 
-			{
-				$old_raid = array (
-					'raid_start' 	=> (int) $row['raid_start'],
-					'raid_end' 		=> (int) $row['raid_end'],
-					'raid_note' 	=> (string) $row['raid_note'], 
-					'raid_updated_by' => (int) $row['raid_updated_by'],
-				);
-			}
-			$db->sql_freeresult($result);
+            $RaidController = new \bbdkp\controller\raids\RaidController;
 
-			// Update the raid
-			$query = $db->sql_build_array ( 'UPDATE', array (
-				'raid_start' 		=> $this->start_time, 
-				'raid_end' 			=> $this->end_time, 
-				'raid_note' 		=> $this->body, 
-				'raid_updated_by' 	=> $user->data ['username'] ) );
-			$db->sql_query ( 'UPDATE ' . RAIDS_TABLE . ' SET ' . $query . " WHERE raid_id = " . (int) $this->raid_id );
-			
+            $raidinfo = array (
+                'raid_id' 	 => (int) $this->raid_id,
+                'event_id' 	 => $this->event_type,
+                'raid_value' => (float) $this->eventlist->events[$this->event_type]['value'],
+                'time_bonus' => 0,
+                'raid_note'  => $this->body,
+                'raid_start' => $this->start_time,
+                'raid_end' 	 => $this->end_time,
+            );
+
+            $RaidController->update_raid($raidinfo);
+
+            //get all confirmed raiders
 			$raid_attendees = array();
 			foreach($this->raidroles as $key => $role)
 			{
@@ -2731,40 +2723,37 @@ class rpraid
 				 }
 			}
 			
-			// now check if any of them are not registered in dkp, if they aren’t then add them
-			$dkpregistered = array();
-			$sql = 'SELECT member_id FROM ' . RAID_DETAIL_TABLE . ' WHERE raid_id = ' . (int) $this->raid_id; 			
-			$result = $db->sql_query ($sql);
-			while ($row = $db->sql_fetchrow ($result)) 
-			{
-				$dkpregistered[] = $row['member_id']; 
-			}
-			$db->sql_freeresult($result);
-			$to_add = array_diff($raid_attendees, $dkpregistered); 
+			// now check if any of them are not registered in dkp, if they are not then add them
+            $raiddetail = new \bbdkp\controller\raids\Raiddetail($this->raid_id);
+            $raiddetail->Get($this->raid_id);
+
+			$registered = array();
+            foreach ($raiddetail->raid_details as $member_id => $attendee)
+            {
+                $registered[] = (int) $member_id;
+            }
+            //
+			$to_add = array_diff($raid_attendees, $registered);
 
 			if (count($to_add) > 0)
 			{
 				foreach($to_add as $member_id)
 				{
-					{
-						$raid_detail[] = array(
-							'raid_id'      => (int) $this->raid_id,
-							'member_id'    => (int) $member_id,
-							'raid_value'   => (float) $this->eventlist->events[$this->event_type]['value'],
-							'time_bonus'   => (float) 0,
-							);
-					}
-					$acp_dkp_raid->add_dkp (
-					$this->eventlist->events[$this->event_type]['value'], 0, $this->start_time , 
-					$this->eventlist->events[$this->event_type]['dkpid'], $member_id);
+                    $newraider = new \bbdkp\controller\raids\Raiddetail($this->raid_id);
+                    $newraider->raid_value = (float) $this->eventlist->events[$this->event_type]['value'];
+                    $newraider->time_bonus = 0;
+                    $newraider->dkpid = $this->eventlist->events[$this->event_type]['dkpid'];
+                    $newraider->member_id = $member_id;
+                    $newraider->create();
+                    unset($newraider);
 				}
-				
-				$db->sql_multi_insert(RAID_DETAIL_TABLE, $raid_detail);
 			}
 			
 		}
 		else
 		{
+            //new raid
+
 			if($config['rp_rppushmode'] == 0 && $this->signups['confirmed'] > 0 )
 			{
 				// automatic mode, don't ask permisison
@@ -2812,38 +2801,7 @@ class rpraid
 					); 
 		
 					$this->exec_pushraid($raid);
-					
-					//
-					// Logging
-					$log_action = array (
-						'header' 		=> 'L_ACTION_RAID_ADDED', 
-						'id' 			=> $this->raid_id, 
-						'L_EVENT' 		=> $raid['event_name'], 
-						'L_ATTENDEES' 	=> implode ( ', ', $raid ['raid_attendees'] ), 
-						'L_NOTE' 		=> $raid ['raid_note'], 
-						'L_VALUE' 		=> $raid['raid_value'], 
-						'L_ADDED_BY' 	=> $user->data ['username']);
-					
-					$acp_dkp_raid->log_insert (array(
-						'log_type' 		=> $log_action ['header'], 
-						'log_action' 	=> $log_action ));
-					
-					//
-					// Success message
-					$success_message = sprintf ( $user->lang ['ADMIN_ADD_RAID_SUCCESS'], 
-						$user->format_date($raid['raid_start']), $raid['event_name'] ) . '<br />';
-						
-					//
-					// Update active / inactive player status if needed
-					if ($config ['bbdkp_hide_inactive'] == 1) 
-					{
-						$success_message .= '<br />' . $user->lang ['ADMIN_RAID_SUCCESS_HIDEINACTIVE'];
-						$success_message .= ' ' . (($acp_dkp_raid->update_player_status ( $raid['dkpid'] )) ? 
-							strtolower ( $user->lang ['DONE'] ) : strtolower ( $user->lang ['ERROR'] ));
-					}
-		
-					trigger_error ( $success_message, E_USER_NOTICE );
-						
+
 				}
 				else
 				{
@@ -2883,7 +2841,9 @@ class rpraid
 			
 			
 		}
-		
+
+        unset($RaidController);
+
 	}
 	
 	/**
@@ -2893,7 +2853,7 @@ class rpraid
 	 */
 	private function exec_pushraid($raid)
 	{
-		global $db, $user;
+		global $db, $phpbb_root_path, $phpEx;
 
         if (!class_exists('\bbdkp\controller\raids\RaidController'))
         {
@@ -2932,36 +2892,29 @@ class rpraid
 		$sql = 'UPDATE ' . RP_RAIDS_TABLE . ' SET raid_id = '  . $raid_id . ' WHERE raidplan_id = ' . $this->id;
 		$db->sql_query($sql);
 
+        unset($RaidController);
+        unset($PointsController);
 		return $raid_id;
 	}
 
 
-
-	/**
-	 * if confirmed raider is unsigned after raid was pushed,
-	 * decrease dkp points by event standard amount
-	 * @param int $dkpmemberid
-	 */
-	public function exec_decreasedkp_after_unsign($dkpmemberid)
+    /**
+     * kick raider after raid was pushed
+     *
+     * @param int $member_id
+     *
+     */
+    public function deleteraider($member_id)
 	{
-		global $phpbb_root_path, $phpEx, $db, $user;
-		$dkpid = $this->eventlist->events[$this->event_type]['dkpid'];
-		$eventvalue = $this->eventlist->events[$this->event_type]['value'];
-		$raid_start = $this->start_time;
-		$raid_id = $this->raid_id;
-		
-		//decrease dkp points
-		if (!class_exists('acp_dkp_raid'))
-		{
-			require("{$phpbb_root_path}includes/acp/acp_dkp_raid.$phpEx");
-		}
-		$acp_dkp_raid = new acp_dkp_raid();
-		$acp_dkp_raid->add_dkp (- $eventvalue, 0, $raid_start , $dkpid , $dkpmemberid);
-	
-		//now delete raid participation record of that user
-		$sql="DELETE FROM " . RAID_DETAIL_TABLE . " WHERE raid_id = " . $raid_id . " AND member_id = " . $dkpmemberid;
-		$db->sql_query($sql);
-	
+
+		global $phpbb_root_path, $phpEx, $db;
+        if (!class_exists('\bbdkp\controller\raids\RaidController'))
+        {
+            require("{$phpbb_root_path}includes/bbdkp/controller/raids/RaidController.$phpEx");
+        }
+        $RaidController = new \bbdkp\controller\raids\RaidController($this->raid_id);
+        $RaidController->deleteraider($this->raid_id,$member_id);
+        unset($RaidController);
 	}
 	
 }

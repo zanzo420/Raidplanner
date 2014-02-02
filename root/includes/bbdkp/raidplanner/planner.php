@@ -81,7 +81,7 @@ switch( $view_mode )
 					if($raid->raid_id > 0)
 					{
 						//raid was pushed already
-						$raid->exec_decreasedkp_after_unsign($signup->dkpmemberid);
+						$raid->deleteraider($signup->dkpmemberid);
 					}
 				}
 				$signup->signupmessenger(6, $raid);
