@@ -1,12 +1,12 @@
-0.9.0 http://bbdkp.github.com/Raidplanner/
+[![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
 
-Support : http://www.bbdkp.com/viewforum.php?f=61
-
-#Raidplanner v0.9.0
+#Raidplanner
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
-### General Features
+
+##### General Features
+* Hooks into the bbDKP, Raid, Event and Members classes, so bbDKP must be installed before. It has an Automod MODX & UMIL Database installer. No manual installation necessary.
 *	3 Raidplan types exist : Public Raidplans (no signup), Raid Raidplans (Signup), and personal Raidplans.
 *	Raidplan event types are picked from bbDKP. if you need new events, set up one in the event list. Event Icons are shown in the raidplan.
 *	Support for BBCode and Smilies
@@ -33,7 +33,6 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	acp setting to enable/disable pm/email
 *   pm or/and email is sent on signup & raidplan changes/additions
 
-
 ##### Views
 *	Raidplan view - filled with all Raidplan details (who's invited, who created the Raidplan, BBCode, Smilies, start and end times, edit & delete buttons if applicable etc)
 *	Month View - can jump to any month via next and prev links, or jump randomly via pulldown menus. Lists birthdays, Raidplan types and Raidplan names only. Click on the day's number to add a new Raidplan on that day
@@ -47,23 +46,29 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	New permission option to invite groups you're not a member of - if this is turned on, you'll be able to create Raidplans for groups you don't belong to, but the author of the Raidplan will always be able to see their own Raidplans - even if they don't belong to the invite list.
 *	Detailed permissions for ability to create private, group, or public Raidplans - now you can give some users the power to create public Raidplans, and others only permission to create private Raidplans, or whatever combination makes sense for your forum.
 
-#### ACP
+##### ACP
 *	Auto pruning of past Raidplans - From the ACP you control how often Raidplans are pruned, and how old they have to be before they are added to the delete list.
 *	Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred date/time format, so you can display just the time in hours where it makes sense (like in the week view) or the whole date+time (like in the display Raidplan)
 *	UCP module that displays upcoming Raidplans (that the user has registered for) for the next X days.
 
-### Installation
-* 	Unzip the zip file into /store/mods/</li>
-* 	Launch automod, choose the install link. this will copy all the files, perform the necessary edits. </li>
+## Current
+
+v0.9.0
+
+## Installation
+* 	Unzip the zip file into /store/mods
+* 	Launch automod, choose the install link. this will copy all the files, perform the necessary edits. 
 * 	Then surf to /install/index.php, and you will see the database installer. Launch the database installer.  This will install the acp module, and clear the caches (template, theme, imagesets)
 *	Once installed, you will find the ACP module added under the raid section in bbdkp ACP.</li>
 
-### Requirements
+
+## Requirements
 *	bbDKP 1.3 or higher
 *	phpBB 3.0.12
 
 ### History and credits 
-*	This Raidplanner mod was Forked from Alightner's Calendar mod and phpRaider, and the base code was refactored into functional classes to work with bbDKP. Hooks into the bbDKP Raid, Event and Members classes, so bbDKP must be installed before. It has an Automod MODX & UMIL Database installer. No manual installation necessary.
+
+*	Raidplanner mod was partly made from Alightner's Calendar mod and phpRaider, refactored into functional classes to work with bbDKP. 
 
 ### Milestones 
 
@@ -154,3 +159,30 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 	*	[CHG] Removed config table, now uses phpbb config table.
 	*	[CHG] split modx file into main, template and language
 	*	[CHG] forked from Calendar mod 0.1.0 renamed Raidplanner
+	
+
+## Community
+
+Find support and more on [bbDKP.com](http://www.bbdkp.com)
+
+### contribute
+
+Send us a pull request
+
+### license
+
+[GNU General Public License v2](http://opensource.org/licenses/gpl-2.0.php)
+
+This application is opensource software released under the GPL. Please see source code and the docs directory for more details. Powered by bbDkp (c) 2009 The bbDkp Project Team bbDkp. If you use this software and find it to be useful, we ask that you retain the copyright notice below.
+bbDKP (c) 2008, 2009 Sajaki, Malfate, Kapli, Hroar
+bbDKP (c) 2007 Ippeh, Teksonic, Monkeytech, DWKN
+EQDkp (c) 2003 The EqDkp Project Team 
+
+## Paypal donation
+
+[![Foo](https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=sajaki9%40gmail%2ecom&lc=BE&item_name=bbDKP%20Guild%20management&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+
+
+
+
+
