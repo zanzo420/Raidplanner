@@ -88,7 +88,7 @@
 				<comment lang="en"><![CDATA[Include class]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
 				<action type="after-add"><![CDATA[// [+]Raidplanner
-if (!class_exists('rpweek', false))
+if (!class_exists('\rpweek', false))
 {
 	if ($config['rp_index_display_week'] == 1)
 	{
@@ -120,19 +120,19 @@ if ($config['rp_index_display_week'] == 1)
 				<find><![CDATA[	include($phpbb_root_path . 'includes/bbdkp/block/linksblock.' . $phpEx);
 }]]></find>
 				<action type="after-add"><![CDATA[if (isset($config['bbdkp_raidplanner']))
-{
-	if ($config['rp_show_portal'] == 1)
-	{
-		$user->add_lang(array('mods/raidplanner'));
-		if (!class_exists('rpblocks', false))
-		{
-			//display the blocks
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);
-		}
-		$blocks = new rpblocks();
-		$blocks->display();
-	}
-}
+			{
+				if ($config['rp_show_portal'] == 1)
+				{
+					$user->add_lang(array('mods/raidplanner'));
+					if (!class_exists('\rpblocks', false))
+					{
+						//display the blocks
+						include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);
+					}
+					$blocks = new \rpblocks();
+					$blocks->display();
+				}
+			}
 ]]></action>
 			</edit>
 		</open>
