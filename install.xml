@@ -208,17 +208,19 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 		<open src="styles/prosilver/template/dkp/portal_body.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to portal page]]></comment>
-				<find><![CDATA[<!-- IF S_DISPLAY_LINKS -->]]></find>
-				<action type="before-add"><![CDATA[
+				<find><![CDATA[<!-- IF S_DISPLAY_LINKS -->
+<!-- INCLUDE dkp/block/links.html -->
+<!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[
+
 <!-- IF S_PLANNER_UPCOMING -->
-<!-- INCLUDE planner/raidplan/planner_upcoming.html -->
-<br/>
+<!-- INCLUDE dkp/block/planner_upcoming.html -->
 <!-- ENDIF -->
 
 <!-- IF S_PLANNER_TOPSIGNUPS -->
-<!-- INCLUDE planner/raidplan/planner_topsignups.html -->
-<br/>
+<!-- INCLUDE dkp/block/planner_topsignups.html -->
 <!-- ENDIF -->
+
 
 ]]></action>
 			</edit>
