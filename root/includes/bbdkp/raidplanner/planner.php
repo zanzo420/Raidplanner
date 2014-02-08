@@ -1,13 +1,19 @@
 <?php
 /**
-*
+* Raidplanner controller
 * @author Sajaki
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
-
+use bbdkp\raidplanner\DisplayRaidCalendar;
+use bbdkp\raidplanner\Raidplan;
+use bbdkp\raidplanner\RaidplanSignup;
+use bbdkp\raidplanner\rpday;
+use bbdkp\raidplanner\rpweek;
+use bbdkp\raidplanner\rpmonth;
+use bbdkp\raidplanner\rpblocks;
 /**
  * @ignore
  */
@@ -28,24 +34,25 @@ $view_mode = request_var('view', '');
 $mode=request_var('mode', '');
 
 // display header
-if (!class_exists('rpframe', false))
-{
-	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpframe.' . $phpEx);
-}
-$cal = new rpframe();
-$cal->display();
 
+if (!class_exists('\bbdkp\raidplanner\DisplayRaidCalendar', false))
+{
+	include($phpbb_root_path . 'includes/bbdkp/raidplanner/DisplayRaidCalendar.' . $phpEx);
+}
+$cal = new DisplayRaidCalendar();
+
+$cal->display();
 switch( $view_mode )
 {
 	case "raidplan":
 		
-		if (!class_exists('rpraid', false))
+		if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
 		}
-		
+
 		$raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
-		$raid = new rpraid($raidplan_id);
+		$raid = new Raidplan($raidplan_id);
 		
 		switch($mode)
 		{
@@ -54,11 +61,12 @@ switch( $view_mode )
 				// add a new signup
 				if(isset($_POST['signmeup' . $raidplan_id]))
 				{
-					if (!class_exists('rpsignup', false))
+
+					if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
 					{
-						include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
+						include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
 					}
-					$signup = new rpsignup();
+					$signup = new RaidplanSignup();
 					$signup->signup($raidplan_id);
 					$signup->signupmessenger(4, $raid);
 					$raid->make_obj();
@@ -69,12 +77,12 @@ switch( $view_mode )
 			case 'delsign':
 				
 				// delete a signup
-				if (!class_exists('rpsignup', false))
+                if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
 				{
-					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
+					include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
 				}
 				$signup_id = request_var('signup_id', 0);
-				$signup = new rpsignup();
+				$signup = new RaidplanSignup();
 				$signup->getSignup($signup_id, $raid->eventlist->events[$raid->event_type]['dkpid']);
 				if ($signup->deletesignup($signup_id, $raidplan_id) ==3)
 				{
@@ -92,14 +100,14 @@ switch( $view_mode )
 				
 			case 'editsign':
 				
-				// edit a signup comment				
-				if (!class_exists('rpsignup', false))
+				// edit a signup comment
+				if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
 				{
-					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
+					include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
 				}
 				
 				$signup_id = request_var('signup_id', 0);
-				$signup = new rpsignup();
+				$signup = new RaidplanSignup();
 				$signup->editsignupcomment($signup_id);
 				
 				$raid->display();
@@ -108,12 +116,13 @@ switch( $view_mode )
 			case 'requeue':
 				
 				// requeue for a raid role
-				if (!class_exists('rpsignup', false))
+
+				if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
 				{
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
 				}
 				$signup_id = request_var('signup_id', 0);
-				$signup = new rpsignup();
+				$signup = new RaidplanSignup();
 				$signup->requeuesignup($signup_id);
 				
 				$signup->signupmessenger(4, $raid);
@@ -124,12 +133,12 @@ switch( $view_mode )
 			case 'confirm':
 				
 				// confirm a member for a raid role
-				if (!class_exists('rpsignup', false))
+				if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
 				{
 					include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
 				}
 				$signup_id = request_var('signup_id', 0);
-				$signup = new rpsignup();
+				$signup = new RaidplanSignup();
 				$signup->confirmsignup($signup_id);
 				
 				if($config['rp_rppushmode'] == 0 && $raid->signups['confirmed'] > 0 )
@@ -194,7 +203,7 @@ switch( $view_mode )
       break;
 	case "day":
 		// display all of the raidplans on this day
-		if (!class_exists('rpday', false))
+		if (!class_exists('\bbdkp\raidplanner\rpday', false))
 		{
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
 		}
@@ -203,7 +212,7 @@ switch( $view_mode )
 		$cal->display();		
 		break;
 	case "week":
-		if (!class_exists('rpweek', false))
+		if (!class_exists('\bbdkp\raidplanner\rpweek', false))
 		{
 			// display the entire week
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
@@ -213,8 +222,8 @@ switch( $view_mode )
 		$cal->display();
 		break;
 	case "month":
-	default:	
-		if (!class_exists('rpmonth', false))
+	default:
+		if (!class_exists('\bbdkp\raidplanner\rpmonth', false))
 		{
 			//display the entire month
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
@@ -225,7 +234,7 @@ switch( $view_mode )
 		break;
 }
 
-if (!class_exists('rpblocks', false))
+if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
 {
 	//display the blocks
 	include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);

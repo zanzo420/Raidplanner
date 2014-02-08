@@ -7,6 +7,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
+namespace bbdkp\raidplanner;
 
 /**
  * @ignore
@@ -16,6 +17,10 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
+/**
+ * Class raidmessenger
+ * @package bbdkp\raidplanner
+ */
 class raidmessenger
 {
 	/**

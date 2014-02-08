@@ -5,7 +5,7 @@
  * @package bbDkp
  * @copyright 2010 bbdkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version $Id$
+ * @version 0.9.0
  * 
  */
 
@@ -24,14 +24,6 @@ $lang = array_merge($lang, array(
     '12_HOURS'								=> '12 hours',
     '24_HOURS'								=> '24 hours',
 	'ON'									=> ' on ', 
-    'AUTO_POPULATE_EVENT_FREQUENCY'			=> 'Auto Populate Recurring Raids',
-    'AUTO_POPULATE_EVENT_FREQUENCY_EXPLAIN'	=> 'How often (in days) should recurring raids be populated in the calendar?  Note if you select 0, recurring raids will never get added to the calendar.',
-    'AUTO_POPULATE_EVENT_LIMIT'				=> 'Auto Populate Limits',
-    'AUTO_POPULATE_EVENT_LIMIT_EXPLAIN'		=> 'How many days in advance do you want to populated with recurring raids?  In other words, do you want to only see recurring raids in the calendar for 30, 45, or more days before the raid?',
-    'AUTO_PRUNE_EVENT_FREQUENCY'			=> 'Auto Prune Past Raids',
-    'AUTO_PRUNE_EVENT_FREQUENCY_EXPLAIN'	=> 'How often (in days) should past raids be pruned from the calendar?  Note if you select 0, past raids will never be auto-pruned, you will have to delete them by hand.',
-    'AUTO_PRUNE_EVENT_LIMIT'				=> 'Auto Prune Limits',
-    'AUTO_PRUNE_EVENT_LIMIT_EXPLAIN'		=> 'How many days after an raid do you want to add the raid to the next auto prune\'s delete list?  In other words, do you want all raids to remain in the calendar for 0, 30, or 45 days after the raid?',
     'CLICK_PLUS_HOUR'						=> 'Move ALL raids by one hour.',
     'CLICK_PLUS_HOUR_EXPLAIN'				=> 'Being able to move all raids in the calendar +/- one hour helps when you reset the boards daylight savings time setting.  Note clicking on the links to move the raids will loose any changes you have made above.  Please submit the form to save your work before moving the raids +/- one hour.',
     'COLOR'									=> 'Color',
@@ -130,7 +122,8 @@ $lang = array_merge($lang, array(
 	'ALLOW_GUESTS_ON'			=> 'Members are allowed to bring guests to this raid.',
 	'ALLOW_GUESTS_OFF'			=> 'Members are not allowed to bring guests to this raid.',
 	'AM'						=> 'AM',
-	'ATTENDANCE'        		=> 'Attendance',
+	'AVAILABLE'					=> 'Available',
+	'ATTENDANCE'        		=> 'Attendance', 
 	'CALENDAR_POST_RAIDPLAN'	=> 'Create New Raid',
 	'CALENDAR_EDIT_RAIDPLAN'	=> 'Edit Raid',
 	'CALENDAR_TITLE'			=> 'Planner',
@@ -157,6 +150,7 @@ $lang = array_merge($lang, array(
 	'DETAILS'				=> 'Details',
 	'DELETE_RAIDPLAN'		=> 'Delete raid',
 
+	'EDIT'					=> 'Edit',
 	'EDIT_ALL_EVENTS'		=> 'Edit all occurrences of this raid.',
 	
 	'EMPTY_EVENT_MESSAGE'		=> 'You must enter a message when posting Raids.',
@@ -277,6 +271,7 @@ $lang = array_merge($lang, array(
 	'START_DATE'				=> 'Start Date',
 	'START_TIME'				=> 'Start Time',
 	'RAID_DATE'					=> 'Raid Date',
+	'START_TIME'				=> 'Start Time',
 	'SIGN_UP'					=> 'Sign Up',
 	'RAID_INVITE_TIME'			=> 'Invite Time',
 	'RAID_INVITE_TIME_DEFAULT'	=> 'Default Raid invite time',
@@ -300,7 +295,7 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_DELETE_RAIDPLAN'	=> 'You do not have permission to delete raids.',
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'You do not have permission to edit raids.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'You do not have permission to create raids.',
-	'USER_CANNOT_VIEW_RAIDPLANS'	=> 'You do not have permission to view raids.',
+	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raids.',
 	'USER_ALREADY_SIGNED_UP'	=> '%s is already signed up to this raid.',
 
 	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
@@ -311,6 +306,7 @@ $lang = array_merge($lang, array(
 	'WATCH_EVENT_TURN_ON'		=> 'Watch this raid',
 	'WATCH_EVENT_TURN_OFF'		=> 'Stop watching this raid',
 
+	'WEEK'						=> 'Week',
 	'WEEK_OF'					=> 'Week of ',
 	
 	'ZERO_LENGTH_RAIDPLAN'		=> 'The raid cannot end at the same time it starts.',

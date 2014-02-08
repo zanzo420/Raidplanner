@@ -7,6 +7,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
+namespace bbdkp\raidplanner;
 
 
 /**
@@ -31,46 +32,46 @@ if (!class_exists('\bbdkp\controller\points\Points'))
  * implements Raid signups
  *
  */
-class rpsignup
+class RaidplanSignup
 {
 	
-	public $signup_id=0;
-	public $raidplan_id;
-	public $poster_id;
-	public $poster_name;
-	public $poster_colour;
-	public $poster_ip;
+	protected $signup_id=0;
+    protected $raidplan_id;
+    protected $poster_id;
+    protected $poster_name;
+    protected $poster_colour;
+    protected $poster_ip;
 	
 	/**
 	 * 0 unavailable 1 maybe 2 available 3 confirmed
 	 *
 	 * @var int
 	 */
-	public $signup_val;
-	public $signup_time;
-	public $signup_count;
-	
-	public $dkpmemberid;
-	public $dkpmembername;
-	public $dkmemberpurl;
-	public $classname;
-	public $imagename;
-	public $colorcode;
-	public $raceimg;
-	public $genderid;
-	public $level;
-	
-	public $dkp_current;
-	public $priority_ratio;
-	public $lastraid;
-	public $attendanceP1;
-	
-	public $comment;
-	public $bbcode = array();
-	
-	public $roleid;
-	public $role_name;
-	public $confirm;
+    protected $signup_val;
+    protected $signup_time;
+    protected $signup_count;
+
+    protected $dkpmemberid;
+    protected $dkpmembername;
+    protected $dkmemberpurl;
+    protected $classname;
+    protected $imagename;
+    protected $colorcode;
+    protected $raceimg;
+    protected $genderid;
+    protected $level;
+
+    protected $dkp_current;
+    protected $priority_ratio;
+    protected $lastraid;
+    protected $attendanceP1;
+
+    protected $comment;
+    protected $bbcode = array();
+
+    protected $roleid;
+    protected $role_name;
+    protected $confirm;
 
     private $Points;
     private $Member;
@@ -81,6 +82,23 @@ class rpsignup
         $this->Member = new \bbdkp\controller\members\Members();
     }
 
+    /**
+     * Signup class property getter
+     * @param string $fieldName
+     */
+    public function __get($fieldName)
+    {
+        global $user;
+
+        if (property_exists($this, $fieldName))
+        {
+            return $this->$fieldName;
+        }
+        else
+        {
+            trigger_error($user->lang['ERROR'] . '  '. $fieldName, E_USER_WARNING);
+        }
+    }
 
     /**
      * makes a Signup object
@@ -151,7 +169,7 @@ class rpsignup
 	 * @param int $userid
 	 * @param int $raidplan_id
 	 */
-	public function getmychars($rpraidid)
+	public function getmychars($raidplanid)
 	{
 		global $db, $user;
 		
@@ -163,7 +181,7 @@ class rpsignup
 	    $sql_array['FROM'] 	= array(MEMBER_LIST_TABLE 	=> 'm');
 	    $sql_array['LEFT_JOIN'] = array(
 			array( 'FROM'	=> array( RP_SIGNUPS => 's'),
-				   'ON'	=> 's.dkpmember_id = m.member_id and s.raidplan_id = ' . (int) $rpraidid
+				   'ON'	=> 's.dkpmember_id = m.member_id and s.raidplan_id = ' . (int) $raidplanid
 				)
 		);
 	    $sql_array['WHERE'] = 'm.member_rank_id !=90 AND m.phpbb_user_id =  ' . $user->data['user_id']; 		    	
@@ -556,7 +574,7 @@ class rpsignup
 	**   send to member 
 	**
 	*/
-	function signupmessenger($trigger, rpraid $raidplan)
+	function signupmessenger($trigger, Raidplan $raidplan)
 	{
 		global $user, $config;
 		global $phpEx, $phpbb_root_path;
@@ -567,7 +585,7 @@ class rpsignup
 		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
 		// get recipient data (email, etc)  
-		if (!class_exists('raidmessenger'))
+		if (!class_exists('\bbdkp\raidplanner\raidmessenger'))
 		{
 			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
 		}

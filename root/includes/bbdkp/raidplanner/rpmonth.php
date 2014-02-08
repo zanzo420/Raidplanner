@@ -9,6 +9,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
+namespace bbdkp\raidplanner;
 
 
 /**
@@ -20,16 +21,16 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 // Include the base class
-if (!class_exists('calendar'))
+if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar.' . $phpEx);
+	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
 }
 
 /**
  * implements a month view
  *
  */
-class rpmonth extends calendar
+class rpmonth extends RaidCalendar
 {
 	private $mode = '';
 	
@@ -60,17 +61,17 @@ class rpmonth extends calendar
 		
 		$counter = 0;
 		// include raid class
-		if (!class_exists('rpraid'))
+		if (!class_exists('\bbdkp\raidplanner\Raidplan'))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
 		}
-		$rpraid = new rpraid();
+		$raidplan = new Raidplan();
 		
 		// fill array of raid days
 		$firstday = $this->Get1DoM($this->timestamp);
 		$lastday =  $this->GetLDoM($this->timestamp);
 		
-		$raiddays = $rpraid->GetRaiddaylist( $firstday, $lastday );
+		$raiddays = $raidplan->GetRaiddaylist( $firstday, $lastday );
 		$birthdays = $this->generate_birthday_list( $firstday,$lastday);
 		
 		for ($j = 1; $j < $number_days+1; $j++, $counter++)
@@ -188,11 +189,11 @@ class rpmonth extends calendar
 					{
 						if($raidday['day'] == $j)
 						{
-							if (isset($rpraid))
+							if (isset($raidplan))
 							{
-								// note not recreating a new rpraid object for each date. that would take too much mem.
+								// note not recreating a new raidplan object for each date. that would take too much mem.
 								// we just reuse the same object and reset its properties in make_obj							
-								$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
+								$raidplan_output = $raidplan->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
 								foreach($raidplan_output as $raid )
 								{
 									$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);

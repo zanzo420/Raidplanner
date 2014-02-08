@@ -8,6 +8,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
+namespace bbdkp\raidplanner;
 
 
 /**
@@ -19,16 +20,16 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 // Include the base class
-if (!class_exists('calendar'))
+if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar.' . $phpEx);
+	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
 }
 
 /**
  * implements raidplan day view
  *
  */
-class rpday extends calendar
+class rpday extends RaidCalendar
 {
 	private $mode = '';
 	
@@ -92,13 +93,13 @@ class rpday extends calendar
 		{
 			// get raid info
 			$raidplan_output = array();
-			if (!class_exists('rpraid'))
+			if (!class_exists('\bbdkp\raidplanner\Raidplan'))
 			{
-				include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+				include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
 			}
-			$rpraid = new rpraid();
+			$raidplan = new Raidplan();
 			// get all raids on this day
-			$raidplan_output = $rpraid->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+			$raidplan_output = $raidplan->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 		}
 		
 		/* assemble events */ 

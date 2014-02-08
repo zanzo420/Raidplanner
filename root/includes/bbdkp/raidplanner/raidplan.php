@@ -7,6 +7,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
+namespace bbdkp\raidplanner;
 
 /**
  * @ignore
@@ -20,7 +21,7 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
  * implements a raid plan
  *
  */
-class rpraid
+class Raidplan
 {
 	/**
 	 * pk
@@ -28,8 +29,8 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	public $id; 
-	public $eventlist;
+    protected $id;
+    protected $eventlist;
 	
 	/**
 	 * raidplan event type 
@@ -37,7 +38,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	public $event_type; 
+    protected $event_type;
 	
 	/**
 	 * Invite time timestamp
@@ -45,7 +46,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	public $invite_time;
+    protected $invite_time;
 	
 	/**
 	 * Start time timestamp
@@ -53,7 +54,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	public $start_time;
+    protected $start_time;
 	
 	/**
 	 * endtime timestamp
@@ -61,7 +62,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	public $end_time;
+    protected $end_time;
 	
 	/**
 	 * 1 if allday event, 0 if timed event
@@ -69,7 +70,7 @@ class rpraid
 	 *
 	 * @var int
 	 */
-	public $all_day;
+    protected $all_day;
 	
 	/**
 	 * day of alldayevent (dd-mm-yyyy)
@@ -77,7 +78,7 @@ class rpraid
 	 *
 	 * @var string
 	 */
-	public $day;
+    protected $day;
 
 	/**
 	 * one line subject
@@ -92,47 +93,47 @@ class rpraid
 	 * 
 	 * @var unknown_type
 	 */
-	public $body;
-	public $bbcode = array();
+    protected $body;
+    protected $bbcode = array();
 	
 	/**
 	 * poster_id
 	 *
 	 * @var unknown_type
 	 */
-	public $poster;
+    protected $poster;
 
 	/**
 	 * access level 0 = personal, 1 = groups, 2 = all 
 	 * default to 2
 	 * @var int
 	 */
-	public $accesslevel = 2;
-	
-	
-	public $group_id;
-	public $group_id_list;
+    protected $accesslevel = 2;
+
+
+    protected $group_id;
+    protected $group_id_list;
 	
 	/**
 	 * array of possible roles
 	 *
 	 * @var array
 	 */
-	public $roles= array();
+    protected $roles= array();
 
 	/**
 	 * array of signoffs
 	 *
 	 * @var array
 	 */
-	public $signoffs= array();
+    protected $signoffs= array();
 
 	/**
 	 * raidteam int
 	 *
 	 * @var int
 	 */
-	public $raidteam;
+    protected $raidteam;
 	
 	
 	/**
@@ -140,64 +141,64 @@ class rpraid
 	 *
 	 * @var string
 	 */
-	public $raidteamname;
+    protected $raidteamname;
 	
 	/**
 	 * array of raid roles, subarray of signups per role
 	 *
 	 * @var array
 	 */
-	public $raidroles= array();
+    protected $raidroles= array();
 
 	/**
 	 * aray of signups
 	 *
 	 * @var array
 	 */
-	public $signups =array();
+    protected $signups =array();
 	
 	/**
 	 * all my eligible chars
 	 *
 	 * @var array
 	 */
-	public $mychars = array();
+    protected $mychars = array();
 	
 	/**
 	 * can user see raidplan ?
 	 *
 	 * @var boolean
 	 */
-	public $auth_cansee = false;
-	public $auth_canedit = false;
-	public $auth_candelete = false;
-	public $auth_canadd = false;
-	public $auth_canaddsignups = false;
-	public $auth_addrecurring = false;
+    protected $auth_cansee = false;
+    protected $auth_canedit = false;
+    protected $auth_candelete = false;
+    protected $auth_canadd = false;
+    protected $auth_canaddsignups = false;
+    protected $auth_addrecurring = false;
 
 	// if raidplan is recurring then id > 0
-	public $recurr_id = 0;
+    protected $recurr_id = 0;
 	
 	/**
 	 * url of the poster
 	 *
 	 * @var string
 	 */
-	public $poster_url = '';
+    protected $poster_url = '';
 	
 	/**
 	 * string representing invited groups
 	 *
 	 * @var string
 	 */
-	public $invite_list = '';
+    protected $invite_list = '';
 		
 	/**
 	 * signups allowed ?
 	 *
 	 * @var boolean
 	 */
-	public $signups_allowed;
+    protected $signups_allowed;
 	
 	/**
 	 * If raid is locked due to authorisation ?
@@ -209,28 +210,28 @@ class rpraid
 	/**
 	 * if raid signups are frozen ?
 	 */
-	public $frozen;
+    protected $frozen;
 	
 	/**
 	 * If user has no characters bound then set nochar to true
 	 *
 	 * @var boolean
 	 */
-	public $nochar;
+    protected $nochar;
 	
 	/**
 	 * If you currently signed up as available
 	 *
 	 * @var boolean
 	 */
-	public $signed_up;
+    protected $signed_up;
 	
 	/**
 	 * If you currently signed up as maybe
 	 *
 	 * @var boolean
 	 */
-	public $signed_up_maybe;
+    protected $signed_up_maybe;
 	
 	
 	/**
@@ -238,28 +239,28 @@ class rpraid
 	 *
 	 * @var boolean
 	 */
-	public $signed_off;
+    protected $signed_off;
 	
 	/**
 	 * If you currently confirmed
 	 *
 	 * @var boolean
 	 */
-	public $confirmed;
+    protected $confirmed;
 	
 	/**
 	 * bbdkp raid_id 
 	 *
 	 * @var unknown_type
 	 */
-	public $raid_id;
+    protected $raid_id;
 	
 	/**
 	 * redirect link for raid
 	 *
 	 * @var string
 	 */
-	public $link; 
+	protected $link;
 	
 	/**
 	 * constructor
@@ -270,7 +271,7 @@ class rpraid
 	{
 		global $phpEx, $phpbb_root_path;
 		
-		if (!class_exists('rpevents'))
+		if (!class_exists('\bbdkp\raidplanner\rpevents'))
 		{
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
 		}
@@ -284,6 +285,49 @@ class rpraid
 		}
 		
 	}
+
+    /**
+     * raidplan class property getter
+     * @param string $fieldName
+     */
+    public function __get($fieldName)
+    {
+        global $user;
+
+        if (property_exists($this, $fieldName))
+        {
+            return $this->$fieldName;
+        }
+        else
+        {
+            trigger_error($user->lang['ERROR'] . '  '. $fieldName, E_USER_WARNING);
+        }
+    }
+
+    /**
+     * raidplan class property setter
+     * @param string $property
+     * @param string $value
+     */
+    public function __set($property, $value)
+    {
+        global $user;
+        switch ($property)
+        {
+            case 'xxx':
+                // is readonly
+                break;
+            default:
+                if (property_exists($this, $property))
+                {
+                    $this->$property = $value;
+                }
+                else
+                {
+                    trigger_error($user->lang['ERROR'] . '  '. $property, E_USER_WARNING);
+                }
+        }
+    }
 
 	/**
 	 * make raidplan object for display
@@ -458,9 +502,9 @@ class rpraid
 						{
 							foreach($this->mychars as $chid => $mychar)
 							{
-								if($mychar['id'] == $asignup['dkpmemberid'])
+								if($mychar['id'] == $asignup->dkpmemberid)
 								{
-									switch ($asignup['signup_val'])
+									switch ($asignup->signup_val)
 									{
 										case 1:
 											$this->signed_up_maybe = true;
@@ -476,7 +520,7 @@ class rpraid
 						}
 					}
 				}
-				
+
 				if(is_array($myrole['role_confirmations']))
 				{
 					foreach($myrole['role_confirmations'] as $asignup)
@@ -485,7 +529,7 @@ class rpraid
 						{
 							foreach($this->mychars as $chid => $mychar)
 							{
-								if($mychar['id'] == $asignup['dkpmemberid'])
+								if($mychar['id'] == $asignup->dkpmemberid)
 								{
 									$this->confirmed = true;
 								}
@@ -505,7 +549,7 @@ class rpraid
 					{
 						foreach($this->mychars as $chid => $mychar)
 						{
-							if($mychar['id'] == $asignoff['dkpmemberid'])
+							if($mychar['id'] == $asignoff->dkpmemberid)
 							{
 								$this->signed_off = true;
 								$this->signed_up = false;
@@ -599,7 +643,7 @@ class rpraid
 	/**
 	 * shows the form to add/edit raidplan
 	 */
-	public function showadd(calendar $cal, $raidplan_id)
+	public function showadd(RaidCalendar $cal, $raidplan_id)
 	{
 		global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
@@ -1195,9 +1239,9 @@ class rpraid
 	/**
 	 * collects data from form, constructs raidplan object for insert or update
 	 *
-	 * @param calendar $cal
+	 * @param RaidCalendar $cal
 	 */
-	private function addraidplan(calendar $cal)
+	private function addraidplan(RaidCalendar $cal)
 	{
 
 		global $user;
@@ -1628,7 +1672,7 @@ class rpraid
 				 // loop confirmed signups per role
 				 foreach($role['role_confirmations'] as $confirmation)
 				 {
-				 	$confdetail = new rpsignup();
+				 	$confdetail = new RaidplanSignup();
 				 	$confdetail->getSignup($confirmation['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
 				 	
 				 	$edit_text_array = generate_text_for_edit( $confdetail->comment, $confdetail->bbcode['uid'], 7);
@@ -1685,8 +1729,8 @@ class rpraid
 				 // loop available signups per role
 				 foreach($role['role_signups'] as $signup)
 				 {
-				 	$signupdetail = new rpsignup();
-				 	$signupdetail->getSignup($signup['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
+				 	$signupdetail = new RaidplanSignup();
+				 	$signupdetail->getSignup($signup->signup_id, $this->eventlist->events[$this->event_type]['dkpid'] );
 					$edit_text_array = generate_text_for_edit( $signupdetail->comment, $signupdetail->bbcode['uid'], 7);
 					
 					if( $signupdetail->signup_val == 1 )
@@ -1738,7 +1782,7 @@ class rpraid
 	       				'SIGNUP_ID' 	 	=> $signupdetail->signup_id,
 						'RAIDPLAN_ID' 	 	=> $signupdetail->raidplan_id, 
 	       				'POST_TIME' 	 	=> $user->format_date($signupdetail->signup_time, $config['rp_date_time_format'], true),
-						'POST_TIMESTAMP' 	=> $signup['signup_time'],
+						'POST_TIMESTAMP' 	=> $signup->signup_time,
 						'DETAILS' 			=> generate_text_for_display($signupdetail->comment, $signupdetail->bbcode['uid'], $signupdetail->bbcode['bitfield'], 7),
 						'EDITDETAILS' 		=> $edit_text_array['text'],					
 						'HEADCOUNT' 		=> $signupdetail->signup_count,
@@ -1776,7 +1820,7 @@ class rpraid
 			foreach($this->signoffs as $key => $signoff)
 			{
 					 	
-				$signoffdetail = new rpsignup();
+				$signoffdetail = new RaidplanSignup();
 				$signoffdetail->getSignup($signoff['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
 				$edit_text_array = generate_text_for_edit( $signoffdetail->comment, $signoffdetail->bbcode['uid'], 7);
 				
@@ -2360,21 +2404,6 @@ class rpraid
 		}
 		
 	}
-	
-	/**
-	 * checks if raid can be created as recurring
-	 *
-	 */
-	private function checkauth_addrecurring()
-	{
-		global $auth;
-		$this->auth_addrecurring = false;
-		if( $auth->acl_get('u_raidplanner_create_recurring_raidplans') )
-		{
-			$this->auth_addrecurring = true;
-		}
-			
-	}
 
 	
 	/**
@@ -2450,11 +2479,11 @@ class rpraid
 	{
 		global $db, $phpEx, $phpbb_root_path, $db;
 
-		if (!class_exists('rpsignup'))
+		if (!class_exists('\bbdkp\raidplanner\RaidplanSignup'))
 		{
-			require("{$phpbb_root_path}includes/bbdkp/raidplanner/rpsignups.$phpEx");
+			require("{$phpbb_root_path}includes/bbdkp/raidplanner/RaidplanSignup.$phpEx");
 		}
-		$rpsignup = new rpsignup();
+		$rpsignup = new RaidplanSignup();
 		
 		// fill mychars array for popup
 		$this->mychars = $rpsignup->getmychars($this->id);
@@ -2472,12 +2501,12 @@ class rpraid
 				if($rpsignup->signup_val == 1 || $rpsignup->signup_val == 2)
 				{
 					// maybe + available
-					$this->raidroles[$roleid]['role_signups'][] = get_object_vars($rpsignup);
+					$this->raidroles[$roleid]['role_signups'][] = $rpsignup;
 				}
 				elseif($rpsignup->signup_val == 3)
 				{
 					//confirmed
-					$this->raidroles[$roleid]['role_confirmations'][] = get_object_vars($rpsignup);
+					$this->raidroles[$roleid]['role_confirmations'][] = $rpsignup;
 				}
 				
 			}
@@ -2496,13 +2525,13 @@ class rpraid
 	 */
 	public function get_unavailable()
 	{
-		global $db, $config, $phpbb_root_path, $db;
+		global $db, $config, $phpbb_root_path, $db, $phpEx;
 		
-		if (!class_exists('rpsignup'))
+		if (!class_exists('\bbdkp\raidplanner\RaidplanSignup'))
 		{
-			require("{$phpbb_root_path}includes/bbdkp/raidplanner/rpsignups.$phpEx");
+			require("{$phpbb_root_path}includes/bbdkp/raidplanner/RaidplanSignup.$phpEx");
 		}
-		$rpsignup = new rpsignup();
+		$rpsignup = new RaidplanSignup();
 		
 		$sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val = 0";
 		$result = $db->sql_query($sql);
@@ -2512,7 +2541,7 @@ class rpraid
 		{
 			$rpsignup->getSignup($row['signup_id'], $this->eventlist->events[$this->event_type]['dkpid']);
 			//get all public object vars to signup array and bind to role
-			$this->signoffs[] = get_object_vars($rpsignup);
+			$this->signoffs[] = $rpsignup;
 		}
 		$db->sql_freeresult($result);
 	}
@@ -2583,7 +2612,7 @@ class rpraid
 		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
-		if (!class_exists('raidmessenger'))
+		if (!class_exists('\bbdkp\raidplanner\raidmessenger'))
 		{
 			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
 		}
@@ -2865,8 +2894,8 @@ class rpraid
         }
 
         $RaidController = new \bbdkp\controller\raids\RaidController($raid['dkpid']);
-        $this->RaidController->init_newraid();
-        $event = $this->RaidController->eventinfo[$raid['event_id']];
+        $RaidController->init_newraid();
+        $event = $RaidController->eventinfo[$raid['event_id']];
         $raidinfo = array(
             'raid_note' 		=> (string) $raid['raid_note'],
             'event_id' 			=> $raid['event_id'],
@@ -2885,6 +2914,7 @@ class rpraid
 		}
 
         $raid_id = $RaidController->add_raid($raidinfo, $raid_detail);
+
         $PointsController = new \bbdkp\controller\points\PointsController();
         $PointsController->add_points($raid_id);
 

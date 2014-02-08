@@ -6,7 +6,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
-
+namespace bbdkp\raidplanner;
 
 /**
  * @ignore
@@ -17,19 +17,19 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 // Include the base class
-if (!class_exists('calendar'))
+if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar.' . $phpEx);
+	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
 }
 
 /**
  * implements a calendar frame
  *
  */
-class rpframe extends calendar
+class DisplayRaidCalendar extends RaidCalendar
 {
 	private $mode = '';
-	private $message = '';
+	private $Message = '';
 	
 	/**
 	 * 
@@ -45,31 +45,38 @@ class rpframe extends calendar
 	 * implements abstract method
 	 */
 	public function display()
-	{	
-		$this->displayCalframe();
+	{
+        $this->getMessage();
+        $this->DisplayCalendar();
+
 	}
-	
+
+    /**
+     * Set Welcome message
+     */
+    private function getMessage()
+    {
+        global $db;
+        $sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
+        $db->sql_query($sql);
+        $result = $db->sql_query($sql);
+        while ( $row = $db->sql_fetchrow($result) )
+        {
+            $text = $row['announcement_msg'];
+            $bbcode_uid = $row['bbcode_uid'];
+            $bbcode_bitfield = $row['bbcode_bitfield'];
+            $bbcode_options = $row['bbcode_options'];
+        }
+        $this->Message = \generate_text_for_display($text, $bbcode_uid, $bbcode_bitfield, $bbcode_options);
+    }
+
 	/**
 	 * Displays common Calendar elements, header message
 	 * 
 	 */
-	private function displayCalframe()
+	private function DisplayCalendar()
 	{
 		global $config, $user, $template, $db, $phpEx, $phpbb_root_path;
-		
-		// set WELCOME_MSG
-		$sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
-		$db->sql_query($sql);
-		$result = $db->sql_query($sql);
-		while ( $row = $db->sql_fetchrow($result) )
-		{
-			$text = $row['announcement_msg'];
-			$bbcode_uid = $row['bbcode_uid'];
-			$bbcode_bitfield = $row['bbcode_bitfield'];
-			$bbcode_options = $row['bbcode_options'];
-		}
-		
-		$this->message = generate_text_for_display($text, $bbcode_uid, $bbcode_bitfield, $bbcode_options);
 		
 		$view_mode=request_var("view", "month");
 
@@ -164,7 +171,7 @@ class rpframe extends calendar
 			'S_SHOW_WELCOME_MSG'	=> ($config ['rp_show_welcomemsg'] == 1) ? true : false,
 			'CALENDAR_PREV'			=> $prev_link,
 			'CALENDAR_NEXT'			=> $next_link,
-			'WELCOME_MSG'			=> $this->message,
+			'WELCOME_MSG'			=> $this->Message,
 			'FRAME_CALD'			=> $this->date['day'],
 			'FRAME_CALM'			=> $this->date['month_no'],
 			'FRAME_CALY'			=> $this->date['year'],

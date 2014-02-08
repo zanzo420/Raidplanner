@@ -9,7 +9,7 @@
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @version 0.9.0
 */
-
+namespace bbdkp\raidplanner;
 
 /**
  * @ignore
@@ -20,16 +20,16 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 // Include the base class
-if (!class_exists('calendar'))
+if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/calendar.' . $phpEx);
+	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
 }
 
 /**
  * implements a week view
  *
  */
-class rpweek extends calendar
+class rpweek extends RaidCalendar
 {
 	private $mode = '';
 	
@@ -101,12 +101,12 @@ class rpweek extends calendar
 		}
 		
 		// array of raid days
-		if (!class_exists('rpraid'))
+		if (!class_exists('\bbdkp\raidplanner\Raidplan'))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
 		}
-		$rpraid = new rpraid();
-		$raiddays = $rpraid->GetRaiddaylist($fdaystamp, $ldaystamp);
+		$raidplan = new Raidplan();
+		$raiddays = $raidplan->GetRaiddaylist($fdaystamp, $ldaystamp);
 		// array of bdays
 		$birthdays = $this->generate_birthday_list( $fdaystamp, $ldaystamp);
 		
@@ -225,7 +225,7 @@ class rpweek extends calendar
 						if($raidday['day'] == $true_j)
 						{
 							//raid(s) found get detail
-							$raidplan_output = $rpraid->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
+							$raidplan_output = $raidplan->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
 							foreach($raidplan_output as $raid )
 							{
 								$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);

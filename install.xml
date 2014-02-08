@@ -81,14 +81,13 @@
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 			<file from="root/styles/prosilver/template/dkp/jquery.tools.min.js" to="styles/prosilver/template/dkp/jquery.tools.min.js"/>
 			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
-			<file from="root/umil/*.*" to="umil/*.*"/>
 		</copy>
 		<open src="index.php">
 			<edit>
 				<comment lang="en"><![CDATA[Include class]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
 				<action type="after-add"><![CDATA[// [+]Raidplanner
-if (!class_exists('\rpweek', false))
+if (!class_exists('\bbdkp\raidplanner\rpweek', false))
 {
 	if ($config['rp_index_display_week'] == 1)
 	{
@@ -107,7 +106,7 @@ if (!class_exists('\rpweek', false))
 if ($config['rp_index_display_week'] == 1)
 {
 	$user->add_lang ( array ('mods/raidplanner'));
-	$cal = new rpweek();
+	$cal = new \bbdkp\raidplanner\rpweek();
 	$cal->display();
 }
 // [-]Raidplanner
