@@ -7,11 +7,11 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner 0.9.0]]></title>
-		<description lang="en"><![CDATA[Raidplanner 0.9.0 plugin for bbDKP
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.10.0]]></title>
+		<description lang="en"><![CDATA[Raidplanner 0.10.0 plugin for bbDKP
 		forked from phpbb3 Calendar and phpRaider.
 		see /docs/install.html and /docs/changelog.html
-		Requires bbDKP 1.3.0 or higher to be installed.
+		Requires bbDKP 1.3.0-b3 or higher to be installed.
 		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></description>
 		<author-notes lang="en"><![CDATA[Requires bbDKP 1.3 or higher to be installed.]]></author-notes>
 		<author-group>
@@ -29,18 +29,18 @@
 				<username><![CDATA[alightner]]></username>
 				<homepage><![CDATA[http://www.phpbbcalendarmod.com]]></homepage>
 				<contributions-group>
-					<contributions status="past" from="20.9.09-07" to="2010-09-30" position="Developer"/>
+					<contributions status="past" from="20.10.09-07" to="2010-09-30" position="Developer"/>
 				</contributions-group>
 			</author>
 			<author>
 				<realname><![CDATA[T. Farmer]]></realname>
 				<username><![CDATA[SpaceDoG]]></username>
 				<contributions-group>
-					<contributions status="past" from="20.9.09-06" to="2007-10-29" position="Developer"/>
+					<contributions status="past" from="20.10.09-06" to="2007-10-29" position="Developer"/>
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.9.0</mod-version>
+		<mod-version>0.10.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>600</time>
@@ -219,7 +219,6 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 <!-- IF S_PLANNER_TOPSIGNUPS -->
 <!-- INCLUDE dkp/block/planner_topsignups.html -->
 <!-- ENDIF -->
-
 
 ]]></action>
 			</edit>

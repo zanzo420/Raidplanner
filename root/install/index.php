@@ -50,14 +50,14 @@ if  (!isset ($config['bbdkp_version']) )
 }
 else
 {
-	if(version_compare($config['bbdkp_version'], '1.3.0') == -1 ) 
+	if(version_compare($config['bbdkp_version'], '1.3.0-b3') == -1 )
 	{
-	    trigger_error('Radplanner 0.9.0 requires bbDKP 1.3.0 or higher.');
+	    trigger_error('Radplanner 0.10.0 requires bbDKP 1.3.0-b3 or higher.');
 	}
 }
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 0.9.0';
+$mod_name = 'Raidplanner 0.10.0';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -75,7 +75,7 @@ $language_file = 'mods/raidplanner';
 * $phpbb_root_path will get prepended to the path specified
 * Image height should be 50px to prraidplan cut-off or stretching.
 */
-//$logo_img = 'images/bbdkp.png';
+$logo_img = 'install/logo.png';
 
 $announce = encode_announcement($user->lang['RP_WELCOME_DEFAULT']);
 
@@ -574,14 +574,19 @@ $versions = array(
         
         '0.8.0' => 
         array(
-        	
+
         ),        
         
         '0.9.0' => 
         array(
-        	'custom' => array('purgecaches', 'versionupdater'),            
-        ),  
-        
+
+        ),
+
+        '0.10.0' =>
+        array(
+            'table_remove'  => array('phpbb_rp_recurring'),
+            'custom' => array('purgecaches', 'versionupdater'),
+        ),
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
