@@ -189,7 +189,7 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 				<comment lang="en"><![CDATA[Add calendar under forum index page]]></comment>
 				<find><![CDATA[<!-- INCLUDE forumlist_body.html -->]]></find>
 				<action type="after-add"><![CDATA[<!-- IF S_PLANNER_WEEK -->
-	<!-- INCLUDE planner/calendar/planner_view_month.html -->
+	<!-- INCLUDE planner/RaidCalendar/planner_view_month.html -->
 <!-- ENDIF -->
 ]]></action>
 			</edit>
