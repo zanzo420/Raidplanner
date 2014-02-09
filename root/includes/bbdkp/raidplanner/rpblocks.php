@@ -5,9 +5,10 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.7.0
+* @version 0.9.0
 */
 
+namespace bbdkp\raidplanner;
 
 /**
  * @ignore
@@ -17,10 +18,9 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
-
 /**
- * raidplanner blocks
- *
+ * raidplanner side blocks
+ * @package bbdkp\raidplanner
  */
 class rpblocks 
 {
@@ -123,10 +123,10 @@ class rpblocks
 		{
 			$dkpmembername = $row['member_name'];
 			$classname = $row['member_class'];
-			$imagename = (strlen($row['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $row['imagename'] . ".png" : '';
+			$imagename = (strlen($row['imagename']) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $row['imagename'] . ".png" : '';
 			$colorcode = $row['colorcode'];
 			$race_image = (string) (($row['member_gender_id']==0) ? $row['image_male'] : $row['image_female']);
-			$raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/race_images/" . $race_image . ".png" : '';
+			$raceimg = (strlen($race_image) > 1) ? $phpbb_root_path . "images/bbdkp/race_images/" . $race_image . ".png" : '';
 			$level =  $row['member_level'];
 			$countsignups =  $row['countsignups'];
 			
@@ -173,37 +173,37 @@ class rpblocks
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		
 		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0);
-		if (!class_exists('rpraid', false))
+		if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpraid.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
 		}
 					
 		while ($row = $db->sql_fetchrow($result))
 		{
 			
-			unset($rpraid);
-			$rpraid = new rpraid($row['raidplan_id']);
-			if(strlen( $rpraid->eventlist->events[$rpraid->event_type]['imagename'] ) > 1)
+			unset($raidplan);
+			$raidplan = new Raidplan($row['raidplan_id']);
+			if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/" . $rpraid->eventlist->events[$rpraid->event_type]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
 				
 			}
 			else 
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
 			}
 			
 			$template->assign_block_vars('upcoming', array(
-				'RAID_ID'				=> $rpraid->id,
-				'EVENTNAME'			 	=> $rpraid->eventlist->events[$rpraid->event_type]['event_name'], 
-				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$rpraid->id), 
-				'EVENT_ID'  			=> $rpraid->id,
-				'COLOR' 				=> $rpraid->eventlist->events[$rpraid->event_type]['color'],
-				'SUBJECT'				=> censor_text($rpraid->subject),
+				'RAID_ID'				=> $raidplan->id,
+				'EVENTNAME'			 	=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'],
+				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
+				'EVENT_ID'  			=> $raidplan->id,
+				'COLOR' 				=> $raidplan->eventlist->events[$raidplan->event_type]['color'],
+				'SUBJECT'				=> censor_text($raidplan->subject),
 				'IMAGE' 				=> $eventimg, 
-				'START_TIME'			=> $user->format_date($rpraid->start_time, $config['rp_date_format'], true),
-				'END_TIME' 				=> $user->format_date($rpraid->end_time, $config['rp_time_format'], true),
-				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $rpraid->poster) ? true : false,
+				'START_TIME'			=> $user->format_date($raidplan->start_time, $config['rp_date_format'], true),
+				'END_TIME' 				=> $user->format_date($raidplan->end_time, $config['rp_time_format'], true),
+				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->poster) ? true : false,
 			));
 		}
 		$db->sql_freeresult($result);

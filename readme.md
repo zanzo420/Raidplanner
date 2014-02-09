@@ -1,15 +1,12 @@
-0.8.0 http://bbdkp.github.com/Raidplanner/
+[![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
 
-Support : http://www.bbdkp.com/viewforum.php?f=61
-
-#Raidplanner v0.8.0
+#Raidplanner
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
-### todo list
-*	Recurring Raidplans
 
-### General Features
+##### General Features
+* Hooks into the bbDKP, Raid, Event and Members classes, so bbDKP must be installed before. It has an Automod MODX & UMIL Database installer. No manual installation necessary.
 *	3 Raidplan types exist : Public Raidplans (no signup), Raid Raidplans (Signup), and personal Raidplans.
 *	Raidplan event types are picked from bbDKP. if you need new events, set up one in the event list. Event Icons are shown in the raidplan.
 *	Support for BBCode and Smilies
@@ -17,10 +14,10 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	email on new raid addition, update, delete
 *	acp setting to enable/disable pm/email
 * 	new buttons for add, edit, push
-*	create Raidplans as raids in bbDKP
+*	export Raidplans as raids in bbDKP
 *	raid and portal blocks showing upcoming raids, top signups, clock
 *	clear icons for each function
-*	comes in English, french and german
+*	comes in English, French and German
 
 ##### Inviting and signing up
 *	Confirm Raid Raidplans 
@@ -49,20 +46,143 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	New permission option to invite groups you're not a member of - if this is turned on, you'll be able to create Raidplans for groups you don't belong to, but the author of the Raidplan will always be able to see their own Raidplans - even if they don't belong to the invite list.
 *	Detailed permissions for ability to create private, group, or public Raidplans - now you can give some users the power to create public Raidplans, and others only permission to create private Raidplans, or whatever combination makes sense for your forum.
 
-#### ACP
+##### ACP
 *	Auto pruning of past Raidplans - From the ACP you control how often Raidplans are pruned, and how old they have to be before they are added to the delete list.
 *	Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred date/time format, so you can display just the time in hours where it makes sense (like in the week view) or the whole date+time (like in the display Raidplan)
 *	UCP module that displays upcoming Raidplans (that the user has registered for) for the next X days.
 
-### Installation
-* 	Unzip the zip file into /store/mods/</li>
-* 	Launch automod, choose the install link. this will copy all the files, perform the necessary edits. </li>
+## Current
+
+v0.9.0
+
+## Installation
+* 	Unzip the zip file into /store/mods
+* 	Launch automod, choose the install link. this will copy all the files, perform the necessary edits. 
 * 	Then surf to /install/index.php, and you will see the database installer. Launch the database installer.  This will install the acp module, and clear the caches (template, theme, imagesets)
 *	Once installed, you will find the ACP module added under the raid section in bbdkp ACP.</li>
 
-### Requirements
-*	bbDKP 1.2.8-pl2 or higher
-*	phpBB 3.0.10
+
+## Requirements
+*	bbDKP 1.3 or higher
+*	phpBB 3.0.12
+
+### History and credits 
+
+*	Raidplanner mod was partly made from Alightner's Calendar mod and phpRaider, refactored into functional classes to work with bbDKP. 
+
+### Milestones 
+
+*	1.0.0 
+	*	add API to interface with rss feed to populate calendar
+
+### changes
+
+* 0.9.0
+	*	changed for phpBB 3.0.12
+	*	compatible with bbDKP 1.3 class structure
+	*	moved to raidplanner namespace
+*	0.8.0 2012-08-22
+	*	[FIX] merged addraid form elements
+	*	[FIX] removed redundant calendar type select pulldown
+	*	[FIX] cleaned up event, group select pulldowns
+	*	[FIX] refactored calEid to raidplanid in urls
+*	0.7.0 2012-08-21
+	*	[FIX] fixed ACP team composition registration
+	*	[FIX] improved ACP layout
+*	0.6.0 2012-08-20
+	*	[UPD] updated french and german email templates
+	*	[NEW] new page layout in dayview
+	*	[NEW] new raidframe calendar type controls
+	*	[NEW] new "leatherlook" in planner header
+	*	[CHG] calendar date links now link to dayview
+	*	[CHG] calendar day,week,month icons removed from day box
+	*	[NEW] new icons for editing, deleting raidplans
+	*	[NEW] welcome message moved to block
+	*	[FIX] missing language entry for push permission
+	*	[FIX] fixed #214 tooltip no longer appears on wrong date
+	*	[FIX] fixed #202 : if the confirmed raider is unsigned after raid was pushed, exec_decreasedkp_after_unsign decreases dkp points by event standard amount 
+*	0.5.0 2012-08-02
+	*	[NEW] MSSQL, postgreSQL support
+	*	[UPD] requires with bbDKP 1.2.8
+	*	[NEW] random number of roles
+	*	[NEW] PM/email on new/updated/deleted raidplan
+	*	[NEW] PM/email on new/confirmed/benched signup
+	*	[NEW] New style buttons
+	*	[NEW] Push Raid button, to make raid in bbDKP
+*	0.4.0 2012-04-16
+	*	[FIX] raidplan class initialisation now resets properties on build
+	*	[NEW] raidplan tooltip now shows 'frozen' when raid has passed
+	*	[NEW] raidplan tooltip now shows your signup status (signed up, maybe, confirmed, signed off
+	*	[NEW] confirmation box when adding or editing raidplan 
+	*	[NEW] delete button for raidplan 
+	*	[NEW] added plugin table installer
+	*	[NEW] added the week view in the board index
+	*	[FIX] signup comments now suppot bbcode
+	*	[FIX] dont show signup form if user has no character bound
+	*	[CHG] raidplan requeue and editcomments are now Overlays
+	*	[FIX] raidplan display requeue button works now
+	*	[UPD] updated jquery to v172
+	*	[UPD] updated jquery tools to v127
+	*	[FIX] added acp config to toggle portal dispnay
+	*	[NEW] added upcoming raids raidblock to portal 
+	*	[NEW] added top raiders raidblock to portal 
+	*	[FIX] renamed installer to index.php
+*	0.3.0 2011-11-21
+	*	[NEW] opacity change when hovering
+	*	[FIX] w3c, mod validator fixes
+	*	[FIX] made tooltips smaller
+	*	[NEW] new signup pane in raid view (js popup stays)
+	*	[NEW] html5 canvas clock added 
+	*	[FIX] timezone handling improved, now prints timezone 
+	*	[FIX] ticket 135 (could not add raid on date before today in next month) 
+	*	[FIX] renamed installer to index.php
+	*	[FIX] redid dummy icon in photoshop
+	*	[FIX] normaised css so that it fits in prosilver
+	*	[NEW] French translation
+*	0.2.2 2011-10-04
+	*	[FIX] added singup sync function called prior to confirms, requeue, delete (should not be necessary)
+	*	[FIX] fixed arrow button hover text, added lang variable
+*	0.2.1 2011-10-01
+	*	[FIX] date arrows were missing
+	*	[NEW] added event icons for Cataclysm
+*	0.2.0 2011-09-18
+	*	[NEW] delivered with two css files (dark or light)
+	*	[NEW] split html in files, using inclusion to integrate them with IFs
+	*	[NEW] uses jqueryTools tooltip, changes behaviour depending on raidplan state (signup or raidplan view
+	*	[CHG] removed event registration, Raid Events now picked up from bbDKP.
+	*	[CHG] removed unnecessary code
+	*	[CHG] UCP module with available raids
+	*	[CHG] changed tablenames, appends table constants to bbDKP constants file
+	*	[CHG] is plugin for bbDKP 1.2.4
+	*	[CHG] split backend /includes code and recoded/refactored into php5 classes using factory/strategy pattern. 
+	*	[CHG] added UMIF installer script, removed sql portions from modx
+	*	[CHG] Removed config table, now uses phpbb config table.
+	*	[CHG] split modx file into main, template and language
+	*	[CHG] forked from Calendar mod 0.1.0 renamed Raidplanner
+	
+
+## Community
+
+Find support and more on [bbDKP.com](http://www.bbdkp.com)
+
+### contribute
+
+Send us a pull request
+
+### license
+
+[GNU General Public License v2](http://opensource.org/licenses/gpl-2.0.php)
+
+This application is opensource software released under the GPL. Please see source code and the docs directory for more details. Powered by bbDkp (c) 2009 The bbDkp Project Team bbDkp. If you use this software and find it to be useful, we ask that you retain the copyright notice below.
+bbDKP (c) 2008, 2009 Sajaki, Malfate, Kapli, Hroar
+bbDKP (c) 2007 Ippeh, Teksonic, Monkeytech, DWKN
+EQDkp (c) 2003 The EqDkp Project Team 
+
+## Paypal donation
+
+[![Foo](https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=sajaki9%40gmail%2ecom&lc=BE&item_name=bbDKP%20Guild%20management&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+
+
 
 
 

@@ -5,7 +5,7 @@
  * @package bbDkp
  * @copyright 2010 bbdkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version $Id$
+ * @version 0.9.0
  * 
  */
 
@@ -24,14 +24,6 @@ $lang = array_merge($lang, array(
     '12_HOURS'								=> '12 hours',
     '24_HOURS'								=> '24 hours',
 	'ON'									=> ' on ', 
-    'AUTO_POPULATE_EVENT_FREQUENCY'			=> 'Auto Populate Recurring Raids',
-    'AUTO_POPULATE_EVENT_FREQUENCY_EXPLAIN'	=> 'How often (in days) should recurring raids be populated in the calendar?  Note if you select 0, recurring raids will never get added to the calendar.',
-    'AUTO_POPULATE_EVENT_LIMIT'				=> 'Auto Populate Limits',
-    'AUTO_POPULATE_EVENT_LIMIT_EXPLAIN'		=> 'How many days in advance do you want to populated with recurring raids?  In other words, do you want to only see recurring raids in the calendar for 30, 45, or more days before the raid?',
-    'AUTO_PRUNE_EVENT_FREQUENCY'			=> 'Auto Prune Past Raids',
-    'AUTO_PRUNE_EVENT_FREQUENCY_EXPLAIN'	=> 'How often (in days) should past raids be pruned from the calendar?  Note if you select 0, past raids will never be auto-pruned, you will have to delete them by hand.',
-    'AUTO_PRUNE_EVENT_LIMIT'				=> 'Auto Prune Limits',
-    'AUTO_PRUNE_EVENT_LIMIT_EXPLAIN'		=> 'How many days after an raid do you want to add the raid to the next auto prune\'s delete list?  In other words, do you want all raids to remain in the calendar for 0, 30, or 45 days after the raid?',
     'CLICK_PLUS_HOUR'						=> 'Move ALL raids by one hour.',
     'CLICK_PLUS_HOUR_EXPLAIN'				=> 'Being able to move all raids in the calendar +/- one hour helps when you reset the boards daylight savings time setting.  Note clicking on the links to move the raids will loose any changes you have made above.  Please submit the form to save your work before moving the raids +/- one hour.',
     'COLOR'									=> 'Color',
@@ -104,6 +96,7 @@ $lang = array_merge($lang, array(
 	'NOPUSH' 								=> 'No DKP raid creation', 
 	'PUSHRAIDPLAN' 							=> 'Create Raid in bbDKP',
 	'PUSHRAIDPLAN_EXPLAIN' 					=> 'After role confirmation, the Raidplan is created/updated as a new raid in bbDKP.',
+
 	//confirms
 	'RETURN_RP'					=> 'Return to Raidplanner Settings', 
 	'ROLE_DELETE_SUCCESS'		=> 'The role %s was deleted.',
@@ -185,11 +178,12 @@ $lang = array_merge($lang, array(
 
 	'FROM_TIME'				=> 'From',
 	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring raids must have a frequency greater than or equal to 1',
+
 	'FROZEN_TIME'			=> 'Freeze Raid time.',
-	'FROZEN_EXPLAIN'		=> 'Freeze the raid x hours before Start time. Permissions differ per role',
+	'FROZEN_EXPLAIN'		=> 'Freeze Raids x hours after (positive) or before (negative) Raid Invite time. After this no Signups can be done. Set to 0 to disable.',
 
 	'EXPIRE_TIME'			=> 'Expire Raid Time',
-	'EXPIRE_EXPLAIN'		=> 'Expire raids x hours after Raid start time. Permissions differ per role. ',
+	'EXPIRE_EXPLAIN'		=> 'Expire Raids x hours after Raid start time. After this no Edits can be done. Set to 0 to disable. ',
  
 	'HOW_MANY_PEOPLE'		=> 'Quick Headcount',
 	'HOUR'					=> 'Hour',

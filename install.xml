@@ -2,19 +2,18 @@
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
 <!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
 <!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner 0.8.0]]></title>
-		<description lang="en"><![CDATA[Raidplanner 0.8.0 plugin for bbDKP 
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.9.0]]></title>
+		<description lang="en"><![CDATA[Raidplanner 0.9.0 plugin for bbDKP
 		forked from phpbb3 Calendar and phpRaider.
 		see /docs/install.html and /docs/changelog.html
-		Requires bbDKP 1.2.8-pl2 or higher to be installed. 
-		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com
-		]]></description>
-		<author-notes lang="en"><![CDATA[Requires bbDKP 1.2.8-pl2 or higher to be installed.]]></author-notes>
+		Requires bbDKP 1.3.0 or higher to be installed.
+		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></description>
+		<author-notes lang="en"><![CDATA[Requires bbDKP 1.3 or higher to be installed.]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -30,25 +29,25 @@
 				<username><![CDATA[alightner]]></username>
 				<homepage><![CDATA[http://www.phpbbcalendarmod.com]]></homepage>
 				<contributions-group>
-					<contributions status="past" from="20.8.09-07" to="2010-09-30" position="Developer"/>
+					<contributions status="past" from="20.9.09-07" to="2010-09-30" position="Developer"/>
 				</contributions-group>
 			</author>
 			<author>
 				<realname><![CDATA[T. Farmer]]></realname>
 				<username><![CDATA[SpaceDoG]]></username>
 				<contributions-group>
-					<contributions status="past" from="20.8.09-06" to="2007-10-29" position="Developer"/>
+					<contributions status="past" from="20.9.09-06" to="2007-10-29" position="Developer"/>
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.8.0</mod-version>
+		<mod-version>0.9.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>600</time>
-			<target-version>3.0.10</target-version>
+			<target-version>3.0.12</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.2.8-pl2</link>
+			<link type="dependency" href="http://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.3</link>
 			<link type="language" href="contrib/fr.xml" lang="en">French</link>
 			<link type="language" href="contrib/fr.xml" lang="fr">Français</link>
 			<link type="language" href="contrib/fr.xml" lang="de">Franzözisch</link>
@@ -60,8 +59,8 @@
 	<action-group>
 		<copy>
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html"/>
-			<file from="root/images/raidrole_images/*.*" to="images/raidrole_images/*.*"/>
-			<file from="root/images/event_images/*.*" to="images/event_images/*.*"/>
+			<file from="root/images/bbdkp/raidrole_images/*.*" to="images/bbdkp/raidrole_images/*.*"/>
+			<file from="root/images/bbdkp/event_images/*.*" to="images/bbdkp/event_images/*.*"/>
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>
 			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*"/>
@@ -77,49 +76,21 @@
 			<file from="root/language/en/email/raidplan_delete.txt" to="language/en/email/raidplan_delete.txt"/>
 			<file from="root/language/en/email/signup_confirm.txt" to="language/en/email/signup_confirm.txt"/>
 			<file from="root/language/en/email/signup_unsign.txt" to="language/en/email/signup_unsign.txt"/>
-			<file from="root/language/en/email/signup_new.txt" to="language/en/email/signup_new.txt"/>									
+			<file from="root/language/en/email/signup_new.txt" to="language/en/email/signup_new.txt"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
 			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
-			<file from="root/styles/prosilver/template/dkp/jquery.js" to="styles/prosilver/template/dkp/jquery.js"/>			
-			<file from="root/styles/prosilver/template/dkp/jquery.tools.min.js" to="styles/prosilver/template/dkp/jquery.tools.min.js"/>						
-			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>						
-			<file from="root/umil/*.*" to="umil/*.*"/>
+			<file from="root/styles/prosilver/template/dkp/jquery.tools.min.js" to="styles/prosilver/template/dkp/jquery.tools.min.js"/>
+			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
 		</copy>
-		
-		<open src="portal.php">
-			<edit>
-				<comment lang="en"><![CDATA[ adding Planner block ]]></comment>
-				<find><![CDATA[	include($phpbb_root_path . 'includes/bbdkp/block/linksblock.' . $phpEx);
-}]]></find>
-				<action type="after-add"><![CDATA[
-if (isset($config['bbdkp_raidplanner']))
-{	
-	if ($config['rp_show_portal'] == 1)
-	{
-		$user->add_lang(array('mods/raidplanner'));
-		if (!class_exists('rpblocks', false))
-		{
-			//display the blocks
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);
-		}
-		$blocks = new rpblocks();
-		$blocks->display();
-	}
-}
-]]></action>
-		</edit>
-		</open>		
-		
 		<open src="index.php">
 			<edit>
 				<comment lang="en"><![CDATA[Include class]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[
-// [+]Raidplanner
-if (!class_exists('rpweek', false))
+				<action type="after-add"><![CDATA[// [+]Raidplanner
+if (!class_exists('\bbdkp\raidplanner\rpweek', false))
 {
 	if ($config['rp_index_display_week'] == 1)
-	{	
+	{
 		// display the entire week
 		define('IN_BBDKP', true);
 		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
@@ -131,19 +102,37 @@ if (!class_exists('rpweek', false))
 			<edit>
 				<comment lang="en"><![CDATA[Displays current week on index]]></comment>
 				<find><![CDATA[// Assign index specific vars]]></find>
-				<action type="before-add"><![CDATA[
-// [+]Raidplanner
+				<action type="before-add"><![CDATA[// [+]Raidplanner
 if ($config['rp_index_display_week'] == 1)
 {
 	$user->add_lang ( array ('mods/raidplanner'));
-	$cal = new rpweek();
+	$cal = new \bbdkp\raidplanner\rpweek();
 	$cal->display();
 }
 // [-]Raidplanner
 ]]></action>
 			</edit>
 		</open>
-		
+		<open src="/styles/prosilver/template/dkp/module/menu.html">
+			<edit>
+				<comment lang="en"><![CDATA[raidplanner link]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
+				<comment lang="de"><![CDATA[raidplanner link]]></comment>
+				<find><![CDATA[&nbsp; &nbsp;<a href="{U_LISTITEMHIST}">{L_MENU_ITEMHIST}</a>]]></find>
+				<action type="after-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
+]]></action>
+			</edit>
+		</open>
+		<open src="/styles/prosilver/theme/stylesheet.css">
+			<edit>
+				<comment lang="en"><![CDATA[raidplanner css]]></comment>
+				<comment lang="fr"><![CDATA[raidplanner css]]></comment>
+				<comment lang="de"><![CDATA[raidplanner css]]></comment>
+				<find><![CDATA[@import url("bbdkp.css");]]></find>
+				<action type="after-add"><![CDATA[@import url("raidplanner.css");
+]]></action>
+			</edit>
+		</open>
 		<open src="includes/functions.php">
 			<edit>
 				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
@@ -152,7 +141,7 @@ if ($config['rp_index_display_week'] == 1)
 				]]></action>
 			</edit>
 		</open>
-		<open src="includes/bbdkp/constants_bbdkp.php">
+		<open src="includes/bbdkp/admin/constants_bbdkp.php">
 			<edit>
 				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>
 				<comment lang="fr"><![CDATA[Ajout noms des tables]]></comment>
@@ -165,9 +154,9 @@ define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch');
 define('RP_WATCH',			$table_prefix . 'rp_watch');
 define('RP_ROLES',			$table_prefix . 'rp_roles');
 define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
-define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');				
-define('RP_TEAMS',		$table_prefix . 'rp_teams');				
-define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');				
+define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
+define('RP_TEAMS',		$table_prefix . 'rp_teams');
+define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 ]]></action>
 			</edit>
 		</open>
@@ -195,8 +184,7 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 		]]></action>
 			</edit>
 		</open>
-
-<open src="styles/prosilver/template/index_body.html">
+		<open src="styles/prosilver/template/index_body.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar under forum index page]]></comment>
 				<find><![CDATA[<!-- INCLUDE forumlist_body.html -->]]></find>
@@ -206,7 +194,6 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 ]]></action>
 			</edit>
 		</open>
-		
 		<open src="styles/prosilver/template/dkp/dkpmain.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to DKP page]]></comment>
@@ -217,47 +204,26 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 ]]></action>
 			</edit>
 		</open>
-		<open src="styles/prosilver/template/dkp/news_body.html">
+		<open src="styles/prosilver/template/dkp/portal_body.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add calendar to portal page]]></comment>
-				<find><![CDATA[<!-- IF S_DISPLAY_LINKS -->]]></find>
-				<action type="before-add"><![CDATA[		
+				<find><![CDATA[<!-- IF S_DISPLAY_LINKS -->
+<!-- INCLUDE dkp/block/links.html -->
+<!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[
+
 <!-- IF S_PLANNER_UPCOMING -->
-<!-- INCLUDE planner/raidplan/planner_upcoming.html -->
-<br/>
+<!-- INCLUDE dkp/block/planner_upcoming.html -->
 <!-- ENDIF -->
 
 <!-- IF S_PLANNER_TOPSIGNUPS -->
-<!-- INCLUDE planner/raidplan/planner_topsignups.html -->
-<br/>
+<!-- INCLUDE dkp/block/planner_topsignups.html -->
 <!-- ENDIF -->
+
 
 ]]></action>
 			</edit>
 		</open>
-		
-		<open src="/styles/prosilver/template/dkp/module/menu.html">
-			<edit>
-				<comment lang="en"><![CDATA[raidplanner link]]></comment>
-				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
-				<comment lang="de"><![CDATA[raidplanner link]]></comment>
-				<find><![CDATA[  <!-- IF U_ACP -->&nbsp; &nbsp; <a href="{U_DKP_ACP}">{L_MENU_ADMIN_PANEL}</a> <!-- ENDIF -->]]></find>
-				<action type="before-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
-]]></action>
-			</edit>
-		</open>
-		
-		<open src="/styles/prosilver/theme/stylesheet.css">
-			<edit>
-				<comment lang="en"><![CDATA[raidplanner css]]></comment>
-				<comment lang="fr"><![CDATA[raidplanner css]]></comment>
-				<comment lang="de"><![CDATA[raidplanner css]]></comment>
-				<find><![CDATA[@import url("bbdkp.css");]]></find>
-				<action type="after-add"><![CDATA[@import url("raidplanner.css");
-]]></action>
-			</edit>
-		</open>
-				
 		<php-installer><![CDATA[install/index.php]]></php-installer>
 		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/index.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to your style.]]></diy-instructions>
 	</action-group>
