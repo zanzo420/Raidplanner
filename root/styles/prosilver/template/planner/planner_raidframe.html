@@ -15,12 +15,13 @@
     </ul>
 
 <!-- middle section -->
+
 <div style="float: left; width: 100%; margin-left:0.5%; margin-right:0.5%">
 
 <!-- IF S_PLANNER_ADD -->
 <form id="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
 <!-- ENDIF -->
-<!-- INCLUDE planner/calendar/welcome.html -->
+
 <div class="leather">
 	<div class="calendar-control">
 	<ul>
@@ -68,19 +69,19 @@
 		</ul>
 	</div>
 </div>
-
+    <!-- INCLUDE planner/RaidCalendar/welcome.html -->
 	<!-- IF S_PLANNER_ADD -->
 		<!-- INCLUDE planner/raidplan/planner_post_body.html -->
 	<!-- ENDIF -->
 	
 	<!-- IF S_PLANNER_DAY -->
-		<!-- INCLUDE planner/calendar/planner_view_day.html -->
+		<!-- INCLUDE planner/RaidCalendar/planner_view_day.html -->
 	<!-- ENDIF -->
 	<!-- IF S_PLANNER_WEEK -->
-		<!-- INCLUDE planner/calendar/planner_view_month.html -->
+		<!-- INCLUDE planner/RaidCalendar/planner_view_month.html -->
 	<!-- ENDIF -->
 	<!-- IF S_PLANNER_MONTH -->
-		<!-- INCLUDE planner/calendar/planner_view_month.html -->
+		<!-- INCLUDE planner/RaidCalendar/planner_view_month.html -->
 	<!-- ENDIF -->
 
 	<!-- IF S_PLANNER_RAIDPLAN -->

@@ -6,14 +6,17 @@ jQuery(document).ready( function()
 <!-- BEGIN calendar_days -->
 <!-- BEGIN raidplans -->
 	jQuery("#raid_id{calendar_days.raidplans.RAID_ID}").tooltip(
-			{ offset: [5, 0],  
-				  effect: 'slide',  
-				  onShow: function() {this.getTrigger().fadeTo("slow", 0.25);},
-				  onHide: function() {this.getTrigger().fadeTo(300,1);}
-			}).dynamic({
-						 bottom: 
-							 { direction: 'up', bounce: true } 
-					 		});  
+			{
+                position:'top center',
+                relative:true,
+                effect: 'slide',
+                onShow: function() {
+                  var $trigger = this.getTrigger();
+                  $trigger.fadeTo("slow", 0.55);
+                },
+                onHide: function() {this.getTrigger().fadeTo(1,1);}
+
+			});
 <!-- END raidplans -->
 <!-- END calendar_days -->
 
@@ -21,14 +24,11 @@ jQuery(document).ready( function()
 );
 </script>
 
+
+<h2>{CALENDAR_HEADER}</h2>
 <div class="forumbg">
   	<div class="inner">
   	<span class="corners-inner-top"><span></span></span>
-    <ul class="topiclist">
-    	<li class= "header">
-    	<h1 style="color:#dfc065; white-space:nowrap;">{CALENDAR_HEADER}</h1>
-    	</li>
-    </ul>
 
   <table class="table1" cellspacing="1" cellpadding="0">
  <thead>

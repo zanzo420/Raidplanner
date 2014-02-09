@@ -96,6 +96,7 @@ $lang = array_merge($lang, array(
 	'NOPUSH' 								=> 'No DKP raid creation', 
 	'PUSHRAIDPLAN' 							=> 'Create Raid in bbDKP',
 	'PUSHRAIDPLAN_EXPLAIN' 					=> 'After role confirmation, the Raidplan is created/updated as a new raid in bbDKP.',
+
 	//confirms
 	'RETURN_RP'					=> 'Return to Raidplanner Settings', 
 	'ROLE_DELETE_SUCCESS'		=> 'The role %s was deleted.',
@@ -177,11 +178,12 @@ $lang = array_merge($lang, array(
 
 	'FROM_TIME'				=> 'From',
 	'FREQUENCEY_LESS_THAN_1'	=> 'Recurring raids must have a frequency greater than or equal to 1',
+
 	'FROZEN_TIME'			=> 'Freeze Raid time.',
-	'FROZEN_EXPLAIN'		=> 'Freeze the raid x hours before Start time. Permissions differ per role',
+	'FROZEN_EXPLAIN'		=> 'Freeze Raids x hours after (positive) or before (negative) Raid Invite time. After this no Signups can be done. Set to 0 to disable.',
 
 	'EXPIRE_TIME'			=> 'Expire Raid Time',
-	'EXPIRE_EXPLAIN'		=> 'Expire raids x hours after Raid start time. Permissions differ per role. ',
+	'EXPIRE_EXPLAIN'		=> 'Expire Raids x hours after Raid start time. After this no Edits can be done. Set to 0 to disable. ',
  
 	'HOW_MANY_PEOPLE'		=> 'Quick Headcount',
 	'HOUR'					=> 'Hour',

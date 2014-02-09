@@ -8,7 +8,10 @@
 * @version 0.9.0
 */
 namespace bbdkp\raidplanner;
-
+use bbdkp\raidplanner\raidmessenger;
+use bbdkp\controller\raids\RaidController;
+use bbdkp\controller\raids\Raiddetail;
+use bbdkp\controller\points\PointsController;
 /**
  * @ignore
  */
@@ -414,10 +417,7 @@ class Raidplan
 			$this->all_day=$row['raidplan_all_day'];
 			$this->day=$row['raidplan_day'];
 			
-			// is raid recurring ? 
-			// @todo not implemented yet !
 			$this->recurr_id = $row['recurr_id'];
-			//$this->get_recurring_raidplan_string_via_id( $raidplan_data['recurr_id'] )
 
 			$this->subject=$row['raidplan_subject'];
 			$this->body=$row['raidplan_body'];
@@ -440,13 +440,16 @@ class Raidplan
 			}
 			
 			//if raid invite time is in the past then raid signups are frozen.
-			// @todo make this optional
 			$this->frozen = false;
-			if($this->invite_time < time())
-			{
-				$this->frozen = true;
-			}
-			
+            if ($config['rp_default_freezetime'] != 0)
+            {
+                //compare invite epoch time plus (raid freeze time in hours times 3600) with the current epoch time. if expired then freeze signups
+                if( $this->invite_time + (3600 * (int) $config['rp_default_freezetime'])  < time() )
+                {
+                    $this->frozen = true;
+                }
+            }
+
 			//get your raid team
 			$this->raidteam = $row['raidteam'];
 			
@@ -1630,8 +1633,7 @@ class Raidplan
 
 		$total_needed = 0;
 		/* make url for signup action */
-		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;raidplanid=". 
-		$this->id);
+		$signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;raidplanid=". $this->id);
 		
 		//display signups only if this is not a personal appointment
 		if($this->accesslevel != 0)
@@ -1656,7 +1658,6 @@ class Raidplan
 				$total_needed += $role['role_needed'];
 
 				// loop signups per role
-				 
 				$template->assign_block_vars('raidroles', array(
 				        'ROLE_ID'        => $key,
 						'ROLE_DISPLAY'   => (count($role['role_signups']) > 0 ? true : false),
@@ -1673,7 +1674,7 @@ class Raidplan
 				 foreach($role['role_confirmations'] as $confirmation)
 				 {
 				 	$confdetail = new RaidplanSignup();
-				 	$confdetail->getSignup($confirmation['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
+				 	$confdetail->getSignup($confirmation->signup_id, $this->eventlist->events[$this->event_type]['dkpid'] );
 				 	
 				 	$edit_text_array = generate_text_for_edit( $confdetail->comment, $confdetail->bbcode['uid'], 7);
 					$candeleteconf = false;
@@ -1681,7 +1682,7 @@ class Raidplan
 					$editconfurl = "";
 					$deleteconfurl = "";
 					
-				 	if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $confirmation['poster_id'] == $user->data['user_id']  )
+				 	if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $confirmation->poster_id == $user->data['user_id']  )
 					{
 						// then if signup is not frozen then show deletion button
 						//@todo calculate frozen
@@ -1821,7 +1822,7 @@ class Raidplan
 			{
 					 	
 				$signoffdetail = new RaidplanSignup();
-				$signoffdetail->getSignup($signoff['signup_id'], $this->eventlist->events[$this->event_type]['dkpid'] );
+				$signoffdetail->getSignup($signoff->signup_id, $this->eventlist->events[$this->event_type]['dkpid'] );
 				$edit_text_array = generate_text_for_edit( $signoffdetail->comment, $signoffdetail->bbcode['uid'], 7);
 				
 				$requeue=false;
@@ -1837,25 +1838,25 @@ class Raidplan
 					'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $signoffdetail->priority_ratio : $signoffdetail->dkp_current,
 					'ATTENDANCEP1'	=> $signoffdetail->attendanceP1,
 					'U_MEMBERDKP'	=> $signoffdetail->dkmemberpurl,
-					'SIGNUP_ID' 	=> $signoff['signup_id'],
-					'RAIDPLAN_ID' 	=> $signoff['raidplan_id'], 
-	    			'POST_TIME' 	=> $user->format_date($signoff['signup_time'], $config['rp_date_time_format'], true),
-					'POST_TIMESTAMP' => $signoff['signup_time'],
-					'DETAILS' 		=> generate_text_for_display($signoff['comment'], $signoff['bbcode']['uid'], $signoff['bbcode']['bitfield'], 7),
+					'SIGNUP_ID' 	=> $signoff->signup_id,
+					'RAIDPLAN_ID' 	=> $signoff->raidplan_id,
+	    			'POST_TIME' 	=> $user->format_date($signoff->signup_time, $config['rp_date_time_format'], true),
+					'POST_TIMESTAMP' => $signoff->signup_time,
+					'DETAILS' 		=> generate_text_for_display($signoff->comment, $signoff->bbcode['uid'], $signoff->bbcode['bitfield'], 7),
 					'EDITDETAILS' 	=> $edit_text_array['text'],
-					'POSTER' 		=> $signoff['poster_name'], 
-					'POSTER_URL' 	=> get_username_string( 'full', $signoff['poster_id'], $signoff['poster_name'], $signoff['poster_colour'] ),
-					'VALUE' 		=> $signoff['signup_val'], 
+					'POSTER' 		=> $signoff->poster_name,
+					'POSTER_URL' 	=> get_username_string( 'full', $signoff->poster_id, $signoff->poster_name, $signoff->poster_colour ),
+					'VALUE' 		=> $signoff->signup_val,
 					'COLOR' 		=> '#FF0000', 
 					'VALUE_TXT' 	=> $user->lang['NO'], 
-					'CHARNAME'      => $signoff['dkpmembername'],
-					'LEVEL'         => $signoff['level'],
-					'CLASS'         => $signoff['classname'],
-					'COLORCODE'  	=> ($signoff['colorcode'] == '') ? '#123456' : $signoff['colorcode'],
-			        'CLASS_IMAGE' 	=> (strlen($signoff['imagename']) > 1) ? $signoff['imagename']: '',  
-					'S_CLASS_IMAGE_EXISTS' => (strlen($signoff['imagename']) > 1) ? true : false,
-			       	'RACE_IMAGE' 	=> (strlen($signoff['raceimg']) > 1) ? $signoff['raceimg'] : '',  
-					'S_RACE_IMAGE_EXISTS' => (strlen($signoff['raceimg']) > 1) ? true : false, 	
+					'CHARNAME'      => $signoff->dkpmembername,
+					'LEVEL'         => $signoff->level,
+					'CLASS'         => $signoff->classname,
+					'COLORCODE'  	=> ($signoff->colorcode == '') ? '#123456' : $signoff->colorcode,
+			        'CLASS_IMAGE' 	=> (strlen($signoff->imagename) > 1) ? $signoff->imagename: '',
+					'S_CLASS_IMAGE_EXISTS' => (strlen($signoff->imagename) > 1) ? true : false,
+			       	'RACE_IMAGE' 	=> (strlen($signoff->raceimg) > 1) ? $signoff->raceimg : '',
+					'S_RACE_IMAGE_EXISTS' => (strlen($signoff->raceimg) > 1) ? true : false,
 					'S_REQUEUE_ACTION' => $requeueurl,
 					'S_REQUEUE_SIGNUP'	=> $requeue, 
 				 				
@@ -2589,20 +2590,21 @@ class Raidplan
 		return $raiddaylist;
 		
 	}
-	
-	/* raidmessenger
-	**
-	** eventhandler for 
-	** ----------------
-	** raidplan add
-	**   send to all who have a dkp member with points
-	** raidplan update
-	**   send to raidplan participants
-	** raidplan delete
-	**   send to raidplan participants	
-	**
-	*/
-	private function raidmessenger($trigger)
+
+    /**
+     * raidmessenger
+     *
+     * eventhandler for
+     * raidplan add
+     *   send to all who have a dkp member with points
+     * raidplan update
+     *   send to raidplan participants
+     * raidplan delete
+     *   send to raidplan participants
+     *
+     * @param $trigger
+     */
+    private function raidmessenger($trigger)
 	{
 		global $user, $config;
 		global $phpEx, $phpbb_root_path;
@@ -2620,7 +2622,7 @@ class Raidplan
 		$rpm->get_notifiable_users($trigger, $this->id);
 
 		$emailrecipients = array();
-		$messenger = new messenger();
+		$messenger = new \messenger();
 		foreach($rpm->send_user_data as $id => $row)
 		{
 			$data=array();
@@ -2728,7 +2730,7 @@ class Raidplan
 		// check if raid exists in bbdkp
 		if ($this->raid_id > 0)
 		{
-            $RaidController = new \bbdkp\controller\raids\RaidController;
+            $RaidController = new RaidController;
 
             $raidinfo = array (
                 'raid_id' 	 => (int) $this->raid_id,
@@ -2753,7 +2755,7 @@ class Raidplan
 			}
 			
 			// now check if any of them are not registered in dkp, if they are not then add them
-            $raiddetail = new \bbdkp\controller\raids\Raiddetail($this->raid_id);
+            $raiddetail = new Raiddetail($this->raid_id);
             $raiddetail->Get($this->raid_id);
 
 			$registered = array();
@@ -2768,7 +2770,7 @@ class Raidplan
 			{
 				foreach($to_add as $member_id)
 				{
-                    $newraider = new \bbdkp\controller\raids\Raiddetail($this->raid_id);
+                    $newraider = new Raiddetail($this->raid_id);
                     $newraider->raid_value = (float) $this->eventlist->events[$this->event_type]['value'];
                     $newraider->time_bonus = 0;
                     $newraider->dkpid = $this->eventlist->events[$this->event_type]['dkpid'];
@@ -2893,7 +2895,7 @@ class Raidplan
             require("{$phpbb_root_path}includes/bbdkp/controller/points/PointsController.$phpEx");
         }
 
-        $RaidController = new \bbdkp\controller\raids\RaidController($raid['dkpid']);
+        $RaidController = new RaidController($raid['dkpid']);
         $RaidController->init_newraid();
         $event = $RaidController->eventinfo[$raid['event_id']];
         $raidinfo = array(
@@ -2915,7 +2917,7 @@ class Raidplan
 
         $raid_id = $RaidController->add_raid($raidinfo, $raid_detail);
 
-        $PointsController = new \bbdkp\controller\points\PointsController();
+        $PointsController = new PointsController();
         $PointsController->add_points($raid_id);
 
 		//store raid_id
@@ -2942,7 +2944,7 @@ class Raidplan
         {
             require("{$phpbb_root_path}includes/bbdkp/controller/raids/RaidController.$phpEx");
         }
-        $RaidController = new \bbdkp\controller\raids\RaidController($this->raid_id);
+        $RaidController = new RaidController($this->raid_id);
         $RaidController->deleteraider($this->raid_id,$member_id);
         unset($RaidController);
 	}

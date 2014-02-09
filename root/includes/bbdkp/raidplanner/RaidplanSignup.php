@@ -8,7 +8,7 @@
 * @version 0.9.0
 */
 namespace bbdkp\raidplanner;
-
+use bbdkp\raidplanner\raidmessenger;
 
 /**
  * @ignore
@@ -594,7 +594,7 @@ class RaidplanSignup
 		$rpm->get_notifiable_users($trigger, $this->raidplan_id, $this->signup_id);
 		
 		$emailrecipients = array();
-		$messenger = new messenger();
+		$messenger = new \messenger();
 
 		foreach($rpm->send_user_data as $id => $row)
 		{
