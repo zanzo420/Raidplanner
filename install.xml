@@ -78,7 +78,9 @@
 			<file from="root/language/en/email/signup_unsign.txt" to="language/en/email/signup_unsign.txt"/>
 			<file from="root/language/en/email/signup_new.txt" to="language/en/email/signup_new.txt"/>
 			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
-			<file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
+            <file from="root/styles/prosilver/template/dkp/block/planner_upcoming.html" to="styles/prosilver/template/dkp/block/planner_topsignups.html"/>
+            <file from="root/styles/prosilver/template/dkp/block/planner_topsignups.html" to="styles/prosilver/template/dkp/block/planner_upcoming.html"/>
+            <file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
 			<file from="root/styles/prosilver/template/dkp/jquery.tools.min.js" to="styles/prosilver/template/dkp/jquery.tools.min.js"/>
 			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
 		</copy>
