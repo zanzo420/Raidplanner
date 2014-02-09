@@ -113,7 +113,17 @@ if ($config['rp_index_display_week'] == 1)
 ]]></action>
 			</edit>
 		</open>
-		<open src="/styles/prosilver/template/dkp/module/menu.html">
+        <open src="/styles/prosilver/template/dkp/module/profile-sidebar.html">
+            <edit>
+                <comment lang="en"><![CDATA[raidplanner link]]></comment>
+                <comment lang="fr"><![CDATA[raidplanner link]]></comment>
+                <comment lang="de"><![CDATA[raidplanner link]]></comment>
+                <find><![CDATA[<li style="list-style:none"><a href="{U_LOOTDB}"><strong>{L_MENU_ITEMVAL}</strong></a></li>]]></find>
+                <action type="after-add"><![CDATA[<li style="list-style:none"><a href="{U_PLANNER}"><strong>{L_PLANNER}</strong></a></li>
+]]></action>
+            </edit>
+        </open>
+        <open src="/styles/prosilver/template/dkp/module/menu.html">
 			<edit>
 				<comment lang="en"><![CDATA[raidplanner link]]></comment>
 				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
