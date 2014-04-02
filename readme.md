@@ -73,7 +73,7 @@ v0.10.0
 ### changes
 
 *   0.10.0 release version
-    *   [CHG] release version for 0.9
+    *   [CHG] adapted to new view bbdkp class
 *   0.9.0 development version
 	*	[CHG] changed for phpBB 3.0.12
 	*	[CHG] compatible with bbDKP 1.3 class structure
