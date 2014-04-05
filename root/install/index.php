@@ -584,6 +584,47 @@ $versions = array(
 
         '0.10.0' =>
         array(
+          // enable past raids
+            'config_add' => array(
+                array('rp_enable_past_raids', true),
+           ),
+
+        // disable dynamic mode, not necessary
+        'config_update' => array(
+            array('rp_first_day_of_week', 0, false),
+            array('rp_index_display_week', 0, false),
+            array('rp_display_next_raidplans', 5, false),
+            array('rp_hour_mode', 24, false),
+            array('rp_display_truncated_name', 0, false),
+            array('rp_prune_frequency', 0, false),
+            array('rp_last_prune', 0, false),
+            array('rp_prune_limit', 31536000, false),
+            array('rp_display_hidden_groups', 0, false),
+            array('rp_time_format', 'H:i', false),
+            array('rp_date_format', 'M d, Y', false),
+            array('rp_date_time_format', 'M d, Y H:i', false),
+            array('rp_disp_raidplans_only_on_start', 0, false),
+            array('rp_populate_frequency', 86400, false),
+            array('rp_last_populate', 0, false),
+            array('rp_populate_limit', 94608000, false),
+            array('rp_default_invite_time', 1200, false),
+            array('rp_default_start_time', 1230, false),
+            array('rp_default_end_time', 0, false),
+            array('rp_default_freezetime', 60, false),
+            array('rp_default_expiretime', 60, false),
+            array('rp_show_raidplanner', 60, false),
+            array('rp_show_welcomemsg', 1, false),
+            // switch off pm and email
+            array('rp_welcomemessage', '', false),
+            array('rp_show_name', 0, false),
+            array('rp_pm_rpchange', 0, false),
+            array('rp_email_rpchange', 0, false),
+            array('rp_pm_signup', 0, false),
+            array('rp_email_signup', 0, false),
+            array('rp_rppushmode', 1, false),
+        ),
+
+            // remove this table since we don't have recurring events
             'table_remove'  => array('phpbb_rp_recurring'),
             'custom' => array('purgecaches', 'versionupdater'),
         ),

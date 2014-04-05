@@ -331,8 +331,10 @@ class acp_raidplanner
 					set_config  ( 'rp_default_freezetime',  $freezetime,0);  
 
 					$expire_time = request_var('expire_time', 0);
-					set_config  ( 'rp_default_expiretime',  $expire_time,0);  
-					
+					set_config  ( 'rp_default_expiretime',  $expire_time,0);
+
+                    $rp_enable_past_raids=  request_var('rp_enable_past_raids', 0);
+                    set_config  ( 'rp_enable_past_raids', $rp_enable_past_raids, 0) ;
 										
 					$disp_upcoming	= request_var('disp_next_raidplans', 0);
 					set_config  ( 'rp_display_next_raidplans',  $disp_upcoming,0);  
@@ -379,7 +381,8 @@ class acp_raidplanner
 							bbcode_uid = 		'".  (string) $uid ."'  
 							WHERE announcement_id = 1";
 					$db->sql_query($sql);
-					
+
+
 					$disp_week	= request_var('disp_week', 0);
 					set_config  ( 'rp_index_display_week',  $disp_week,0);  
 					
@@ -642,6 +645,9 @@ class acp_raidplanner
 					'SENDEMAILRP_CHECKED'	=> ((int) $config['rp_email_rpchange'] == 1) ? "checked='checked'" :'' ,
 					'SENDPMSIGN_CHECKED'	=> ((int) $config['rp_pm_signup'] == 1) ? "checked='checked'" :'' ,
 					'SENDEMAILSIGN_CHECKED'	=> ((int) $config['rp_email_signup'] == 1) ? "checked='checked'" :'' ,
+
+                    'ENABLEPASTRAIDS_CHECKED'	=> ((int) $config['rp_enable_past_raids'] == 1) ? "checked='checked'" :'' ,
+
 					'DATE_FORMAT'		=> $config['rp_date_format'],
 					'DATE_TIME_FORMAT'	=> $config['rp_date_time_format'],
 					'TIME_FORMAT'		=> $config['rp_time_format'],

@@ -96,6 +96,8 @@ $lang = array_merge($lang, array(
 	'NOPUSH' 								=> 'No DKP raid creation', 
 	'PUSHRAIDPLAN' 							=> 'Create Raid in bbDKP',
 	'PUSHRAIDPLAN_EXPLAIN' 					=> 'After role confirmation, the Raidplan is created/updated as a new raid in bbDKP.',
+    'ENABLEPASTRAIDS' 						=> 'Enable past raids',
+    'ENABLEPASTRAIDS_EXPLAIN' 				=> 'Allow raids to be created in the past',
 
 	//confirms
 	'RETURN_RP'					=> 'Return to Raidplanner Settings', 
