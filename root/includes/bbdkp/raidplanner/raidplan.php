@@ -2750,7 +2750,7 @@ class Raidplan
 			{
 				 foreach($role['role_confirmations'] as $confirmation)
 				 {
-				 	$raid_attendees[] = $confirmation['dkpmemberid'];
+				 	$raid_attendees[] = $confirmation->dkpmemberid;
 				 }
 			}
 			
@@ -2793,7 +2793,7 @@ class Raidplan
 				{
 					 foreach($role['role_confirmations'] as $confirmation)
 					 {
-					 	$raid_attendees[] = $confirmation['dkpmemberid'];
+					 	$raid_attendees[] = $confirmation->dkpmemberid;
 					 }
 				}
 				
@@ -2844,7 +2844,7 @@ class Raidplan
 					{
 						 foreach($role['role_confirmations'] as $confirmation)
 						 {
-						 	$raid_attendees[] = $confirmation['dkpmemberid'];
+						 	$raid_attendees[] = $confirmation->dkpmemberid;
 						 }
 					}
 					
