@@ -2,14 +2,12 @@
 <!--
  Raidplanner ACP html
  @package bbDkp.acp
- @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
+ @copyright (c) 2010 bbDkp <http://www.bbdkp.com>
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
- @version 0.9.0
+ @version 0.10.0
 //-->
 <h1>{L_ACP_RAIDPLANNER_SETTINGS} {RAIDPLANNER_VERSION}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
-
-
 
 <div style= "width:100%">
     <fieldset><legend>{L_RPSETTINGS}</legend>
@@ -63,8 +61,8 @@
                     </dl>
 
                     <dl>
-                        <dt><label>{L_FROZEN_TIME}:</label><br />{L_FROZEN_EXPLAIN}</dt>
-                        <dd><input type="text" name="freeze_time" id="freeze_time" value="{FROZEN_TIME}" /></dd>
+                        <dt><label>{L_ENABLEPASTRAIDS}:</label><br />{L_ENABLEPASTRAIDS_EXPLAIN}</dt>
+                        <dd><input type="checkbox" id="rp_enable_past_raids" name="rp_enable_past_raids" value="1" {ENABLEPASTRAIDS_CHECKED}/></dd>
                     </dl>
 
                     <dl>
@@ -72,12 +70,16 @@
                         <dd><input type="text" name="expire_time" id="expire_time" value="{EXPIRE_TIME}" /></dd>
                     </dl>
 
-
+                    <dl>
+                        <dt><label>{L_FROZEN_TIME}:</label><br />{L_FROZEN_EXPLAIN}</dt>
+                        <dd><input type="text" name="freeze_time" id="freeze_time" value="{FROZEN_TIME}" /></dd>
+                    </dl>
 
                     <dl>
                         <dt><label>{L_DISPLAY_NEXT_RAIDS}:</label><br />{L_DISPLAY_NEXT_RAIDS_EXPLAIN}</dt>
                         <dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" /></dd>
                     </dl>
+
 
                     <dl>
                         <dt><label>{L_SENDPMRP}:</label><br />{L_SENDPMRP_EXPLAIN}</dt>

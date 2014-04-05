@@ -615,10 +615,13 @@ class acp_raidplanner
 				$textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
 				
 				$template->assign_vars(array(
-					'RAIDPLANNER_VERSION'	=> $config['bbdkp_raidplanner'], 
+					'RAIDPLANNER_VERSION'	=> $config['bbdkp_raidplanner'],
+
+                    'ENABLEPASTRAIDS_CHECKED'	=> ((int) $config['rp_enable_past_raids'] == 1) ? "checked='checked'" :'' ,
 					'FROZEN_TIME'		=> $config['rp_default_freezetime'],
 					'EXPIRE_TIME'		=> $config['rp_default_expiretime'],
-					'SEL_MONDAY'		=> $sel_monday,
+
+                    'SEL_MONDAY'		=> $sel_monday,
 					'SEL_TUESDAY'		=> $sel_tuesday,
 					'SEL_WEDNESDAY'		=> $sel_wednesday,
 					'SEL_THURSDAY'		=> $sel_thursday,
@@ -645,8 +648,6 @@ class acp_raidplanner
 					'SENDEMAILRP_CHECKED'	=> ((int) $config['rp_email_rpchange'] == 1) ? "checked='checked'" :'' ,
 					'SENDPMSIGN_CHECKED'	=> ((int) $config['rp_pm_signup'] == 1) ? "checked='checked'" :'' ,
 					'SENDEMAILSIGN_CHECKED'	=> ((int) $config['rp_email_signup'] == 1) ? "checked='checked'" :'' ,
-
-                    'ENABLEPASTRAIDS_CHECKED'	=> ((int) $config['rp_enable_past_raids'] == 1) ? "checked='checked'" :'' ,
 
 					'DATE_FORMAT'		=> $config['rp_date_format'],
 					'DATE_TIME_FORMAT'	=> $config['rp_date_time_format'],

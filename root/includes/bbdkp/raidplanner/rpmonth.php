@@ -162,7 +162,7 @@ class rpmonth extends RaidCalendar
             }
             else
             {
-                // if yesterday then don't enable 
+                // if yesterday then don't enable
                 if( (int) $this->date['month_no'] > (int) date('m') ||
                     ( (int) $this->date['month_no']  == (int) date('m') && $j >= (int) date('d') )  ||
                     (int) $this->date['year'] > (int) date('Y') )

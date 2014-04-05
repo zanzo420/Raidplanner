@@ -441,7 +441,7 @@ class Raidplan
 			
 			//if raid invite time is in the past then raid signups are frozen.
 			$this->frozen = false;
-            if ($config['rp_default_freezetime'] != 0)
+            if ($config['rp_default_freezetime'] != 0 && $config['rp_enable_past_raids'] == 0)
             {
                 //compare invite epoch time plus (raid freeze time in hours times 3600) with the current epoch time. if expired then freeze signups
                 if( $this->invite_time + (3600 * (int) $config['rp_default_freezetime'])  < time() )
@@ -2347,14 +2347,21 @@ class Raidplan
 				// @todo testing 
 				// if raid expired then no edits possible even if user can edit own raids...
 				// this way officers cant fiddle with statistics
-				if (time() + $user->timezone + $user->dst - date('Z') - $this->end_time > $config['rp_default_expiretime']*60)
-				{
-					// assign editing expired raids only to administrator.
-					if (!$auth->acl_get('a_raid_config') )
-					{
-						$this->auth_canedit = false;
-					}
-				}
+
+                if ($config['rp_default_expiretime'] != 0 && $config['rp_enable_past_raids'] == 0)
+                {
+                    if (time() + $user->timezone + $user->dst - date('Z') - $this->end_time > $config['rp_default_expiretime']*60)
+                    {
+                        // assign editing expired raids only to administrator.
+                        if (!$auth->acl_get('a_raid_config') )
+                        {
+                            $this->auth_canedit = false;
+                        }
+                    }
+
+                }
+
+
 				
 			}
 		}
