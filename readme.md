@@ -72,8 +72,9 @@ v0.10.0
 
 ### changes
 
-*   0.10.0 release version
+*   0.10.0 2014-04-05
     *   [CHG] adapted to new view bbdkp class
+    *	[NEW] add setting to enable past raids, and set it to default.
 *   0.9.0 development version
 	*	[CHG] changed for phpBB 3.0.12
 	*	[CHG] compatible with bbDKP 1.3 class structure
