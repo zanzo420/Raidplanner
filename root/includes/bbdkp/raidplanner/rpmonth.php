@@ -7,7 +7,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.9.0
+* @version 0.10.0
 */
 namespace bbdkp\raidplanner;
 
@@ -70,8 +70,11 @@ class rpmonth extends RaidCalendar
 		// fill array of raid days
 		$firstday = $this->Get1DoM($this->timestamp);
 		$lastday =  $this->GetLDoM($this->timestamp);
-		
+
+        //gets array with raid days
 		$raiddays = $raidplan->GetRaiddaylist( $firstday, $lastday );
+
+        //gets array with birthdays
 		$birthdays = $this->generate_birthday_list( $firstday,$lastday);
 		
 		for ($j = 1; $j < $number_days+1; $j++, $counter++)
@@ -150,15 +153,24 @@ class rpmonth extends RaidCalendar
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
 			
-			// user cannot add raid/appointments in the past
+			// if user cannot add raid/appointments in the past
+
 			$calendar_days['ADD_RAID_ICON'] = false;
-			if( (int) $this->date['month_no'] > (int) date('m') || 
-				( (int) $this->date['month_no']  == (int) date('m') && $j >= (int) date('d') )  || 
-				(int) $this->date['year'] > (int) date('Y') )
-			{
-				$calendar_days['ADD_RAID_ICON'] = true;
-			}
-			
+            if($config['rp_enable_past_raids'])
+            {
+                $calendar_days['ADD_RAID_ICON'] = true;
+            }
+            else
+            {
+                // if yesterday then don't enable
+                if( (int) $this->date['month_no'] > (int) date('m') ||
+                    ( (int) $this->date['month_no']  == (int) date('m') && $j >= (int) date('d') )  ||
+                    (int) $this->date['year'] > (int) date('Y') )
+                {
+                    $calendar_days['ADD_RAID_ICON'] = true;
+                }
+            }
+
 			// add birthdays
 			$calendar_days['BIRTHDAYS']="";
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )

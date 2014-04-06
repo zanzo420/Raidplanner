@@ -7,7 +7,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.9.0
+* @version 0.10.0
 */
 namespace bbdkp\raidplanner;
 
@@ -180,18 +180,26 @@ class rpweek extends RaidCalendar
 				$calendar_days['HEADER_CLASS'] = 'highlight';
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
-			
-			// user cannot add raid/appointments in the past
-			$calendar_days['ADD_RAID_ICON'] = false;
-			if( 
-				$true_m > date('m') || 
-				($true_m == date('m')  && $true_j >= date('d') ) || 
-				(int) $this->date['year'] > (int) date('Y') 
-			)
-			{
-				$calendar_days['ADD_RAID_ICON'] = true;
-			}
-			
+
+            // if user cannot add raid/appointments in the past
+            $calendar_days['ADD_RAID_ICON'] = false;
+            if($config['rp_enable_past_raids'])
+            {
+                $calendar_days['ADD_RAID_ICON'] = true;
+            }
+            else
+            {
+                // if yesterday then don't enable
+                if(
+                    $true_m > date('m') ||
+                    ($true_m == date('m')  && $true_j >= date('d') ) ||
+                    (int) $this->date['year'] > (int) date('Y')
+                )
+                {
+                    $calendar_days['ADD_RAID_ICON'] = true;
+                }
+            }
+
 			$calendar_days['BIRTHDAYS']="";
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile') )
 			{

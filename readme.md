@@ -53,7 +53,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v0.9.0
+v0.10.0
 
 ## Installation
 * 	Unzip the zip file into /store/mods
@@ -63,24 +63,22 @@ v0.9.0
 
 
 ## Requirements
-*	bbDKP 1.3 or higher
+*	bbDKP 1.3.0-b3 or higher
 *	phpBB 3.0.12
 
 ### History and credits 
 
 *	Raidplanner mod was partly made from Alightner's Calendar mod and phpRaider, refactored into functional classes to work with bbDKP. 
 
-### Milestones 
-
-*	1.0.0 
-	*	add API to interface with rss feed to populate calendar
-
 ### changes
 
-* 0.9.0
-	*	changed for phpBB 3.0.12
-	*	compatible with bbDKP 1.3 class structure
-	*	moved to raidplanner namespace
+*   0.10.0 2014-04-05
+    *   [CHG] adapted to new view bbdkp class
+    *	[NEW] add setting to enable past raids, and set it to default.
+*   0.9.0 development version
+	*	[CHG] changed for phpBB 3.0.12
+	*	[CHG] compatible with bbDKP 1.3 class structure
+	*	[CHG] moved to raidplanner namespace
 *	0.8.0 2012-08-22
 	*	[FIX] merged addraid form elements
 	*	[FIX] removed redundant calendar type select pulldown

@@ -5,7 +5,7 @@
  * @package bbDkp
  * @copyright 2010 bbdkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 0.9.0
+ * @version 0.10.0
  * 
  */
 
@@ -96,6 +96,8 @@ $lang = array_merge($lang, array(
 	'NOPUSH' 								=> 'No DKP raid creation', 
 	'PUSHRAIDPLAN' 							=> 'Create Raid in bbDKP',
 	'PUSHRAIDPLAN_EXPLAIN' 					=> 'After role confirmation, the Raidplan is created/updated as a new raid in bbDKP.',
+    'ENABLEPASTRAIDS' 						=> 'Enable past raids',
+    'ENABLEPASTRAIDS_EXPLAIN' 				=> 'Allow raids to be created in the past. this also disables Raid freeze and expire.',
 
 	//confirms
 	'RETURN_RP'					=> 'Return to Raidplanner Settings', 

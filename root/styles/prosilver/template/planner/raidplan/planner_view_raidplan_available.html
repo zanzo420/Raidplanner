@@ -87,21 +87,16 @@ jQuery(document).ready( function()
 <!-- IF raidroles.signups.S_EDIT_SIGNUP || raidroles.signups.S_DELETE_SIGNUP || raidroles.signups.S_CANCONFIRM -->
 
 	jQuery("#prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").overlay({
-		 top: 260,
-		mask: {
-			color: '#262626',
-			loadSpeed: 200,
-			opacity: 0.1
-		},
- 		closeOnClick: true,
- 		load: false
+		top: 260,
+ 		closeOnClick: false,
+ 		load: false,
+        zIndex: 99999
 	});
-	
-	jQuery("#editaction_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").click(function() {
+
+    jQuery("#editaction_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").click(function() {
 		jQuery("#prompt_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").overlay().load();
 	  });
 
-	
 	jQuery("#editsignup_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}").submit(function(e)
 	{
 		var input = $("#signup_detail_{raidroles.signups.RAIDPLAN_ID}_{raidroles.signups.SIGNUP_ID}", this).val();

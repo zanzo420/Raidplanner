@@ -15,7 +15,7 @@
 div.calendar-control {
 	display:block;
 	width: 141px; /* breedte */
-	height: 48px;
+	height: 52px;
 	padding-top:0px;
 	padding-bottom:0px;
 	padding-right:5px;
@@ -98,8 +98,8 @@ div.calendar-control {
 
 div.calendar-control-right {
 	display:block;
-	width: 290px; /* breedte */
-	height: 48px;
+	width: 305px; /* breedte */
+	height: 50px;
 	padding-top:5px;
 	padding-bottom:0px;
 	padding-right:5px;
@@ -113,11 +113,11 @@ div.calendar-control-right {
 }
 
 	div.calendar-control-right:hover {
-		background-position: 0 -59px;
+		background-position: 0 -57px;
 	}
 	
 	div.calendar-control-right:active {
-		background-position: 0 -59px;
+		background-position: 0 -57px;
 	}
 	 
 	div.calendar-control-right ul { 
@@ -159,7 +159,7 @@ div.calendar-control-right {
 }
 	
 	div.calendar-control-right ul li.datenavigation {
-		width: 225px;
+		width: 230px;
 		height: 32px;
 		text-align: left;
 		background-size: auto auto;
@@ -208,6 +208,7 @@ ul.raidplanner-icons li a {
 ul.raidplanner-icons li span { 
     display: none; 
 }
+
 ul.raidplanner-icons li a:hover { 
     opacity: 0.10;
 }
@@ -221,29 +222,29 @@ ul.raidplanner-icons li.planner-new-icon {
 
 ul.raidplanner-icons li.planner-new-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_new.png") no-repeat;
-	width: 45px;
-	height: 38px;
+	width: 60px;
+	height: 35px;
 	text-align: left;
 }
 
 ul.raidplanner-icons li.planner-edit-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_edit.png") no-repeat;
-	width: 45px;
-	height: 38px;
+	width: 60px;
+	height: 35px;
 	text-align: left;
 }
 
 ul.raidplanner-icons li.planner-push-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_push.png") no-repeat;
-	width: 45px;
-	height: 38px;
+	width: 60px;
+	height: 35px;
 	text-align: left;
 }
 
 ul.raidplanner-icons li.planner-delete-button {
 	background: url("{T_IMAGESET_PATH}/planner/button_delete.png") no-repeat;
-	width: 45px;
-	height: 38px;
+	width: 30px;
+	height: 35px;
 	text-align: left;
 }
 
@@ -393,9 +394,9 @@ hr.hrCal {
     -moz-border-radius:4px;
     -webkit-border-radius:4px;
     border-radius: 4px;   	
-	-moz-box-shadow: 10px 10px 5px #888;
-	-webkit-box-shadow: 10px 10px 5px #888;
-	box-shadow: 10px 10px 5px #888;
+	-moz-box-shadow: 5px 5px 5px #303030;
+	-webkit-box-shadow: 5px 5px 5px #303030;
+	box-shadow: 5px 5px 5px #303030;
 
 	margin: 1%;
     padding-top: 2px;
@@ -415,10 +416,10 @@ hr.hrCal {
     border:1px solid rgba(82, 82, 82, 0.698);
     -moz-border-radius:4px;
     -webkit-border-radius:4px;
-	border-radius: 4px; 
-	-moz-box-shadow: 10px 10px 5px #888;
-	-webkit-box-shadow: 10px 10px 5px #888;
-	box-shadow: 10px 10px 5px #888;
+	border-radius: 4px;
+    -moz-box-shadow: 5px 5px 5px #303030;
+    -webkit-box-shadow: 5px 5px 5px #303030;
+    box-shadow: 5px 5px 5px #303030;
     
 	background-color:#FFFFFF;
 	width:160px; 
@@ -468,7 +469,6 @@ table.table1 tbody td.bg1.calMon {
 	padding-left: 4px;
 	padding-right: 4px;
 }
-
 .calMonH ul li {
 	font-family :sans-serif;
 	font-size: 14px;
@@ -525,7 +525,8 @@ td.bg4.calMonH a:hover {
 
 /**************** day css ******************/
 h1.daynum  {
-	font-family: Trebuchet MS,Andale Mono, sans serif;
+	font-size: 36px;
+	font-family: Century Gothic,Arial Narrow,Trebuchet MS,Andale Mono, sans serif;
 	font-stretch: narrower;
 	font-weight: lighter;
 	margin: 5px;

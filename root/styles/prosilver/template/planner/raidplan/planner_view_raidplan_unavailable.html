@@ -82,14 +82,11 @@ jQuery(document).ready( function()
 	{
 	jQuery("#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay({
 		 top: 260,
-		mask: {
-			color: '#262626',
-			loadSpeed: 200,
-			opacity: 0.1
-		},
+
  		closeOnClick: true,
  		load: false
 	});
+
 
 	jQuery("#requeue{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").click(function() {
 		jQuery("#prompt_{unavailable.RAIDPLAN_ID}_{unavailable.SIGNUP_ID}").overlay().load();
