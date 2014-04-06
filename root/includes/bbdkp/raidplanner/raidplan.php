@@ -2733,7 +2733,6 @@ class Raidplan
         {
             require("{$phpbb_root_path}includes/bbdkp/controller/raids/RaidController.$phpEx");
         }
-
 		// check if raid exists in bbdkp
 		if ($this->raid_id > 0)
 		{
@@ -2780,6 +2779,8 @@ class Raidplan
                     $newraider = new Raiddetail($this->raid_id);
                     $newraider->raid_value = (float) $this->eventlist->events[$this->event_type]['value'];
                     $newraider->time_bonus = 0;
+                    $newraider->zerosum_bonus = 0;
+                    $newraider->raid_decay = 0;
                     $newraider->dkpid = $this->eventlist->events[$this->event_type]['dkpid'];
                     $newraider->member_id = $member_id;
                     $newraider->create();
@@ -2808,7 +2809,9 @@ class Raidplan
 				$raid = array(
 						'raid_note' 				=> $this->body, 
 						'raid_value' 				=> $this->eventlist->events[$this->event_type]['value'],
-						'raid_timebonus' 			=> 0, 
+                        'raid_timebonus'	        => request_var ('hidden_raid_timebonus', 0.00 ),
+                        'zerosum_bonus'	            => 0,
+                        'raid_decay'	            => 0,
 						'raid_start'			 	=> $this->start_time,
 						'raid_end' 					=> $this->end_time,  
 						'event_name'				=> $this->eventlist->events[$this->event_type]['event_name'], 
@@ -2830,6 +2833,8 @@ class Raidplan
 						'raid_note' 		=> utf8_normalize_nfc (request_var ( 'hidden_raid_note', ' ', true )), 
 						'raid_value' 		=> request_var ('hidden_raid_value', 0.00 ), 
 						'raid_timebonus'	=> request_var ('hidden_raid_timebonus', 0.00 ),
+                        'zerosum_bonus'	    => 0,
+                        'raid_decay'	    => 0,
 						'raid_start' 		=> request_var ('hidden_startraid_date', 0), 
 						'raid_end'			=> request_var ('hidden_endraid_date', 0),
 						'event_name'		=> utf8_normalize_nfc (request_var ( 'hidden_raid_name', ' ', true )), 
@@ -2863,7 +2868,7 @@ class Raidplan
 							'hidden_raid_name'			=> $this->eventlist->events[$this->event_type]['event_name'], 
 							'hidden_raid_value' 		=> $this->eventlist->events[$this->event_type]['value'],
 							'hidden_dkpid'				=> $this->eventlist->events[$this->event_type]['dkpid'],
-							'hidden_raid_timebonus' 	=> 0, 
+							'hidden_raid_timebonus' 	=> 0,
 							'hidden_startraid_date' 	=> $this->start_time,
 							'hidden_endraid_date' 		=> $this->end_time,  
 							'hidden_raid_attendees' 	=> $raid_attendees, 
@@ -2918,7 +2923,9 @@ class Raidplan
 			$raid_detail[] = array(
 				'member_id'    => (int) $member_id,
 				'raid_value'   => (float) $raid['raid_value'],
+                'zerosum_bonus'   => (float) $raid['zerosum_bonus'],
 				'time_bonus'   => (float) $raid['raid_timebonus'],
+                'raid_decay'   => (float) $raid['raid_decay'],
 				);
 		}
 
