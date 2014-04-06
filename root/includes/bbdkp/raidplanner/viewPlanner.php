@@ -25,19 +25,13 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
-// Include the base class
-if (!class_exists('\bbdkp\admin\Admin'))
-{
-    require("{$phpbb_root_path}includes/bbdkp/admin/admin.$phpEx");
-}
-
 if (!class_exists('\bbdkp\raidplanner\DisplayRaidCalendar', false))
 {
     include($phpbb_root_path . 'includes/bbdkp/raidplanner/DisplayRaidCalendar.' . $phpEx);
 }
 
 /**
- * Class viewBossprogress
+ * Class viewPlanner
  * @package bbdkp\views
  */
 class viewPlanner implements iViews
@@ -279,11 +273,6 @@ class viewPlanner implements iViews
 
         // Output the page
         page_header($user->lang['PAGE_TITLE']);
-
-
     }
-
-
-
 }
 
