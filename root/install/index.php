@@ -50,14 +50,14 @@ if  (!isset ($config['bbdkp_version']) )
 }
 else
 {
-	if(version_compare($config['bbdkp_version'], '1.3.0-b3') == -1 )
+	if(version_compare($config['bbdkp_version'], '1.3.0.2') == -1 )
 	{
-	    trigger_error('Radplanner 0.10.0 requires bbDKP 1.3.0-b3 or higher.');
+	    trigger_error('Radplanner 0.11.0 requires bbDKP 1.3.0.2 or higher.');
 	}
 }
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 0.10.0';
+$mod_name = 'Raidplanner 0.11.0';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -643,7 +643,12 @@ $versions = array(
                         'rt_composition',
                     ))),
 
-                ),
+            ),
+
+            'custom' => array('purgecaches', 'versionupdater'),
+
+
+
         )
 );
 
@@ -725,6 +730,3 @@ function versionupdater($action, $version)
 	
 	}
 }
-
-
-?>
