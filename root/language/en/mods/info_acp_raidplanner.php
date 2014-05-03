@@ -27,7 +27,13 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ACP_CAT_RAIDPLANNER' 				=> 'Raidplanner', //main tab 
 	'ACP_RAIDPLANNER' 					=> 'Raidplanner', //category
-	'ACP_RAIDPLANNER_SETTINGS'  		=> 'Raidplanner Settings', 	//module
+
+	'RP_PLANNER_SETTINGS'  		        => 'Planner Settings', 	//module
+    'RP_CAL_SETTINGS'  		            => 'Calendar Settings', 	//module
+    'RP_ROLES'  		                => 'Raid Roles', 	//module
+    'RP_TEAMS'  		                => 'Raid Teams', 	//module
+    'RP_COMPOSITION'  		            => 'Raid Composition',  	//module
+
 	'ACP_RAIDPLANNER_SETTINGS_EXPLAIN' 	=> 'Here you can configure Raid Planner settings',
 	'ACP_RAIDPLANNER_EVENTSETTINGS'		=> 'Event Settings', //module
 ));

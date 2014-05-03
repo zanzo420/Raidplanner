@@ -628,6 +628,23 @@ $versions = array(
             'table_remove'  => array('phpbb_rp_recurring'),
             'custom' => array('purgecaches', 'versionupdater'),
         ),
+
+        '0.11.0' =>
+        array(
+
+            // new tabbes interface for acp
+            'module_add' => array(
+                array('acp', 'ACP_DKP_RAIDS', array(
+                    'module_basename' => 'raidplanner',
+                    'modes'           => array(
+                        'rp_cal_settings' ,
+                        'rp_roles',
+                        'rp_teams',
+                        'rt_composition',
+                    ))),
+
+                ),
+        )
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
