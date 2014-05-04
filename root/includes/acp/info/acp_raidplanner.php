@@ -28,11 +28,11 @@ class acp_raidplanner_info
 			'title'		=> 'ACP_RAIDPLANNER',
 			'version'	=> '0.11.0',
 			'modes'		=> array(
-				'rp_settings'	=> array('title' => 'RP_PLANNER_SETTINGS',  'display' => 1, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
-                'rp_cal_settings'	=> array('title' => 'RP_CAL_SETTINGS',      'display' => 1, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
+				'rp_settings'	    => array('title' => 'RP_PLANNER_SETTINGS',      'display' => 1, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
+                'rp_cal_settings'	=> array('title' => 'RP_CAL_SETTINGS',      'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
                 'rp_roles'			=> array('title' => 'RP_ROLES',             'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
                 'rp_teams'			=> array('title' => 'RP_TEAMS',             'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
-                'rt_composition'	=> array('title' => 'RP_COMPOSITION',       'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
+                'rp_composition'	=> array('title' => 'RP_COMPOSITION',       'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
 		),
 		);
 	}

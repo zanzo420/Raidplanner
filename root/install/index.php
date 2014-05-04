@@ -632,15 +632,27 @@ $versions = array(
         '0.11.0' =>
         array(
 
+
+            'module_remove' => array(
+                array('acp', 'ACP_DKP_RAIDS', array(
+                    'module_basename' => 'raidplanner',
+                    'modes'           => array('rp_settings') ,
+                ),
+                ),
+            ),
+
+
+
             // new tabbes interface for acp
             'module_add' => array(
                 array('acp', 'ACP_DKP_RAIDS', array(
                     'module_basename' => 'raidplanner',
                     'modes'           => array(
+                        'rp_settings' ,
                         'rp_cal_settings' ,
                         'rp_roles',
                         'rp_teams',
-                        'rt_composition',
+                        'rp_composition',
                     ))),
 
             ),
