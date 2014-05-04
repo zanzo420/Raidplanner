@@ -40,55 +40,54 @@
 </style>
 <fieldset style="background-color: #EEEEEE">
     <div id="advanced00">
-    <div class="permissions-category">
-        <ul>
-            <li class="permissions-preset-yes"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
-            <li class="permissions-preset-never activetab"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_COMPOSITION}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDSIZES}</span></a></li>
-        </ul>
-    </div>
+        <div class="permissions-category">
+            <ul>
+                <li class="permissions-preset-yes"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
+                <li class="permissions-preset-never activetab"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
+            </ul>
+        </div>
 
-    <div class="permissions-panel" id="options001">
-        <span class="corners-top"><span></span></span>
-        <form id="rpteams" method="post" action="{U_ACTION}" >
-            <div class="tablewrap">
-                <fieldset><legend>{L_RAIDTEAMS}</legend>
-                    <p>{L_ACP_RAIDTEAMS_EXPLAIN}</p>
+        <div class="permissions-panel" id="options001">
+            <span class="corners-top"><span></span></span>
+            <fieldset><legend>{L_RAIDTEAMS}</legend>
+                <form id="rpteams" method="post" action="{U_ACTION}" >
+                    <div class="tablewrap">
+                        <p>{L_ACP_RAIDTEAMS_EXPLAIN}</p>
 
-                    <table style="width:100%">
-                        <thead>
-                        <tr>
-                            <th>{L_TEAMNAME}</th>
-                            <th>{L_TEAMSIZE}</th>
-                            <th style="text-align: center; width:5%">{L_ACTION}</th>
-                        </tr>
-                        </thead>
+                        <table style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>{L_TEAMNAME}</th>
+                                <th>{L_TEAMSIZE}</th>
+                                <th style="text-align: center; width:5%">{L_ACTION}</th>
+                            </tr>
+                            </thead>
 
-                        <tfoot>
-                        <tr class="row2">
-                            <td style="text-align: right" colspan="2">{L_EDITEAMNAME}</td>
-                            <td style="text-align: center">
-                                <input class="button2" name="teamupdate" type="submit" value="{L_EDIT}" />
-                            </td>
-                        </tr>
-                        <tr class="row2">
-                            <td><input type="text" name="newteamname" value="" class="medium" /></td>
-                            <td style="text-align: center"><input type="text" name="newteamsize" value="" class="medium" /></td>
-                            <td style="text-align: center"> <input class="button2" name="teamadd" type="submit" value="{L_ADD}" /></td>
-                        </tr>
-                        </tfoot>
-                        <tbody>
-                        <!-- BEGIN team_row -->
-                        <tr class="row1">
-                            <td><input type="text" name="team_name[{team_row.TEAM_ID}]" value="{team_row.TEAMNAME}" class="medium" /></td>
-                            <td style="text-align: center"><input type="text" name="team_size[{team_row.TEAM_ID}]" value="{team_row.TEAMSIZE}" class="medium" /></td>
-                            <td style="text-align: center" ><a href="{team_row.U_DELETE}">{ICON_DELETE}</a></td>
-                        </tr>
-                        <!-- END team_row -->
-                        </tbody>
-                    </table>
+                            <tfoot>
+                            <tr class="row2">
+                                <td style="text-align: right" colspan="2">{L_EDITEAMNAME}</td>
+                                <td style="text-align: center">
+                                    <input class="button2" name="teamupdate" type="submit" value="{L_EDIT}" />
+                                </td>
+                            </tr>
+                            <tr class="row2">
+                                <td><input type="text" name="newteamname" value="" class="medium" /></td>
+                                <td style="text-align: center"><input type="text" name="newteamsize" value="" class="medium" /></td>
+                                <td style="text-align: center"> <input class="button2" name="teamadd" type="submit" value="{L_ADD}" /></td>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            <!-- BEGIN team_row -->
+                            <tr class="row1">
+                                <td><input type="text" name="team_name[{team_row.TEAM_ID}]" value="{team_row.TEAMNAME}" class="medium" /></td>
+                                <td style="text-align: center"><input type="text" name="team_size[{team_row.TEAM_ID}]" value="{team_row.TEAMSIZE}" class="medium" /></td>
+                                <td style="text-align: center" ><a href="{team_row.U_DELETE}">{ICON_DELETE}</a></td>
+                            </tr>
+                            <!-- END team_row -->
+                            </tbody>
+                        </table>
 
                     <span>
                     <!-- BEGIN role_row -->
@@ -96,13 +95,54 @@
                     <!-- END role_row -->
                     {S_FORM_TOKEN}
                     </span>
-                </fieldset>
-            </div>
-        </form>
+                    </div>
+                </form>
+            </fieldset>
 
-        <span class="corners-bottom"><span></span></span>
+
+            <fieldset><legend>{L_RAIDSIZES}</legend>
+                <p>{L_ACP_RAIDSIZES_EXPLAIN}</p>
+                <form id="rpteamsize" method="post" action="{U_ACTION}" >
+                    <table style="width:100%">
+                        <thead>
+                        <tr>
+                            <th style="width: 20%">{L_TEAMNAME}</th>
+                            <th style="width: 30%">{L_RAIDROLE}</th>
+                            <th style="width: 30%">{L_ROLESIZE}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <!-- BEGIN team_row -->
+                        <tr class="row2">
+                            <td colspan="2"><strong>{team_row.TEAMNAME}</strong></td>
+                            <td><strong>{team_row.TEAMSIZE}</strong>
+                                <input type="hidden" name="maxteamsize[{team_row.TEAM_ID}]" value="{team_row.TEAMSIZE}" class="medium" />
+                            </td>
+                        </tr>
+                        <!-- BEGIN teamsize_row -->
+                        <tr class="row1">
+                            <td>{team_row.TEAMNAME}</td>
+                            <td>{team_row.teamsize_row.ROLENAME}</td>
+                            <td><input type="text" name="teamsize[{team_row.TEAM_ID}][{team_row.teamsize_row.ROLE_ID}]"
+                                       value="{team_row.teamsize_row.ROLESIZE}" class="medium" />&nbsp;{team_row.teamsize_row.ROLEPCT}%</td>
+                        </tr>
+                        <!-- END teamsize_row -->
+                        <!-- END team_row -->
+                        </tbody>
+
+                    </table>
+                </form>
+            </fieldset>
+            <fieldset class="quick">
+                {S_FORM_TOKEN}
+                <input type="submit" name="update_raidrolesize" value="{L_SUBMIT}" class="button1" />
+                <input type="reset" name="reset" value="{L_RESET}" class="button2" />
+            </fieldset>
+
+            <span class="corners-bottom"><span></span></span>
+        </div>
     </div>
-</div>
 
 </fieldset>
 <!-- INCLUDE dkp/overall_footer.html -->

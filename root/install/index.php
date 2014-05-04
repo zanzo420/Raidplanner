@@ -652,7 +652,6 @@ $versions = array(
                         'rp_cal_settings' ,
                         'rp_roles',
                         'rp_teams',
-                        'rp_composition',
                     ))),
 
             ),

@@ -1,33 +1,33 @@
 <?php
 /**
-* This class manages the Raidplanner settings
-*
-* @author Sajaki@bbdkp.com
-* @package bbDkp.acp
-* @copyright (c) 2010 bbdkp http://code.google.com/p/bbdkp/
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
-*  
-**/
+ * This class manages the Raidplanner settings
+ *
+ * @author Sajaki@bbdkp.com
+ * @package bbDkp.acp
+ * @copyright (c) 2010 bbdkp http://code.google.com/p/bbdkp/
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @version 0.11.0
+ *
+ **/
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 if (!defined('IN_PHPBB'))
 {
-	exit;
+    exit;
 }
 /**
  * This class manages the Raidplanner settings
  *
  */
-class acp_raidplanner 
+class acp_raidplanner
 {
-	public $u_action;
-	public function main($id, $mode) 
-	{
-		global $db, $user, $auth, $template, $sid, $cache;
-		global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
+    public $u_action;
+    public function main($id, $mode)
+    {
+        global $db, $user, $auth, $template, $sid, $cache;
+        global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
 
         $user->add_lang ( array ('mods/raidplanner', 'mods/dkp_common' ));
@@ -49,13 +49,13 @@ class acp_raidplanner
         ));
 
 
-		$link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
-		$action	= request_var('action', '');
-		
-        switch ($mode) 
-		{
-			case 'rp_settings' :
-				$update	= (isset($_POST['update_rp_settings'])) ? true : false;
+        $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+        $action	= request_var('action', '');
+
+        switch ($mode)
+        {
+            case 'rp_settings' :
+                $update	= (isset($_POST['update_rp_settings'])) ? true : false;
                 // check the form key
                 if ($update )
                 {
@@ -104,8 +104,6 @@ class acp_raidplanner
 
                     $push_mode = request_var('push_mode', 0);
                     set_config  ( 'rp_rppushmode', $push_mode ,0);
-                    $cache->destroy('config');
-
                     $cache->destroy('config');
 
                     $message="";
@@ -222,7 +220,7 @@ class acp_raidplanner
                 break;
 
             case 'rp_cal_settings':
-				$updatecal = (isset($_POST['update_rp_settings_cal'])) ? true : false;
+                $updatecal = (isset($_POST['update_rp_settings_cal'])) ? true : false;
                 // check the form key
                 if ($updatecal)
                 {
@@ -349,7 +347,6 @@ class acp_raidplanner
                 $textarr = generate_text_for_edit($text, $uid, $bitfield, 7);
 
                 $template->assign_vars(array(
-
                     'SHOW_WELCOME'		=> ((int) $config ['rp_show_welcomemsg'] == 1) ? 'checked="checked"' : "",
                     'WELCOME_MESSAGE' 	=> $textarr['text'],
                     'DISP_WEEK_CHECKED'	=> ( $config['rp_index_display_week'] == 1 ) ? "checked='checked'" : '',
@@ -368,9 +365,6 @@ class acp_raidplanner
                     'DATE_TIME_FORMAT'	=> $config['rp_date_time_format'],
                     'TIME_FORMAT'		=> $config['rp_time_format'],
                     'SHOW_NAME'				=> ((int) $config ['rp_show_name'] == 1) ? 'checked="checked"' : "",
-
-
-
                 ));
 
 
@@ -381,9 +375,9 @@ class acp_raidplanner
 
             case 'rp_roles':
                 $updateroles = (isset($_POST['roleupdate'])) ? true : false;
-				$deleterole = (request_var('roledelete', '') != '') ? true : false;
-				$addrole = (isset($_POST['roleadd'])) ? true : false;
-				$update_raidrolesize = (isset($_POST['update_raidrolesize'])) ? true : false;
+                $deleterole = (request_var('roledelete', '') != '') ? true : false;
+                $addrole = (isset($_POST['roleadd'])) ? true : false;
+                $update_raidrolesize = (isset($_POST['update_raidrolesize'])) ? true : false;
                 // check the form key
                 if ($updateroles || $addrole)
                 {
@@ -393,77 +387,77 @@ class acp_raidplanner
                     }
                 }
 
-				/********************************/
-				/*   RAID ROLES phpbb_rp_roles	*/
-				/********************************/
-				//user pressed add role
-				if($addrole)
-				{
-					$data = array(
-					    'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
-						'role_color'     => request_var('newrole_color', ''),
-						'role_icon'     => request_var('newrole_icon', ''),
-					);
+                /********************************/
+                /*   RAID ROLES phpbb_rp_roles	*/
+                /********************************/
+                //user pressed add role
+                if($addrole)
+                {
+                    $data = array(
+                        'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
+                        'role_color'     => request_var('newrole_color', ''),
+                        'role_icon'     => request_var('newrole_icon', ''),
+                    );
 
-					$sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
-   					$db->sql_query($sql);
+                    $sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
+                    $db->sql_query($sql);
 
-   					$success_message = sprintf($user->lang['ROLE_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newrole', 'New role', true)));
-					meta_refresh(1, $this->u_action);
-					trigger_error($success_message . $link);
+                    $success_message = sprintf($user->lang['ROLE_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newrole', 'New role', true)));
+                    meta_refresh(1, $this->u_action);
+                    trigger_error($success_message . $link);
 
-				}
-				//user pressed edit roles button
-				elseif($updateroles)
-				{
-					$rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
-					$rolecolor = request_var('role_color', array( 0 => ''));
-					$roleicon = request_var('role_icon', array( 0 => ''));
-					foreach ( $rolenames as $role_id => $role_name )
-					{
-						$data = array(
-						    'role_name'     	=> $role_name,
-							'role_color'     	=> $rolecolor[$role_id],
-							'role_icon'     	=> $roleicon[$role_id],
-						);
+                }
+                //user pressed edit roles button
+                elseif($updateroles)
+                {
+                    $rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
+                    $rolecolor = request_var('role_color', array( 0 => ''));
+                    $roleicon = request_var('role_icon', array( 0 => ''));
+                    foreach ( $rolenames as $role_id => $role_name )
+                    {
+                        $data = array(
+                            'role_name'     	=> $role_name,
+                            'role_color'     	=> $rolecolor[$role_id],
+                            'role_icon'     	=> $roleicon[$role_id],
+                        );
 
-						 $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
+                        $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
 					   	     WHERE role_id=' . (int) $role_id;
-   						 $db->sql_query($sql);
+                        $db->sql_query($sql);
 
-					}
+                    }
 
-					$success_message = sprintf($user->lang['ROLE_UPDATE_SUCCESS'], $role_id);
-					meta_refresh(1, $this->u_action);
-					trigger_error($success_message . $link);
-				}
-				//used pressed red cross to delete role
-				elseif ($deleterole)
-				{
-						// ask for permission
-						if (confirm_box(true))
-						{
-							// @todo check if there are scheduled raids with this role, ask permission
-							$sql = 'DELETE FROM ' . RP_ROLES . ' WHERE role_id = ' . request_var('hiddenroleid', 0) ;
-							$db->sql_query($sql);
+                    $success_message = sprintf($user->lang['ROLE_UPDATE_SUCCESS'], $role_id);
+                    meta_refresh(1, $this->u_action);
+                    trigger_error($success_message . $link);
+                }
+                //used pressed red cross to delete role
+                elseif ($deleterole)
+                {
+                    // ask for permission
+                    if (confirm_box(true))
+                    {
+                        // @todo check if there are scheduled raids with this role, ask permission
+                        $sql = 'DELETE FROM ' . RP_ROLES . ' WHERE role_id = ' . request_var('hiddenroleid', 0) ;
+                        $db->sql_query($sql);
 
-							meta_refresh(1, $this->u_action);
-							trigger_error(sprintf($user->lang['ROLE_DELETE_SUCCESS'], request_var('hiddenroleid', 0)) . $link, E_USER_WARNING);
+                        meta_refresh(1, $this->u_action);
+                        trigger_error(sprintf($user->lang['ROLE_DELETE_SUCCESS'], request_var('hiddenroleid', 0)) . $link, E_USER_WARNING);
 
-						}
-						else
-						{
-							// get field content
-							$s_hidden_fields = build_hidden_fields(array(
-								// set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
-								'roledelete'	=> 1,
-								'hiddenroleid'	=> request_var('delrole_id', 0),
-								)
-							);
-							confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_ROLE'], request_var('delrole_id', 0)), $s_hidden_fields);
-						}
+                    }
+                    else
+                    {
+                        // get field content
+                        $s_hidden_fields = build_hidden_fields(array(
+                                // set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
+                                'roledelete'	=> 1,
+                                'hiddenroleid'	=> request_var('delrole_id', 0),
+                            )
+                        );
+                        confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_ROLE'], request_var('delrole_id', 0)), $s_hidden_fields);
+                    }
 
-				}
+                }
 
                 if($update_raidrolesize)
                 {
@@ -532,9 +526,9 @@ class acp_raidplanner
                 break;
 
             case 'rp_teams':
-				$updateteam = (isset($_POST['teamupdate'])) ? true : false;
-				$deleteteam = (request_var('teamdelete', '') != '') ? true : false;
-				$addteam = (isset($_POST['teamadd'])) ? true : false;
+                $updateteam = (isset($_POST['teamupdate'])) ? true : false;
+                $deleteteam = (request_var('teamdelete', '') != '') ? true : false;
+                $addteam = (isset($_POST['teamadd'])) ? true : false;
                 // check the form key
                 if ($updateteam || $addteam )
                 {
@@ -544,68 +538,118 @@ class acp_raidplanner
                     }
                 }
 
-				/****************************************/
-				/*        RAID TEAMS  phpbb_rp_teams	*/
-				/****************************************/
-				//user pressed add team
-				if($addteam)
-				{
-					$data = array(
-					    'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
-						'team_needed'     => request_var('newteamsize', ''),
-					);
+                /******************************************/
+                /*   Team composition  phpbb_rp_teamsize  */
+                /******************************************/
 
-					$sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
-   					$db->sql_query($sql);
-					$team_id = $db->sql_nextid();
+                // end of handlers
+                // build form
 
-   					// get rolelist from template
-   					$rolenames = utf8_normalize_nfc(request_var('rolename_hidden', array( 0 => ''), true));
-   					//insert default value in RP_TEAMS
+                // select raid teams
+                $sql = 'SELECT * FROM ' . RP_TEAMS . '
+						ORDER BY teams_id';
+                $db->sql_query($sql);
+                $result1 = $db->sql_query($sql);
 
-   					$n = 0;
-   					$totalassigned = 0;
-   					$i = 0;
-   					foreach($rolenames as $key => $rolename)
-   					{
-   						$n=0;
-   						$i += 1;
+                $total_teams = 0;
+                while ( $row = $db->sql_fetchrow($result1) )
+                {
+                    $total_teams++;
+                    $template->assign_block_vars('team_row', array(
+                        'TEAM_ID' 		=> $row['teams_id'],
+                        'TEAMNAME' 		=> $row['team_name'],
+                        'TEAMSIZE' 		=> $row['team_needed'],
+                        'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
+                    ));
 
-   						if($i == count($rolenames))
- 						{
- 							// ex: need 40, have 6 slots
-   							$n = $data['team_needed'] - $totalassigned;
-   						}
-   						else
-   						{
-   							if($totalassigned < (int) $data['team_needed'])
-   							{
-   								$n=1;
-   							}
-   							elseif($totalassigned == (int) $data['team_needed'])
-   							{
-	   							// ex: need only 3, have 6 slots
-	   							$n = $data['team_needed'] - $totalassigned;
-   							}
-   						}
+                    // select raid composition
+                    $sql = 'SELECT a.team_needed as maxneeded,
+					a.team_name, b.role_name, c.teams_id, c.role_id, c.team_needed
+					FROM ' . RP_TEAMS . ' a
+					CROSS JOIN ' . RP_ROLES . ' b
+					LEFT JOIN ' . RP_TEAMSIZE . ' c ON c.teams_id=a.teams_id AND b.role_id=c.role_id
+					WHERE a.teams_id = ' . (int) $row['teams_id'] . '
+					ORDER BY teams_id, role_id';
 
-   						$totalassigned += $n;
+                    $db->sql_query($sql);
+                    $result2 = $db->sql_query($sql);
+                    while ( $row2 = $db->sql_fetchrow($result2) )
+                    {
+                        $total_teams++;
+                        $template->assign_block_vars('team_row.teamsize_row', array(
+                            'ROLE_ID' 		=> (int) $row2['role_id'],
+                            'ROLENAME' 		=> $row2['role_name'],
+                            'TEAMSIZE' 		=> (int)$row2['maxneeded'],
+                            'ROLESIZE' 		=> (int) $row2['team_needed'] == '' ? 0 :$row2['team_needed'],
+                            'ROLEPCT' 		=> (double) round($row2['team_needed'] / $row2['maxneeded'], 2) * 100,
+                        ));
+                    }
+                    $db->sql_freeresult($result2);
+                }
+                $db->sql_freeresult($result1);
 
-   						$sql_ary[] = array(
-   								'teams_id'      => $team_id,
-   								'role_id'       => $key,
-   								'team_needed'   => $n
-   						);
+                /****************************************/
+                /*        RAID TEAMS  phpbb_rp_teams	*/
+                /****************************************/
+                //user pressed add team
+                if($addteam)
+                {
+                    $data = array(
+                        'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
+                        'team_needed'     => request_var('newteamsize', ''),
+                    );
+
+                    $sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
+                    $db->sql_query($sql);
+                    $team_id = $db->sql_nextid();
+
+                    // get rolelist from template
+                    $rolenames = utf8_normalize_nfc(request_var('rolename_hidden', array( 0 => ''), true));
+                    //insert default value in RP_TEAMS
+
+                    $n = 0;
+                    $totalassigned = 0;
+                    $i = 0;
+                    foreach($rolenames as $key => $rolename)
+                    {
+                        $n=0;
+                        $i += 1;
+
+                        if($i == count($rolenames))
+                        {
+                            // ex: need 40, have 6 slots
+                            $n = $data['team_needed'] - $totalassigned;
+                        }
+                        else
+                        {
+                            if($totalassigned < (int) $data['team_needed'])
+                            {
+                                $n=1;
+                            }
+                            elseif($totalassigned == (int) $data['team_needed'])
+                            {
+                                // ex: need only 3, have 6 slots
+                                $n = $data['team_needed'] - $totalassigned;
+                            }
+                        }
+
+                        $totalassigned += $n;
+
+                        $sql_ary[] = array(
+                            'teams_id'      => $team_id,
+                            'role_id'       => $key,
+                            'team_needed'   => $n
+                        );
 
 
-   					}
-   					$db->sql_multi_insert(RP_TEAMSIZE, $sql_ary);
+                    }
+                    $db->sql_multi_insert(RP_TEAMSIZE, $sql_ary);
 
-   					$success_message = sprintf($user->lang['TEAM_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newteamname', 'New Team', true)));
-					meta_refresh(1, $this->u_action);
-					trigger_error($success_message . $link);
+                    $success_message = sprintf($user->lang['TEAM_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newteamname', 'New Team', true)));
+                    meta_refresh(1, $this->u_action);
+                    trigger_error($success_message . $link);
 
-				}
+                }
 
                 //user pressed edit team
                 elseif($updateteam)
@@ -678,72 +722,7 @@ class acp_raidplanner
 
                 break;
 
-            case 'rp_composition':
-
-				/******************************************/
-				/*   Team composition  phpbb_rp_teamsize  */
-				/******************************************/
-
-				// end of handlers
-				// build form
-
-				// select raid teams
-				$sql = 'SELECT * FROM ' . RP_TEAMS . '
-						ORDER BY teams_id';	
-				$db->sql_query($sql);
-				$result1 = $db->sql_query($sql);
-				
-				$total_teams = 0;
-				while ( $row = $db->sql_fetchrow($result1) )
-                {
-                	$total_teams++;
-                    $template->assign_block_vars('team_row', array(
-                    	'TEAM_ID' 		=> $row['teams_id'],
-                        'TEAMNAME' 		=> $row['team_name'],
-                    	'TEAMSIZE' 		=> $row['team_needed'],
-                    	'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
-                    	));
-
-	                // select raid composition
-					$sql = 'SELECT a.team_needed as maxneeded, 
-					a.team_name, b.role_name, c.teams_id, c.role_id, c.team_needed
-					FROM ' . RP_TEAMS . ' a 
-					CROSS JOIN ' . RP_ROLES . ' b
-					LEFT JOIN ' . RP_TEAMSIZE . ' c ON c.teams_id=a.teams_id AND b.role_id=c.role_id 
-					WHERE a.teams_id = ' . (int) $row['teams_id'] . '
-					ORDER BY teams_id, role_id';	
-
-					$db->sql_query($sql);
-					$result2 = $db->sql_query($sql);
-					while ( $row2 = $db->sql_fetchrow($result2) )
-	                {
-	                	$total_teams++;
-	                    $template->assign_block_vars('team_row.teamsize_row', array(
-	                        'ROLE_ID' 		=> (int) $row2['role_id'],
-	                    	'ROLENAME' 		=> $row2['role_name'],
-	                    	'TEAMSIZE' 		=> (int)$row2['maxneeded'],
-	                    	'ROLESIZE' 		=> (int) $row2['team_needed'] == '' ? 0 :$row2['team_needed'],
-	                    	'ROLEPCT' 		=> (double) round($row2['team_needed'] / $row2['maxneeded'], 2) * 100,
-	                    	));
-	                }
-	                $db->sql_freeresult($result2);
-                }
-                $db->sql_freeresult($result1);                
-                
-
-				
-
-
-
-				$this->tpl_name = 'dkp/acp_' . $mode;
-				$this->page_title = $user->lang ['ACP_RAIDPLANNER_SETTINGS'];
-				
-				$form_key = 'acp_raidplanner';
-				add_form_key($form_key);
-		
-				break;
-			
-		}
-	}
+        }
+    }
 
 }

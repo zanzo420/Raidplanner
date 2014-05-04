@@ -32,7 +32,6 @@ class acp_raidplanner_info
                 'rp_cal_settings'	=> array('title' => 'RP_CAL_SETTINGS',      'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
                 'rp_roles'			=> array('title' => 'RP_ROLES',             'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
                 'rp_teams'			=> array('title' => 'RP_TEAMS',             'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
-                'rp_composition'	=> array('title' => 'RP_COMPOSITION',       'display' => 0, 'auth' => 'acl_a_raid_config', 'cat' => array('ACP_DKP_RAIDS')),
 		),
 		);
 	}
