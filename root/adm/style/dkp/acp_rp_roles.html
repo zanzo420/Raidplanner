@@ -16,8 +16,8 @@
         /*border-color:#D7D7D7 #CCCCCC #CCCCCC #D7D7D7;*/
         border-style:solid;
         border-width:0px;
-        margin:0px 0 !important;
-        padding:0px !important;
+        margin:15px 0;
+        padding:10px;
         position:relative;
     }
     fieldset dt {
@@ -39,79 +39,79 @@
 
 </style>
 <fieldset style="background-color: #EEEEEE">
-    <div class="permissions-category">
-        <ul>
-            <li class="permissions-preset-yes"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
-            <li class="permissions-preset-never activetab"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_COMPOSITION}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDSIZES}</span></a></li>
-        </ul>
+    <div id="advanced00">
+        <div class="permissions-category">
+            <ul>
+                <li class="permissions-preset-yes"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
+                <li class="permissions-preset-never activetab"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_COMPOSITION}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDSIZES}</span></a></li>
+            </ul>
+        </div>
+
+        <div class="permissions-panel" id="options001">
+            <span class="corners-top"><span></span></span>
+
+            <div class="tablewrap">
+
+
+
+                <fieldset><legend>{L_RAIDROLES}</legend>
+
+                    <form id="rproles" method="post" action="{U_ACTION}" >
+
+                        <p>{L_ACP_RAIDROLES_EXPLAIN}</p>
+
+                        <table style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>{L_RAIDROLE}</th>
+                                <th>{L_COLOR}</th>
+                                <th>{L_ROLEICON}</th>
+                                <th style="text-align: center; width:5%">{L_ACTION}</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr class="row2">
+                                <td style="text-align: right" colspan="3">{L_EDITRAIDROLES}</td>
+                                <td style="text-align: center">
+                                    <input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
+                                </td>
+                            </tr>
+                            <tr class="row2">
+                                <td><input type="text" name="newrole" value="" class="autowidth" /></td>
+                                <td><input type="text" name="newrole_color" value="" class="autowidth" /></td>
+                                <td><input type="text" name="newrole_icon" value="" class="autowidth" /></td>
+                                <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            <!-- BEGIN role_row -->
+                            <tr class="row1">
+                                <td><input type="text" name="rolename[{role_row.ROLE_ID}]" value="{role_row.ROLENAME}" class="autowidth" /></td>
+                                <td><input type="text" name="role_color[{role_row.ROLE_ID}]" value="{role_row.ROLECOLOR}" class="medium" /></td>
+                                <td><input type="text" name="role_icon[{role_row.ROLE_ID}]" value="{role_row.ROLEICON}" class="medium" />
+                                    <!-- IF role_row.S_ROLE_ICON_EXISTS --><img src="{role_row.ROLE_ICON}" alt="image" /><!-- ENDIF -->
+                                </td>
+                                <td style="text-align: center" ><a href="{role_row.U_DELETE}">{ICON_DELETE}</a></td>
+                            </tr>
+                            <!-- END role_row -->
+                            </tbody>
+
+                        </table>
+                        {S_FORM_TOKEN}
+                    </form>
+
+                </fieldset>
+
+
+
+
+            </div>
+
+            <span class="corners-bottom"><span></span></span>
+        </div>
     </div>
-
 </fieldset>
-
-<div class="permissions-panel" id="options001">
-<span class="corners-top"><span></span></span>
-
-<div class="tablewrap">
-
-
-
-<fieldset><legend>{L_RAIDROLES}</legend>
-
-    <form id="rproles" method="post" action="{U_ACTION}" >
-
-        <p>{L_ACP_RAIDROLES_EXPLAIN}</p>
-
-        <table style="width:100%">
-            <thead>
-            <tr>
-                <th>{L_RAIDROLE}</th>
-                <th>{L_COLOR}</th>
-                <th>{L_ROLEICON}</th>
-                <th style="text-align: center; width:5%">{L_ACTION}</th>
-            </tr>
-            </thead>
-            <tfoot>
-            <tr class="row2">
-                <td style="text-align: right" colspan="3">{L_EDITRAIDROLES}</td>
-                <td style="text-align: center">
-                    <input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
-                </td>
-            </tr>
-            <tr class="row2">
-                <td><input type="text" name="newrole" value="" class="autowidth" /></td>
-                <td><input type="text" name="newrole_color" value="" class="autowidth" /></td>
-                <td><input type="text" name="newrole_icon" value="" class="autowidth" /></td>
-                <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
-            </tr>
-            </tfoot>
-            <tbody>
-            <!-- BEGIN role_row -->
-            <tr class="row1">
-                <td><input type="text" name="rolename[{role_row.ROLE_ID}]" value="{role_row.ROLENAME}" class="autowidth" /></td>
-                <td><input type="text" name="role_color[{role_row.ROLE_ID}]" value="{role_row.ROLECOLOR}" class="medium" /></td>
-                <td><input type="text" name="role_icon[{role_row.ROLE_ID}]" value="{role_row.ROLEICON}" class="medium" />
-                    <!-- IF role_row.S_ROLE_ICON_EXISTS --><img src="{role_row.ROLE_ICON}" alt="image" /><!-- ENDIF -->
-                </td>
-                <td style="text-align: center" ><a href="{role_row.U_DELETE}">{ICON_DELETE}</a></td>
-            </tr>
-            <!-- END role_row -->
-            </tbody>
-
-        </table>
-        {S_FORM_TOKEN}
-    </form>
-
-</fieldset>
-
-
-
-
-</div>
-
-<span class="corners-bottom"><span></span></span>
-</div>
-
 <!-- INCLUDE dkp/overall_footer.html -->

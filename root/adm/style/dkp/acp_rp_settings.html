@@ -16,8 +16,8 @@
         /*border-color:#D7D7D7 #CCCCCC #CCCCCC #D7D7D7;*/
         border-style:solid;
         border-width:0px;
-        margin:0px 0 !important;
-        padding:0px !important;
+        margin:15px 0;
+        padding:10px;
         position:relative;
     }
     fieldset dt {
@@ -39,139 +39,130 @@
 
 </style>
 <fieldset style="background-color: #EEEEEE">
-    <div class="permissions-category">
-        <ul>
-            <li class="permissions-preset-never activetab"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_COMPOSITION}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDSIZES}</span></a></li>
-        </ul>
-    </div>
-
-</fieldset>
-
-<div class="permissions-panel" id="options001">
-<span class="corners-top"><span></span></span>
-
-<div class="tablewrap">
-
-<fieldset><legend>{L_RPSETTINGS}</legend>
-    <div>
-        <form id="rpsettings" method="post" action="{U_ACTION}" >
-
+    <div id="advanced00">
+        <div class="permissions-category">
+            <ul>
+                <li class="permissions-preset-never activetab"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_COMPOSITION}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDSIZES}</span></a></li>
+            </ul>
+        </div>
+        <div class="permissions-panel" id="options001">
+            <span class="corners-top"><span></span></span>
             <div class="tablewrap">
+                <form id="rpsettings" method="post" action="{U_ACTION}" >
+                    <fieldset>
+                        <legend>{L_RPSETTINGS}</legend>
+                            <div class="tablewrap">
 
-                <dl>
-                    <dt><label>{L_RAID_INVITE_TIME_DEFAULT} (hh-mm):</label></dt>
-                    <dd>
-                        {L_HOUR}:
-                        <select id="event_invite_hh" name="event_invite_hh">
-                            <!-- BEGIN event_invite_hh -->
-                            <option value="{event_invite_hh.KEY}" {event_invite_hh.SELECTED}>{event_invite_hh.VALUE}</option><!-- END event_invite_hh -->
-                        </select>
-                        {L_MINUTE}:
-                        <select id="event_invite_mm" name="event_invite_mm">
-                            <!-- BEGIN event_invite_mm -->
-                            <option value="{event_invite_mm.KEY}" {event_invite_mm.SELECTED}>{event_invite_mm.VALUE}</option><!-- END event_invite_mm -->
-                        </select>
-                    </dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_RAID_INVITE_TIME_DEFAULT} (hh-mm):</label></dt>
+                                    <dd>
+                                        {L_HOUR}:
+                                        <select id="event_invite_hh" name="event_invite_hh">
+                                            <!-- BEGIN event_invite_hh -->
+                                            <option value="{event_invite_hh.KEY}" {event_invite_hh.SELECTED}>{event_invite_hh.VALUE}</option><!-- END event_invite_hh -->
+                                        </select>
+                                        {L_MINUTE}:
+                                        <select id="event_invite_mm" name="event_invite_mm">
+                                            <!-- BEGIN event_invite_mm -->
+                                            <option value="{event_invite_mm.KEY}" {event_invite_mm.SELECTED}>{event_invite_mm.VALUE}</option><!-- END event_invite_mm -->
+                                        </select>
+                                    </dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_DEFAULT_RAID_START_TIME} (hh-mm):</label></dt>
-                    <dd>
-                        {L_HOUR}: <select id="event_start_hh" name="event_start_hh">
-                        <!-- BEGIN event_start_hh -->
-                        <option value="{event_start_hh.KEY}" {event_start_hh.SELECTED}>{event_start_hh.VALUE}</option><!-- END event_start_hh -->
-                    </select>
-                        {L_MINUTE}: <select id="event_start_mm" name="event_start_mm">
-                        <!-- BEGIN event_start_mm -->
-                        <option value="{event_start_mm.KEY}" {event_start_mm.SELECTED}>{event_start_mm.VALUE}</option><!-- END event_start_mm -->
-                    </select>
-                    </dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_DEFAULT_RAID_START_TIME} (hh-mm):</label></dt>
+                                    <dd>
+                                        {L_HOUR}: <select id="event_start_hh" name="event_start_hh">
+                                        <!-- BEGIN event_start_hh -->
+                                        <option value="{event_start_hh.KEY}" {event_start_hh.SELECTED}>{event_start_hh.VALUE}</option><!-- END event_start_hh -->
+                                    </select>
+                                        {L_MINUTE}: <select id="event_start_mm" name="event_start_mm">
+                                        <!-- BEGIN event_start_mm -->
+                                        <option value="{event_start_mm.KEY}" {event_start_mm.SELECTED}>{event_start_mm.VALUE}</option><!-- END event_start_mm -->
+                                    </select>
+                                    </dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_DEFAULT_RAID_END_TIME} (hh-mm):</label></dt>
-                    <dd>
-                        {L_HOUR}: <select id="event_end_hh" name="event_end_hh">
-                        <!-- BEGIN event_end_hh -->
-                        <option value="{event_end_hh.KEY}" {event_end_hh.SELECTED}>{event_end_hh.VALUE}</option><!-- END event_end_hh -->
-                    </select>
-                        {L_MINUTE}: <select id="event_end_mm" name="event_end_mm">
-                        <!-- BEGIN event_end_mm -->
-                        <option value="{event_end_mm.KEY}" {event_end_mm.SELECTED}>{event_end_mm.VALUE}</option><!-- END event_end_mm -->
-                    </select>
-                    </dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_DEFAULT_RAID_END_TIME} (hh-mm):</label></dt>
+                                    <dd>
+                                        {L_HOUR}: <select id="event_end_hh" name="event_end_hh">
+                                        <!-- BEGIN event_end_hh -->
+                                        <option value="{event_end_hh.KEY}" {event_end_hh.SELECTED}>{event_end_hh.VALUE}</option><!-- END event_end_hh -->
+                                    </select>
+                                        {L_MINUTE}: <select id="event_end_mm" name="event_end_mm">
+                                        <!-- BEGIN event_end_mm -->
+                                        <option value="{event_end_mm.KEY}" {event_end_mm.SELECTED}>{event_end_mm.VALUE}</option><!-- END event_end_mm -->
+                                    </select>
+                                    </dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_ENABLEPASTRAIDS}:</label><br />{L_ENABLEPASTRAIDS_EXPLAIN}</dt>
-                    <dd><input type="checkbox" id="rp_enable_past_raids" name="rp_enable_past_raids" value="1" {ENABLEPASTRAIDS_CHECKED}/></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_ENABLEPASTRAIDS}:</label><br />{L_ENABLEPASTRAIDS_EXPLAIN}</dt>
+                                    <dd><input type="checkbox" id="rp_enable_past_raids" name="rp_enable_past_raids" value="1" {ENABLEPASTRAIDS_CHECKED}/></dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_EXPIRE_TIME}:</label><br />{L_EXPIRE_EXPLAIN}</dt>
-                    <dd><input type="text" name="expire_time" id="expire_time" value="{EXPIRE_TIME}" /></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_EXPIRE_TIME}:</label><br />{L_EXPIRE_EXPLAIN}</dt>
+                                    <dd><input type="text" name="expire_time" id="expire_time" value="{EXPIRE_TIME}" /></dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_FROZEN_TIME}:</label><br />{L_FROZEN_EXPLAIN}</dt>
-                    <dd><input type="text" name="freeze_time" id="freeze_time" value="{FROZEN_TIME}" /></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_FROZEN_TIME}:</label><br />{L_FROZEN_EXPLAIN}</dt>
+                                    <dd><input type="text" name="freeze_time" id="freeze_time" value="{FROZEN_TIME}" /></dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_DISPLAY_NEXT_RAIDS}:</label><br />{L_DISPLAY_NEXT_RAIDS_EXPLAIN}</dt>
-                    <dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" /></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_DISPLAY_NEXT_RAIDS}:</label><br />{L_DISPLAY_NEXT_RAIDS_EXPLAIN}</dt>
+                                    <dd><input type="text" name="disp_next_raidplans" id="disp_next_raidplans" value="{DISP_NEXT_EVENTS}" /></dd>
+                                </dl>
 
 
-                <dl>
-                    <dt><label>{L_SENDPMRP}:</label><br />{L_SENDPMRP_EXPLAIN}</dt>
-                    <dd><input type="checkbox" id="send_pm_rpchange" name="send_pm_rpchange" value="1" {SENDPMRP_CHECKED}/></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_SENDPMRP}:</label><br />{L_SENDPMRP_EXPLAIN}</dt>
+                                    <dd><input type="checkbox" id="send_pm_rpchange" name="send_pm_rpchange" value="1" {SENDPMRP_CHECKED}/></dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_SENDEMAILRP}:</label><br />{L_SENDEMAILRP_EXPLAIN}</dt>
-                    <dd><input type="checkbox" id="send_email_rpchange" name="send_email_rpchange" value="1" {SENDEMAILRP_CHECKED}/></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_SENDEMAILRP}:</label><br />{L_SENDEMAILRP_EXPLAIN}</dt>
+                                    <dd><input type="checkbox" id="send_email_rpchange" name="send_email_rpchange" value="1" {SENDEMAILRP_CHECKED}/></dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_SENDPMSIGN}:</label><br />{L_SENDPMSIGN_EXPLAIN}</dt>
-                    <dd><input type="checkbox" id="send_pm_signup" name="send_pm_signup" value="1" {SENDPMSIGN_CHECKED}/></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_SENDPMSIGN}:</label><br />{L_SENDPMSIGN_EXPLAIN}</dt>
+                                    <dd><input type="checkbox" id="send_pm_signup" name="send_pm_signup" value="1" {SENDPMSIGN_CHECKED}/></dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_SENDEMAILSIGN}:</label><br />{L_SENDEMAILSIGN_EXPLAIN}</dt>
-                    <dd><input type="checkbox" id="send_email_signup" name="send_email_signup" value="1" {SENDEMAILSIGN_CHECKED}/></dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_SENDEMAILSIGN}:</label><br />{L_SENDEMAILSIGN_EXPLAIN}</dt>
+                                    <dd><input type="checkbox" id="send_email_signup" name="send_email_signup" value="1" {SENDEMAILSIGN_CHECKED}/></dd>
+                                </dl>
 
-                <dl>
-                    <dt><label>{L_PUSHRAIDPLAN}:</label><br />{L_PUSHRAIDPLAN_EXPLAIN}</dt>
-                    <dd><select name="push_mode" id="push_mode">
-                        <option value="0" {SEL_AUTOPUSHRAIDPLAN}>{L_AUTOPUSH}</option>
-                        <option value="1" {SEL_MANUALPUSHRAIDPLAN}>{L_MANPUSH}</option>
-                        <option value="2" {SEL_NOPUSHRAIDPLAN}>{L_NOPUSH}</option>
-                    </select>
-                    </dd>
-                </dl>
+                                <dl>
+                                    <dt><label>{L_PUSHRAIDPLAN}:</label><br />{L_PUSHRAIDPLAN_EXPLAIN}</dt>
+                                    <dd><select name="push_mode" id="push_mode">
+                                        <option value="0" {SEL_AUTOPUSHRAIDPLAN}>{L_AUTOPUSH}</option>
+                                        <option value="1" {SEL_MANUALPUSHRAIDPLAN}>{L_MANPUSH}</option>
+                                        <option value="2" {SEL_NOPUSHRAIDPLAN}>{L_NOPUSH}</option>
+                                    </select>
+                                    </dd>
+                                </dl>
+                            </div>
+                    </fieldset>
+                    <fieldset class="quick">
+                        <input type="submit" name="update_rp_settings" value="{L_SUBMIT}" class="button1" />
+                        <input type="reset" name="reset" value="{L_RESET}" class="button2" />
+                    </fieldset>
+                    {S_FORM_TOKEN}
 
+                </form>
             </div>
-
-            <fieldset class="quick">
-                <input type="submit" name="update_rp_settings" value="{L_SUBMIT}" class="button1" />
-                <input type="reset" name="reset" value="{L_RESET}" class="button2" />
-            </fieldset>
-            {S_FORM_TOKEN}
-
-        </form>
+            <span class="corners-bottom"><span></span></span>
+        </div>
     </div>
 </fieldset>
-
-</div>
-
-<span class="corners-bottom"><span></span></span>
-</div>
-
 <!-- INCLUDE dkp/overall_footer.html -->

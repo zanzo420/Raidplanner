@@ -16,8 +16,8 @@
         /*border-color:#D7D7D7 #CCCCCC #CCCCCC #D7D7D7;*/
         border-style:solid;
         border-width:0px;
-        margin:0px 0 !important;
-        padding:0px !important;
+        margin:15px 0;
+        padding:10px;
         position:relative;
     }
     fieldset dt {
@@ -25,12 +25,12 @@
         text-align: left;
         border: none;
         border-right: 1px solid #CCCCCC;
-        /*padding-top: 3px;*/
+        padding-top: 3px;
     }
 
     fieldset dd {
         margin: 0 0 0 55%;
-        /*padding: 0 0 0 5px;*/
+        padding: 0 0 0 5px;
         border: none;
         border-left: 1px solid #CCCCCC;
         vertical-align: top;
@@ -39,113 +39,110 @@
 
 </style>
 <fieldset style="background-color: #EEEEEE">
-    <div class="permissions-category">
-        <ul>
-            <li class="permissions-preset-yes"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
-            <li class="permissions-preset-never activetab"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
-            <li class="permissions-preset-yes"><a href="{U_RP_COMPOSITION}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDSIZES}</span></a></li>
-        </ul>
+    <div id="advanced00">
+        <div class="permissions-category">
+            <ul>
+                <li class="permissions-preset-yes"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
+                <li class="permissions-preset-never activetab"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_ROLES}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDROLES}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
+                <li class="permissions-preset-yes"><a href="{U_RP_COMPOSITION}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDSIZES}</span></a></li>
+            </ul>
+        </div>
+
+        <div class="permissions-panel" id="options001">
+            <span class="corners-top"><span></span></span>
+
+            <form id="rpsettingscal" method="post" action="{U_ACTION}" >
+                <div class="tablewrap">
+                    <fieldset>
+                        <legend>{L_RPADVANCEDOPTIONS}</legend>
+                        <div>
+
+                            <div class="tablewrap">
+
+                                <dl>
+                                    <dt><label for="show_welcome">{L_RP_SHOW_WELCOME}:</label></dt>
+                                    <dd>
+                                        <input name="show_welcome" type="checkbox" id="show_welcome" value="1" {SHOW_WELCOME} />
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt><label>{L_RP_WELCOME}:</label><br />{L_RP_WELCOME_EXPLAIN}</dt>
+                                    <dd>
+                                        <textarea name="welcome_message" rows="3" cols="60" style=" font-size: 100%; width: 99%" class="input">{WELCOME_MESSAGE}</textarea>
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt><label>{L_DISPLAY_FIRST_WEEK}:</label><br />{L_DISPLAY_FIRST_WEEK_EXPLAIN}</dt>
+                                    <dd><input type="checkbox" id="disp_week" name="disp_week" value="1" {DISP_WEEK_CHECKED} onclick="update_action_status()" /></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt><label>{L_FIRST_DAY}:</label><br />{L_FIRST_DAY_EXPLAIN}</dt>
+                                    <dd><select name="first_day" id="first_day">
+                                        <option value="0" {SEL_MONDAY}>{L_MONDAY}</option>
+                                        <option value="1" {SEL_TUESDAY}>{L_TUESDAY}</option>
+                                        <option value="2" {SEL_WEDNESDAY}>{L_WEDNESDAY}</option>
+                                        <option value="3" {SEL_THURSDAY}>{L_THURSDAY}</option>
+                                        <option value="4" {SEL_FRIDAY}>{L_FRIDAY}</option>
+                                        <option value="5" {SEL_SATURDAY}>{L_SATURDAY}</option>
+                                        <option value="6" {SEL_SUNDAY}>{L_SUNDAY}</option>
+                                    </select>
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt><label>{L_DISPLAY_12_OR_24_HOURS}:</label><br />{L_DISPLAY_12_OR_24_HOURS_EXPLAIN}</dt>
+                                    <dd><select name="hour_mode" id="hour_mode">
+                                        <option value="12" {SEL_12_HOURS}>{L_12_HOURS}</option>
+                                        <option value="24" {SEL_24_HOURS}>{L_24_HOURS}</option>
+                                    </select>
+                                    </dd>
+                                </dl>
+
+                                <dl>
+                                    <dt><label>{L_DISPLAY_TRUNCATED_SUBJECT}:</label><br />{L_DISPLAY_TRUNCATED_SUBJECT_EXPLAIN}</dt>
+                                    <dd><input type="text" name="disp_trunc" id="disp_trunc" value="{DISP_TRUNCATED}" /></dd>
+                                </dl>
+                                <dl>
+                                    <dt><label>{L_DISPLAY_HIDDEN_GROUPS}:</label><br />{L_DISPLAY_HIDDEN_GROUPS_EXPLAIN}</dt>
+                                    <dd><input type="checkbox" id="disp_hidden_groups" name="disp_hidden_groups" value="1" {DISP_HIDDEN_GROUPS_CHECKED} /></dd>
+                                </dl>
+                                <dl>
+                                    <dt><label>{L_TIME_FORMAT}:</label><br />{L_TIME_FORMAT_EXPLAIN}</dt>
+                                    <dd><input type="text" name="time_format" id="time_format" value="{TIME_FORMAT}"/></dd>
+                                </dl>
+                                <dl>
+                                    <dt><label>{L_DATE_FORMAT}:</label><br />{L_DATE_FORMAT_EXPLAIN}</dt>
+                                    <dd><input type="text" name="date_format" id="date_format" value="{DATE_FORMAT}"/></dd>
+                                </dl>
+                                <dl>
+                                    <dt><label>{L_DATE_TIME_FORMAT}:</label><br />{L_DATE_TIME_FORMAT_EXPLAIN}</dt>
+                                    <dd><input type="text" name="date_time_format" id="date_time_format" value="{DATE_TIME_FORMAT}"/></dd>
+                                </dl>
+
+                                <dl>
+                                    <dt><label>{L_DISPLAY_NAME}:</label><br /></dt>
+                                    <dd><input type="checkbox" id="show_name" name="show_name" value="1" {SHOW_NAME} /></dd>
+                                </dl>
+
+                            </div>
+                        </div>
+
+                    </fieldset>
+                    <fieldset class="quick">
+                        {S_FORM_TOKEN}
+                        <input type="submit" name="update_rp_settings_cal" value="{L_SUBMIT}" class="button1" />
+                        <input type="reset" name="reset" value="{L_RESET}" class="button2" />
+                    </fieldset>
+                </div>
+            </form>
+            <span class="corners-bottom"><span></span></span>
+        </div>
     </div>
-
 </fieldset>
-
-<div class="permissions-panel" id="options001">
-<span class="corners-top"><span></span></span>
-
-<div class="tablewrap">
-
-
-<fieldset><legend>{L_RPADVANCEDOPTIONS}</legend>
-    <div>
-
-        <form id="rpsettingscal" method="post" action="{U_ACTION}" >
-            <div class="tablewrap">
-
-                <dl>
-                    <dt><label for="show_welcome">{L_RP_SHOW_WELCOME}:</label></dt>
-                    <dd>
-                        <input name="show_welcome" type="checkbox" id="show_welcome" value="1" {SHOW_WELCOME} />
-                    </dd>
-                </dl>
-
-                <dl>
-                    <dt><label>{L_RP_WELCOME}:</label><br />{L_RP_WELCOME_EXPLAIN}</dt>
-                    <dd>
-                        <textarea name="welcome_message" rows="3" cols="60" style=" font-size: 100%; width: 99%" class="input">{WELCOME_MESSAGE}</textarea>
-                    </dd>
-                </dl>
-
-                <dl>
-                    <dt><label>{L_DISPLAY_FIRST_WEEK}:</label><br />{L_DISPLAY_FIRST_WEEK_EXPLAIN}</dt>
-                    <dd><input type="checkbox" id="disp_week" name="disp_week" value="1" {DISP_WEEK_CHECKED} onclick="update_action_status()" /></dd>
-                </dl>
-
-                <dl>
-                    <dt><label>{L_FIRST_DAY}:</label><br />{L_FIRST_DAY_EXPLAIN}</dt>
-                    <dd><select name="first_day" id="first_day">
-                        <option value="0" {SEL_MONDAY}>{L_MONDAY}</option>
-                        <option value="1" {SEL_TUESDAY}>{L_TUESDAY}</option>
-                        <option value="2" {SEL_WEDNESDAY}>{L_WEDNESDAY}</option>
-                        <option value="3" {SEL_THURSDAY}>{L_THURSDAY}</option>
-                        <option value="4" {SEL_FRIDAY}>{L_FRIDAY}</option>
-                        <option value="5" {SEL_SATURDAY}>{L_SATURDAY}</option>
-                        <option value="6" {SEL_SUNDAY}>{L_SUNDAY}</option>
-                    </select>
-                    </dd>
-                </dl>
-
-                <dl>
-                    <dt><label>{L_DISPLAY_12_OR_24_HOURS}:</label><br />{L_DISPLAY_12_OR_24_HOURS_EXPLAIN}</dt>
-                    <dd><select name="hour_mode" id="hour_mode">
-                        <option value="12" {SEL_12_HOURS}>{L_12_HOURS}</option>
-                        <option value="24" {SEL_24_HOURS}>{L_24_HOURS}</option>
-                    </select>
-                    </dd>
-                </dl>
-
-                <dl>
-                    <dt><label>{L_DISPLAY_TRUNCATED_SUBJECT}:</label><br />{L_DISPLAY_TRUNCATED_SUBJECT_EXPLAIN}</dt>
-                    <dd><input type="text" name="disp_trunc" id="disp_trunc" value="{DISP_TRUNCATED}" /></dd>
-                </dl>
-                <dl>
-                    <dt><label>{L_DISPLAY_HIDDEN_GROUPS}:</label><br />{L_DISPLAY_HIDDEN_GROUPS_EXPLAIN}</dt>
-                    <dd><input type="checkbox" id="disp_hidden_groups" name="disp_hidden_groups" value="1" {DISP_HIDDEN_GROUPS_CHECKED} /></dd>
-                </dl>
-                <dl>
-                    <dt><label>{L_TIME_FORMAT}:</label><br />{L_TIME_FORMAT_EXPLAIN}</dt>
-                    <dd><input type="text" name="time_format" id="time_format" value="{TIME_FORMAT}"/></dd>
-                </dl>
-                <dl>
-                    <dt><label>{L_DATE_FORMAT}:</label><br />{L_DATE_FORMAT_EXPLAIN}</dt>
-                    <dd><input type="text" name="date_format" id="date_format" value="{DATE_FORMAT}"/></dd>
-                </dl>
-                <dl>
-                    <dt><label>{L_DATE_TIME_FORMAT}:</label><br />{L_DATE_TIME_FORMAT_EXPLAIN}</dt>
-                    <dd><input type="text" name="date_time_format" id="date_time_format" value="{DATE_TIME_FORMAT}"/></dd>
-                </dl>
-
-                <dl>
-                    <dt><label>{L_DISPLAY_NAME}:</label><br /></dt>
-                    <dd><input type="checkbox" id="show_name" name="show_name" value="1" {SHOW_NAME} /></dd>
-                </dl>
-
-                <fieldset class="quick">
-                    {S_FORM_TOKEN}
-                    <input type="submit" name="update_rp_settings_cal" value="{L_SUBMIT}" class="button1" />
-                    <input type="reset" name="reset" value="{L_RESET}" class="button2" />
-                </fieldset>
-            </div>
-        </form>
-    </div>
-
-</fieldset>
-
-
-</div>
-
-<span class="corners-bottom"><span></span></span>
-</div>
 
 <!-- INCLUDE dkp/overall_footer.html -->
