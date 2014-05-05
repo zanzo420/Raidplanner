@@ -87,12 +87,12 @@ class ucp_planner
 			$raidplan = new Raidplan($row['raidplan_id']);
 			if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
 				
 			}
 			else 
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
 			}
 			
 			$subj = $raidplan->subject;

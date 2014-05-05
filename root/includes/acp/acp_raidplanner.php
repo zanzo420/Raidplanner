@@ -513,7 +513,7 @@ class acp_raidplanner
                         'ROLECOLOR' 	=> $row['role_color'],
                         'ROLEICON' 		=> $row['role_icon'],
                         'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
-                        'ROLE_ICON' 	=> (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/raidrole_images/" . $row['role_icon'] . ".png" : '',
+                        'ROLE_ICON' 	=> (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $row['role_icon'] . ".png" : '',
                         'U_DELETE' 		=> $this->u_action. '&amp;roledelete=1&amp;delrole_id=' . $row['role_id'],
                     ));
                 }
