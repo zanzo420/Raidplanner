@@ -53,8 +53,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-
-v0.11.0 (under development)
+v0.11.0
 
 ## Installation
 * 	Unzip the zip file into /store/mods
@@ -74,10 +73,12 @@ v0.11.0 (under development)
 ### changes
 
 *   0.11.0 2014-05-19
-    *   [NEW] tabbed interface for ACP, split into 4 modules 
-    *   [FIX] #27 duplicate signups
-    *   [FIX] #29 Split Authorisation from Raidplan Class
-    
+    *   [NEW] tabbed interface for ACP, split into 4 modules. 
+    *   [FIX] #27 duplicate signups. this was due to the signup object not being rebuilt after displaying the raidplan.
+    *   [FIX] #29 Split Authorisation from Raidplan Class. a new class "RaidAuth" is called from Raidplan class constructor, and checks permissions. local raidplan fields are set by one call with as argument the action that needs checking. advantages: raidplan class has too many responsibilities and checking auth should not be one of them.
+    *   [FIX] #26 No acp error handler for raidteams. now there is js and php validation. 
+    *   [FIX] #25 No acp error handler for roles. now there is js and php validation. 
+            
 *   0.10.0 2014-04-05
     *   [CHG] adapted to new view bbdkp class
     *	[NEW] add setting to enable past raids, and set it to default.
