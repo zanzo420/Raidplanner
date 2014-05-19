@@ -104,8 +104,12 @@ abstract class RaidCalendar
 					return $month == 2 ? ($year % 4 ? 28 : ($year % 100 ? 29 : ($year % 400 ? 28 : 29))) : (($month - 1) % 7 % 2 ? 30 : 31);
 			}
 	  	}
+        if (!defined('CAL_GREGORIAN'))
+        {
+            define('CAL_GREGORIAN', 1);
+        }
 
-		$this->days_in_month = cal_days_in_month(CAL_GREGORIAN, $this->date['month_no'], $this->date['year']);
+        $this->days_in_month = cal_days_in_month(CAL_GREGORIAN, $this->date['month_no'], $this->date['year']);
 
 		//set day names
 		$this->get_weekday_names();
@@ -135,12 +139,11 @@ abstract class RaidCalendar
 	 * @param int $inDate
 	 * @return int
 	 */
-	protected function Get1DoM($inDate)
+	protected function Get1stDayofMonth($inDate)
 	{
 		//in  1321056000
 		//GMT: Sat, 12 Nov 2011 00:00:00 GMT
 		//Your time zone: Sat Nov 12 01:00:00 2011 GMT+1
-		global $user;
 		$firstDate = gmmktime(0,0,0, gmdate('m',$inDate), 01, gmdate('Y',$inDate)) ;
 		//GMT: Tue, 01 Nov 2011 00:00:00 GMT
 		// Your time zone: Tue Nov 1 01:00:00 2011 GMT+1
@@ -153,7 +156,7 @@ abstract class RaidCalendar
 	 * @param int $inDate
 	 * @return int
 	 */
-	protected function GetLDoM($inDate)
+	protected function GetLastDayofMonth($inDate)
 	{
 		//in  1321056000
 		//GMT: Sat, 12 Nov 2011 00:00:00 GMT
@@ -177,15 +180,15 @@ abstract class RaidCalendar
 	public abstract function display();
 
 
-	/**
-	 * fday is used to determine in what day we are starting with in week view
-	 *
-	 * @param int $day
-	 * @param int $month
-	 * @param int $year
-	 * @param int $first_day_of_week
-	 * @return int
-	 */
+    /**
+     * fday is used to determine in what day we are starting with in week view
+     *
+     * @param int $day
+     * @param int $month
+     * @param int $year
+     * @internal param int $first_day_of_week
+     * @return int
+     */
 	protected function get_firstday($day, $month, $year)
 	{
 		global $config;
@@ -210,14 +213,16 @@ abstract class RaidCalendar
 		return $fday;
 	}
 
-	/**
-	 * Generates array of birthdays for the given UTC range for users/founders
-	 *
-	 * @param int $day
-	 * @param int $month
-	 * @param int $year
-	 * @return string
-	 */
+    /**
+     * Generates array of birthdays for the given UTC range for users/founders
+     *
+     * @param $from
+     * @param $end
+     * @internal param int $day
+     * @internal param int $month
+     * @internal param int $year
+     * @return string
+     */
 	protected function generate_birthday_list($from, $end)
 	{
 		global $db, $user, $config;
@@ -286,7 +291,7 @@ abstract class RaidCalendar
 	 */
 	private function get_sql_group_options()
 	{
-		global $user, $auth, $db;
+		global $user, $db;
 
         /*
           What groups is this user a member of?
@@ -322,7 +327,7 @@ abstract class RaidCalendar
 	*/
 	public function generate_calendar_smilies($mode)
 	{
-		global $auth, $db, $user, $config, $template, $phpEx, $phpbb_root_path;
+		global $db, $user, $config, $template, $phpEx, $phpbb_root_path;
 
 		if ($mode == 'window')
 		{

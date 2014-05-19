@@ -87,12 +87,12 @@ class ucp_planner
 			$raidplan = new Raidplan($row['raidplan_id']);
 			if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
 				
 			}
 			else 
 			{
-				$eventimg = $phpbb_root_path . "images/event_images/dummy.png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
 			}
 			
 			$subj = $raidplan->subject;
@@ -145,12 +145,12 @@ class ucp_planner
 			{
 				foreach($role['role_signups'] as $signup)
 				{
-					if( $signup['signup_val'] == 0 )
+					if( $signup->signup_val == 0 )
 					{
 						$signupcolor = '#00FF00';
 						$signuptext = $user->lang['YES'];
 					}
-					else if( $signup['signup_val'] == 1 )
+					else if( $signup->signup_val == 1 )
 					{
 						$signupcolor = '#FF0000';
 						$signuptext = $user->lang['NO'];
@@ -162,10 +162,10 @@ class ucp_planner
 					}
 					$template->assign_block_vars('raids.signups', array(
 						'COLOR' 		=> $signupcolor,
-						'CHARNAME'  	=> $signup['dkpmembername'],
-						'COLORCODE' 	=> ($signup['colorcode'] == '') ? '#123456' : $signup['colorcode'],
-						'CLASS_IMAGE' 	=> (strlen($signup['imagename']) > 1) ? $phpbb_root_path . "images/class_images/" . $signup['imagename'] . ".png" : '',
-						'S_CLASS_IMAGE_EXISTS' => (strlen($signup['imagename']) > 1) ? true : false,
+						'CHARNAME'  	=> $signup->dkpmembername,
+						'COLORCODE' 	=> ($signup->colorcode == '') ? '#123456' : $signup->colorcode,
+						'CLASS_IMAGE' 	=> (strlen($signup->imagename) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $signup->imagename . ".png" : '',
+						'S_CLASS_IMAGE_EXISTS' => (strlen($signup->imagename) > 1) ? true : false,
 						'VALUE_TXT' 	=> " : " . $signuptext
 					));	
 				}

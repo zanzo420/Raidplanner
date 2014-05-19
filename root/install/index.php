@@ -50,14 +50,14 @@ if  (!isset ($config['bbdkp_version']) )
 }
 else
 {
-	if(version_compare($config['bbdkp_version'], '1.3.0-b3') == -1 )
+	if(version_compare($config['bbdkp_version'], '1.3.0.2') == -1 )
 	{
-	    trigger_error('Radplanner 0.10.0 requires bbDKP 1.3.0-b3 or higher.');
+	    trigger_error('Radplanner 0.11.0 requires bbDKP 1.3.0.2 or higher.');
 	}
 }
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 0.10.0';
+$mod_name = 'Raidplanner 0.11.0';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -628,6 +628,39 @@ $versions = array(
             'table_remove'  => array('phpbb_rp_recurring'),
             'custom' => array('purgecaches', 'versionupdater'),
         ),
+
+        '0.11.0' =>
+        array(
+
+
+            'module_remove' => array(
+                array('acp', 'ACP_DKP_RAIDS', array(
+                    'module_basename' => 'raidplanner',
+                    'modes'           => array('rp_settings') ,
+                ),
+                ),
+            ),
+
+
+
+            // new tabbes interface for acp
+            'module_add' => array(
+                array('acp', 'ACP_DKP_RAIDS', array(
+                    'module_basename' => 'raidplanner',
+                    'modes'           => array(
+                        'rp_settings' ,
+                        'rp_cal_settings' ,
+                        'rp_roles',
+                        'rp_teams',
+                    ))),
+
+            ),
+
+            'custom' => array('purgecaches', 'versionupdater'),
+
+
+
+        )
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
@@ -708,6 +741,3 @@ function versionupdater($action, $version)
 	
 	}
 }
-
-
-?>

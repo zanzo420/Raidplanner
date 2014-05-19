@@ -30,6 +30,16 @@ if (!class_exists('\bbdkp\raidplanner\DisplayRaidCalendar', false))
     include($phpbb_root_path . 'includes/bbdkp/raidplanner/DisplayRaidCalendar.' . $phpEx);
 }
 
+if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
+{
+    include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
+}
+
+if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
+{
+    include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
+}
+
 /**
  * Class viewPlanner
  * @package bbdkp\views
@@ -41,7 +51,7 @@ class viewPlanner implements iViews
      * construct viewclass
      * @param viewNavigation $Navigation
      */
-    function __construct(viewNavigation $Navigation)
+    public function __construct(viewNavigation $Navigation)
     {
         $this->buildpage($Navigation);
     }
@@ -71,143 +81,7 @@ class viewPlanner implements iViews
         switch( $view_mode )
         {
             case "raidplan":
-
-                if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
-                {
-                    include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-                }
-
-                $raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
-                $raid = new Raidplan($raidplan_id);
-
-                // GET
-                $mode=request_var('mode', '');
-                switch($mode)
-                {
-                    case 'signup':
-
-                        // add a new signup
-                        if(isset($_POST['signmeup' . $raidplan_id]))
-                        {
-
-                            if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
-                            {
-                                include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
-                            }
-                            $signup = new RaidplanSignup();
-                            $signup->signup($raidplan_id);
-                            $signup->signupmessenger(4, $raid);
-                            $raid->make_obj();
-                            $raid->display();
-                        }
-                        break;
-
-                    case 'delsign':
-
-                        // delete a signup
-                        if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
-                        {
-                            include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
-                        }
-                        $signup_id = request_var('signup_id', 0);
-                        $signup = new RaidplanSignup();
-                        $signup->getSignup($signup_id, $raid->eventlist->events[$raid->event_type]['dkpid']);
-                        if ($signup->deletesignup($signup_id, $raidplan_id) ==3)
-                        {
-                            if($raid->raid_id > 0)
-                            {
-                                //raid was pushed already
-                                $raid->deleteraider($signup->dkpmemberid);
-                            }
-                        }
-                        $signup->signupmessenger(6, $raid);
-
-                        $raid->make_obj();
-                        $raid->display();
-                        break;
-
-                    case 'editsign':
-
-                        // edit a signup comment
-                        if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
-                        {
-                            include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
-                        }
-
-                        $signup_id = request_var('signup_id', 0);
-                        $signup = new RaidplanSignup();
-                        $signup->editsignupcomment($signup_id);
-
-                        $raid->display();
-                        break;
-
-                    case 'requeue':
-
-                        // requeue for a raid role
-
-                        if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
-                        {
-                            include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
-                        }
-                        $signup_id = request_var('signup_id', 0);
-                        $signup = new RaidplanSignup();
-                        $signup->requeuesignup($signup_id);
-
-                        $signup->signupmessenger(4, $raid);
-                        $raid->make_obj();
-                        $raid->display();
-                        break;
-
-                    case 'confirm':
-
-                        // confirm a member for a raid role
-                        if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
-                        {
-                            include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpsignups.' . $phpEx);
-                        }
-                        $signup_id = request_var('signup_id', 0);
-                        $signup = new RaidplanSignup();
-                        $signup->confirmsignup($signup_id);
-
-                        if($config['rp_rppushmode'] == 0 && $raid->signups['confirmed'] > 0 )
-                        {
-                            //autopush
-                            $raid->raidplan_push();
-                        }
-                        $signup->signupmessenger(5, $raid);
-                        $raid->make_obj();
-                        $raid->display();
-                        break;
-
-                    case 'showadd':
-
-                        // show the newraid or editraid form
-                        $raid->showadd($cal, $raidplan_id);
-                        break;
-
-                    case 'delete':
-
-                        // delete a raid
-                        if(!$raid->raidplan_delete())
-                        {
-                            $raid->display();
-                        }
-                        break;
-
-                    case 'push':
-                        //push to bbdkp
-                        if(!$raid->raidplan_push())
-                        {
-                            $raid->display();
-                        }
-                        break;
-
-                    default:
-                        // show the raid view form
-                        $raid->display();
-
-                        break;
-                }
+                $this->ViewRaidplan();
                 break;
 
             case "next":
@@ -251,6 +125,7 @@ class viewPlanner implements iViews
                 $cal->display();
                 break;
             case "month":
+
             default:
                 if (!class_exists('\bbdkp\raidplanner\rpmonth', false))
                 {
@@ -263,6 +138,7 @@ class viewPlanner implements iViews
                 break;
         }
 
+
         if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
         {
             //display the blocks
@@ -274,5 +150,145 @@ class viewPlanner implements iViews
         // Output the page
         page_header($user->lang['PAGE_TITLE']);
     }
+
+
+    private function ViewRaidplan()
+    {
+
+        $raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
+        $raid = new Raidplan($raidplan_id);
+        $mode=request_var('mode', '');
+
+        switch($mode)
+        {
+            case 'signup':
+                $this->AddSignup();
+                break;
+
+            case 'delsign':
+
+                $this->DeleteSignup();
+                break;
+
+            case 'editsign':
+                $this->EditComment();
+                break;
+
+            case 'requeue':
+                $this->Requeue();
+                break;
+
+            case 'confirm':
+                $this->ConfirmSignup();
+                break;
+
+            case 'showadd':
+                // show the newraid or editraid form
+                $raid->showadd($cal, $raidplan_id);
+                break;
+
+            case 'delete':
+                // delete a raid
+                if(!$raid->raidplan_delete())
+                {
+                    $raid->display();
+                }
+                break;
+            case 'push':
+                //push to bbdkp
+                if(!$raid->raidplan_push())
+                {
+                    $raid->display();
+                }
+                break;
+            default:
+                // show the raid view form
+                $raid->display();
+                break;
+        }
+    }
+
+    private function AddSignup()
+    {
+        // add a new signup
+        if(isset($_POST['signmeup' . $raidplan_id]))
+        {
+
+
+            $signup = new RaidplanSignup();
+            $signup->signup($raidplan_id);
+            $signup->signupmessenger(4, $raid);
+            $raid->make_obj();
+            $raid->display();
+        }
+    }
+
+    private function DeleteSignup()
+    {
+        $signup_id = request_var('signup_id', 0);
+        $signup = new RaidplanSignup();
+        $signup->getSignup($signup_id, $raid->eventlist->events[$raid->event_type]['dkpid']);
+        if ($signup->deletesignup($signup_id, $raidplan_id) ==3)
+        {
+            if($raid->raid_id > 0)
+            {
+                //raid was pushed already
+                $raid->deleteraider($signup->dkpmemberid);
+            }
+        }
+        $signup->signupmessenger(6, $raid);
+
+        $raid->make_obj();
+        $raid->display();
+
+    }
+
+
+    private function EditComment()
+    {
+
+        // edit a signup comment
+
+        $signup_id = request_var('signup_id', 0);
+        $signup = new RaidplanSignup();
+        $signup->editsignupcomment($signup_id);
+
+        $raid->display();
+    }
+
+    private function Requeue()
+    {
+        // requeue for a raid role
+        $signup_id = request_var('signup_id', 0);
+        $signup = new RaidplanSignup();
+        $signup->requeuesignup($signup_id);
+
+        $signup->signupmessenger(4, $raid);
+        $raid->make_obj();
+        $raid->display();
+    }
+
+    private function ConfirmSignup()
+    {
+
+        $signup_id = request_var('signup_id', 0);
+        $signup = new RaidplanSignup();
+        $signup->confirmsignup($signup_id);
+
+        if($config['rp_rppushmode'] == 0 && $raid->signups['confirmed'] > 0 )
+        {
+            //autopush
+            $raid->raidplan_push();
+        }
+        $signup->signupmessenger(5, $raid);
+        $raid->make_obj();
+        $raid->display();
+    }
+
+
+
+
+
+
 }
 

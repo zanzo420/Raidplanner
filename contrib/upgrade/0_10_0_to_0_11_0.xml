@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator 1.0.1 by tumba25 (offline version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[Raidplanner Update 0.10.0 to 1.11.0]]></title>
+		<description lang="en"><![CDATA[Update 0.10 to 0.11]]></description>
+		<author-notes lang="en"><![CDATA[IMPORTANT: You may need to refresh your browser's cache after updating.]]></author-notes>
+		<author-group>
+			<author>
+				<realname><![CDATA[Andreas]]></realname>
+				<username><![CDATA[Sajaki]]></username>
+				<homepage><![CDATA[http://www.bbdkp.com]]></homepage>
+			</author>
+		</author-group>
+		<mod-version>0.11.0</mod-version>
+		<installation>
+			<level>easy</level>
+			<time>300</time>
+			<target-version>3.0.12</target-version>
+		</installation>
+		<link-group>
+			<link type="parent" href="../../install.xml" lang="en">Raidplanner 0.11.0 Install Instructions</link>		
+		</link-group>
+	</header>
+	<action-group>
+		<copy>
+			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html"/>
+			<file from="root/adm/style/dkp/acp_rp_cal_settings.html" to="adm/style/dkp/acp_rp_cal_settings.html"/>			
+			<file from="root/adm/style/dkp/acp_rp_teams.html" to="adm/style/dkp/acp_rp_teams.html"/>
+			<file from="root/adm/style/dkp/acp_rp_roles.html" to="adm/style/dkp/acp_rp_roles.html"/>
+			<file from="root/images/bbdkp/raidrole_images/*.*" to="images/bbdkp/raidrole_images/*.*"/>
+			<file from="root/images/bbdkp/event_images/*.*" to="images/bbdkp/event_images/*.*"/>
+			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
+			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>
+			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*"/>
+			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php"/>
+			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php"/>
+			<file from="root/install/*.*" to="install/*.*"/>
+			<file from="root/language/en/mods/info_ucp_planner.php" to="language/en/mods/info_ucp_planner.php"/>
+			<file from="root/language/en/mods/permissions_raidplanner.php" to="language/en/mods/permissions_raidplanner.php"/>
+			<file from="root/language/en/mods/raidplanner.php" to="language/en/mods/raidplanner.php"/>
+			<file from="root/language/en/mods/info_acp_raidplanner.php" to="language/en/mods/info_acp_raidplanner.php"/>
+			<file from="root/styles/prosilver/imageset/planner/*.*" to="styles/prosilver/imageset/planner/*.*"/>
+            <file from="root/styles/prosilver/template/dkp/block/planner_upcoming.html" to="styles/prosilver/template/dkp/block/planner_topsignups.html"/>
+            <file from="root/styles/prosilver/template/dkp/block/planner_topsignups.html" to="styles/prosilver/template/dkp/block/planner_upcoming.html"/>
+            <file from="root/styles/prosilver/template/planner/*.*" to="styles/prosilver/template/planner/*.*"/>
+			<file from="root/styles/prosilver/template/dkp/jquery.tools.min.js" to="styles/prosilver/template/dkp/jquery.tools.min.js"/>
+			<file from="root/styles/prosilver/theme/raidplanner.css" to="styles/prosilver/theme/raidplanner.css"/>
+		</copy>
+		<php-installer><![CDATA[install/index.php]]></php-installer>
+		<diy-instructions lang="en"><![CDATA[Once all the files have been modified and uploaded to your site, point your browser to the
+"install/index.php" script (or click the highlighted link above if you are using AutoMOD) and follow
+the instructions. Once that is complete, you can delete the "install/index.php" script..]]></diy-instructions>
+	</action-group>
+</mod>

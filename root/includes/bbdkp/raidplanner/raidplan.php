@@ -5,13 +5,15 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.11.0
 */
 namespace bbdkp\raidplanner;
+use bbdkp\raidplanner;
 use bbdkp\raidplanner\raidmessenger;
 use bbdkp\controller\raids\RaidController;
 use bbdkp\controller\raids\Raiddetail;
 use bbdkp\controller\points\PointsController;
+
 /**
  * @ignore
  */
@@ -113,9 +115,14 @@ class Raidplan
 	 */
     protected $accesslevel = 2;
 
-
-    protected $group_id;
-    protected $group_id_list;
+    private $auth_cansee = false;
+    private $auth_canedit = false;
+    private $auth_candelete = false;
+    private $auth_canadd = false;
+    private $auth_canaddsignups = false;
+    private $auth_addrecurring = false;
+    private $group_id;
+    private $group_id_list;
 	
 	/**
 	 * array of possible roles
@@ -167,17 +174,6 @@ class Raidplan
 	 */
     protected $mychars = array();
 	
-	/**
-	 * can user see raidplan ?
-	 *
-	 * @var boolean
-	 */
-    protected $auth_cansee = false;
-    protected $auth_canedit = false;
-    protected $auth_candelete = false;
-    protected $auth_canadd = false;
-    protected $auth_canaddsignups = false;
-    protected $auth_addrecurring = false;
 
 	// if raidplan is recurring then id > 0
     protected $recurr_id = 0;
@@ -264,7 +260,14 @@ class Raidplan
 	 * @var string
 	 */
 	protected $link;
-	
+
+
+    /**
+     * private instance of authorisation class
+     * @var
+     */
+    private $RaidAuth;
+
 	/**
 	 * constructor
 	 *
@@ -273,7 +276,13 @@ class Raidplan
 	function __construct($id=0)
 	{
 		global $phpEx, $phpbb_root_path;
-		
+
+        if (!class_exists('\bbdkp\raidplanner\RaidAuth'))
+        {
+            include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidAuth.' . $phpEx);
+        }
+
+
 		if (!class_exists('\bbdkp\raidplanner\rpevents'))
 		{
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
@@ -339,7 +348,7 @@ class Raidplan
 	public function make_obj()
 	{
 			global $db, $user, $config, $phpEx, $phpbb_root_path, $db;
-			
+
 			// reinitialise all properties except eventlist and id
 			$this->event_type = 0;
 			$this->invite_time = 0;
@@ -361,12 +370,14 @@ class Raidplan
 			$this->raidroles= array();
 			$this->signups =array();
 			$this->mychars = array();
+
 			$this->auth_cansee = false;
 			$this->auth_canedit = false;
 			$this->auth_candelete = false;
 			$this->auth_canadd = false;
 			$this->auth_canaddsignups = false;
 			$this->auth_addrecurring = false;
+
 			$this->recurr_id = 0;
 			$this->poster_url = '';
 			$this->invite_list = '';
@@ -400,15 +411,18 @@ class Raidplan
 			$this->group_id=$row['group_id'];
 			$this->group_id_list=$row['group_id_list'];
 
-			$this->checkauth();
+            $this->RaidAuth = new RaidAuth($this->poster, $this->accesslevel, $this->group_id=0, $this->group_id_list);
+
+            $this->auth_cansee = $this->RaidAuth->checkauth('see');
 			if(!$this->auth_cansee)
 			{
-				trigger_error( 'NOT_AUTHORISED' );
+				trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
 			}
-			$this->checkauth_canedit();
-			$this->checkauth_candelete();
-			$this->checkauth_canadd();
-			
+            $this->auth_canedit = $this->RaidAuth->checkauth('edit');
+            $this->auth_candelete = $this->RaidAuth->checkauth('delete');
+            $this->auth_canadd = $this->RaidAuth->checkauth('add');
+            $this->auth_canaddsignups = $this->RaidAuth->checkauth('addsignups');
+
 			// now go add raid properties
 			$this->event_type= $row['etype_id'];
 			$this->invite_time=$row['raidplan_invite_time'];
@@ -492,6 +506,7 @@ class Raidplan
 			// check it, and lock signup pane if your char is already registered for a role
 			// setting signed_up, signed_up_maybe,confirmed to true locks popup/pane
 			$this->signed_up = false;
+
 			$this->signed_up_maybe = false;
 			foreach($this->raidroles as $rid => $myrole)
 			{
@@ -661,14 +676,12 @@ class Raidplan
 		{
 			// edit or view existing plan
 			$mode='edit';
-			$this->checkauth_canedit();
+
 			if(!$this->auth_canedit)
 			{
 				trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
 			}
-			
-			$this->checkauth_candelete();
-		
+
 			// action URL 
 			$s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id."&amp;mode=showadd");
 			$update	= (isset($_POST['updateraid'])) ? true : false;
@@ -755,7 +768,7 @@ class Raidplan
 					// collect data
 					$error = $this->addraidplan($cal);
 					// check access
-					$this->checkauth_canadd();
+
 					if(!$this->auth_canadd)
 					{	
 						trigger_error('USER_CANNOT_POST_RAIDPLAN');
@@ -1506,7 +1519,7 @@ class Raidplan
 		// recheck if user can delete
 		global $user, $db, $phpbb_root_path, $phpEx;
 		
-		$this->checkauth_candelete();
+
 		if($this->auth_candelete == false)
 		{
 			trigger_error('USER_CANNOT_DELETE_RAIDPLAN');
@@ -2188,231 +2201,6 @@ class Raidplan
 		return $raidplan_output;
 	}	
 
-	/**
-	 * checks if user is allowed to *see* raid
-	 *
-	 * @return void
-	 */
-	private function checkauth()
-	{
-		global $user, $db;
-		
-		$this->auth_cansee = false;
-		
-		if ($this->poster == $user->data['user_id'])
-		{
-			//own raids - creator always can see
-			$this->auth_cansee = true;
-		}
-		else 
-		{
-			// if not own raid then look at access level.	
-			switch($this->accesslevel)
-			{
-				case 0:
-					// personal raidplan... only raidplan creator is invited
-					$this->auth_cansee = false;
-					break;
-				case 1:
-					// group raidplan... only members of specified phpbb usergroup are invited
-					// is this user a member of the group?
-					if($this->group_id !=0)
-					{
-						$sql = 'SELECT g.group_id
-								FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-								WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-									AND g.group_id = ug.group_id
-									AND g.group_id = '.$db->sql_escape($this->group_id).'
-									AND ug.user_pending = 0';
-						$result = $db->sql_query($sql);
-						if($result)
-						{
-							$row = $db->sql_fetchrow($result);
-							if( $row['group_id'] == $this->group_id )
-							{
-								$this->auth_cansee = true;
-							}
-						}
-						$db->sql_freeresult($result);
-					}
-					else 
-					{
-						$group_list = explode( ',', $this->group_id_list);
-						$num_groups = sizeof( $group_list );
-						$group_options = '';
-						for( $i = 0; $i < $num_groups; $i++ )
-						{
-						    if( $group_list[$i] == "" )
-						    {
-						    	continue;
-						    }
-							if( $group_options != "" )
-							{
-								$group_options = $group_options . " OR ";
-							}
-							$group_options = $group_options . "g.group_id = ".$group_list[$i];
-						}
-						$sql = 'SELECT g.group_id
-								FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-								WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-									AND g.group_id = ug.group_id
-									AND ('.$group_options.')
-									AND ug.user_pending = 0';
-						$result = $db->sql_query($sql);
-						if( $result )
-						{
-							$this->auth_cansee = true;
-						}
-						$db->sql_freeresult($result);
-					}
-					break;
-				case 2:
-					// public raidplan... everyone is invited
-					$this->auth_cansee = true;
-					break;
-			}
-		}
-	}
-
-	
-	
-	
-	/**
-	 * checks if user can post new raid
-	 *
-	 * @return void
-	 */
-	private function checkauth_canadd()
-	{
-		global $auth;
-		$this->auth_canadd = false;
-		switch ($this->accesslevel)
-		{
-			case 0:
-				// can create personal appointment ?
-				if ( $auth->acl_get('u_raidplanner_create_private_raidplans') )
-				{
-					$this->auth_canadd = true;
-				}
-				break;
-			case 1:
-				// can create group raid ? -- only group members can attend
-				if ( $auth->acl_get('u_raidplanner_create_group_raidplans') )
-				{
-					$this->auth_canadd = true;
-				}
-				break;
-			case 2:
-				//can make public raid ? -- every member can attend
-				if ( $auth->acl_get('u_raidplanner_create_public_raidplans') )
-				{
-					$this->auth_canadd = true;
-				}
-				break;
-				
-		}
-		
-	}
-	
-	/**
-	 * checks if user can edit the raid(s)
-	 *
-	 * @return void
-	 */
-	private function checkauth_canedit()
-	{
-		global $user, $auth, $config;
-		
-		$this->auth_canedit = true;
-		
-		if ($user->data['is_bot'])
-		{
-			$this->auth_canedit = false;
-		}
-		elseif ($user->data['is_registered'] )
-		{
-			// has user right to edit raidplans?
-			if (!$auth->acl_get('u_raidplanner_edit_raidplans') )
-			{
-				$this->auth_canedit = false;
-			}
-			else
-			{
-				// has user right to edit others raids ?
-				if (!$auth->acl_get('m_raidplanner_edit_other_users_raidplans') && ($user->data['user_id'] != $this->poster) )
-				{
-					$this->auth_canedit = false;
-				}
-				
-				// @todo testing 
-				// if raid expired then no edits possible even if user can edit own raids...
-				// this way officers cant fiddle with statistics
-
-                if ($config['rp_default_expiretime'] != 0 && $config['rp_enable_past_raids'] == 0)
-                {
-                    if (time() + $user->timezone + $user->dst - date('Z') - $this->end_time > $config['rp_default_expiretime']*60)
-                    {
-                        // assign editing expired raids only to administrator.
-                        if (!$auth->acl_get('a_raid_config') )
-                        {
-                            $this->auth_canedit = false;
-                        }
-                    }
-
-                }
-
-
-				
-			}
-		}
-	}
-	
-	/**
-	 * checks if user can delete raid(s)
-	 *
-	 * @return void
-	 */
-	private function checkauth_candelete()
-	{
-		global $user, $auth;
-		$this->auth_candelete = false;
-		
-		if ($user->data['is_registered'] )
-		{
-			if($auth->acl_get('u_raidplanner_delete_raidplans'))
-			{
-				$this->auth_candelete = true;
-
-				// is raidleader trying to delete other raid ?
-				if ($user->data['user_id'] != $this->poster) 
-				{
-					if (! $auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
-					{
-						$this->auth_candelete = false;
-					}
-				}
-			}
-			
-		}
-		
-	}
-	
-	/**
-	 * checks if the new event is one that members can sign up to (rsvp) only valid for accesslevel 1/2 
-	 *
-	 * @return void
-	 */
-	private function checkauth_canaddsignup()
-	{
-		global $auth;
-		$this->auth_canaddsignups = false;
-		if( $auth->acl_get('u_raidplanner_track_signups'))
-		{
-			$this->auth_canaddsignups = true;
-		}
-		
-	}
-
 	
 	/**
 	 * builds raid roles property, needed sor displaying signups
@@ -2491,20 +2279,23 @@ class Raidplan
 		{
 			require("{$phpbb_root_path}includes/bbdkp/raidplanner/RaidplanSignup.$phpEx");
 		}
-		$rpsignup = new RaidplanSignup();
-		
+
+
 		// fill mychars array for popup
+        $rpsignup = new RaidplanSignup();
 		$this->mychars = $rpsignup->getmychars($this->id);
+        unset($rpsignup);
 		
 		//fill signups array 
 		foreach ($this->raidroles as $roleid => $role)
 		{
 			$sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val > 0 and role_id  = " . $roleid;
 			$result = $db->sql_query($sql);
-			$signups = array();
+
 			while ($row = $db->sql_fetchrow($result))
 			{
-				//bind all public object vars of signup class instance to signup array and add to role array 
+				//bind all public object vars of signup class instance to signup array and add to role array
+                $rpsignup = new RaidplanSignup();
 				$rpsignup->getSignup($row['signup_id'], $this->eventlist->events[$this->event_type]['dkpid']);
 				if($rpsignup->signup_val == 1 || $rpsignup->signup_val == 2)
 				{
@@ -2516,8 +2307,9 @@ class Raidplan
 					//confirmed
 					$this->raidroles[$roleid]['role_confirmations'][] = $rpsignup;
 				}
-				
+                unset($rpsignup);
 			}
+
 			$db->sql_freeresult($result);
 		}
 		
@@ -2551,6 +2343,7 @@ class Raidplan
 			//get all public object vars to signup array and bind to role
 			$this->signoffs[] = $rpsignup;
 		}
+        unset($rpsignup);
 		$db->sql_freeresult($result);
 	}
 	

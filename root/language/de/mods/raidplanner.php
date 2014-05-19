@@ -299,6 +299,13 @@ $lang = array_merge($lang, array(
 	'TEAM_UPDATE_SUCCESS'		=> 'Das Team %s wurde aktualisiert', 
 	'TEAMROLE_UPDATE_SUCCESS'	=> 'Die Rollen wurden aktualisiert', 
 	'TEAMROLE_UPDATE_FAIL'		=> 'Aktualisierung der Rollen von Team %s ist gescheitert, Max Grösse überschreitung (%s). ', 
+	'TEAMROLE_NAME_EMPTY'		=> 'Teamrollenname ist leer',
+    'TEAMROLE_SIZE_EMPTY'		=> 'Teamrollengrösse ist leer',
+    'ROLE_NAME_EMPTY'           => 'Rollenname is leer',
+    'ROLE_COLOR_EMPTY'          => 'Rollenfarbe ist leer',
+    'ROLE_ICON_EMPTY'           => 'Rollenikone ist leer',
+    
+    
 	'TO_TIME'					=> 'Zu',
 	'TOPSIGNUPS'				=> 'Top Anmeldungen',
 	'TENTATIVE'					=> 'Vorläufig',
@@ -316,7 +323,8 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'Du hast keine Berechtigung, diesen Raid zu bearbeiten.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'Du hast keine Berechtigung, diesen Raid zu erstellen.',
 	'USER_ALREADY_SIGNED_UP'	=> '%s ist bereits zu diesem Raid angemeldet.',
-
+   	'USER_INVALIDACTION'        => 'Unbekannte Aktion',
+   
 	'VIEW_RAIDPLAN'				=> '%sZeige den erstellten Raid%s',
 	'WEEK'						=> 'Woche',
 
