@@ -73,8 +73,11 @@ v0.11.0 (under development)
 
 ### changes
 
-*   0.11.0 2014-05-04 (under development)
+*   0.11.0 2014-05-19
     *   [NEW] tabbed interface for ACP, split into 4 modules 
+    *   [FIX] #27 duplicate signups
+    *   [FIX] #29 Split Authorisation from Raidplan Class
+    
 *   0.10.0 2014-04-05
     *   [CHG] adapted to new view bbdkp class
     *	[NEW] add setting to enable past raids, and set it to default.
