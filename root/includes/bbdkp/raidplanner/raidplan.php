@@ -2491,20 +2491,23 @@ class Raidplan
 		{
 			require("{$phpbb_root_path}includes/bbdkp/raidplanner/RaidplanSignup.$phpEx");
 		}
-		$rpsignup = new RaidplanSignup();
-		
+
+
 		// fill mychars array for popup
+        $rpsignup = new RaidplanSignup();
 		$this->mychars = $rpsignup->getmychars($this->id);
+        unset($rpsignup);
 		
 		//fill signups array 
 		foreach ($this->raidroles as $roleid => $role)
 		{
 			$sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val > 0 and role_id  = " . $roleid;
 			$result = $db->sql_query($sql);
-			$signups = array();
+
 			while ($row = $db->sql_fetchrow($result))
 			{
-				//bind all public object vars of signup class instance to signup array and add to role array 
+				//bind all public object vars of signup class instance to signup array and add to role array
+                $rpsignup = new RaidplanSignup();
 				$rpsignup->getSignup($row['signup_id'], $this->eventlist->events[$this->event_type]['dkpid']);
 				if($rpsignup->signup_val == 1 || $rpsignup->signup_val == 2)
 				{
@@ -2516,8 +2519,9 @@ class Raidplan
 					//confirmed
 					$this->raidroles[$roleid]['role_confirmations'][] = $rpsignup;
 				}
-				
+                unset($rpsignup);
 			}
+
 			$db->sql_freeresult($result);
 		}
 		
@@ -2551,6 +2555,7 @@ class Raidplan
 			//get all public object vars to signup array and bind to role
 			$this->signoffs[] = $rpsignup;
 		}
+        unset($rpsignup);
 		$db->sql_freeresult($result);
 	}
 	
