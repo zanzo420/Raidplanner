@@ -238,8 +238,8 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 		<open src="styles/prosilver/template/dkp/view/profile-sidebar.html">
 			<edit>
 				<comment lang="en"><![CDATA[Add blocks to side bar]]></comment>
-				<find><![CDATA[        </ul>
-        <span class="corners-bottom"><span></span></span>]]></find>
+				<find><![CDATA[	</ul>
+<span class="corners-bottom"><span></span></span>]]></find>
 				<action type="after-add"><![CDATA[
 
 <!-- IF S_PLANNER_UPCOMING -->
