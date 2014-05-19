@@ -7,7 +7,7 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator 1.0.1 by tumba25 (offline version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Raidplanner Update 0.10.0 to 1.11.0]]></title>
-		<description lang="en"><![CDATA[Update from Update 0.10.0 to 1.11.0]]></description>
+		<description lang="en"><![CDATA[Update 0.10 to 0.11]]></description>
 		<author-notes lang="en"><![CDATA[IMPORTANT: You may need to refresh your browser's cache after updating.]]></author-notes>
 		<author-group>
 			<author>
@@ -23,7 +23,7 @@
 			<target-version>3.0.12</target-version>
 		</installation>
 		<link-group>
-			<link type="parent" href="../../install.xml" lang="en">Raidplanner 0.11.0s Install Instructions</link>		
+			<link type="parent" href="../../install.xml" lang="en">Raidplanner 0.11.0 Install Instructions</link>		
 		</link-group>
 	</header>
 	<action-group>
