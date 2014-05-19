@@ -77,7 +77,7 @@ class rpday extends RaidCalendar
 		$calendar_days['BIRTHDAYS'] = "";
 		if ( $auth->acl_get('u_raidplanner_view_raidplans') && $auth->acl_get('u_viewprofile'))
 		{
-			$birthdays = $this->generate_birthday_list( $this->Get1DoM($this->timestamp), $this->GetLDoM($this->timestamp));
+			$birthdays = $this->generate_birthday_list( $this->Get1stDayofMonth($this->timestamp), $this->GetLastDayofMonth($this->timestamp));
 			if(isset($birthdays[$this->date['day']]))
 			{
 				$birthdays = $birthdays[$this->date['day']]['bdays'];

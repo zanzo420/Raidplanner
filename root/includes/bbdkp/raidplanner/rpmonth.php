@@ -68,8 +68,8 @@ class rpmonth extends RaidCalendar
 		$raidplan = new Raidplan();
 		
 		// fill array of raid days
-		$firstday = $this->Get1DoM($this->timestamp);
-		$lastday =  $this->GetLDoM($this->timestamp);
+		$firstday = $this->Get1stDayofMonth($this->timestamp);
+		$lastday =  $this->GetLastDayofMonth($this->timestamp);
 
         //gets array with raid days
 		$raiddays = $raidplan->GetRaiddaylist( $firstday, $lastday );

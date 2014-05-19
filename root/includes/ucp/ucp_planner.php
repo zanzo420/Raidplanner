@@ -164,7 +164,7 @@ class ucp_planner
 						'COLOR' 		=> $signupcolor,
 						'CHARNAME'  	=> $signup->dkpmembername,
 						'COLORCODE' 	=> ($signup->colorcode == '') ? '#123456' : $signup->colorcode,
-						'CLASS_IMAGE' 	=> (strlen($signup->imagename) > 1) ? $phpbb_root_path . "images/class_images/" . $signup->imagename . ".png" : '',
+						'CLASS_IMAGE' 	=> (strlen($signup->imagename) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $signup->imagename . ".png" : '',
 						'S_CLASS_IMAGE_EXISTS' => (strlen($signup->imagename) > 1) ? true : false,
 						'VALUE_TXT' 	=> " : " . $signuptext
 					));	
