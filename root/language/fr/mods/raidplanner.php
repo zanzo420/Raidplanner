@@ -302,6 +302,8 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'Vous ne pouvez pas éditer des raids.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'Vous ne pouvez pas créer des raids.',
 	'USER_ALREADY_SIGNED_UP'	=> '%s est déjà incrit dans ce raid.',
+   	'USER_INVALIDACTION'        => 'Action inconnue',
+   	
 	'UPDRAID'					=> 'Raid mis à jour', 
 	'UNSIGNED'					=> 'Désinscrit',
 	 
