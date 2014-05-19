@@ -316,7 +316,8 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_EDIT_RAIDPLAN'	=> 'Du hast keine Berechtigung, diesen Raid zu bearbeiten.',
 	'USER_CANNOT_POST_RAIDPLAN'	=> 'Du hast keine Berechtigung, diesen Raid zu erstellen.',
 	'USER_ALREADY_SIGNED_UP'	=> '%s ist bereits zu diesem Raid angemeldet.',
-
+   	'USER_INVALIDACTION'        => 'Unbekannte Aktion',
+   
 	'VIEW_RAIDPLAN'				=> '%sZeige den erstellten Raid%s',
 	'WEEK'						=> 'Woche',
 
