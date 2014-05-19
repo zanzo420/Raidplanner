@@ -6,6 +6,43 @@
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
  @version 0.11.0
 //-->
+<script type="text/javascript">
+    // <![CDATA[
+
+
+    function check_form()
+    {
+        var a1 = document.getElementById("newrole").value.length;
+        var a2 = document.getElementById("newrole_color").value.length;
+        var a3 = document.getElementById("newrole_icon").value.length;
+
+
+        if (a1 < 2)
+        {
+            alert('{L_ROLE_NAME_EMPTY}');
+            return false;
+        }
+
+        if (a2 < 2)
+        {
+            alert('{L_ROLE_COLOR_EMPTY}');
+            return false;
+        }
+
+        if (a3 < 2)
+        {
+            alert('{L_ROLE_ICON_EMPTY}');
+            return false;
+        }
+
+        return true;
+
+    }
+
+
+    // ]]>
+</script>
+
 <h1>{L_ACP_RAIDPLANNER}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
 
@@ -59,7 +96,7 @@
 
                 <fieldset><legend>{L_RAIDROLES}</legend>
 
-                    <form id="rproles" method="post" action="{U_ACTION}" >
+                    <form id="rproles" method="post" action="{U_ACTION}" onsubmit="return check_form();" >
 
                         <p>{L_ACP_RAIDROLES_EXPLAIN}</p>
 
@@ -80,9 +117,9 @@
                                 </td>
                             </tr>
                             <tr class="row2">
-                                <td><input type="text" name="newrole" value="" class="autowidth" /></td>
-                                <td><input type="text" name="newrole_color" value="" class="autowidth" /></td>
-                                <td><input type="text" name="newrole_icon" value="" class="autowidth" /></td>
+                                <td><input type="text" id="newrole" name="newrole" value="" class="autowidth" /></td>
+                                <td><input type="text" id="newrole_color" name="newrole_color" value="" class="autowidth" /></td>
+                                <td><input type="text" id="newrole_icon" name="newrole_icon" value="" class="autowidth" /></td>
                                 <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
                             </tr>
                             </tfoot>

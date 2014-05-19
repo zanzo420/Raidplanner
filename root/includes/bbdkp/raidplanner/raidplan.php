@@ -348,7 +348,7 @@ class Raidplan
 	public function make_obj()
 	{
 			global $db, $user, $config, $phpEx, $phpbb_root_path, $db;
-			
+
 			// reinitialise all properties except eventlist and id
 			$this->event_type = 0;
 			$this->invite_time = 0;
@@ -506,6 +506,7 @@ class Raidplan
 			// check it, and lock signup pane if your char is already registered for a role
 			// setting signed_up, signed_up_maybe,confirmed to true locks popup/pane
 			$this->signed_up = false;
+
 			$this->signed_up_maybe = false;
 			foreach($this->raidroles as $rid => $myrole)
 			{

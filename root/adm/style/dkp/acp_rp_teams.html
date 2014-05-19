@@ -6,6 +6,37 @@
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
  @version 0.11.0
 //-->
+<script type="text/javascript">
+    // <![CDATA[
+
+
+    function check_form()
+    {
+        var a1 = document.getElementById("newteamsize").value.length;
+        var a2 = document.getElementById("newteamname").value.length;
+
+        if (a1 < 2)
+        {
+            alert('{L_TEAMROLE_SIZE_EMPTY}');
+            return false;
+        }
+
+        if (a2 < 2)
+        {
+            alert('{L_TEAMROLE_NAME_EMPTY}');
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
+
+    }
+
+
+    // ]]>
+</script>
 <h1>{L_ACP_RAIDPLANNER}</h1>
 <p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
 
@@ -54,7 +85,7 @@
 
             <div class="tablewrap">
                 <fieldset><legend>{L_RAIDTEAMS}</legend>
-                    <form id="rpteams" method="post" action="{U_ACTION}" >
+                    <form id="rpteams" method="post" action="{U_ACTION}" onsubmit="return check_form();" >
                         <div class="tablewrap">
                             <p>{L_ACP_RAIDTEAMS_EXPLAIN}</p>
 
@@ -75,9 +106,9 @@
                                     </td>
                                 </tr>
                                 <tr class="row2">
-                                    <td><input type="text" name="newteamname" value="" class="medium" /></td>
-                                    <td style="text-align: center"><input type="text" name="newteamsize" value="" class="medium" /></td>
-                                    <td style="text-align: center"> <input class="button2" name="teamadd" type="submit" value="{L_ADD}" /></td>
+                                    <td><input type="text"  id="newteamname" name="newteamname" value="" class="medium" /></td>
+                                    <td style="text-align: center"><input type="text" id="newteamsize" name="newteamsize" value="" class="medium" /></td>
+                                    <td style="text-align: center"> <input class="button2"name="teamadd" type="submit" value="{L_ADD}" /></td>
                                 </tr>
                                 </tfoot>
                                 <tbody>

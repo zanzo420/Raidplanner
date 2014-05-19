@@ -108,7 +108,12 @@ $lang = array_merge($lang, array(
 	'TEAM_ADD_SUCCESS'			=> 'The Team %s was added.',
 	'TEAM_UPDATE_SUCCESS'		=> 'The Team %s was updated.', 
 	'TEAMROLE_UPDATE_SUCCESS'	=> 'The Teamroles were updated.', 
-	'TEAMROLE_UPDATE_FAIL'		=> 'Teamrole update team %s failed. Max size %s exceeded : %s', 
+	'TEAMROLE_UPDATE_FAIL'		=> 'Teamrole update team %s failed. Max size %s exceeded : %s',
+    'TEAMROLE_NAME_EMPTY'		=> 'Teamrole name is empty',
+    'TEAMROLE_SIZE_EMPTY'		=> 'Teamrole size is empty',
+    'ROLE_NAME_EMPTY'           => 'Role name is empty',
+    'ROLE_COLOR_EMPTY'          => 'Role color is empty',
+    'ROLE_ICON_EMPTY'           => 'Role icon is empty',
 
 	'CONFIRM_DELETE_ROLE'		=> 'Please confirm to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
     'CONFIRM_DELETE_TEAM'		=> 'Please confirm to delete Team %s. If there are scheduled raids with this team then it can‘t be deleted.',
