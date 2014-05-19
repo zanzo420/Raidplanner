@@ -374,6 +374,9 @@ class acp_raidplanner
                 break;
 
             case 'rp_roles':
+                /********************************/
+                /*   RAID ROLES phpbb_rp_roles	*/
+                /********************************/
                 $updateroles = (isset($_POST['roleupdate'])) ? true : false;
                 $deleterole = (request_var('roledelete', '') != '') ? true : false;
                 $addrole = (isset($_POST['roleadd'])) ? true : false;
@@ -387,9 +390,6 @@ class acp_raidplanner
                     }
                 }
 
-                /********************************/
-                /*   RAID ROLES phpbb_rp_roles	*/
-                /********************************/
                 //user pressed add role
                 if($addrole)
                 {
@@ -399,6 +399,10 @@ class acp_raidplanner
                         'role_icon'     => request_var('newrole_icon', ''),
                     );
 
+                    $error = $data['role_name'] == '' ? trigger_error($user->lang['ROLE_NAME_EMPTY'], E_USER_WARNING): '';
+                    $error = $data['role_color'] == '' ? trigger_error($user->lang['ROLE_COLOR_EMPTY'], E_USER_WARNING): '';
+                    $error = $data['role_icon'] == '' ? trigger_error($user->lang['ROLE_ICON_EMPTY'], E_USER_WARNING): '';
+
                     $sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
                     $db->sql_query($sql);
 
@@ -407,6 +411,7 @@ class acp_raidplanner
                     trigger_error($success_message . $link);
 
                 }
+
                 //user pressed edit roles button
                 elseif($updateroles)
                 {
@@ -420,6 +425,10 @@ class acp_raidplanner
                             'role_color'     	=> $rolecolor[$role_id],
                             'role_icon'     	=> $roleicon[$role_id],
                         );
+
+                        $error = $data['role_name'] == '' ? trigger_error($user->lang['ROLE_NAME_EMPTY'], E_USER_WARNING): '';
+                        $error = $data['role_color'] == '' ? trigger_error($user->lang['ROLE_COLOR_EMPTY'], E_USER_WARNING): '';
+                        $error = $data['role_icon'] == '' ? trigger_error($user->lang['ROLE_ICON_EMPTY'], E_USER_WARNING): '';
 
                         $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
 					   	     WHERE role_id=' . (int) $role_id;
@@ -497,7 +506,6 @@ class acp_raidplanner
                     trigger_error($success_message . $link);
                 }
 
-
                 // select raid roles
                 $sql = 'SELECT * FROM ' . RP_ROLES . '
 						ORDER BY role_id';
@@ -519,6 +527,7 @@ class acp_raidplanner
                 }
                 $db->sql_freeresult($result);
 
+
                 $this->tpl_name = 'dkp/acp_' . $mode;
                 $form_key = 'acp_raidplanner';
                 add_form_key($form_key);
@@ -526,6 +535,11 @@ class acp_raidplanner
                 break;
 
             case 'rp_teams':
+                /****************************************/
+                /*        RAID TEAMS  phpbb_rp_teams	*/
+                /*   Team composition  phpbb_rp_teamsize  */
+                /******************************************/
+
                 $updateteam = (isset($_POST['teamupdate'])) ? true : false;
                 $deleteteam = (request_var('teamdelete', '') != '') ? true : false;
                 $addteam = (isset($_POST['teamadd'])) ? true : false;
@@ -537,10 +551,6 @@ class acp_raidplanner
                         trigger_error('FORM_INVALID');
                     }
                 }
-
-                /******************************************/
-                /*   Team composition  phpbb_rp_teamsize  */
-                /******************************************/
 
                 // end of handlers
                 // build form
@@ -588,16 +598,16 @@ class acp_raidplanner
                 }
                 $db->sql_freeresult($result1);
 
-                /****************************************/
-                /*        RAID TEAMS  phpbb_rp_teams	*/
-                /****************************************/
-                //user pressed add team
+
                 if($addteam)
                 {
                     $data = array(
                         'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
                         'team_needed'     => request_var('newteamsize', ''),
                     );
+
+                    $error = $data['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
+                    $error = $data['team_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
 
                     $sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
                     $db->sql_query($sql);
@@ -663,6 +673,9 @@ class acp_raidplanner
                             'team_needed'     	=> $teamsize[$team_id],
                         );
 
+                        $error = $data['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
+                        $error = $data['team_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
+
                         $sql = 'UPDATE ' . RP_TEAMS . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
 					   	     WHERE teams_id=' . (int) $team_id;
                         $db->sql_query($sql);
@@ -693,7 +706,6 @@ class acp_raidplanner
                         // @todo check if there are scheduled raids with this team, ask permission
                         /*
                          *
-
                          $sql= "SELECT count(*) as countteam FROM " . RP_RAIDS_TABLE . " WHERE raidteam = " . request_var('teams_id', 0);
                         $result = $db->sql_query($sql);
                         $total_raidplans = (int) $db->sql_fetchfield('countteam');

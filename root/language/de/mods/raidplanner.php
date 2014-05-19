@@ -299,6 +299,13 @@ $lang = array_merge($lang, array(
 	'TEAM_UPDATE_SUCCESS'		=> 'Das Team %s wurde aktualisiert', 
 	'TEAMROLE_UPDATE_SUCCESS'	=> 'Die Rollen wurden aktualisiert', 
 	'TEAMROLE_UPDATE_FAIL'		=> 'Aktualisierung der Rollen von Team %s ist gescheitert, Max Grösse überschreitung (%s). ', 
+	'TEAMROLE_NAME_EMPTY'		=> 'Teamrollenname ist leer',
+    'TEAMROLE_SIZE_EMPTY'		=> 'Teamrollengrösse ist leer',
+    'ROLE_NAME_EMPTY'           => 'Rollenname is leer',
+    'ROLE_COLOR_EMPTY'          => 'Rollenfarbe ist leer',
+    'ROLE_ICON_EMPTY'           => 'Rollenikone ist leer',
+    
+    
 	'TO_TIME'					=> 'Zu',
 	'TOPSIGNUPS'				=> 'Top Anmeldungen',
 	'TENTATIVE'					=> 'Vorläufig',
