@@ -661,6 +661,15 @@ $versions = array(
 
 
         )
+        
+        
+        '0.12.0' => 
+        array( 
+        // beta 12
+         'custom' => array('purgecaches', 'versionupdater'),
+         
+        ), 
+        
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
