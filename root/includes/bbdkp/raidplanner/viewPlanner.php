@@ -9,7 +9,7 @@
 */
 namespace bbdkp\views;
 
-use bbdkp\raidplanner\DisplayRaidCalendar;
+use bbdkp\raidplanner\DisplayFrame;
 use bbdkp\raidplanner\Raidplan;
 use bbdkp\raidplanner\RaidplanSignup;
 use bbdkp\raidplanner\rpday;
@@ -25,9 +25,9 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
-if (!class_exists('\bbdkp\raidplanner\DisplayRaidCalendar', false))
+if (!class_exists('\bbdkp\raidplanner\DisplayFrame', false))
 {
-    include($phpbb_root_path . 'includes/bbdkp/raidplanner/DisplayRaidCalendar.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/raidplanner/DisplayFrame.' . $phpEx);
 }
 
 if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
@@ -46,6 +46,7 @@ if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
  */
 class viewPlanner implements iViews
 {
+    private $cal;
 
     /**
      * construct viewclass
@@ -74,68 +75,32 @@ class viewPlanner implements iViews
         }
 
         // display header
-        $cal = new DisplayRaidCalendar();
-        $cal->display();
+        $this->cal = new DisplayFrame();
+        $this->cal->display();
+        unset($this->cal);
 
         $view_mode = request_var('view', '');
         switch( $view_mode )
         {
             case "raidplan":
+                // display one raidplan
                 $this->ViewRaidplan();
                 break;
-
-            case "next":
-                // display upcoming raidplans
-                $template_body = "calendar_next_raidplans_for_x_days.html";
-                $daycount = request_var('daycount', 60 );
-                $user_id = request_var('u', 0);
-                global $template;
-                if( $user_id == 0 )
-                {
-                    // display all raids
-                    $cal->display_next_raidplans_for_x_days( $daycount );
-                }
-                else
-                {
-                    // display signed up raids
-                    $cal->display_users_next_raidplans_for_x_days($daycount, $user_id);
-                }
-                $template->assign_vars(array(
-                    'S_PLANNER_UPCOMING'	=> true,
-                ));
-                break;
             case "day":
-                // display all of the raidplans on this day
-                if (!class_exists('\bbdkp\raidplanner\rpday', false))
-                {
-                    include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpday.' . $phpEx);
-                }
-                $cal = new rpday();
-                // display calendar
-                $cal->display();
-                break;
             case "week":
-                if (!class_exists('\bbdkp\raidplanner\rpweek', false))
-                {
-                    // display the entire week
-                    include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
-                }
-                $cal = new rpweek();
-                // display calendar
-                $cal->display();
-                break;
             case "month":
-
-            default:
-                if (!class_exists('\bbdkp\raidplanner\rpmonth', false))
-                {
-                    //display the entire month
-                    include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpmonth.' . $phpEx);
-                }
-                $cal = new rpmonth();
                 // display calendar
-                $cal->display();
+                $calendarclass = '\bbdkp\raidplanner\rp' . $view_mode;
+                if (!class_exists( $calendarclass, false))
+                {
+                    include($phpbb_root_path . 'includes/bbdkp/raidplanner/rp' . $view_mode .'.' . $phpEx);
+                }
+                $this->cal = new $calendarclass();
+                $this->cal->display();
+                unset($this->cal);
                 break;
+            default:
+
         }
 
 
@@ -184,7 +149,7 @@ class viewPlanner implements iViews
 
             case 'showadd':
                 // show the newraid or editraid form
-                $raid->showadd($cal, $raidplan_id);
+                $raid->showadd($this->cal, $raidplan_id);
                 break;
 
             case 'delete':

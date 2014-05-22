@@ -154,7 +154,6 @@ class rpmonth extends RaidCalendar
 			}
 			
 			// if user cannot add raid/appointments in the past
-
 			$calendar_days['ADD_RAID_ICON'] = false;
             if($config['rp_enable_past_raids'])
             {
@@ -162,10 +161,12 @@ class rpmonth extends RaidCalendar
             }
             else
             {
+                $a = 1;
                 // if yesterday then don't enable
                 if( (int) $this->date['month_no'] > (int) date('m') ||
                     ( (int) $this->date['month_no']  == (int) date('m') && $j >= (int) date('d') )  ||
-                    (int) $this->date['year'] > (int) date('Y') )
+                    (int) $this->date['year'] > (int) date('Y')
+                    )
                 {
                     $calendar_days['ADD_RAID_ICON'] = true;
                 }
@@ -191,7 +192,8 @@ class rpmonth extends RaidCalendar
 			}
 	
 			$template->assign_block_vars('calendar_days', $calendar_days);
-			
+
+            // if has right to see raidplans
 			if ( $auth->acl_get('u_raidplanner_view_raidplans') )
 			{
 				$hit= false;
