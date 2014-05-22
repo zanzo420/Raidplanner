@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12
 */
 namespace bbdkp\views;
 
@@ -46,8 +46,8 @@ if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
  */
 class viewPlanner implements iViews
 {
-    private $cal;
 
+    private $cal;
     /**
      * construct viewclass
      * @param viewNavigation $Navigation
@@ -57,15 +57,13 @@ class viewPlanner implements iViews
         $this->buildpage($Navigation);
     }
 
-
     /**
-     * View Raidplans page
+     * Build the page
      * @param viewNavigation $Navigation
      */
     public function buildpage(viewNavigation $Navigation)
     {
-
-        global $auth, $user, $phpbb_root_path, $phpEx, $config;
+        global $auth, $user, $phpbb_root_path, $phpEx;
         $user->add_lang ( array ('mods/raidplanner'));
 
         //get permissions
@@ -77,36 +75,26 @@ class viewPlanner implements iViews
         // display header
         $this->cal = new DisplayFrame();
         $this->cal->display();
-        unset($this->cal);
 
-        $view_mode = request_var('view', '');
+        $view_mode = request_var('view', 'month');
         switch( $view_mode )
         {
             case "raidplan":
                 // display one raidplan
                 $this->ViewRaidplan();
                 break;
+
             case "day":
             case "week":
             case "month":
-                // display calendar
-                $calendarclass = '\bbdkp\raidplanner\rp' . $view_mode;
-                if (!class_exists( $calendarclass, false))
-                {
-                    include($phpbb_root_path . 'includes/bbdkp/raidplanner/rp' . $view_mode .'.' . $phpEx);
-                }
-                $this->cal = new $calendarclass();
-                $this->cal->display();
-                unset($this->cal);
+                $this->ViewCalendar($view_mode);
                 break;
             default:
-
         }
-
 
         if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
         {
-            //display the blocks
+            //display left side blocks
             include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);
         }
         $blocks = new rpblocks();
@@ -116,7 +104,29 @@ class viewPlanner implements iViews
         page_header($user->lang['PAGE_TITLE']);
     }
 
+    /**
+     * Build the calendar
+     * @param $view_mode
+     */
+    private function ViewCalendar($view_mode)
+    {
+        global $phpbb_root_path, $phpEx;
+        // display calendar
+        $calendarclass = '\bbdkp\raidplanner\rp' . $view_mode;
+        if (!class_exists( $calendarclass, false))
+        {
+            include($phpbb_root_path . 'includes/bbdkp/raidplanner/rp' . $view_mode .'.' . $phpEx);
+        }
+        $cal = new $calendarclass();
+        $cal->display();
+        unset($cal);
+    }
 
+
+    /**
+     * Builds the actual raidplan
+     *
+     */
     private function ViewRaidplan()
     {
 
@@ -171,6 +181,7 @@ class viewPlanner implements iViews
                 $raid->display();
                 break;
         }
+        unset($raid);
     }
 
     private function AddSignup()
