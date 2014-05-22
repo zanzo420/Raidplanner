@@ -315,6 +315,9 @@ $lang = array_merge($lang, array(
 	'TRACK_SIGNUPS_ON'			=> 'Die Teilnahme Beobachtung ist aktiviert.',
 	'TRACK_SIGNUPS_OFF'			=> 'Die Teilnahme Beobachtung ist deaktiviert.',
 
+   	'TEAMROLE_SIZE_NOT_NUMERIC' => 'Rollengrösse muss numerisch sein',
+    'TEAMROLE_SIZE_NLGT0' 		=> 'Rollengrösse < 0',
+    
 	'UNSIGNED'					=> 'Teilnahme absagen',
 	'UPDRAID'					=> 'Raidplan aktualisiert',  
 	'UPCOMING_RAIDS'			=> 'Bevorstehende Raids',

@@ -78,6 +78,7 @@ v0.11.0
     *   [FIX] #29 Split Authorisation from Raidplan Class. a new class "RaidAuth" is called from Raidplan class constructor, and checks permissions. local raidplan fields are set by one call with as argument the action that needs checking. advantages: raidplan class has too many responsibilities and checking auth should not be one of them.
     *   [FIX] #26 No acp error handler for raidteams. now there is js and php validation. 
     *   [FIX] #25 No acp error handler for roles. now there is js and php validation. 
+    *   [FIX] #32 upcoming raid, top signup side blocks next to calendar 
             
 *   0.10.0 2014-04-05
     *   [CHG] adapted to new view bbdkp class

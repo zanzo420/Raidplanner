@@ -26,7 +26,7 @@ if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
  * implements a calendar frame
  *
  */
-class DisplayRaidCalendar extends RaidCalendar
+class DisplayFrame extends RaidCalendar
 {
 	private $mode = '';
 	private $Message = '';
