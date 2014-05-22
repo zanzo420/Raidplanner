@@ -15,7 +15,7 @@
         var a1 = document.getElementById("newteamsize").value.length;
         var a2 = document.getElementById("newteamname").value.length;
 
-        if (a1 < 2)
+        if (a1 < 1)
         {
             alert('{L_TEAMROLE_SIZE_EMPTY}');
             return false;
@@ -26,10 +26,20 @@
             alert('{L_TEAMROLE_NAME_EMPTY}');
             return false;
         }
-        else
+
+        if (isNaN(document.getElementById("newteamsize").value) && ! isFinite(document.getElementById("newteamsize").value) )
         {
-            return true;
+            alert('{L_TEAMROLE_SIZE_NOT_NUMERIC}');
+            return false;
         }
+
+        if ( document.getElementById("newteamsize").value < 0 )
+        {
+            alert('{L_TEAMROLE_SIZE_NLGT0}');
+            return false;
+        }
+
+
 
 
     }

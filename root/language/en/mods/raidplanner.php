@@ -114,6 +114,8 @@ $lang = array_merge($lang, array(
     'ROLE_NAME_EMPTY'           => 'Role name is empty',
     'ROLE_COLOR_EMPTY'          => 'Role color is empty',
     'ROLE_ICON_EMPTY'           => 'Role icon is empty',
+    'TEAMROLE_SIZE_NOT_NUMERIC' => 'Teamrole size not numeric',
+    'TEAMROLE_SIZE_NLGT0' => 'Teamrole size < 0',
 
 	'CONFIRM_DELETE_ROLE'		=> 'Please confirm to delete the raid role %s. If there are scheduled raids with this role then it can‘t be deleted.', 
     'CONFIRM_DELETE_TEAM'		=> 'Please confirm to delete Team %s. If there are scheduled raids with this team then it can‘t be deleted.',

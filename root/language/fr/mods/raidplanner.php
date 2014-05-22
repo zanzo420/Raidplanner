@@ -295,6 +295,8 @@ $lang = array_merge($lang, array(
     'ROLE_COLOR_EMPTY'          => 'La couleur du rôle est vide',
     'ROLE_ICON_EMPTY'           => 'L’icône du rôle est vide',
 
+   	'TEAMROLE_SIZE_NOT_NUMERIC' => 'taille Rôles n’est pas numerique',
+    'TEAMROLE_SIZE_NLGT0' 		=> 'taille Rôles < 0',   
 	
 	'TO_TIME'					=> 'Vers',
 	'TOPSIGNUPS'				=> 'Top Participants',

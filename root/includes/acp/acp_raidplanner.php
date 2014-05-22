@@ -603,7 +603,7 @@ class acp_raidplanner
                 {
                     $data = array(
                         'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
-                        'team_needed'     => request_var('newteamsize', ''),
+                        'team_needed'     => request_var('newteamsize', 0),
                     );
 
                     $error = $data['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
