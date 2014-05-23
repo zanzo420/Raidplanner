@@ -113,83 +113,87 @@ class RaidAuth
      */
     private function CanSeeRaid()
     {
-        global $user, $db;
+        global $auth, $user, $db;
 
-        $this->auth_cansee = false;
+        if ( ! $auth->acl_get('u_raidplanner_view_raidplans') )
+        {
+            $this->auth_cansee = false;
+            return 0;
+        }
 
         if ($this->poster == $user->data['user_id'])
         {
             //own raids - creator always can see
             $this->auth_cansee = true;
+            return 1;
         }
-        else
+
+        // if not own raid then look at access level.
+        switch($this->accesslevel)
         {
-            // if not own raid then look at access level.
-            switch($this->accesslevel)
-            {
-                case 0:
-                    // personal raidplan... only raidplan creator is invited
-                    $this->auth_cansee = false;
-                    break;
-                case 1:
-                    // group raidplan... only members of specified phpbb usergroup are invited
-                    // is this user a member of the group?
-                    if($this->group_id !=0)
+            case 0:
+                // personal raidplan... only raidplan creator is invited
+                $this->auth_cansee = false;
+                break;
+            case 1:
+                // group raidplan... only members of specified phpbb usergroup are invited
+                // is this user a member of the group?
+                if($this->group_id !=0)
+                {
+                    $sql = 'SELECT g.group_id
+                            FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+                            WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+                                AND g.group_id = ug.group_id
+                                AND g.group_id = '.$db->sql_escape($this->group_id).'
+                                AND ug.user_pending = 0';
+                    $result = $db->sql_query($sql);
+                    if($result)
                     {
-                        $sql = 'SELECT g.group_id
-								FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-								WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-									AND g.group_id = ug.group_id
-									AND g.group_id = '.$db->sql_escape($this->group_id).'
-									AND ug.user_pending = 0';
-                        $result = $db->sql_query($sql);
-                        if($result)
-                        {
-                            $row = $db->sql_fetchrow($result);
-                            if( $row['group_id'] == $this->group_id )
-                            {
-                                $this->auth_cansee = true;
-                            }
-                        }
-                        $db->sql_freeresult($result);
-                    }
-                    else
-                    {
-                        $group_list = explode( ',', $this->group_id_list);
-                        $num_groups = sizeof( $group_list );
-                        $group_options = '';
-                        for( $i = 0; $i < $num_groups; $i++ )
-                        {
-                            if( $group_list[$i] == "" )
-                            {
-                                continue;
-                            }
-                            if( $group_options != "" )
-                            {
-                                $group_options = $group_options . " OR ";
-                            }
-                            $group_options = $group_options . "g.group_id = ".$group_list[$i];
-                        }
-                        $sql = 'SELECT g.group_id
-								FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
-								WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
-									AND g.group_id = ug.group_id
-									AND ('.$group_options.')
-									AND ug.user_pending = 0';
-                        $result = $db->sql_query($sql);
-                        if( $result )
+                        $row = $db->sql_fetchrow($result);
+                        if( $row['group_id'] == $this->group_id )
                         {
                             $this->auth_cansee = true;
                         }
-                        $db->sql_freeresult($result);
                     }
-                    break;
-                case 2:
-                    // public raidplan... everyone is invited
-                    $this->auth_cansee = true;
-                    break;
-            }
+                    $db->sql_freeresult($result);
+                }
+                else
+                {
+                    $group_list = explode( ',', $this->group_id_list);
+                    $num_groups = sizeof( $group_list );
+                    $group_options = '';
+                    for( $i = 0; $i < $num_groups; $i++ )
+                    {
+                        if( $group_list[$i] == "" )
+                        {
+                            continue;
+                        }
+                        if( $group_options != "" )
+                        {
+                            $group_options = $group_options . " OR ";
+                        }
+                        $group_options = $group_options . "g.group_id = ".$group_list[$i];
+                    }
+                    $sql = 'SELECT g.group_id
+                            FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
+                            WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
+                                AND g.group_id = ug.group_id
+                                AND ('.$group_options.')
+                                AND ug.user_pending = 0';
+                    $result = $db->sql_query($sql);
+                    if( $result )
+                    {
+                        $this->auth_cansee = true;
+                    }
+                    $db->sql_freeresult($result);
+                }
+                break;
+            case 2:
+                // public raidplan... everyone is invited
+                $this->auth_cansee = true;
+                break;
         }
+
     }
 
 

@@ -288,7 +288,7 @@ class Raidplan
 			include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
 		}
 		$this->eventlist= new rpevents();
-		
+
 		if($id !=0)
 		{
 			$this->id=$id;
@@ -710,7 +710,7 @@ class Raidplan
 				else 
 				{
 					// collect data
-					$error = $this->addraidplan($cal);
+					$error = $this->PrepareAdd($cal);
 					
 					// add validations
 					if(count($error) > 0)
@@ -766,7 +766,7 @@ class Raidplan
 				else
 				{
 					// collect data
-					$error = $this->addraidplan($cal);
+					$error = $this->PrepareAdd($cal);
 					// check access
 
 					if(!$this->auth_canadd)
@@ -1111,6 +1111,7 @@ class Raidplan
 			$db->sql_freeresult($result);
 			$this->raidteam = $team_id;
 			$this->raidteamname = $teamname;
+
 			// make roles proposal
 			$sql_array = array(
 			    'SELECT'    => 't.team_needed, r.role_id, r.role_name , r.role_color, r.role_icon ', 
@@ -1257,7 +1258,7 @@ class Raidplan
 	 *
 	 * @param RaidCalendar $cal
 	 */
-	private function addraidplan(RaidCalendar $cal)
+	private function PrepareAdd(RaidCalendar $cal)
 	{
 
 		global $user;
@@ -1591,7 +1592,7 @@ class Raidplan
 	{
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
 		
-		// check if it is a private appointment
+		// check if it is private
 		if( !$this->auth_cansee)
 		{
 			trigger_error( 'PRIVATE_RAIDPLAN' );
