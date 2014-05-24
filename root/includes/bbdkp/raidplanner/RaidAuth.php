@@ -37,7 +37,6 @@ class RaidAuth
     private $auth_candelete = false;
     private $auth_canadd = false;
     private $auth_canaddsignups = false;
-    private $auth_addrecurring = false;
     private $poster;
     private $accesslevel;
     private $group_id;

@@ -72,16 +72,18 @@ class viewPlanner implements iViews
             \trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
         }
 
+        $raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
+        $view_mode = request_var('view', 'month');
+        $mode=request_var('mode', '');
+
         // display header
         $this->cal = new DisplayFrame();
         $this->cal->display();
-
-        $view_mode = request_var('view', 'month');
         switch( $view_mode )
         {
             case "raidplan":
                 // display one raidplan
-                $this->ViewRaidplan();
+                $this->ViewRaidplan($mode, $raidplan_id);
                 break;
 
             case "day":
@@ -127,46 +129,109 @@ class viewPlanner implements iViews
      * Builds the actual raidplan
      *
      */
-    private function ViewRaidplan()
+    private function ViewRaidplan($mode, $raidplan_id)
     {
-
-        $raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
+        global $user, $template;
         $raid = new Raidplan($raidplan_id);
-        $mode=request_var('mode', '');
 
         switch($mode)
         {
             case 'signup':
-                $this->AddSignup();
+                $this->AddSignup($raid);
                 break;
 
             case 'delsign':
 
-                $this->DeleteSignup();
+                $this->DeleteSignup($raid);
                 break;
 
             case 'editsign':
-                $this->EditComment();
+                $this->EditComment($raid);
                 break;
 
             case 'requeue':
-                $this->Requeue();
+                $this->Requeue($raid);
                 break;
 
             case 'confirm':
-                $this->ConfirmSignup();
+                $this->ConfirmSignup($raid);
                 break;
 
             case 'showadd':
-                // show the newraid or editraid form
-                $raid->showadd($this->cal, $raidplan_id);
+
+                $submit	= (isset($_POST['addraid'])) ? true : false;
+                $update	= (isset($_POST['updateraid'])) ? true : false;
+
+                if (($submit || $update) && confirm_box(true))
+                {
+                     $this->AddUpdateRaidplan();
+                }
+                elseif ($submit || $update)
+                {
+
+                    $error = $raid->PrepareAdd($this->cal);
+                    if(count($error) > 0)
+                    {
+                        trigger_error(implode($error,"<br /> "), E_USER_WARNING);
+                    }
+
+                    $str  = serialize($this);
+                    $str1 = base64_encode($str);
+
+                    if($submit)
+                    {
+                        if(!$raid->auth_canadd)
+                        {
+                            trigger_error('USER_CANNOT_POST_RAIDPLAN');
+                        }
+
+                        $s_hidden_fields = build_hidden_fields(array(
+                                'addraid'	=> true,
+                                'raidobject'	=> $str1
+                            )
+                        );
+
+                        $template->assign_vars(array(
+                                'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
+                        );
+                        confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
+                    }
+
+                    if($update)
+                    {
+                        if(!$raid->auth_canedit)
+                        {
+                            trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+                        }
+
+                        $s_hidden_fields = build_hidden_fields(array(
+                                'updateraid'	=> true,
+                                'raidobject'	=> $str1,
+                                'raidplan_id'	=> $this->id
+                            )
+                        );
+
+                        $template->assign_vars(array(
+                                'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
+                        );
+
+                        confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
+                    }
+                }
+
+                $raid->showadd($this->cal);
                 break;
 
             case 'delete':
                 // delete a raid
-                if(!$raid->raidplan_delete())
+
+                $delete	= (isset($_POST['delete'])) ? true : false;
+                if($delete)
                 {
-                    $raid->display();
+                    if(!$raid->raidplan_delete())
+                    {
+                        $raid->display();
+                    }
                 }
                 break;
             case 'push':
@@ -184,27 +249,59 @@ class viewPlanner implements iViews
         unset($raid);
     }
 
-    private function AddSignup()
+
+    /**
+     * Add new raidplan
+     *
+     * @return int
+     */
+    private function AddUpdateRaidplan()
+    {
+        //get string
+        $str = request_var('raidobject', '');
+        $str1 = base64_decode($str);
+        $raidplanobj = unserialize($str1);
+
+        if (! $raidplanobj instanceof \bbdkp\raidplanner\Raidplan)
+        {
+            trigger_error('ERROR',E_USER_WARNING);
+        }
+
+        $raidplanobj->storeplan();
+        // store the raid roles.
+        $raidplanobj->store_raidroles();
+        //make object
+        $raidplanobj->make_obj();
+        $raidplanobj->Check_auth();
+        // display it
+        $raidplanobj->display();
+        return 0;
+    }
+
+
+    private function AddSignup(Raidplan $raid)
     {
         // add a new signup
-        if(isset($_POST['signmeup' . $raidplan_id]))
+        if(isset($_POST['signmeup' . $raid->id]))
         {
 
 
             $signup = new RaidplanSignup();
-            $signup->signup($raidplan_id);
+            $signup->signup($raid->id);
             $signup->signupmessenger(4, $raid);
             $raid->make_obj();
+            $raid->Check_auth();
             $raid->display();
         }
     }
 
-    private function DeleteSignup()
+    private function DeleteSignup(Raidplan $raid)
     {
         $signup_id = request_var('signup_id', 0);
+
         $signup = new RaidplanSignup();
         $signup->getSignup($signup_id, $raid->eventlist->events[$raid->event_type]['dkpid']);
-        if ($signup->deletesignup($signup_id, $raidplan_id) ==3)
+        if ($signup->deletesignup($signup_id, $raid->id) ==3)
         {
             if($raid->raid_id > 0)
             {
@@ -215,12 +312,13 @@ class viewPlanner implements iViews
         $signup->signupmessenger(6, $raid);
 
         $raid->make_obj();
+        $raid->Check_auth();
         $raid->display();
 
     }
 
 
-    private function EditComment()
+    private function EditComment(Raidplan $raid)
     {
 
         // edit a signup comment
@@ -232,7 +330,7 @@ class viewPlanner implements iViews
         $raid->display();
     }
 
-    private function Requeue()
+    private function Requeue(Raidplan $raid)
     {
         // requeue for a raid role
         $signup_id = request_var('signup_id', 0);
@@ -241,12 +339,13 @@ class viewPlanner implements iViews
 
         $signup->signupmessenger(4, $raid);
         $raid->make_obj();
+        $raid->Check_auth();
         $raid->display();
     }
 
-    private function ConfirmSignup()
+    private function ConfirmSignup(Raidplan $raid)
     {
-
+        global $config;
         $signup_id = request_var('signup_id', 0);
         $signup = new RaidplanSignup();
         $signup->confirmsignup($signup_id);
@@ -258,6 +357,7 @@ class viewPlanner implements iViews
         }
         $signup->signupmessenger(5, $raid);
         $raid->make_obj();
+        $raid->Check_auth();
         $raid->display();
     }
 
