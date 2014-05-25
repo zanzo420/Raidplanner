@@ -132,29 +132,29 @@ class viewPlanner implements iViews
     private function ViewRaidplan($mode, $raidplan_id)
     {
         global $user, $template;
-        $raid = new Raidplan($raidplan_id);
+        $raidplan = new Raidplan($raidplan_id);
 
         switch($mode)
         {
             case 'signup':
-                $this->AddSignup($raid);
+                $this->AddSignup($raidplan);
                 break;
 
             case 'delsign':
 
-                $this->DeleteSignup($raid);
+                $this->DeleteSignup($raidplan);
                 break;
 
             case 'editsign':
-                $this->EditComment($raid);
+                $this->EditComment($raidplan);
                 break;
 
             case 'requeue':
-                $this->Requeue($raid);
+                $this->Requeue($raidplan);
                 break;
 
             case 'confirm':
-                $this->ConfirmSignup($raid);
+                $this->ConfirmSignup($raidplan);
                 break;
 
             case 'showadd':
@@ -164,25 +164,136 @@ class viewPlanner implements iViews
 
                 if (($submit || $update) && confirm_box(true))
                 {
+                     // insert in database
                      $this->AddUpdateRaidplan();
+                     break;
                 }
                 elseif ($submit || $update)
                 {
+                    // collect data
+                    $error = array();
+                    $raidplan->poster = $user->data['user_id'];
 
-                    $error = $raid->PrepareAdd($this->cal);
+                    // get member group id
+                    $raidplan->group_id_list = ',';
+                    $raidplan->group_id = 0;
+                    $group_id_array = request_var('calGroupId', array(0));
+                    $num_group_ids = sizeof( $group_id_array );
+                    if( $num_group_ids == 1 )
+                    {
+                        // if only one group pass the groupid
+                        $raidplan->group_id = $group_id_array[0];
+                    }
+                    elseif( $num_group_ids > 1 )
+                    {
+                        // if we want multiple groups then pass the array
+                        for( $group_index = 0; $group_index < $num_group_ids; $group_index++ )
+                        {
+                            if( $group_id_array[$group_index] == "" )
+                            {
+                                continue;
+                            }
+                            $raidplan->group_id_list .= $group_id_array[$group_index] . ",";
+                        }
+                    }
+
+                    $raidplan->accesslevel = request_var('accesslevel', 0);
+                    switch($raidplan->accesslevel)
+                    {
+                        case 0:
+                            //personal, no signups
+                            $raidplan->signups_allowed = 0;
+                            break;
+                        case 1:
+                            $raidplan->signups_allowed = 1;
+                            // if we selected group access but didn't actually choose a group then throw error
+                            if ($num_group_ids < 1)
+                            {
+                                $error[] = $user->lang['NO_GROUP_SELECTED'];
+                            }
+
+                            break;
+                        case 2:
+                            //all
+                            $raidplan->signups_allowed = 1;
+                    }
+
+
+                    //get raid team
+                    $raidplan->raidteam = request_var('teamselect', request_var('team_id', 0));
+
+                    $raidroles = request_var('role_needed', array(0=> 0));
+
+                    foreach($raidroles as $role_id => $needed)
+                    {
+                        $raidplan->raidroles[$role_id] = array(
+                            'role_needed' => (int) $needed,
+                        );
+                    }
+
+                    $raidplan->signups['yes'] = 0;
+                    $raidplan->signups['no'] = 0;
+                    $raidplan->signups['maybe'] = 0;
+
+                    //set event type
+                    $raidplan->event_type = request_var('bbdkp_events', 0);
+
+                    // invite/start date values from pulldown click
+                    $inv_d = request_var('calD', 0);
+                    $inv_m = request_var('calM', 0);
+                    $inv_y = request_var('calY', 0);
+                    $inv_hr = request_var('calinvHr', 0);
+                    $inv_mn = request_var('calinvMn', 0);
+                    $raidplan->invite_time = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
+
+                    $start_hr = request_var('calHr', 0);
+                    $start_mn = request_var('calMn', 0);
+                    $raidplan->start_time = gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
+
+                    $end_m = request_var('calMEnd', 0);
+                    $end_d = request_var('calDEnd', 0);
+                    $end_y = request_var('calYEnd', 0);
+
+                    $end_hr = request_var('calEndHr', 0);
+                    $end_mn = request_var('calEndMn', 0);
+                    $raidplan->end_time = gmmktime( $end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
+                    if ($raidplan->end_time < $raidplan->start_time)
+                    {
+                        //check for enddate before begindate
+                        // if the end hour is earlier than start hour then roll over a day
+                        $raidplan->end_time += 3600*24;
+                    }
+
+                    //if this is not an "all day event"
+                    $raidplan->all_day=0;
+                    $raidplan->day = sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y);
+
+                    // read subjectline
+                    $raidplan->subject = utf8_normalize_nfc(request_var('subject', '', true));
+
+                    //read comment section
+                    $raidplan->body = utf8_normalize_nfc(request_var('message', '', true));
+
+                    $raidplan->bbcode['uid'] = $raidplan->bbcode['bitfield'] = $options = '';
+                    $allow_bbcode = $allow_urls = $allow_smilies = true;
+                    generate_text_for_storage($raidplan->body, $raidplan->bbcode['uid'], $raidplan->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
+
+                    $raidplan->Check_auth();
+
                     if(count($error) > 0)
                     {
                         trigger_error(implode($error,"<br /> "), E_USER_WARNING);
                     }
 
-                    $str  = serialize($this);
+
+                    $str  = serialize($raidplan);
                     $str1 = base64_encode($str);
 
                     if($submit)
                     {
-                        if(!$raid->auth_canadd)
+                        if(!$raidplan->auth_canadd)
                         {
-                            trigger_error('USER_CANNOT_POST_RAIDPLAN');
+                           // trigger_error('USER_CANNOT_POST_RAIDPLAN');
                         }
 
                         $s_hidden_fields = build_hidden_fields(array(
@@ -199,7 +310,9 @@ class viewPlanner implements iViews
 
                     if($update)
                     {
-                        if(!$raid->auth_canedit)
+
+
+                        if(!$raidplan->auth_canedit)
                         {
                             trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
                         }
@@ -219,7 +332,8 @@ class viewPlanner implements iViews
                     }
                 }
 
-                $raid->showadd($this->cal);
+                //show add form
+                $raidplan->showadd($this->cal);
                 break;
 
             case 'delete':
@@ -228,25 +342,25 @@ class viewPlanner implements iViews
                 $delete	= (isset($_POST['delete'])) ? true : false;
                 if($delete)
                 {
-                    if(!$raid->raidplan_delete())
+                    if(!$raidplan->raidplan_delete())
                     {
-                        $raid->display();
+                        $raidplan->display();
                     }
                 }
                 break;
             case 'push':
                 //push to bbdkp
-                if(!$raid->raidplan_push())
+                if(!$raidplan->raidplan_push())
                 {
-                    $raid->display();
+                    $raidplan->display();
                 }
                 break;
             default:
                 // show the raid view form
-                $raid->display();
+                $raidplan->display();
                 break;
         }
-        unset($raid);
+        unset($raidplan);
     }
 
 
@@ -260,65 +374,65 @@ class viewPlanner implements iViews
         //get string
         $str = request_var('raidobject', '');
         $str1 = base64_decode($str);
-        $raidplanobj = unserialize($str1);
+        $raidplan = unserialize($str1);
 
-        if (! $raidplanobj instanceof \bbdkp\raidplanner\Raidplan)
+        if (! $raidplan instanceof \bbdkp\raidplanner\Raidplan)
         {
             trigger_error('ERROR',E_USER_WARNING);
         }
 
-        $raidplanobj->storeplan();
+        $raidplan->storeplan();
         // store the raid roles.
-        $raidplanobj->store_raidroles();
+        $raidplan->store_raidroles();
         //make object
-        $raidplanobj->make_obj();
-        $raidplanobj->Check_auth();
+        $raidplan->make_obj();
+        $raidplan->Check_auth();
         // display it
-        $raidplanobj->display();
+        $raidplan->display();
         return 0;
     }
 
 
-    private function AddSignup(Raidplan $raid)
+    private function AddSignup(Raidplan $raidplan)
     {
         // add a new signup
-        if(isset($_POST['signmeup' . $raid->id]))
+        if(isset($_POST['signmeup' . $raidplan->id]))
         {
 
 
             $signup = new RaidplanSignup();
-            $signup->signup($raid->id);
-            $signup->signupmessenger(4, $raid);
-            $raid->make_obj();
-            $raid->Check_auth();
-            $raid->display();
+            $signup->signup($raidplan->id);
+            $signup->signupmessenger(4, $raidplan);
+            $raidplan->make_obj();
+            $raidplan->Check_auth();
+            $raidplan->display();
         }
     }
 
-    private function DeleteSignup(Raidplan $raid)
+    private function DeleteSignup(Raidplan $raidplan)
     {
         $signup_id = request_var('signup_id', 0);
 
         $signup = new RaidplanSignup();
-        $signup->getSignup($signup_id, $raid->eventlist->events[$raid->event_type]['dkpid']);
-        if ($signup->deletesignup($signup_id, $raid->id) ==3)
+        $signup->getSignup($signup_id, $raidplan->eventlist->events[$raidplan->event_type]['dkpid']);
+        if ($signup->deletesignup($signup_id, $raidplan->id) ==3)
         {
-            if($raid->raid_id > 0)
+            if($raidplan->raid_id > 0)
             {
                 //raid was pushed already
-                $raid->deleteraider($signup->dkpmemberid);
+                $raidplan->deleteraider($signup->dkpmemberid);
             }
         }
-        $signup->signupmessenger(6, $raid);
+        $signup->signupmessenger(6, $raidplan);
 
-        $raid->make_obj();
-        $raid->Check_auth();
-        $raid->display();
+        $raidplan->make_obj();
+        $raidplan->Check_auth();
+        $raidplan->display();
 
     }
 
 
-    private function EditComment(Raidplan $raid)
+    private function EditComment(Raidplan $raidplan)
     {
 
         // edit a signup comment
@@ -327,38 +441,38 @@ class viewPlanner implements iViews
         $signup = new RaidplanSignup();
         $signup->editsignupcomment($signup_id);
 
-        $raid->display();
+        $raidplan->display();
     }
 
-    private function Requeue(Raidplan $raid)
+    private function Requeue(Raidplan $raidplan)
     {
         // requeue for a raid role
         $signup_id = request_var('signup_id', 0);
         $signup = new RaidplanSignup();
         $signup->requeuesignup($signup_id);
 
-        $signup->signupmessenger(4, $raid);
-        $raid->make_obj();
-        $raid->Check_auth();
-        $raid->display();
+        $signup->signupmessenger(4, $raidplan);
+        $raidplan->make_obj();
+        $raidplan->Check_auth();
+        $raidplan->display();
     }
 
-    private function ConfirmSignup(Raidplan $raid)
+    private function ConfirmSignup(Raidplan $raidplan)
     {
         global $config;
         $signup_id = request_var('signup_id', 0);
         $signup = new RaidplanSignup();
         $signup->confirmsignup($signup_id);
 
-        if($config['rp_rppushmode'] == 0 && $raid->signups['confirmed'] > 0 )
+        if($config['rp_rppushmode'] == 0 && $raidplan->signups['confirmed'] > 0 )
         {
             //autopush
-            $raid->raidplan_push();
+            $raidplan->raidplan_push();
         }
-        $signup->signupmessenger(5, $raid);
-        $raid->make_obj();
-        $raid->Check_auth();
-        $raid->display();
+        $signup->signupmessenger(5, $raidplan);
+        $raidplan->make_obj();
+        $raidplan->Check_auth();
+        $raidplan->display();
     }
 
 

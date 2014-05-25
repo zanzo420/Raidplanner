@@ -98,8 +98,8 @@ class Raidplan
      *
      * @var unknown_type
      */
-    protected $body;
-    protected $bbcode = array();
+    public $body;
+    public $bbcode = array();
 
     /**
      * poster_id
@@ -129,14 +129,14 @@ class Raidplan
      *
      * @var array
      */
-    protected $roles= array();
+    public $roles= array();
 
     /**
      * array of signoffs
      *
      * @var array
      */
-    protected $signoffs= array();
+    public $signoffs= array();
 
     /**
      * raidteam int
@@ -158,21 +158,21 @@ class Raidplan
      *
      * @var array
      */
-    protected $raidroles= array();
+    public $raidroles= array();
 
     /**
      * aray of signups
      *
      * @var array
      */
-    protected $signups =array();
+    public $signups =array();
 
     /**
      * all my eligible chars
      *
      * @var array
      */
-    protected $mychars = array();
+    public $mychars = array();
 
 
     // if raidplan is recurring then id > 0
@@ -647,7 +647,7 @@ class Raidplan
 
     public function Check_auth()
     {
-        $this->RaidAuth = new RaidAuth($this->poster, $this->accesslevel, $this->group_id=0, $this->group_id_list);
+        $this->RaidAuth = new RaidAuth($this);
 
         $this->auth_cansee = $this->RaidAuth->checkauth('see');
         if(!$this->auth_cansee)
@@ -1130,144 +1130,6 @@ class Raidplan
 
         $debug=1;
 
-    }
-
-    /**
-     * collects data from form, constructs raidplan object for insert or update
-     *
-     * @param RaidCalendar $cal
-     * @return array
-     */
-    public function PrepareAdd(RaidCalendar $cal)
-    {
-
-        global $user;
-
-        $error = array();
-
-        // hidden ID
-        $this->id = request_var('raidplanid', 0);
-
-        // raidmaster
-        $this->poster = $user->data['user_id'];
-
-        // get member group id
-        $this->group_id_list = ',';
-        $this->group_id = 0;
-
-        $group_id_array = request_var('calGroupId', array(0));
-        $num_group_ids = sizeof( $group_id_array );
-        if( $num_group_ids == 1 )
-        {
-            // if only one group pass the groupid
-            $this->group_id = $group_id_array[0];
-        }
-        elseif( $num_group_ids > 1 )
-        {
-            // if we want multiple groups then pass the array
-            $group_index = 0;
-            for( $group_index = 0; $group_index < $num_group_ids; $group_index++ )
-            {
-                if( $group_id_array[$group_index] == "" )
-                {
-                    continue;
-                }
-                $this->group_id_list .= $group_id_array[$group_index] . ",";
-            }
-        }
-
-        $this->accesslevel = request_var('accesslevel', 0);
-        switch($this->accesslevel)
-        {
-            case 0:
-                //personal, no signups
-                $this->signups_allowed = 0;
-                break;
-            case 1:
-                $this->signups_allowed = 1;
-                // if we selected group access but didn't actually choose a group then throw error
-                if ($num_group_ids < 1)
-                {
-                    $error[] = $user->lang['NO_GROUP_SELECTED'];
-                }
-                break;
-            case 2:
-                //all
-                $this->signups_allowed = 1;
-        }
-
-        //set raid properties
-
-        //get raid team
-        $this->raidteam = request_var('teamselect', request_var('team_id', 0));
-
-        // get selected role array
-        $raidroles = request_var('role_needed', array(0=> 0));
-
-        foreach($raidroles as $role_id => $needed)
-        {
-            $this->raidroles[$role_id] = array(
-                'role_needed' => (int) $needed,
-            );
-        }
-
-        $this->signups['yes'] = 0;
-        $this->signups['no'] = 0;
-        $this->signups['maybe'] = 0;
-
-        //set event type
-        $this->event_type = request_var('bbdkp_events', 0);
-
-        // invite/start date values from pulldown click
-        $inv_d = request_var('calD', 0);
-        $inv_m = request_var('calM', 0);
-        $inv_y = request_var('calY', 0);
-
-        /// always overrides invite/start date values from calendar click
-        //$inv_d = request_var('hiddenCalD', $cal->date['day']);
-        //$inv_m = request_var('hiddenCalM', $cal->date['month_no']);
-        //$inv_y = request_var('hiddenCalY', $cal->date['year']);
-
-        //convert user times to UCT-GMT. all dates are stored in GMT and time is displayed in user board timezone
-        $inv_hr = request_var('calinvHr', 0);
-        $inv_mn = request_var('calinvMn', 0);
-        $this->invite_time = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
-
-        $start_hr = request_var('calHr', 0);
-        $start_mn = request_var('calMn', 0);
-        $this->start_time = gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
-
-        $end_m = request_var('calMEnd', 0);
-        $end_d = request_var('calDEnd', 0);
-        $end_y = request_var('calYEnd', 0);
-
-        $end_hr = request_var('calEndHr', 0);
-        $end_mn = request_var('calEndMn', 0);
-        $this->end_time = gmmktime( $end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
-        if ($this->end_time < $this->start_time)
-        {
-            //check for enddate before begindate
-            // if the end hour is earlier than start hour then roll over a day
-            $this->end_time += 3600*24;
-        }
-
-        //if this is not an "all day event"
-        $this->all_day=0;
-        $this->day = sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y);
-
-        // recurring ? @todo
-
-        // read subjectline
-        $this->subject = utf8_normalize_nfc(request_var('subject', '', true));
-
-        //read comment section
-        $this->body = utf8_normalize_nfc(request_var('message', '', true));
-
-        $this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
-        $allow_bbcode = $allow_urls = $allow_smilies = true;
-        generate_text_for_storage($this->body, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
-
-        return $error;
     }
 
     /**
@@ -2565,6 +2427,7 @@ class Raidplan
      * private subroutine for raidplan_push
      *
      * @param array $raid
+     * @return int|null|number
      */
     private function exec_pushraid($raid)
     {
