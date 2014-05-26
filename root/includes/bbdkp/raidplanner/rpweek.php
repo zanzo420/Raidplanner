@@ -101,12 +101,14 @@ class rpweek extends RaidCalendar
 		}
 		
 		// array of raid days
-		if (!class_exists('\bbdkp\raidplanner\Raidplan'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-		}
-		$raidplan = new Raidplan();
-		$raiddays = $raidplan->GetRaiddaylist($fdaystamp, $ldaystamp);
+        // include raidplandisplay class
+        if (!class_exists('\bbdkp\raidplanner\Raidplan_display', false))
+        {
+            include($phpbb_root_path . 'includes/bbdkp/raidplanner/Raidplan_display.' . $phpEx);
+        }
+        $Raidplandisplay = new Raidplan_display();
+		$raiddays = $Raidplandisplay->GetRaiddaylist($fdaystamp, $ldaystamp);
+
 		// array of bdays
 		$birthdays = $this->generate_birthday_list( $fdaystamp, $ldaystamp);
 		
@@ -233,7 +235,7 @@ class rpweek extends RaidCalendar
 						if($raidday['day'] == $true_j)
 						{
 							//raid(s) found get detail
-							$raidplan_output = $raidplan->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
+							$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($true_m, $true_j, $true_y, $this->group_options, $this->mode);
 							foreach($raidplan_output as $raid )
 							{
 								$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);

@@ -60,19 +60,20 @@ class rpmonth extends RaidCalendar
 		$user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
 		
 		$counter = 0;
-		// include raid class
-		if (!class_exists('\bbdkp\raidplanner\Raidplan'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-		}
-		$raidplan = new Raidplan();
+		// include raidplandisplay class
+        if (!class_exists('\bbdkp\raidplanner\Raidplan_display', false))
+        {
+            include($phpbb_root_path . 'includes/bbdkp/raidplanner/Raidplan_display.' . $phpEx);
+        }
+
+        $Raidplandisplay = new Raidplan_display();
 		
 		// fill array of raid days
 		$firstday = $this->Get1stDayofMonth($this->timestamp);
 		$lastday =  $this->GetLastDayofMonth($this->timestamp);
 
         //gets array with raid days
-		$raiddays = $raidplan->GetRaiddaylist( $firstday, $lastday );
+		$raiddays = $Raidplandisplay->GetRaiddaylist( $firstday, $lastday );
 
         //gets array with birthdays
 		$birthdays = $this->generate_birthday_list( $firstday,$lastday);
@@ -203,11 +204,12 @@ class rpmonth extends RaidCalendar
 					{
 						if($raidday['day'] == $j)
 						{
-							if (isset($raidplan))
+							if (isset($Raidplandisplay))
 							{
 								// note not recreating a new raidplan object for each date. that would take too much mem.
 								// we just reuse the same object and reset its properties in make_obj							
-								$raidplan_output = $raidplan->GetRaidinfo($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
+								$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
+
 								foreach($raidplan_output as $raid )
 								{
 									$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);

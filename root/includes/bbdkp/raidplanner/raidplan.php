@@ -985,49 +985,6 @@ class Raidplan
         $db->sql_freeresult($result);
     }
 
-    /**
-     * gets array with raid days
-     * @param int $from
-     * @param int $end
-     *
-     * @return array
-     */
-    public function GetRaiddaylist($from, $end)
-    {
-        //GMT: Tue, 01 Nov 2011 00:00:00 GMT
-        global $user, $db;
-
-        // build sql
-        $sql_array = array(
-            'SELECT'    => 'r.raidplan_start_time ',
-            'FROM'		=> array(RP_RAIDS_TABLE => 'r' ),
-            'WHERE'		=>  ' r.raidplan_start_time >= '. $db->sql_escape($from) . '
-							 AND r.raidplan_start_time <= '. $db->sql_escape($end) ,
-            'ORDER_BY'	=> 'r.raidplan_start_time ASC');
-
-        $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query($sql);
-        $raiddaylist = array();
-        while ($row = $db->sql_fetchrow($result))
-        {
-
-            $day = $user->format_date($row['raidplan_start_time'], "d", true);
-            $month =  $user->format_date($row['raidplan_start_time'], "n", true);
-            $year =  $user->format_date($row['raidplan_start_time'], "Y", true);
-
-            // key is made to be unique
-            $raiddaylist [$month . '-' . $day . '-' . $year] = array(
-                'sig' => $month . '-' . $day . '-' . $year,
-                'month' => $month,
-                'day' => $day,
-                'year' => $year
-            );
-        }
-
-        $db->sql_freeresult($result);
-        return $raiddaylist;
-
-    }
 
     /**
      * raidmessenger

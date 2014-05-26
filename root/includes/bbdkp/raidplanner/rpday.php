@@ -93,13 +93,13 @@ class rpday extends RaidCalendar
 		{
 			// get raid info
 			$raidplan_output = array();
-			if (!class_exists('\bbdkp\raidplanner\Raidplan'))
-			{
-				include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-			}
-			$raidplan = new Raidplan();
+            if (!class_exists('\bbdkp\raidplanner\Raidplan_display', false))
+            {
+                include($phpbb_root_path . 'includes/bbdkp/raidplanner/Raidplan_display.' . $phpEx);
+            }
+            $Raidplandisplay = new Raidplan_display();
 			// get all raids on this day
-			$raidplan_output = $raidplan->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+			$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 		}
 		
 		/* assemble events */ 

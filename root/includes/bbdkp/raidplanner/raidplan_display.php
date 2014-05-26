@@ -33,6 +33,7 @@ class Raidplan_display
         global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
         include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
         $s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id."&amp;action=showadd");
+
         /*
          * fill template
          *
@@ -901,16 +902,16 @@ class Raidplan_display
     /**
      * return raid plan info array to send to template for tooltips in day/week/month/upcoming calendar
      *
-     * @param Raidplan $raidplan
      * @param int $month this month
      * @param int $day today
      * @param int $year this year
      * @param string $group_options
      * @param string $mode
+     * @internal param \bbdkp\raidplanner\Raidplan $raidplan
      * @internal param int $x
      * @return array
      */
-    public function DisplayCalendarRaidTooltip(Raidplan $raidplan, $month, $day, $year, $group_options, $mode)
+    public function DisplayCalendarRaidTooltip($month, $day, $year, $group_options, $mode)
     {
         global $db, $user, $config, $phpbb_root_path, $phpEx;
 
@@ -919,8 +920,8 @@ class Raidplan_display
         $x = 0;
 
         $raidplan_counter = 0;
-        // build sql
 
+        // build sql to find raids on this day
         $day = ($day < 10 ? ' ' .$day : $day);
         $month = ($month < 10 ? ' ' .$month : $month);
 
@@ -951,6 +952,11 @@ class Raidplan_display
         $timezone = $user->lang['tz'][$tz];
 
         $rpcounter = 0;
+        if (!class_exists('\bbdkp\raidplanner\Raidplan'))
+        {
+            include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
+        }
+        $raidplan = new Raidplan;
 
         while ($row = $db->sql_fetchrow($result))
         {
@@ -1107,6 +1113,50 @@ class Raidplan_display
         return $raidplan_output;
     }
 
+
+    /**
+     * gets array with raid days
+     * @param int $from
+     * @param int $end
+     *
+     * @return array
+     */
+    public function GetRaiddaylist($from, $end)
+    {
+        //GMT: Tue, 01 Nov 2011 00:00:00 GMT
+        global $user, $db;
+
+        // build sql
+        $sql_array = array(
+            'SELECT'    => 'r.raidplan_start_time ',
+            'FROM'		=> array(RP_RAIDS_TABLE => 'r' ),
+            'WHERE'		=>  ' r.raidplan_start_time >= '. $db->sql_escape($from) . '
+							 AND r.raidplan_start_time <= '. $db->sql_escape($end) ,
+            'ORDER_BY'	=> 'r.raidplan_start_time ASC');
+
+        $sql = $db->sql_build_query('SELECT', $sql_array);
+        $result = $db->sql_query($sql);
+        $raiddaylist = array();
+        while ($row = $db->sql_fetchrow($result))
+        {
+
+            $day = $user->format_date($row['raidplan_start_time'], "d", true);
+            $month =  $user->format_date($row['raidplan_start_time'], "n", true);
+            $year =  $user->format_date($row['raidplan_start_time'], "Y", true);
+
+            // key is made to be unique
+            $raiddaylist [$month . '-' . $day . '-' . $year] = array(
+                'sig' => $month . '-' . $day . '-' . $year,
+                'month' => $month,
+                'day' => $day,
+                'year' => $year
+            );
+        }
+
+        $db->sql_freeresult($result);
+        return $raiddaylist;
+
+    }
 
 
 
