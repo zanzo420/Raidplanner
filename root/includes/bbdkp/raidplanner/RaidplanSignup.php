@@ -701,5 +701,3 @@ class RaidplanSignup
 	
 
 }
-
-?>

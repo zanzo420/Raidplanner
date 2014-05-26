@@ -63,7 +63,7 @@ class rpday extends RaidCalendar
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 		{
 				
-			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
+			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".
 					$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 		
 			if( (int) $this->date['month_no'] > (int) date('m') || ( (int) $this->date['month_no']  == (int) date('m')  && (int) $this->date['day'] >= (int) date('d') )
@@ -189,5 +189,3 @@ class rpday extends RaidCalendar
 		
 	}
 }
-
-?>

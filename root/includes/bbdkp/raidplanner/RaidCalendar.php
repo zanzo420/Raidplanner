@@ -484,5 +484,3 @@ abstract class RaidCalendar
 
 
 }
-
-?>

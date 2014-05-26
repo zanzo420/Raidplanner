@@ -112,13 +112,13 @@ class ucp_planner
 				if( $auth->acl_get('u_raidplanner_edit_raidplans') &&
 				(($user->data['user_id'] == $raidplan->poster) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans') ))
 				{
-					 $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calEid=". $raidplan->id);
+					 $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calEid=". $raidplan->id);
 				}
 				//can user delete ?
 				if( $auth->acl_get('u_raidplanner_delete_raidplans') &&
 				(($user->data['user_id'] == $raidplan->poster)|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
 				{
-					$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delete&amp;calEid=".$raidplan->id);
+					$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;calEid=".$raidplan->id);
 				
 				}
 			}

@@ -183,7 +183,6 @@ class viewPlanner implements iViews
                 break;
 
             case 'delsign':
-
                 $this->DeleteSignup($raidplan, $raidplan_display);
                 break;
 
@@ -371,7 +370,7 @@ class viewPlanner implements iViews
                 }
 
                 //show add form
-                $raidplan->showadd($this->cal);
+                $raidplan_display->showadd($raidplan, $this->cal);
                 break;
 
             case 'delete':
@@ -406,6 +405,7 @@ class viewPlanner implements iViews
     /**
      * Add new raidplan
      *
+     * @param \bbdkp\raidplanner\Raidplan_display $raidplan_display
      * @return int
      */
     private function AddUpdateRaidplan(Raidplan_display $raidplan_display)
@@ -431,7 +431,11 @@ class viewPlanner implements iViews
         return 0;
     }
 
-
+    /**
+     *
+     * @param Raidplan $raidplan
+     * @param Raidplan_display $raidplan_display
+     */
     private function AddSignup(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
         // add a new signup
@@ -511,11 +515,4 @@ class viewPlanner implements iViews
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaid($raidplan);
     }
-
-
-
-
-
-
 }
-

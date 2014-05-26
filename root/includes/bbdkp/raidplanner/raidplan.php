@@ -963,7 +963,7 @@ class Raidplan
      */
     public function get_unavailable()
     {
-        global $db, $config, $phpbb_root_path, $db, $phpEx;
+        global $phpbb_root_path, $db, $phpEx;
 
         if (!class_exists('\bbdkp\raidplanner\RaidplanSignup'))
         {

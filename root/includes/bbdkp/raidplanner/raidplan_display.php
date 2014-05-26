@@ -500,7 +500,7 @@ class Raidplan_display
         // check if it is private
         if( !$raidplan->auth_cansee)
         {
-            trigger_error( 'PRIVATE_RAIDPLAN' );
+          trigger_error( 'PRIVATE_RAIDPLAN' );
         }
 
         // format the raidplan message
