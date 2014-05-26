@@ -310,6 +310,7 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raidplans.',
 	'USER_ALREADY_SIGNED_UP'	=> '%s is already signed up to this raidplan.',
     'USER_INVALIDACTION'        => 'Invalid Action Request',
+    'USER_INVALID_RAIDPLANVIEW'          => 'Invalid raidplan viewpage',
 
 	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
 	'WEEK'						=> 'Week',

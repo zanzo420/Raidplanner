@@ -5,7 +5,8 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2011 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 0.11.0
+ * @version 0.12
+ * @since 0.11
  */
 namespace bbdkp\raidplanner;
 
@@ -18,7 +19,7 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 /**
- * Raidplanner Authorisation checker
+ * Authorisation checker
  *
  * @package bbdkp\raidplanner
  */
@@ -29,22 +30,30 @@ class RaidAuth
      * public authorisation for the action requested
      * @var
      */
-    public $auth_given;
+
     public $raidplan;
 
     private $auth_cansee = false;
     private $auth_canedit = false;
     private $auth_candelete = false;
     private $auth_canadd = false;
-    private $auth_canaddsignups = false;
+    private $auth_track_signups = false;
 
+    private $auth_add_signup = false;
+    private $auth_delete_signup = false;
+    private $auth_edit_signup = false;
+    private $auth_confirm_signup = false;
 
-    private $actions = array(
+    private $valid_actions = array(
         'see',
         'edit',
         'delete',
         'add',
-        'addsignups',
+        'track_signups',
+        'add_signup',
+        'edit_signup',
+        'delete_signup',
+        'confirm_signup',
     );
 
     private $valid_accesslevel = array(0,1,2);
@@ -62,11 +71,16 @@ class RaidAuth
     }
 
 
+    /**
+     * Check authorisation
+     * @param $action
+     * @return bool
+     */
     public function checkauth($action)
     {
         global $user;
         // valid action ?
-        if (!in_array($action, $this->actions))
+        if (!in_array($action, $this->valid_actions))
         {
             trigger_error($user->lang['USER_INVALIDACTION']);
         }
@@ -75,27 +89,35 @@ class RaidAuth
         {
             case 'see':
                 $this->CanSeeRaid();
-                $this->auth_given = $this->auth_cansee;
-                break;
+                return $this->auth_cansee;
             case 'edit':
                 $this->CanEditRaid();
-                $this->auth_given = $this->auth_canedit;
-                break;
+                return $this->auth_canedit;
             case 'delete':
                 $this->CanDeleteRaid();
-                $this->auth_given = $this->auth_candelete;
-                break;
+                return $this->auth_candelete;
             case 'add':
                 $this->CanAddNewRaid();
-                $this->auth_given = $this->auth_canadd;
-                break;
-            case 'addsignups':
-                $this->CanSignUp();
-                $this->auth_given = $this->auth_canaddsignups;
-                break;
+                return $this->auth_canadd;
+            case 'track_signups':
+                $this->Check_raidplanner_track_signups();
+                return $this->auth_track_signups;
+            case 'add_signup':
+                $this->Can_add_signup();
+                return $this->auth_add_signup;
+            case 'edit_signup':
+                $this->Can_edit_signup();
+                return $this->auth_edit_signup;
+            case 'delete_signup':
+                $this->Can_delete_signup();
+                return $this->auth_delete_signup;
+            case 'confirm_signup':
+                $this->Can_confirm_signup();
+                return $this->auth_confirm_signup;
+
         }
 
-        return  $this->auth_given;
+
     }
 
     /**
@@ -320,7 +342,7 @@ class RaidAuth
      *
      * @return void
      */
-    private function CanSignUp()
+    private function Check_raidplanner_track_signups()
     {
         global $auth;
         if($this->raidplan->id == 0)
@@ -329,13 +351,34 @@ class RaidAuth
             return false;
         }
 
-        $this->auth_canaddsignups = false;
+        $this->auth_track_signups = false;
         if( $auth->acl_get('u_raidplanner_track_signups'))
         {
-            $this->auth_canaddsignups = true;
+            $this->auth_track_signups = true;
         }
+    }
 
+    private function Can_add_signup()
+    {
+        $this->auth_add_signup = false;
     }
 
 
-} 
+    private function Can_delete_signup()
+    {
+        $this->auth_delete_signup = false;
+    }
+
+    private function Can_edit_signup()
+    {
+        $this->auth_edit_signup = false;
+    }
+
+    private function Can_confirm_signup()
+    {
+        $this->auth_confirm_signup = false;
+    }
+
+}
+
+

@@ -73,25 +73,40 @@ class viewPlanner implements iViews
         }
 
         $raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
+
+        $valid_viewsmodes = array(
+            'day',
+            'week',
+            'month',
+            'raidplan',
+        );
+
         $view_mode = request_var('view', 'month');
-        $mode=request_var('mode', '');
+        if (!in_array($view_mode, $valid_viewsmodes))
+        {
+            trigger_error($user->lang['USER_INVALID_RAIDPLANVIEW'] . ' "' . $view_mode . '" ' );
+        }
 
         // display header
-        $this->cal = new DisplayFrame();
+        $this->cal = new DisplayFrame($view_mode);
         $this->cal->display();
-        switch( $view_mode )
+
+        switch($view_mode)
         {
             case "raidplan":
-                // display one raidplan
-                $this->ViewRaidplan($mode, $raidplan_id);
+                // display a raidplan
+                $this->ViewRaidplan($raidplan_id);
                 break;
 
             case "day":
             case "week":
             case "month":
+                // show the calendar
                 $this->ViewCalendar($view_mode);
                 break;
             default:
+                trigger_error($user->lang['USER_INVALIDVIEW']);
+                break;
         }
 
         if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
@@ -113,7 +128,8 @@ class viewPlanner implements iViews
     private function ViewCalendar($view_mode)
     {
         global $phpbb_root_path, $phpEx;
-        // display calendar
+
+        // display wanted calendar
         $calendarclass = '\bbdkp\raidplanner\rp' . $view_mode;
         if (!class_exists( $calendarclass, false))
         {
@@ -129,12 +145,31 @@ class viewPlanner implements iViews
      * Builds the actual raidplan
      *
      */
-    private function ViewRaidplan($mode, $raidplan_id)
+    private function ViewRaidplan($raidplan_id)
     {
         global $user, $template;
         $raidplan = new Raidplan($raidplan_id);
+        $action = request_var('action', 'display');
 
-        switch($mode)
+        $valid_actions = array(
+            'signup',
+            'delsign',
+            'editsign',
+            'requeue',
+            'confirm',
+            'showadd',
+            'delete',
+            'push',
+            'display',
+        );
+
+        if (!in_array($action, $valid_actions))
+        {
+            trigger_error($user->lang['USER_INVALIDACTION'] . ' "' . $action . '" ' );
+        }
+
+
+        switch($action)
         {
             case 'signup':
                 $this->AddSignup($raidplan);
@@ -159,6 +194,7 @@ class viewPlanner implements iViews
 
             case 'showadd':
 
+                //show the add/edit raidplan form
                 $submit	= (isset($_POST['addraid'])) ? true : false;
                 $update	= (isset($_POST['updateraid'])) ? true : false;
 
@@ -198,43 +234,38 @@ class viewPlanner implements iViews
                     }
 
                     $raidplan->accesslevel = request_var('accesslevel', 0);
+                    //assign raid team
                     switch($raidplan->accesslevel)
                     {
                         case 0:
-                            //personal, no signups
+                            //non raid, manual event.
                             $raidplan->signups_allowed = 0;
+                            $raidplan->raidteam = 0;
                             break;
                         case 1:
-                            $raidplan->signups_allowed = 1;
+                            //all
                             // if we selected group access but didn't actually choose a group then throw error
                             if ($num_group_ids < 1)
                             {
                                 $error[] = $user->lang['NO_GROUP_SELECTED'];
                             }
-
-                            break;
+                            //no break
                         case 2:
-                            //all
                             $raidplan->signups_allowed = 1;
-                    }
+                            $raidroles = request_var('role_needed', array(0=> 0));
+                            foreach($raidroles as $role_id => $needed)
+                            {
+                                $raidplan->raidroles[$role_id] = array(
+                                    'role_needed' => (int) $needed,
+                                );
+                            }
+                            $raidplan->raidteam = request_var('teamselect', request_var('team_id', 0));
 
-
-                    //get raid team
-                    $raidplan->raidteam = request_var('teamselect', request_var('team_id', 0));
-
-                    $raidroles = request_var('role_needed', array(0=> 0));
-
-                    foreach($raidroles as $role_id => $needed)
-                    {
-                        $raidplan->raidroles[$role_id] = array(
-                            'role_needed' => (int) $needed,
-                        );
                     }
 
                     $raidplan->signups['yes'] = 0;
                     $raidplan->signups['no'] = 0;
                     $raidplan->signups['maybe'] = 0;
-
                     //set event type
                     $raidplan->event_type = request_var('bbdkp_events', 0);
 
@@ -285,15 +316,15 @@ class viewPlanner implements iViews
                         trigger_error(implode($error,"<br /> "), E_USER_WARNING);
                     }
 
-
                     $str  = serialize($raidplan);
                     $str1 = base64_encode($str);
 
                     if($submit)
                     {
+
                         if(!$raidplan->auth_canadd)
                         {
-                           // trigger_error('USER_CANNOT_POST_RAIDPLAN');
+                           trigger_error('USER_CANNOT_POST_RAIDPLAN');
                         }
 
                         $s_hidden_fields = build_hidden_fields(array(
@@ -355,6 +386,7 @@ class viewPlanner implements iViews
                     $raidplan->display();
                 }
                 break;
+            case 'display':
             default:
                 // show the raid view form
                 $raidplan->display();

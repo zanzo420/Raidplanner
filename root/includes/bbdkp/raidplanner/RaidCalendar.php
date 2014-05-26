@@ -67,7 +67,7 @@ abstract class RaidCalendar
 	/**
 	 *
 	 */
-	function __construct($arg)
+	function __construct()
 	{
 		global $user, $config;
 

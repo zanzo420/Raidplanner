@@ -35,7 +35,7 @@ class Raidplan
      * @var int
      */
     protected $id;
-    protected $eventlist;
+    private $eventlist;
 
     /**
      * raidplan event type
@@ -657,7 +657,7 @@ class Raidplan
         $this->auth_canedit = $this->RaidAuth->checkauth('edit');
         $this->auth_candelete = $this->RaidAuth->checkauth('delete');
         $this->auth_canadd = $this->RaidAuth->checkauth('add');
-        $this->auth_canaddsignups = $this->RaidAuth->checkauth('addsignups');
+        $this->auth_canaddsignups = $this->RaidAuth->checkauth('track_signups');
 
     }
 
@@ -668,7 +668,7 @@ class Raidplan
     {
         global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
         include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-        $s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id."&amp;mode=showadd");
+        $s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id."&amp;action=showadd");
         /*
          * fill template
          *
@@ -1312,7 +1312,7 @@ class Raidplan
                     'raidplan_id'=> $this->id,
                     'page'	=> 'planner',
                     'view'	=> 'raidplan',
-                    'mode'	=> 'delete')
+                    'action'	=> 'delete')
             );
 
             return confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
@@ -1354,7 +1354,7 @@ class Raidplan
         if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
             (($user->data['user_id'] == $this->poster ) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
         {
-            $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;raidplanid=".
+            $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;raidplanid=".
                 $this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
         }
 
@@ -1364,7 +1364,7 @@ class Raidplan
         if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_raidplans') &&
             (($user->data['user_id'] == $this->poster )|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
         {
-            $delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delete&amp;raidplanid=".
+            $delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;raidplanid=".
                 $this->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
         }
 
@@ -1372,7 +1372,7 @@ class Raidplan
         $add_raidplan_url = "";
         if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
         {
-            $add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
+            $add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".
                 $day."&amp;calM=". $month. "&amp;calY=".$year);
         }
 
@@ -1386,7 +1386,7 @@ class Raidplan
 
         $total_needed = 0;
         /* make url for signup action */
-        $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=signup&amp;raidplanid=". $this->id);
+        $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $this->id);
 
         //display signups only if this is not a personal appointment
         if($this->accesslevel != 0)
@@ -1441,8 +1441,8 @@ class Raidplan
                         //@todo calculate frozen
                         $candeleteconf = true;
                         $caneditconf = true;
-                        $editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
-                        $deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
+                        $editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
+                        $deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $confdetail->signup_id);
                     }
 
                     $signupcolor = '#006B02';
@@ -1509,7 +1509,7 @@ class Raidplan
                     if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
                     {
                         $canconfirmsignup=true;
-                        $confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=confirm&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
+                        $confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=confirm&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
                     }
 
                     // if user can delete other signups or if own signup
@@ -1524,9 +1524,9 @@ class Raidplan
                         //@todo calculate frozen
                         $candeletesignup = true;
                         $caneditsignup = true;
-                        $editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=editsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
+                        $editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
                         $deletekey = rand(1, 1000);
-                        $deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=delsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
+                        $deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signupdetail->signup_id);
                     }
 
                     $template->assign_block_vars('raidroles.signups', array(
@@ -1584,7 +1584,7 @@ class Raidplan
                 if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoffdetail->poster_id == $user->data['user_id']  )
                 {
                     $requeue = true;
-                    $requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=requeue&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signoffdetail->signup_id);
+                    $requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=requeue&amp;raidplanid=". $this->id . "&amp;signup_id=" . $signoffdetail->signup_id);
                 }
 
                 $template->assign_block_vars('unavailable', array(
@@ -1637,7 +1637,7 @@ class Raidplan
         $push_raidplan_url = '';
         if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $this->signups['confirmed'] > 0  )
         {
-            $push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=push&amp;raidplanid=". $this->id);
+            $push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=push&amp;raidplanid=". $this->id);
         }
 
         // event image on top
@@ -1894,7 +1894,7 @@ class Raidplan
                 'S_SIGNUPMAYBE'			=> $this->signed_up_maybe,
                 'S_CANSIGNUP'			=> $this->signups_allowed,
                 'S_LEGITUSER'			=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
-                'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id. "&amp;mode=signup"),
+                'S_SIGNUP_MODE_ACTION' 	=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$this->id. "&amp;action=signup"),
 
                 'INVITE_TIME'  			=> $user->format_date($this->invite_time, $correct_format, true),
                 'START_TIME'			=> $user->format_date($this->start_time, $correct_format, true),
