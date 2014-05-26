@@ -542,7 +542,6 @@ class Raidplan_display
                 $day."&amp;calM=". $month. "&amp;calY=".$year);
         }
 
-
         $day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".
             $month."&amp;calY=".$year);
         $week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".
@@ -554,7 +553,7 @@ class Raidplan_display
         /* make url for signup action */
         $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $raidplan->id);
 
-        //display signups only if this is not a personal appointment
+        //display signups
         if($raidplan->accesslevel != 0)
         {
             foreach ($raidplan->mychars as $key => $mychar)
@@ -793,6 +792,21 @@ class Raidplan_display
             unset($signoff);
             unset($key);
 
+            // get roles from object
+            // @todo fix
+            foreach($raidplan->roles as $key => $role)
+            {
+                $template->assign_block_vars('raidroles', array(
+                    'ROLE_COLOR'     => $role['role_color'],
+                    'S_ROLE_ICON_EXISTS'	=>  (strlen($role['role_icon']) > 1) ? true : false,
+                    'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
+                    'ROLE_ID'        => $key,
+                    'ROLE_NAME'      => $role['role_name'],
+                ));
+            }
+
+            $c = "debug";
+
         }
 
         // button with url to push raidplan to bbdkp
@@ -1019,14 +1033,14 @@ class Raidplan_display
                     }
                 }
 
-                foreach($raidplan->raidroles as $key => $role)
+                foreach($raidplan->roles as $key => $role)
                 {
                     $rolesinfo[] = array(
                         'ROLE_ID'        => $key,
                         'ROLE_NAME'      => $role['role_name'],
                     );
 
-                    $total_needed += $role['role_needed'];
+                   //$total_needed += $role['role_needed'];
                 }
             }
 

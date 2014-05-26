@@ -161,14 +161,16 @@ class RaidplanSignup
 		$this->dkmemberpurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $this->dkpmemberid . '&amp;' . URI_DKPSYS . '=' . $this->dkpmemberid );
 
 	}
-	
-	
-	/**
-	 * get all my chars
-	 *
-	 * @param int $userid
-	 * @param int $raidplan_id
-	 */
+
+
+    /**
+     * get all my chars
+     *
+     * @param $raidplanid
+     * @return array
+     * @internal param int $userid
+     * @internal param int $raidplan_id
+     */
 	public function getmychars($raidplanid)
 	{
 		global $db, $user;
