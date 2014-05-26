@@ -11,6 +11,7 @@ namespace bbdkp\views;
 
 use bbdkp\raidplanner\DisplayFrame;
 use bbdkp\raidplanner\Raidplan;
+use bbdkp\raidplanner\Raidplan_display;
 use bbdkp\raidplanner\RaidplanSignup;
 use bbdkp\raidplanner\rpday;
 use bbdkp\raidplanner\rpweek;
@@ -33,6 +34,11 @@ if (!class_exists('\bbdkp\raidplanner\DisplayFrame', false))
 if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
 {
     include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
+}
+
+if (!class_exists('\bbdkp\raidplanner\Raidplan_display', false))
+{
+    include($phpbb_root_path . 'includes/bbdkp/raidplanner/Raidplan_display.' . $phpEx);
 }
 
 if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
@@ -147,10 +153,11 @@ class viewPlanner implements iViews
      */
     private function ViewRaidplan($raidplan_id)
     {
+
         global $user, $template;
         $raidplan = new Raidplan($raidplan_id);
         $action = request_var('action', 'display');
-
+        $raidplan_display = new Raidplan_display();
         $valid_actions = array(
             'signup',
             'delsign',
@@ -172,24 +179,24 @@ class viewPlanner implements iViews
         switch($action)
         {
             case 'signup':
-                $this->AddSignup($raidplan);
+                $this->AddSignup($raidplan, $raidplan_display);
                 break;
 
             case 'delsign':
 
-                $this->DeleteSignup($raidplan);
+                $this->DeleteSignup($raidplan, $raidplan_display);
                 break;
 
             case 'editsign':
-                $this->EditComment($raidplan);
+                $this->EditComment($raidplan, $raidplan_display);
                 break;
 
             case 'requeue':
-                $this->Requeue($raidplan);
+                $this->Requeue($raidplan, $raidplan_display);
                 break;
 
             case 'confirm':
-                $this->ConfirmSignup($raidplan);
+                $this->ConfirmSignup($raidplan, $raidplan_display);
                 break;
 
             case 'showadd':
@@ -201,7 +208,7 @@ class viewPlanner implements iViews
                 if (($submit || $update) && confirm_box(true))
                 {
                      // insert in database
-                     $this->AddUpdateRaidplan();
+                     $this->AddUpdateRaidplan($raidplan_display);
                      break;
                 }
                 elseif ($submit || $update)
@@ -375,7 +382,7 @@ class viewPlanner implements iViews
                 {
                     if(!$raidplan->raidplan_delete())
                     {
-                        $raidplan->display();
+                        $raidplan_display->DisplayRaid($raidplan);
                     }
                 }
                 break;
@@ -383,13 +390,13 @@ class viewPlanner implements iViews
                 //push to bbdkp
                 if(!$raidplan->raidplan_push())
                 {
-                    $raidplan->display();
+                    $raidplan_display->DisplayRaid($raidplan);
                 }
                 break;
             case 'display':
             default:
                 // show the raid view form
-                $raidplan->display();
+                $raidplan_display->DisplayRaid($raidplan);
                 break;
         }
         unset($raidplan);
@@ -401,7 +408,7 @@ class viewPlanner implements iViews
      *
      * @return int
      */
-    private function AddUpdateRaidplan()
+    private function AddUpdateRaidplan(Raidplan_display $raidplan_display)
     {
         //get string
         $str = request_var('raidobject', '');
@@ -420,28 +427,26 @@ class viewPlanner implements iViews
         $raidplan->make_obj();
         $raidplan->Check_auth();
         // display it
-        $raidplan->display();
+        $raidplan_display->DisplayRaid($raidplan);
         return 0;
     }
 
 
-    private function AddSignup(Raidplan $raidplan)
+    private function AddSignup(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
         // add a new signup
         if(isset($_POST['signmeup' . $raidplan->id]))
         {
-
-
             $signup = new RaidplanSignup();
             $signup->signup($raidplan->id);
             $signup->signupmessenger(4, $raidplan);
             $raidplan->make_obj();
             $raidplan->Check_auth();
-            $raidplan->display();
+            $raidplan_display->DisplayRaid($raidplan);
         }
     }
 
-    private function DeleteSignup(Raidplan $raidplan)
+    private function DeleteSignup(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
         $signup_id = request_var('signup_id', 0);
 
@@ -459,12 +464,12 @@ class viewPlanner implements iViews
 
         $raidplan->make_obj();
         $raidplan->Check_auth();
-        $raidplan->display();
+        $raidplan_display->DisplayRaid($raidplan);
 
     }
 
 
-    private function EditComment(Raidplan $raidplan)
+    private function EditComment(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
 
         // edit a signup comment
@@ -473,10 +478,10 @@ class viewPlanner implements iViews
         $signup = new RaidplanSignup();
         $signup->editsignupcomment($signup_id);
 
-        $raidplan->display();
+        $raidplan_display->DisplayRaid($raidplan);
     }
 
-    private function Requeue(Raidplan $raidplan)
+    private function Requeue(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
         // requeue for a raid role
         $signup_id = request_var('signup_id', 0);
@@ -486,10 +491,10 @@ class viewPlanner implements iViews
         $signup->signupmessenger(4, $raidplan);
         $raidplan->make_obj();
         $raidplan->Check_auth();
-        $raidplan->display();
+        $raidplan_display->DisplayRaid($raidplan);
     }
 
-    private function ConfirmSignup(Raidplan $raidplan)
+    private function ConfirmSignup(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
         global $config;
         $signup_id = request_var('signup_id', 0);
@@ -504,7 +509,7 @@ class viewPlanner implements iViews
         $signup->signupmessenger(5, $raidplan);
         $raidplan->make_obj();
         $raidplan->Check_auth();
-        $raidplan->display();
+        $raidplan_display->DisplayRaid($raidplan);
     }
 
 

@@ -37,7 +37,7 @@ class RaidAuth
     private $auth_canedit = false;
     private $auth_candelete = false;
     private $auth_canadd = false;
-    private $auth_track_signups = false;
+    private $auth_signup_raidplans = false;
 
     private $auth_add_signup = false;
     private $auth_delete_signup = false;
@@ -49,7 +49,7 @@ class RaidAuth
         'edit',
         'delete',
         'add',
-        'track_signups',
+        'signup_raidplans',
         'add_signup',
         'edit_signup',
         'delete_signup',
@@ -99,9 +99,9 @@ class RaidAuth
             case 'add':
                 $this->CanAddNewRaid();
                 return $this->auth_canadd;
-            case 'track_signups':
-                $this->Check_raidplanner_track_signups();
-                return $this->auth_track_signups;
+            case 'signup_raidplans':
+                $this->Check_signup_raidplans();
+                return $this->auth_signup_raidplans;
             case 'add_signup':
                 $this->Can_add_signup();
                 return $this->auth_add_signup;
@@ -342,7 +342,7 @@ class RaidAuth
      *
      * @return void
      */
-    private function Check_raidplanner_track_signups()
+    private function Check_signup_raidplans()
     {
         global $auth;
         if($this->raidplan->id == 0)
@@ -351,10 +351,10 @@ class RaidAuth
             return false;
         }
 
-        $this->auth_track_signups = false;
-        if( $auth->acl_get('u_raidplanner_track_signups'))
+        $this->auth_signup_raidplans = false;
+        if( $auth->acl_get('u_raidplanner_signup_raidplans'))
         {
-            $this->auth_track_signups = true;
+            $this->auth_signup_raidplans = true;
         }
     }
 
