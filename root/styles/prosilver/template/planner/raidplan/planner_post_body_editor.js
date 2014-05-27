@@ -1,6 +1,19 @@
 /*
  * raidplan js
  */
+
+var panels = new Array('locations-panel', 'resources-panel', 'watch-panel');
+var show_panel = 'locations-panel';
+
+
+if (window.location.hash.split('#')[1].length > 0)
+{
+    if (panels.indexOf(window.location.hash.split('#')[1].concat('-panel')) > -1)
+    {
+        subPanels(window.location.hash.split('#')[1].concat('-panel'));
+    };
+};
+
 function update_group_id_state()
   {
       if( document.getElementById('accesslevel').value == 1 )
@@ -148,3 +161,4 @@ function update_group_id_state()
   	 	}
   	}
   }
+

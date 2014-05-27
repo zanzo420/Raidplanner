@@ -37,7 +37,7 @@ class rpevents
 			$this->events[$row['event_id']]['dkpid'] = $row['event_dkpid'];
 			$this->events[$row['event_id']]['value'] = $row['event_value'];
 		}
-        $a = 1;
+
 		$db->sql_freeresult($result);
 		
 	}
