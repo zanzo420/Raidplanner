@@ -7,10 +7,9 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
-
+namespace bbdkp\views\raidplanner;
 
 /**
  * @ignore
@@ -21,9 +20,14 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 // Include the base class
-if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
+if (!class_exists('\bbdkp\views\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
+    require($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/RaidCalendar.' . $phpEx);
+}
+// include raidplandisplay class
+if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
+{
+    include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/Raidplan_display.' . $phpEx);
 }
 
 /**
@@ -60,11 +64,6 @@ class rpmonth extends RaidCalendar
 		$user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
 		
 		$counter = 0;
-		// include raidplandisplay class
-        if (!class_exists('\bbdkp\raidplanner\Raidplan_display', false))
-        {
-            include($phpbb_root_path . 'includes/bbdkp/raidplanner/Raidplan_display.' . $phpEx);
-        }
 
         $Raidplandisplay = new Raidplan_display();
 		

@@ -4,9 +4,9 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
+namespace bbdkp\views\raidplanner;
 
 /**
  * @ignore
@@ -17,11 +17,10 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 // Include the base class
-if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
+if (!class_exists('\bbdkp\views\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
+    require($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/RaidCalendar.' . $phpEx);
 }
-
 /**
  * implements a calendar frame
  *

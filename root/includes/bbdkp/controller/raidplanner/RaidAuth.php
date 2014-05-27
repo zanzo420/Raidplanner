@@ -8,7 +8,7 @@
  * @version 0.12
  * @since 0.11
  */
-namespace bbdkp\raidplanner;
+namespace bbdkp\controller\raidplanner;
 
 /**
  * @ignore
@@ -58,7 +58,7 @@ class RaidAuth
 
     private $valid_accesslevel = array(0,1,2);
 
-    public function __construct(\bbdkp\raidplanner\Raidplan $raidplan)
+    public function __construct(\bbdkp\controller\raidplanner\Raidplan $raidplan)
     {
         global $user;
 

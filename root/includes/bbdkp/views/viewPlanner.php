@@ -9,14 +9,12 @@
 */
 namespace bbdkp\views;
 
-use bbdkp\raidplanner\DisplayFrame;
-use bbdkp\raidplanner\Raidplan;
-use bbdkp\raidplanner\Raidplan_display;
-use bbdkp\raidplanner\RaidplanSignup;
-use bbdkp\raidplanner\rpday;
-use bbdkp\raidplanner\rpweek;
-use bbdkp\raidplanner\rpmonth;
-use bbdkp\raidplanner\rpblocks;
+use bbdkp\views\raidplanner\DisplayFrame;
+use bbdkp\views\raidplanner\Raidplan_display;
+use bbdkp\views\raidplanner\rpblocks;
+
+use bbdkp\controller\raidplanner\Raidplan;
+use bbdkp\controller\raidplanner\RaidplanSignup;
 
 /**
  * @ignore
@@ -26,24 +24,30 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
-if (!class_exists('\bbdkp\raidplanner\DisplayFrame', false))
+if (!class_exists('\bbdkp\controller\raidplanner\Raidplan', false))
 {
-    include($phpbb_root_path . 'includes/bbdkp/raidplanner/DisplayFrame.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
 }
 
-if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
+if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup', false))
 {
-    include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/RaidplanSignup.' . $phpEx);
 }
 
-if (!class_exists('\bbdkp\raidplanner\Raidplan_display', false))
+if (!class_exists('\bbdkp\views\raidplanner\DisplayFrame', false))
 {
-    include($phpbb_root_path . 'includes/bbdkp/raidplanner/Raidplan_display.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/DisplayFrame.' . $phpEx);
 }
 
-if (!class_exists('\bbdkp\raidplanner\RaidplanSignup', false))
+if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
 {
-    include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidplanSignup.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/raidplan/Raidplan_display.' . $phpEx);
+}
+
+if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
+{
+    //display left side blocks
+    include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/block/Rpblocks.' . $phpEx);
 }
 
 /**
@@ -115,11 +119,7 @@ class viewPlanner implements iViews
                 break;
         }
 
-        if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
-        {
-            //display left side blocks
-            include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpblocks.' . $phpEx);
-        }
+
         $blocks = new rpblocks();
         $blocks->display();
 
@@ -136,16 +136,15 @@ class viewPlanner implements iViews
         global $phpbb_root_path, $phpEx;
 
         // display wanted calendar
-        $calendarclass = '\bbdkp\raidplanner\rp' . $view_mode;
+        $calendarclass = '\bbdkp\views\raidplanner\rp' . $view_mode;
         if (!class_exists( $calendarclass, false))
         {
-            include($phpbb_root_path . 'includes/bbdkp/raidplanner/rp' . $view_mode .'.' . $phpEx);
+            include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rp' . $view_mode .'.' . $phpEx);
         }
         $cal = new $calendarclass();
         $cal->display();
         unset($cal);
     }
-
 
     /**
      * Builds the actual raidplan
@@ -401,11 +400,9 @@ class viewPlanner implements iViews
         unset($raidplan);
     }
 
-
     /**
      * Add new raidplan
-     *
-     * @param \bbdkp\raidplanner\Raidplan_display $raidplan_display
+     * @param Raidplan_display $raidplan_display
      * @return int
      */
     private function AddUpdateRaidplan(Raidplan_display $raidplan_display)
@@ -415,7 +412,7 @@ class viewPlanner implements iViews
         $str1 = base64_decode($str);
         $raidplan = unserialize($str1);
 
-        if (! $raidplan instanceof \bbdkp\raidplanner\Raidplan)
+        if (! $raidplan instanceof \bbdkp\controller\raidplanner\Raidplan)
         {
             trigger_error('ERROR',E_USER_WARNING);
         }

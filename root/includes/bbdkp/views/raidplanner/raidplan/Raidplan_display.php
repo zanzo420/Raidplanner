@@ -7,8 +7,8 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version 0.12.0
  */
-namespace bbdkp\raidplanner;
-use bbdkp\raidplanner;
+namespace bbdkp\views\raidplanner;
+use bbdkp\controller\raidplanner\Raidplan;
 
 /**
  * @ignore
@@ -17,6 +17,10 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
     exit;
 }
+if (!class_exists('\bbdkp\controller\raidplanner\Raidplan'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
+}
 
 /**
  * raid plan view class
@@ -24,9 +28,11 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
  */
 class Raidplan_display
 {
-
     /**
-     * display raidplan form
+     * display raidplan add/edit form
+     *
+     * @param Raidplan $raidplan
+     * @param RaidCalendar $cal
      */
     public function showadd(Raidplan $raidplan, RaidCalendar $cal)
     {
@@ -482,16 +488,13 @@ class Raidplan_display
 
         // Build custom bbcodes array
         display_custom_bbcodes();
-
-
-
     }
 
 
-    /**
+    /***
+     * display a raidplan, signup form
      *
-     * displays a raidplan object in the calendar
-     *
+     * @param Raidplan $raidplan
      */
     public function DisplayRaid(Raidplan $raidplan)
     {
@@ -913,6 +916,7 @@ class Raidplan_display
 
     }
 
+
     /**
      * return raid plan info array to send to template for tooltips in day/week/month/upcoming calendar
      *
@@ -921,8 +925,6 @@ class Raidplan_display
      * @param int $year this year
      * @param string $group_options
      * @param string $mode
-     * @internal param \bbdkp\raidplanner\Raidplan $raidplan
-     * @internal param int $x
      * @return array
      */
     public function DisplayCalendarRaidTooltip($month, $day, $year, $group_options, $mode)
@@ -966,10 +968,7 @@ class Raidplan_display
         $timezone = $user->lang['tz'][$tz];
 
         $rpcounter = 0;
-        if (!class_exists('\bbdkp\raidplanner\Raidplan'))
-        {
-            include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-        }
+
         $raidplan = new Raidplan;
 
         while ($row = $db->sql_fetchrow($result))
@@ -1172,7 +1171,4 @@ class Raidplan_display
 
     }
 
-
-
 }
-

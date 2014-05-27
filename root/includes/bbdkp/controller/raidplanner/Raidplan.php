@@ -7,12 +7,13 @@
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version 0.12.0
  */
-namespace bbdkp\raidplanner;
-use bbdkp\raidplanner;
-use bbdkp\raidplanner\raidmessenger;
+namespace bbdkp\controller\raidplanner;
+use bbdkp\controller\raidplanner;
 use bbdkp\controller\raids\RaidController;
 use bbdkp\controller\raids\Raiddetail;
 use bbdkp\controller\points\PointsController;
+use bbdkp\controller\raidplanner\Raidmessenger;
+use bbdkp\controller\raidplanner\RaidplanSignup;
 
 /**
  * @ignore
@@ -20,6 +21,22 @@ use bbdkp\controller\points\PointsController;
 if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
     exit;
+}
+
+if (!class_exists('\bbdkp\controller\raidplanner\RaidAuth'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/RaidAuth.' . $phpEx);
+}
+
+
+if (!class_exists('\bbdkp\controller\raidplanner\rpevents'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/rpevents.' . $phpEx);
+}
+
+if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/RaidplanSignup.$phpEx");
 }
 
 /**
@@ -265,19 +282,8 @@ class Raidplan
      */
     function __construct($id = 0)
     {
-        global $phpEx, $phpbb_root_path;
+
         $this->id = $id;
-
-        if (!class_exists('\bbdkp\raidplanner\RaidAuth'))
-        {
-            include($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidAuth.' . $phpEx);
-        }
-
-
-        if (!class_exists('\bbdkp\raidplanner\rpevents'))
-        {
-            include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpevents.' . $phpEx);
-        }
         $this->eventlist= new rpevents();
 
         if($this->id !=0)
@@ -911,13 +917,7 @@ class Raidplan
      */
     private function getSignups()
     {
-        global $phpEx, $phpbb_root_path, $db;
-
-        if (!class_exists('\bbdkp\raidplanner\RaidplanSignup'))
-        {
-            require("{$phpbb_root_path}includes/bbdkp/raidplanner/RaidplanSignup.$phpEx");
-        }
-
+        global $db;
 
         // fill mychars array for popup
         $rpsignup = new RaidplanSignup();
@@ -963,12 +963,8 @@ class Raidplan
      */
     public function get_unavailable()
     {
-        global $phpbb_root_path, $db, $phpEx;
+        global $db;
 
-        if (!class_exists('\bbdkp\raidplanner\RaidplanSignup'))
-        {
-            require("{$phpbb_root_path}includes/bbdkp/raidplanner/RaidplanSignup.$phpEx");
-        }
         $rpsignup = new RaidplanSignup();
 
         $sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val = 0";
@@ -1009,11 +1005,7 @@ class Raidplan
         include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
         include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
-        if (!class_exists('\bbdkp\raidplanner\raidmessenger'))
-        {
-            require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
-        }
-        $rpm = new raidmessenger();
+        $rpm = new Raidmessenger();
         $rpm->get_notifiable_users($trigger, $this->id);
 
         $emailrecipients = array();
@@ -1115,7 +1107,7 @@ class Raidplan
      */
     public function raidplan_push()
     {
-        global $db, $user, $config, $phpbb_root_path, $phpEx ;
+        global $user, $config, $phpbb_root_path, $phpEx ;
 
         if (!class_exists('\bbdkp\controller\raids\RaidController'))
         {

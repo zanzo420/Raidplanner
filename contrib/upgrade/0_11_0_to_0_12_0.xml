@@ -36,7 +36,7 @@
 			<file from="root/images/bbdkp/event_images/*.*" to="images/bbdkp/event_images/*.*"/>
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
 			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>
-			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*"/>
+			<file from="root/includes/bbdkp/*.*" to="includes/bbdkp/*.*"/>
 			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php"/>
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php"/>
 			<file from="root/install/*.*" to="install/*.*"/>

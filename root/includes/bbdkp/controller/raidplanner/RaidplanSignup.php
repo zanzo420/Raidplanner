@@ -5,10 +5,10 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
-use bbdkp\raidplanner\raidmessenger;
+namespace bbdkp\controller\raidplanner;
+use bbdkp\controller\raidplanner\Raidmessenger;
 
 /**
  * @ignore
@@ -84,7 +84,9 @@ class RaidplanSignup
 
     /**
      * Signup class property getter
-     * @param string $fieldName
+     *
+     * @param $fieldName
+     * @return mixed
      */
     public function __get($fieldName)
     {
@@ -366,13 +368,14 @@ class RaidplanSignup
 		return true;
 
 	}
-		
-	
-	/**
-	 * requeues a deleted signup
-	 *
-	 * @param int $signup_id
-	 */
+
+
+    /**
+     * requeues a deleted signup
+     *
+     * @param int $signup_id
+     * @return bool
+     */
 	public function requeuesignup($signup_id)
 	{
 		global $db;
@@ -513,12 +516,13 @@ class RaidplanSignup
 		$db->sql_transaction('commit');
 	}
 
-	
-	/**
-	 * confirms a signup
-	 *
-	 * @param int $signup_id
-	 */
+
+    /**
+     * confirms a signup
+     *
+     * @param int $signup_id
+     * @return bool
+     */
 	public function confirmsignup($signup_id)
 	{
 		global $db;
@@ -587,12 +591,12 @@ class RaidplanSignup
 		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
 		// get recipient data (email, etc)  
-		if (!class_exists('\bbdkp\raidplanner\raidmessenger'))
+		if (!class_exists('\bbdkp\controller\raidplanner\Raidmessenger'))
 		{
-			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
+			require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/raidmessenger.$phpEx");
 		}
 		
-		$rpm = new raidmessenger();
+		$rpm = new Raidmessenger();
 		$rpm->get_notifiable_users($trigger, $this->raidplan_id, $this->signup_id);
 		
 		$emailrecipients = array();

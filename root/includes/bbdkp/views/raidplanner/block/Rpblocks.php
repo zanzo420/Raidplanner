@@ -5,17 +5,22 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
 
-namespace bbdkp\raidplanner;
-
+namespace bbdkp\views\raidplanner;
+use bbdkp\controller\raidplanner\Raidplan;
 /**
  * @ignore
  */
 if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
 	exit;
+}
+
+if (!class_exists('\bbdkp\controller\raidplanner\Raidplan'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
 }
 
 /**
@@ -26,13 +31,8 @@ class rpblocks
 {
 	
 	public $group_options;
-	
-	/**
-	 * @see calendar::display($x)
-	 *
-	 * @param int $x
-	 */
-	public function display()
+
+    public function display()
 	{
 		global $template, $auth, $user, $db;
 	
@@ -154,10 +154,9 @@ class rpblocks
 	
 	/**
 	 * displays the next x number of upcoming raidplans 
-	 *
-	 * @param string $this->group_options
-	 */
-	private function _display_next_raidplans()
+     *
+     */
+    private function _display_next_raidplans()
 	{
 		global $config, $user, $db, $template, $phpEx, $phpbb_root_path;
 		// build sql 
@@ -173,10 +172,7 @@ class rpblocks
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		
 		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0);
-		if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-		}
+
 					
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -215,5 +211,3 @@ class rpblocks
 	}
 			
 }
-
-?>

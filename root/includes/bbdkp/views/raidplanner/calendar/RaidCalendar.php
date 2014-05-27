@@ -7,10 +7,10 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2014 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
-
+namespace bbdkp\views\raidplanner;
+use  bbdkp\views\Raidplan_display;
 /**
  * @ignore
  */
