@@ -73,7 +73,7 @@ class viewPlanner implements iViews
      */
     public function buildpage(viewNavigation $Navigation)
     {
-        global $auth, $user, $phpbb_root_path, $phpEx;
+        global $auth, $user;
         $user->add_lang ( array ('mods/raidplanner'));
 
         //get permissions
@@ -154,9 +154,13 @@ class viewPlanner implements iViews
     {
 
         global $user, $template;
+
         $raidplan = new Raidplan($raidplan_id);
+
         $action = request_var('action', 'display');
+
         $raidplan_display = new Raidplan_display();
+
         $valid_actions = array(
             'signup',
             'delsign',
@@ -380,7 +384,7 @@ class viewPlanner implements iViews
                 {
                     if(!$raidplan->raidplan_delete())
                     {
-                        $raidplan_display->DisplayRaid($raidplan);
+                        $raidplan_display->DisplayRaidplan($raidplan);
                     }
                 }
                 break;
@@ -388,13 +392,13 @@ class viewPlanner implements iViews
                 //push to bbdkp
                 if(!$raidplan->raidplan_push())
                 {
-                    $raidplan_display->DisplayRaid($raidplan);
+                    $raidplan_display->DisplayRaidplan($raidplan);
                 }
                 break;
             case 'display':
             default:
                 // show the raid view form
-                $raidplan_display->DisplayRaid($raidplan);
+                $raidplan_display->DisplayRaidplan($raidplan);
                 break;
         }
         unset($raidplan);
@@ -417,15 +421,16 @@ class viewPlanner implements iViews
             trigger_error('ERROR',E_USER_WARNING);
         }
 
-        $raidplan->storeplan();
-        // store the raid roles.
-        $raidplan->store_raidroles();
+        $action = $raidplan->storeplan();
+        // store the raid & roles.
+        $raidplan->store_raidroles($action);
+
         //make object
         $raidplan->make_obj();
         $raidplan->Check_auth();
         // display it
-        $raidplan_display->DisplayRaid($raidplan);
-        return 0;
+        $raidplan_display->DisplayRaidplan($raidplan);
+        return $action;
     }
 
     /**
@@ -443,7 +448,7 @@ class viewPlanner implements iViews
             $signup->signupmessenger(4, $raidplan);
             $raidplan->make_obj();
             $raidplan->Check_auth();
-            $raidplan_display->DisplayRaid($raidplan);
+            $raidplan_display->DisplayRaidplan($raidplan);
         }
     }
 
@@ -465,7 +470,7 @@ class viewPlanner implements iViews
 
         $raidplan->make_obj();
         $raidplan->Check_auth();
-        $raidplan_display->DisplayRaid($raidplan);
+        $raidplan_display->DisplayRaidplan($raidplan);
 
     }
 
@@ -479,7 +484,7 @@ class viewPlanner implements iViews
         $signup = new RaidplanSignup();
         $signup->editsignupcomment($signup_id);
 
-        $raidplan_display->DisplayRaid($raidplan);
+        $raidplan_display->DisplayRaidplan($raidplan);
     }
 
     private function Requeue(Raidplan $raidplan, Raidplan_display $raidplan_display)
@@ -492,7 +497,7 @@ class viewPlanner implements iViews
         $signup->signupmessenger(4, $raidplan);
         $raidplan->make_obj();
         $raidplan->Check_auth();
-        $raidplan_display->DisplayRaid($raidplan);
+        $raidplan_display->DisplayRaidplan($raidplan);
     }
 
     private function ConfirmSignup(Raidplan $raidplan, Raidplan_display $raidplan_display)
@@ -510,6 +515,6 @@ class viewPlanner implements iViews
         $signup->signupmessenger(5, $raidplan);
         $raidplan->make_obj();
         $raidplan->Check_auth();
-        $raidplan_display->DisplayRaid($raidplan);
+        $raidplan_display->DisplayRaidplan($raidplan);
     }
 }

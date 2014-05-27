@@ -27,6 +27,8 @@ if (!class_exists('\bbdkp\controller\points\Points'))
 {
     require("{$phpbb_root_path}includes/bbdkp/controller/points/Points.$phpEx");
 }
+use bbdkp\controller\points\Points;
+use \bbdkp\controller\members\Members;
 
 /**
  * implements Raid signups
@@ -78,8 +80,8 @@ class RaidplanSignup
 
     public function __construct()
     {
-        $this->Points = new \bbdkp\controller\points\Points();
-        $this->Member = new \bbdkp\controller\members\Members();
+        $this->Points = new Points();
+        $this->Member = new Members();
     }
 
     /**
@@ -111,7 +113,7 @@ class RaidplanSignup
     public function getSignup($signup_id, $dkpid=1)
 	{
 		
-		global $db, $config, $phpbb_root_path, $phpEx, $db;
+		global $phpbb_root_path, $phpEx, $db;
 		
 		$this->signup_id = $signup_id;
 		$sql = "select * from " . RP_SIGNUPS . " where signup_id = " . $this->signup_id;

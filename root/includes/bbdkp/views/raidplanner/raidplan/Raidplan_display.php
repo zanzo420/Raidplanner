@@ -28,6 +28,419 @@ if (!class_exists('\bbdkp\controller\raidplanner\Raidplan'))
  */
 class Raidplan_display
 {
+
+    /***
+     * display a raidplan, signup form
+     *
+     * @param Raidplan $raidplan
+     */
+    public function DisplayRaidplan(Raidplan $raidplan)
+    {
+        global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
+
+        // check if it is private
+        if( !$raidplan->auth_cansee)
+        {
+            trigger_error( 'PRIVATE_RAIDPLAN' );
+        }
+
+        // format the raidplan message
+        $bbcode_options = OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS;
+        $message = generate_text_for_display($raidplan->body, $raidplan->bbcode['uid'], $raidplan->bbcode['bitfield'], $bbcode_options);
+
+        // translate raidplan start and end time into user's timezone
+        $day = gmdate("d", $raidplan->start_time);
+        $month = gmdate("n", $raidplan->start_time);
+        $year =	gmdate('Y', $raidplan->start_time);
+
+        /* make the url for the edit button
+        // show if
+        // user is registered and belongs to u_raidplanner_edit_raidplans usergroup and did create this raid, or belong to group that can edit any raid
+        */
+        $edit_url = "";
+        if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
+            (($user->data['user_id'] == $raidplan->poster ) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
+        {
+            $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;raidplanid=".
+                $raidplan->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+        }
+
+        /* make the url for the delete button */
+        $delete_url = "";
+        $delete_all_url = "";
+        if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_raidplans') &&
+            (($user->data['user_id'] == $raidplan->poster )|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
+        {
+            $delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;raidplanid=".
+                $raidplan->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+        }
+
+        // url to add raid
+        $add_raidplan_url = "";
+        if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
+        {
+            $add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".
+                $day."&amp;calM=". $month. "&amp;calY=".$year);
+        }
+
+        $day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".
+            $month."&amp;calY=".$year);
+        $week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".
+            $month."&amp;calY=".$year);
+        $month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".
+            $month."&amp;calY=".$year);
+
+        $total_needed = 0;
+        /* make url for signup action */
+        $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $raidplan->id);
+
+        //display signups
+        if($raidplan->accesslevel != 0)
+        {
+            foreach ($raidplan->mychars as $key => $mychar)
+            {
+                $template->assign_block_vars('mychars', array(
+                    'MEMBER_ID'      	=> $mychar['id'],
+                    'MEMBER_NAME'  	 	=> $mychar['name'],
+                    'MEMBER_SELECTED'	=> ($mychar['signedup_val'] >= 1) ? ' selected="selected"' : ''
+
+                ));
+            }
+
+            unset($key);
+            unset($mychar);
+
+            //loop all roles
+            // @ : role 0 is declined
+            foreach($raidplan->raidroles as $key => $role)
+            {
+                $total_needed += $role['role_needed'];
+
+                // loop signups per role
+                $template->assign_block_vars('raidroles', array(
+                    'ROLE_ID'        => $key,
+                    'ROLE_DISPLAY'   => (count($role['role_signups']) > 0 ? true : false),
+                    'ROLE_NAME'      => $role['role_name'],
+                    'ROLE_NEEDED'    => $role['role_needed'],
+                    'ROLE_SIGNEDUP'  => $role['role_signedup'],
+                    'ROLE_CONFIRMED' => $role['role_confirmed'],
+                    'ROLE_COLOR'	 => $role['role_color'],
+                    'S_ROLE_ICON_EXISTS' => (strlen($role['role_icon']) > 1) ? true : false,
+                    'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
+                ));
+
+                // loop confirmed signups per role
+                foreach($role['role_confirmations'] as $confirmation)
+                {
+                    $confdetail = new RaidplanSignup();
+                    $confdetail->getSignup($confirmation->signup_id, $raidplan->eventlist->events[$raidplan->event_type]['dkpid'] );
+
+                    $edit_text_array = generate_text_for_edit( $confdetail->comment, $confdetail->bbcode['uid'], 7);
+                    $candeleteconf = false;
+                    $caneditconf = false;
+                    $editconfurl = "";
+                    $deleteconfurl = "";
+
+                    if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $confirmation->poster_id == $user->data['user_id']  )
+                    {
+                        // then if signup is not frozen then show deletion button
+                        //@todo calculate frozen
+                        $candeleteconf = true;
+                        $caneditconf = true;
+                        $editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $confdetail->signup_id);
+                        $deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $confdetail->signup_id);
+                    }
+
+                    $signupcolor = '#006B02';
+                    $signuptext = $user->lang['CONFIRMED'];
+
+                    $template->assign_block_vars('raidroles.confirmations', array(
+                        'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $confdetail->priority_ratio : $confdetail->dkp_current,
+                        'ATTENDANCEP1'	=> $confdetail->attendanceP1,
+                        'U_MEMBERDKP'	=> $confdetail->dkmemberpurl,
+                        'SIGNUP_ID' 	=> $confdetail->signup_id,
+                        'RAIDPLAN_ID' 	=> $confdetail->raidplan_id,
+                        'POST_TIME' 	=> $user->format_date($confdetail->signup_time, $config['rp_date_time_format'], true),
+                        'POST_TIMESTAMP' => $confdetail->signup_time,
+                        'DETAILS' 		=> generate_text_for_display($confdetail->comment, $confdetail->bbcode['uid'], $confdetail->bbcode['bitfield'], 7),
+                        'EDITDETAILS' 	=> $edit_text_array['text'],
+                        'HEADCOUNT' 	=> $confdetail->signup_count,
+                        'POSTER' 		=> $confdetail->poster_name,
+                        'POSTER_URL' 	=> get_username_string( 'full', $confdetail->poster_id, $confdetail->poster_name, $confdetail->poster_colour ),
+                        'VALUE' 		=> $confdetail->signup_val,
+                        'COLOR' 		=> $signupcolor,
+                        'VALUE_TXT' 	=> $signuptext,
+                        'CHARNAME'      => $confdetail->dkpmembername,
+                        'LEVEL'         => $confdetail->level,
+                        'CLASS'         => $confdetail->classname,
+                        'COLORCODE'  	=> ($confdetail->colorcode == '') ? '#123456' : $confdetail->colorcode,
+                        'CLASS_IMAGE' 	=> (strlen($confdetail->imagename) > 1) ? $confdetail->imagename : '',
+                        'S_CLASS_IMAGE_EXISTS' => (strlen($confdetail->imagename) > 1) ? true : false,
+                        'RACE_IMAGE' 	=> (strlen( $confdetail->raceimg) > 1) ? $confdetail->raceimg : '',
+                        'S_RACE_IMAGE_EXISTS' => (strlen($confdetail->raceimg) > 1) ? true : false,
+                        'S_DELETE_SIGNUP'	=> $candeleteconf,
+                        'S_EDIT_SIGNUP' 	=> $caneditconf,
+                        'S_SIGNUP_EDIT_ACTION' => $editconfurl,
+                        'U_DELETE'			=> $deleteconfurl,
+                    ));
+
+                }
+
+                // loop available signups per role
+                foreach($role['role_signups'] as $signup)
+                {
+                    $signupdetail = new RaidplanSignup();
+                    $signupdetail->getSignup($signup->signup_id, $raidplan->eventlist->events[$raidplan->event_type]['dkpid'] );
+                    $edit_text_array = generate_text_for_edit( $signupdetail->comment, $signupdetail->bbcode['uid'], 7);
+
+                    if( $signupdetail->signup_val == 1 )
+                    {
+                        $signupcolor = '#C9B634';
+                        $signuptext = $user->lang['MAYBE'];
+                    }
+                    elseif( $signupdetail->signup_val == 2 )
+                    {
+                        $signupcolor = '#FFB100';
+                        $signuptext = $user->lang['YES'];
+                    }
+                    elseif( $signupdetail->signup_val == 3 )
+                    {
+                        $signupcolor = '#006B02';
+                        $signuptext = $user->lang['CONFIRMED'];
+                    }
+
+                    // if user can delete other signups ?
+                    $confirm_signup_url = "";
+                    $canconfirmsignup = false;
+                    if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
+                    {
+                        $canconfirmsignup=true;
+                        $confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=confirm&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signupdetail->signup_id);
+                    }
+
+                    // if user can delete other signups or if own signup
+                    $candeletesignup= false;
+                    $caneditsignup = false;
+                    $deletesignupurl="";
+                    $editsignupurl="";
+                    $deletekey=0;
+                    if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $signupdetail->poster_id == $user->data['user_id']  )
+                    {
+                        // then if signup is not frozen then show deletion button
+                        //@todo calculate frozen
+                        $candeletesignup = true;
+                        $caneditsignup = true;
+                        $editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signupdetail->signup_id);
+                        $deletekey = rand(1, 1000);
+                        $deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signupdetail->signup_id);
+                    }
+
+                    $template->assign_block_vars('raidroles.signups', array(
+                        'DKP_CURRENT'		=> ($config['bbdkp_epgp'] == 1) ? $signupdetail->priority_ratio : $signupdetail->dkp_current ,
+                        'ATTENDANCEP1'		=> $signupdetail->attendanceP1,
+                        'U_MEMBERDKP'		=> $signupdetail->dkmemberpurl,
+                        'SIGNUP_ID' 	 	=> $signupdetail->signup_id,
+                        'RAIDPLAN_ID' 	 	=> $signupdetail->raidplan_id,
+                        'POST_TIME' 	 	=> $user->format_date($signupdetail->signup_time, $config['rp_date_time_format'], true),
+                        'POST_TIMESTAMP' 	=> $signup->signup_time,
+                        'DETAILS' 			=> generate_text_for_display($signupdetail->comment, $signupdetail->bbcode['uid'], $signupdetail->bbcode['bitfield'], 7),
+                        'EDITDETAILS' 		=> $edit_text_array['text'],
+                        'HEADCOUNT' 		=> $signupdetail->signup_count,
+                        'POSTER' 			=> $signupdetail->poster_name,
+                        'POSTER_URL' 		=> get_username_string( 'full', $signupdetail->poster_id, $signupdetail->poster_name, $signupdetail->poster_colour ),
+                        'VALUE' 			=> $signupdetail->signup_val,
+                        'COLOR' 			=> $signupcolor,
+                        'VALUE_TXT' 		=> $signuptext,
+                        'CHARNAME'      	=> $signupdetail->dkpmembername,
+                        'LEVEL'         	=> $signupdetail->level,
+                        'CLASS'         	=> $signupdetail->classname,
+                        'COLORCODE'  		=> ($signupdetail->colorcode == '') ? '#123456' : $signupdetail->colorcode,
+                        'CLASS_IMAGE' 		=> (strlen($signupdetail->imagename) > 1) ? $signupdetail->imagename : '',
+                        'S_CLASS_IMAGE_EXISTS' => (strlen($signupdetail->imagename) > 1) ? true : false,
+                        'RACE_IMAGE' 		=> (strlen($signupdetail->raceimg) > 1) ?$signupdetail->raceimg : '',
+                        'S_RACE_IMAGE_EXISTS' => (strlen($signupdetail->raceimg) > 1) ? true : false,
+                        'S_DELETE_SIGNUP'	=> 	$candeletesignup,
+                        'S_EDIT_SIGNUP' 	=> $caneditsignup,
+                        'S_SIGNUPMAYBE'		=> $raidplan->signed_up_maybe,
+                        'S_SIGNUP_EDIT_ACTION' => $editsignupurl,
+                        'U_DELETE'			=> $deletesignupurl,
+                        'DELETEKEY' 		=> $deletekey,
+                        'S_CANCONFIRM'		=> $canconfirmsignup,
+                        'U_CONFIRM'			=> $confirm_signup_url,
+
+                    ));
+
+                }
+
+            }
+            unset($key);
+            unset($role);
+
+            // display signoffs
+            foreach($raidplan->signoffs as $key => $signoff)
+            {
+
+                $signoffdetail = new RaidplanSignup();
+                $signoffdetail->getSignup($signoff->signup_id, $raidplan->eventlist->events[$raidplan->event_type]['dkpid'] );
+                $edit_text_array = generate_text_for_edit( $signoffdetail->comment, $signoffdetail->bbcode['uid'], 7);
+
+                $requeue=false;
+                $requeueurl="";
+                // allow requeueing your character
+                if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoffdetail->poster_id == $user->data['user_id']  )
+                {
+                    $requeue = true;
+                    $requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=requeue&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signoffdetail->signup_id);
+                }
+
+                $template->assign_block_vars('unavailable', array(
+                    'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $signoffdetail->priority_ratio : $signoffdetail->dkp_current,
+                    'ATTENDANCEP1'	=> $signoffdetail->attendanceP1,
+                    'U_MEMBERDKP'	=> $signoffdetail->dkmemberpurl,
+                    'SIGNUP_ID' 	=> $signoff->signup_id,
+                    'RAIDPLAN_ID' 	=> $signoff->raidplan_id,
+                    'POST_TIME' 	=> $user->format_date($signoff->signup_time, $config['rp_date_time_format'], true),
+                    'POST_TIMESTAMP' => $signoff->signup_time,
+                    'DETAILS' 		=> generate_text_for_display($signoff->comment, $signoff->bbcode['uid'], $signoff->bbcode['bitfield'], 7),
+                    'EDITDETAILS' 	=> $edit_text_array['text'],
+                    'POSTER' 		=> $signoff->poster_name,
+                    'POSTER_URL' 	=> get_username_string( 'full', $signoff->poster_id, $signoff->poster_name, $signoff->poster_colour ),
+                    'VALUE' 		=> $signoff->signup_val,
+                    'COLOR' 		=> '#FF0000',
+                    'VALUE_TXT' 	=> $user->lang['NO'],
+                    'CHARNAME'      => $signoff->dkpmembername,
+                    'LEVEL'         => $signoff->level,
+                    'CLASS'         => $signoff->classname,
+                    'COLORCODE'  	=> ($signoff->colorcode == '') ? '#123456' : $signoff->colorcode,
+                    'CLASS_IMAGE' 	=> (strlen($signoff->imagename) > 1) ? $signoff->imagename: '',
+                    'S_CLASS_IMAGE_EXISTS' => (strlen($signoff->imagename) > 1) ? true : false,
+                    'RACE_IMAGE' 	=> (strlen($signoff->raceimg) > 1) ? $signoff->raceimg : '',
+                    'S_RACE_IMAGE_EXISTS' => (strlen($signoff->raceimg) > 1) ? true : false,
+                    'S_REQUEUE_ACTION' => $requeueurl,
+                    'S_REQUEUE_SIGNUP'	=> $requeue,
+
+                ));
+
+                foreach($raidplan->raidroles as $key1 => $role)
+                {
+                    $template->assign_block_vars('unavailable.raidroles', array(
+                        'ROLE_ID'        => $key1,
+                        'ROLE_NAME'      => $role['role_name'],
+                    ));
+
+                }
+            }
+            unset($signoff);
+            unset($key);
+
+
+        }
+
+        // button with url to push raidplan to bbdkp
+        // this appears only if
+        // 1) rp_rppushmode == 1
+        // 2) the user belongs to group having u_raidplanner_push permission
+        // 3) there are confirmations
+        $push_raidplan_url = '';
+        if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $raidplan->signups['confirmed'] > 0  )
+        {
+            $push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=push&amp;raidplanid=". $raidplan->id);
+        }
+
+        // event image on top
+        if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
+        {
+            $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
+
+        }
+        else
+        {
+            $eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
+        }
+
+        // we need to find out the time zone to display
+        // if anon then get board timezone or else get the users timezone
+        if ($user->data['user_id'] == ANONYMOUS)
+        {
+            //grab board default
+            $tz = $config['board_timezone'];
+        }
+        else
+        {
+            // get user setting
+            $tz = (int) $user->data['user_timezone'];
+        }
+
+
+
+        $template->assign_vars( array(
+                'S_LOCKED'			=> $raidplan->locked,
+                'S_FROZEN'			=> $raidplan->frozen,
+                'S_NOCHAR'			=> $raidplan->nochar,
+                'S_SIGNED_UP'		=> $raidplan->signed_up,
+                'S_SIGNED_OFF'		=> $raidplan->signed_off,
+                'S_CONFIRMED'		=> $raidplan->confirmed,
+                'S_CANSIGNUP'		=> $raidplan->signups_allowed,
+                'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
+                'S_SIGNUPMAYBE'		=> $raidplan->signed_up_maybe,
+                'RAID_TOTAL'		=> $total_needed,
+                'TZ'				=> $user->lang['tz'][$tz],
+
+                'CURR_CONFIRMED_COUNT'	 => $raidplan->signups['confirmed'],
+                'S_CURR_CONFIRMED_COUNT' => ($raidplan->signups['confirmed'] > 0) ? true: false,
+                'CURR_CONFIRMEDPCT'	=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['confirmed']) /  $total_needed, 2)*100 : 0)),
+
+                'CURR_YES_COUNT'	=> $raidplan->signups['yes'],
+                'S_CURR_YES_COUNT'	=> ($raidplan->signups['yes'] + $raidplan->signups['maybe'] > 0) ? true: false,
+                'CURR_YESPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['yes']) /  $total_needed, 2)*100 : 0)),
+
+                'CURR_MAYBE_COUNT'	=> $raidplan->signups['maybe'],
+                'S_CURR_MAYBE_COUNT' => ($raidplan->signups['maybe'] > 0) ? true: false,
+                'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['maybe']) /  $total_needed, 2)*100 : 0)),
+
+                'CURR_NO_COUNT'		=> $raidplan->signups['no'],
+                'S_CURR_NO_COUNT'	=> ($raidplan->signups['no'] > 0) ? true: false,
+                'CURR_NOPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['no']) /  $total_needed, 2)*100 : 0)),
+
+                'CURR_TOTAL_COUNT'  => $raidplan->signups['yes'] + $raidplan->signups['maybe'],
+
+                'ETYPE_DISPLAY_NAME'=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'],
+                'EVENT_COLOR'		=> $raidplan->eventlist->events[$raidplan->event_type]['color'],
+                'EVENT_IMAGE' 		=> $eventimg,
+
+                'SUBJECT'			=> $raidplan->subject,
+                'MESSAGE'			=> $message,
+
+                'INVITE_TIME'		=> $user->format_date($raidplan->invite_time, $config['rp_date_time_format'], true),
+                'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
+                'START_DATE'		=> $user->format_date($raidplan->start_time, $config['rp_date_format'], true),
+                'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
+
+                'U_SIGNUP_MODE_ACTION' => $signup_url,
+                'RAID_ID'			=> $raidplan->id,
+                'S_PLANNER_RAIDPLAN'=> true,
+
+                'POSTER'			=> $raidplan->poster_url,
+                'INVITED'			=> $raidplan->invite_list,
+                'TEAM_NAME'			=> $raidplan->raidteamname,
+                'U_EDITRAID'		=> $edit_url,
+                'U_DELETERAID'		=> $delete_url,
+                'U_ADDRAID'			=> $add_raidplan_url,
+                'U_PUSHRAID'		=> $push_raidplan_url,
+
+                'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
+                'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
+                'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
+                'DAY_VIEW_URL'		=> $day_view_url,
+                'WEEK_VIEW_URL'		=> $week_view_url,
+                'MONTH_VIEW_URL'	=> $month_view_url,
+            )
+        );
+
+
+    }
+
+
     /**
      * display raidplan add/edit form
      *
@@ -490,431 +903,6 @@ class Raidplan_display
         display_custom_bbcodes();
     }
 
-
-    /***
-     * display a raidplan, signup form
-     *
-     * @param Raidplan $raidplan
-     */
-    public function DisplayRaid(Raidplan $raidplan)
-    {
-        global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-
-        // check if it is private
-        if( !$raidplan->auth_cansee)
-        {
-          trigger_error( 'PRIVATE_RAIDPLAN' );
-        }
-
-        // format the raidplan message
-        $bbcode_options = OPTION_FLAG_BBCODE + OPTION_FLAG_SMILIES + OPTION_FLAG_LINKS;
-        $message = generate_text_for_display($raidplan->body, $raidplan->bbcode['uid'], $raidplan->bbcode['bitfield'], $bbcode_options);
-
-        // translate raidplan start and end time into user's timezone
-        $day = gmdate("d", $raidplan->start_time);
-        $month = gmdate("n", $raidplan->start_time);
-        $year =	gmdate('Y', $raidplan->start_time);
-
-        /* make the url for the edit button
-        // show if
-        // user is registered and belongs to u_raidplanner_edit_raidplans usergroup and did create this raid, or belong to group that can edit any raid
-        */
-        $edit_url = "";
-        if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_edit_raidplans') &&
-            (($user->data['user_id'] == $raidplan->poster ) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
-        {
-            $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;raidplanid=".
-                $raidplan->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-        }
-
-        /* make the url for the delete button */
-        $delete_url = "";
-        $delete_all_url = "";
-        if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_raidplans') &&
-            (($user->data['user_id'] == $raidplan->poster )|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
-        {
-            $delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;raidplanid=".
-                $raidplan->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
-        }
-
-        // url to add raid
-        $add_raidplan_url = "";
-        if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
-        {
-            $add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".
-                $day."&amp;calM=". $month. "&amp;calY=".$year);
-        }
-
-        $day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".
-            $month."&amp;calY=".$year);
-        $week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$day ."&amp;calM=".
-            $month."&amp;calY=".$year);
-        $month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".
-            $month."&amp;calY=".$year);
-
-        $total_needed = 0;
-        /* make url for signup action */
-        $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $raidplan->id);
-
-        //display signups
-        if($raidplan->accesslevel != 0)
-        {
-            foreach ($raidplan->mychars as $key => $mychar)
-            {
-                $template->assign_block_vars('mychars', array(
-                    'MEMBER_ID'      	=> $mychar['id'],
-                    'MEMBER_NAME'  	 	=> $mychar['name'],
-                    'MEMBER_SELECTED'	=> ($mychar['signedup_val'] >= 1) ? ' selected="selected"' : ''
-
-                ));
-            }
-
-            unset($key);
-            unset($mychar);
-
-            //loop all roles
-            // @ : role 0 is declined
-            foreach($raidplan->raidroles as $key => $role)
-            {
-                $total_needed += $role['role_needed'];
-
-                // loop signups per role
-                $template->assign_block_vars('raidroles', array(
-                    'ROLE_ID'        => $key,
-                    'ROLE_DISPLAY'   => (count($role['role_signups']) > 0 ? true : false),
-                    'ROLE_NAME'      => $role['role_name'],
-                    'ROLE_NEEDED'    => $role['role_needed'],
-                    'ROLE_SIGNEDUP'  => $role['role_signedup'],
-                    'ROLE_CONFIRMED' => $role['role_confirmed'],
-                    'ROLE_COLOR'	 => $role['role_color'],
-                    'S_ROLE_ICON_EXISTS' => (strlen($role['role_icon']) > 1) ? true : false,
-                    'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
-                ));
-
-                // loop confirmed signups per role
-                foreach($role['role_confirmations'] as $confirmation)
-                {
-                    $confdetail = new RaidplanSignup();
-                    $confdetail->getSignup($confirmation->signup_id, $raidplan->eventlist->events[$raidplan->event_type]['dkpid'] );
-
-                    $edit_text_array = generate_text_for_edit( $confdetail->comment, $confdetail->bbcode['uid'], 7);
-                    $candeleteconf = false;
-                    $caneditconf = false;
-                    $editconfurl = "";
-                    $deleteconfurl = "";
-
-                    if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $confirmation->poster_id == $user->data['user_id']  )
-                    {
-                        // then if signup is not frozen then show deletion button
-                        //@todo calculate frozen
-                        $candeleteconf = true;
-                        $caneditconf = true;
-                        $editconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $confdetail->signup_id);
-                        $deleteconfurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $confdetail->signup_id);
-                    }
-
-                    $signupcolor = '#006B02';
-                    $signuptext = $user->lang['CONFIRMED'];
-
-                    $template->assign_block_vars('raidroles.confirmations', array(
-                        'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $confdetail->priority_ratio : $confdetail->dkp_current,
-                        'ATTENDANCEP1'	=> $confdetail->attendanceP1,
-                        'U_MEMBERDKP'	=> $confdetail->dkmemberpurl,
-                        'SIGNUP_ID' 	=> $confdetail->signup_id,
-                        'RAIDPLAN_ID' 	=> $confdetail->raidplan_id,
-                        'POST_TIME' 	=> $user->format_date($confdetail->signup_time, $config['rp_date_time_format'], true),
-                        'POST_TIMESTAMP' => $confdetail->signup_time,
-                        'DETAILS' 		=> generate_text_for_display($confdetail->comment, $confdetail->bbcode['uid'], $confdetail->bbcode['bitfield'], 7),
-                        'EDITDETAILS' 	=> $edit_text_array['text'],
-                        'HEADCOUNT' 	=> $confdetail->signup_count,
-                        'POSTER' 		=> $confdetail->poster_name,
-                        'POSTER_URL' 	=> get_username_string( 'full', $confdetail->poster_id, $confdetail->poster_name, $confdetail->poster_colour ),
-                        'VALUE' 		=> $confdetail->signup_val,
-                        'COLOR' 		=> $signupcolor,
-                        'VALUE_TXT' 	=> $signuptext,
-                        'CHARNAME'      => $confdetail->dkpmembername,
-                        'LEVEL'         => $confdetail->level,
-                        'CLASS'         => $confdetail->classname,
-                        'COLORCODE'  	=> ($confdetail->colorcode == '') ? '#123456' : $confdetail->colorcode,
-                        'CLASS_IMAGE' 	=> (strlen($confdetail->imagename) > 1) ? $confdetail->imagename : '',
-                        'S_CLASS_IMAGE_EXISTS' => (strlen($confdetail->imagename) > 1) ? true : false,
-                        'RACE_IMAGE' 	=> (strlen( $confdetail->raceimg) > 1) ? $confdetail->raceimg : '',
-                        'S_RACE_IMAGE_EXISTS' => (strlen($confdetail->raceimg) > 1) ? true : false,
-                        'S_DELETE_SIGNUP'	=> $candeleteconf,
-                        'S_EDIT_SIGNUP' 	=> $caneditconf,
-                        'S_SIGNUP_EDIT_ACTION' => $editconfurl,
-                        'U_DELETE'			=> $deleteconfurl,
-                    ));
-
-                }
-
-                // loop available signups per role
-                foreach($role['role_signups'] as $signup)
-                {
-                    $signupdetail = new RaidplanSignup();
-                    $signupdetail->getSignup($signup->signup_id, $raidplan->eventlist->events[$raidplan->event_type]['dkpid'] );
-                    $edit_text_array = generate_text_for_edit( $signupdetail->comment, $signupdetail->bbcode['uid'], 7);
-
-                    if( $signupdetail->signup_val == 1 )
-                    {
-                        $signupcolor = '#C9B634';
-                        $signuptext = $user->lang['MAYBE'];
-                    }
-                    elseif( $signupdetail->signup_val == 2 )
-                    {
-                        $signupcolor = '#FFB100';
-                        $signuptext = $user->lang['YES'];
-                    }
-                    elseif( $signupdetail->signup_val == 3 )
-                    {
-                        $signupcolor = '#006B02';
-                        $signuptext = $user->lang['CONFIRMED'];
-                    }
-
-                    // if user can delete other signups ?
-                    $confirm_signup_url = "";
-                    $canconfirmsignup = false;
-                    if( $auth->acl_get('m_raidplanner_edit_other_users_signups') )
-                    {
-                        $canconfirmsignup=true;
-                        $confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=confirm&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signupdetail->signup_id);
-                    }
-
-                    // if user can delete other signups or if own signup
-                    $candeletesignup= false;
-                    $caneditsignup = false;
-                    $deletesignupurl="";
-                    $editsignupurl="";
-                    $deletekey=0;
-                    if( $auth->acl_get('m_raidplanner_edit_other_users_signups') || $signupdetail->poster_id == $user->data['user_id']  )
-                    {
-                        // then if signup is not frozen then show deletion button
-                        //@todo calculate frozen
-                        $candeletesignup = true;
-                        $caneditsignup = true;
-                        $editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signupdetail->signup_id);
-                        $deletekey = rand(1, 1000);
-                        $deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signupdetail->signup_id);
-                    }
-
-                    $template->assign_block_vars('raidroles.signups', array(
-                        'DKP_CURRENT'		=> ($config['bbdkp_epgp'] == 1) ? $signupdetail->priority_ratio : $signupdetail->dkp_current ,
-                        'ATTENDANCEP1'		=> $signupdetail->attendanceP1,
-                        'U_MEMBERDKP'		=> $signupdetail->dkmemberpurl,
-                        'SIGNUP_ID' 	 	=> $signupdetail->signup_id,
-                        'RAIDPLAN_ID' 	 	=> $signupdetail->raidplan_id,
-                        'POST_TIME' 	 	=> $user->format_date($signupdetail->signup_time, $config['rp_date_time_format'], true),
-                        'POST_TIMESTAMP' 	=> $signup->signup_time,
-                        'DETAILS' 			=> generate_text_for_display($signupdetail->comment, $signupdetail->bbcode['uid'], $signupdetail->bbcode['bitfield'], 7),
-                        'EDITDETAILS' 		=> $edit_text_array['text'],
-                        'HEADCOUNT' 		=> $signupdetail->signup_count,
-                        'POSTER' 			=> $signupdetail->poster_name,
-                        'POSTER_URL' 		=> get_username_string( 'full', $signupdetail->poster_id, $signupdetail->poster_name, $signupdetail->poster_colour ),
-                        'VALUE' 			=> $signupdetail->signup_val,
-                        'COLOR' 			=> $signupcolor,
-                        'VALUE_TXT' 		=> $signuptext,
-                        'CHARNAME'      	=> $signupdetail->dkpmembername,
-                        'LEVEL'         	=> $signupdetail->level,
-                        'CLASS'         	=> $signupdetail->classname,
-                        'COLORCODE'  		=> ($signupdetail->colorcode == '') ? '#123456' : $signupdetail->colorcode,
-                        'CLASS_IMAGE' 		=> (strlen($signupdetail->imagename) > 1) ? $signupdetail->imagename : '',
-                        'S_CLASS_IMAGE_EXISTS' => (strlen($signupdetail->imagename) > 1) ? true : false,
-                        'RACE_IMAGE' 		=> (strlen($signupdetail->raceimg) > 1) ?$signupdetail->raceimg : '',
-                        'S_RACE_IMAGE_EXISTS' => (strlen($signupdetail->raceimg) > 1) ? true : false,
-                        'S_DELETE_SIGNUP'	=> 	$candeletesignup,
-                        'S_EDIT_SIGNUP' 	=> $caneditsignup,
-                        'S_SIGNUPMAYBE'		=> $raidplan->signed_up_maybe,
-                        'S_SIGNUP_EDIT_ACTION' => $editsignupurl,
-                        'U_DELETE'			=> $deletesignupurl,
-                        'DELETEKEY' 		=> $deletekey,
-                        'S_CANCONFIRM'		=> $canconfirmsignup,
-                        'U_CONFIRM'			=> $confirm_signup_url,
-
-                    ));
-
-                }
-
-            }
-            unset($key);
-            unset($role);
-
-            // display signoffs
-            foreach($raidplan->signoffs as $key => $signoff)
-            {
-
-                $signoffdetail = new RaidplanSignup();
-                $signoffdetail->getSignup($signoff->signup_id, $raidplan->eventlist->events[$raidplan->event_type]['dkpid'] );
-                $edit_text_array = generate_text_for_edit( $signoffdetail->comment, $signoffdetail->bbcode['uid'], 7);
-
-                $requeue=false;
-                $requeueurl="";
-                // allow requeueing your character
-                if( $auth->acl_get('m_acl_m_raidplanner_delete_other_users_raidplans') || $signoffdetail->poster_id == $user->data['user_id']  )
-                {
-                    $requeue = true;
-                    $requeueurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=requeue&amp;raidplanid=". $raidplan->id . "&amp;signup_id=" . $signoffdetail->signup_id);
-                }
-
-                $template->assign_block_vars('unavailable', array(
-                    'DKP_CURRENT'	=> ($config['bbdkp_epgp'] == 1) ? $signoffdetail->priority_ratio : $signoffdetail->dkp_current,
-                    'ATTENDANCEP1'	=> $signoffdetail->attendanceP1,
-                    'U_MEMBERDKP'	=> $signoffdetail->dkmemberpurl,
-                    'SIGNUP_ID' 	=> $signoff->signup_id,
-                    'RAIDPLAN_ID' 	=> $signoff->raidplan_id,
-                    'POST_TIME' 	=> $user->format_date($signoff->signup_time, $config['rp_date_time_format'], true),
-                    'POST_TIMESTAMP' => $signoff->signup_time,
-                    'DETAILS' 		=> generate_text_for_display($signoff->comment, $signoff->bbcode['uid'], $signoff->bbcode['bitfield'], 7),
-                    'EDITDETAILS' 	=> $edit_text_array['text'],
-                    'POSTER' 		=> $signoff->poster_name,
-                    'POSTER_URL' 	=> get_username_string( 'full', $signoff->poster_id, $signoff->poster_name, $signoff->poster_colour ),
-                    'VALUE' 		=> $signoff->signup_val,
-                    'COLOR' 		=> '#FF0000',
-                    'VALUE_TXT' 	=> $user->lang['NO'],
-                    'CHARNAME'      => $signoff->dkpmembername,
-                    'LEVEL'         => $signoff->level,
-                    'CLASS'         => $signoff->classname,
-                    'COLORCODE'  	=> ($signoff->colorcode == '') ? '#123456' : $signoff->colorcode,
-                    'CLASS_IMAGE' 	=> (strlen($signoff->imagename) > 1) ? $signoff->imagename: '',
-                    'S_CLASS_IMAGE_EXISTS' => (strlen($signoff->imagename) > 1) ? true : false,
-                    'RACE_IMAGE' 	=> (strlen($signoff->raceimg) > 1) ? $signoff->raceimg : '',
-                    'S_RACE_IMAGE_EXISTS' => (strlen($signoff->raceimg) > 1) ? true : false,
-                    'S_REQUEUE_ACTION' => $requeueurl,
-                    'S_REQUEUE_SIGNUP'	=> $requeue,
-
-                ));
-
-                foreach($raidplan->raidroles as $key1 => $role)
-                {
-                    $template->assign_block_vars('unavailable.raidroles', array(
-                        'ROLE_ID'        => $key1,
-                        'ROLE_NAME'      => $role['role_name'],
-                    ));
-
-                }
-            }
-            unset($signoff);
-            unset($key);
-
-            // get roles from object
-            // @todo fix
-            foreach($raidplan->roles as $key => $role)
-            {
-                $template->assign_block_vars('raidroles', array(
-                    'ROLE_COLOR'     => $role['role_color'],
-                    'S_ROLE_ICON_EXISTS'	=>  (strlen($role['role_icon']) > 1) ? true : false,
-                    'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
-                    'ROLE_ID'        => $key,
-                    'ROLE_NAME'      => $role['role_name'],
-                ));
-            }
-
-            $c = "debug";
-
-        }
-
-        // button with url to push raidplan to bbdkp
-        // this appears only if
-        // 1) rp_rppushmode == 1
-        // 2) the user belongs to group having u_raidplanner_push permission
-        // 3) there are confirmations
-        $push_raidplan_url = '';
-        if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $raidplan->signups['confirmed'] > 0  )
-        {
-            $push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=push&amp;raidplanid=". $raidplan->id);
-        }
-
-        // event image on top
-        if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
-        {
-            $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
-
-        }
-        else
-        {
-            $eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
-        }
-
-        // we need to find out the time zone to display
-        // if anon then get board timezone or else get the users timezone
-        if ($user->data['user_id'] == ANONYMOUS)
-        {
-            //grab board default
-            $tz = $config['board_timezone'];
-        }
-        else
-        {
-            // get user setting
-            $tz = (int) $user->data['user_timezone'];
-        }
-
-
-
-        $template->assign_vars( array(
-                'S_LOCKED'			=> $raidplan->locked,
-                'S_FROZEN'			=> $raidplan->frozen,
-                'S_NOCHAR'			=> $raidplan->nochar,
-                'S_SIGNED_UP'		=> $raidplan->signed_up,
-                'S_SIGNED_OFF'		=> $raidplan->signed_off,
-                'S_CONFIRMED'		=> $raidplan->confirmed,
-                'S_CANSIGNUP'		=> $raidplan->signups_allowed,
-                'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
-                'S_SIGNUPMAYBE'		=> $raidplan->signed_up_maybe,
-                'RAID_TOTAL'		=> $total_needed,
-                'TZ'				=> $user->lang['tz'][$tz],
-
-                'CURR_CONFIRMED_COUNT'	 => $raidplan->signups['confirmed'],
-                'S_CURR_CONFIRMED_COUNT' => ($raidplan->signups['confirmed'] > 0) ? true: false,
-                'CURR_CONFIRMEDPCT'	=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['confirmed']) /  $total_needed, 2)*100 : 0)),
-
-                'CURR_YES_COUNT'	=> $raidplan->signups['yes'],
-                'S_CURR_YES_COUNT'	=> ($raidplan->signups['yes'] + $raidplan->signups['maybe'] > 0) ? true: false,
-                'CURR_YESPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['yes']) /  $total_needed, 2)*100 : 0)),
-
-                'CURR_MAYBE_COUNT'	=> $raidplan->signups['maybe'],
-                'S_CURR_MAYBE_COUNT' => ($raidplan->signups['maybe'] > 0) ? true: false,
-                'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['maybe']) /  $total_needed, 2)*100 : 0)),
-
-                'CURR_NO_COUNT'		=> $raidplan->signups['no'],
-                'S_CURR_NO_COUNT'	=> ($raidplan->signups['no'] > 0) ? true: false,
-                'CURR_NOPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->signups['no']) /  $total_needed, 2)*100 : 0)),
-
-                'CURR_TOTAL_COUNT'  => $raidplan->signups['yes'] + $raidplan->signups['maybe'],
-
-                'ETYPE_DISPLAY_NAME'=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'],
-                'EVENT_COLOR'		=> $raidplan->eventlist->events[$raidplan->event_type]['color'],
-                'EVENT_IMAGE' 		=> $eventimg,
-
-                'SUBJECT'			=> $raidplan->subject,
-                'MESSAGE'			=> $message,
-
-                'INVITE_TIME'		=> $user->format_date($raidplan->invite_time, $config['rp_date_time_format'], true),
-                'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
-                'START_DATE'		=> $user->format_date($raidplan->start_time, $config['rp_date_format'], true),
-                'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
-
-                'U_SIGNUP_MODE_ACTION' => $signup_url,
-                'RAID_ID'			=> $raidplan->id,
-                'S_PLANNER_RAIDPLAN'=> true,
-
-                'POSTER'			=> $raidplan->poster_url,
-                'INVITED'			=> $raidplan->invite_list,
-                'TEAM_NAME'			=> $raidplan->raidteamname,
-                'U_EDITRAID'		=> $edit_url,
-                'U_DELETERAID'		=> $delete_url,
-                'U_ADDRAID'			=> $add_raidplan_url,
-                'U_PUSHRAID'		=> $push_raidplan_url,
-
-                'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
-                'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
-                'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
-                'DAY_VIEW_URL'		=> $day_view_url,
-                'WEEK_VIEW_URL'		=> $week_view_url,
-                'MONTH_VIEW_URL'	=> $month_view_url,
-            )
-        );
-
-
-    }
 
 
     /**

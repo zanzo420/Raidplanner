@@ -28,7 +28,6 @@ if (!class_exists('\bbdkp\controller\raidplanner\RaidAuth'))
     include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/RaidAuth.' . $phpEx);
 }
 
-
 if (!class_exists('\bbdkp\controller\raidplanner\rpevents'))
 {
     include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/rpevents.' . $phpEx);
@@ -38,6 +37,12 @@ if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup'))
 {
     require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/RaidplanSignup.$phpEx");
 }
+
+if (!class_exists('\bbdkp\controller\raidplanner\Raidmessenger'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/Raidmessenger.$phpEx");
+}
+
 
 /**
  * implements a raid plan
@@ -284,13 +289,15 @@ class Raidplan
     {
 
         $this->id = $id;
-        $this->eventlist= new rpevents();
+
 
         if($this->id !=0)
         {
             $this->make_obj();
             $this->Check_auth();
         }
+
+        $this->eventlist= new rpevents();
 
     }
 
@@ -448,17 +455,12 @@ class Raidplan
 
         unset ($row);
 
-        $sql = 'SELECT * FROM ' . RP_TEAMS . '
-					ORDER BY teams_id';
+        $sql = 'SELECT teams_id, team_name FROM ' . RP_TEAMS . '  WHERE teams_id = ' . $this->raidteam . ' ORDER BY teams_id';
         $db->sql_query($sql);
         $result = $db->sql_query($sql);
         while ( $row = $db->sql_fetchrow ( $result ) )
         {
-            if($this->raidteam == (int) $row['teams_id'])
-            {
                 $this->raidteamname = $row ['team_name'];
-                break 1;
-            }
         }
         $db->sql_freeresult($result);
         unset ($row);
@@ -697,13 +699,17 @@ class Raidplan
          */
         $db->sql_transaction('begin');
 
-        if( $this->id == 0)
+        if( $this->id == 0 )
         {
             //insert new
             $sql = 'INSERT INTO ' . RP_RAIDS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_raid);
             $db->sql_query($sql);
             $this->id = $db->sql_nextid();
             $this->raidmessenger(1);
+            unset ($sql_raid);
+
+            return 1;
+
         }
         else
         {
@@ -712,32 +718,27 @@ class Raidplan
 		    WHERE raidplan_id = ' . (int) $this->id;
             $db->sql_query($sql);
             $this->raidmessenger(2);
+            unset ($sql_raid);
+
+            return 0;
 
         }
-        unset ($sql_raid);
-
-        $db->sql_transaction('commit');
-
     }
 
     /**
      * inserts or updates raidroles
      *
+     * @param int $mode
      */
-    public function store_raidroles()
+    public function store_raidroles($mode = 0)
     {
         global $db;
 
-        /*
-         * start transaction
-         */
-        $db->sql_transaction('begin');
-
         foreach($this->raidroles as $role_id => $role)
         {
-
-            if( $this->id == 0)
+            if( $mode == 1)
             {
+                //insert
                 $sql_raidroles = array(
                     'raidplan_id'		=> $this->id,
                     'role_id'			=> $role_id,
@@ -766,12 +767,14 @@ class Raidplan
             }
         }
 
+        /*
+        * commit transaction
+        */
         $db->sql_transaction('commit');
 
         unset($sql_raidroles);
         unset($role_id);
         unset($role);
-
 
     }
 
@@ -842,8 +845,6 @@ class Raidplan
             return confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
 
         }
-
-
     }
 
     /**
@@ -881,8 +882,8 @@ class Raidplan
             $this->raidroles[$row['role_id']]['role_signups'] =  $signups;
         }
         $db->sql_freeresult($result);
+        return $this->raidroles;
     }
-
 
     /**
      * builds roles property, needed when you make new raid
@@ -981,17 +982,13 @@ class Raidplan
         $db->sql_freeresult($result);
     }
 
-
     /**
-     * raidmessenger
+     *  raidmessenger
      *
-     * eventhandler for
-     * raidplan add
-     *   send to all who have a dkp member with points
-     * raidplan update
-     *   send to raidplan participants
-     * raidplan delete
-     *   send to raidplan participants
+     *  eventhandler for
+     *  raidplan add send to all who have a dkp member with points
+     *  raidplan update send to raidplan participants
+     *  raidplan delete send to raidplan participants
      *
      * @param $trigger
      */
@@ -1005,7 +1002,7 @@ class Raidplan
         include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
         include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
-        $rpm = new Raidmessenger();
+        $rpm = new \bbdkp\controller\raidplanner\Raidmessenger;
         $rpm->get_notifiable_users($trigger, $this->id);
 
         $emailrecipients = array();
@@ -1334,7 +1331,7 @@ class Raidplan
     public function deleteraider($member_id)
     {
 
-        global $phpbb_root_path, $phpEx, $db;
+        global $phpbb_root_path, $phpEx;
         if (!class_exists('\bbdkp\controller\raids\RaidController'))
         {
             require("{$phpbb_root_path}includes/bbdkp/controller/raids/RaidController.$phpEx");

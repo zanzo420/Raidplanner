@@ -9,7 +9,8 @@
 * @version 0.12.0
 */
 namespace bbdkp\views\raidplanner;
-use  bbdkp\views\Raidplan_display;
+use  bbdkp\views\raidplanner\Raidplan_display;
+
 /**
  * @ignore
  */
