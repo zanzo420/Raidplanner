@@ -53,7 +53,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v0.12
+v0.12 dev
 
 ## Installation
 * 	Unzip the zip file into /store/mods
@@ -72,9 +72,9 @@ v0.12
 
 ### changes
 
-*   0.12 2014-05-22
-	*   [FIX] #37 Viewplanner refactoring
-	*   [FIX] #36 js validation for newteamsize field in raidteam acp 
+*   0.12 2014-05-xx
+    *   [FIX] #37 Viewplanner refactoring
+    *   [FIX] #36 js validation for newteamsize field in raidteam acp 
 	
 *   0.11.0 2014-05-19
     *   [NEW] tabbed interface for ACP, split into 4 modules. 
