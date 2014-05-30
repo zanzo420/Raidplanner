@@ -215,161 +215,7 @@ class viewPlanner implements iViews
                 }
                 elseif ($submit || $update)
                 {
-                    // collect data
-                    $error = array();
-                    $raidplan->poster = $user->data['user_id'];
-
-                    // get member group id
-                    $raidplan->group_id_list = ',';
-                    $raidplan->group_id = 0;
-                    $group_id_array = request_var('calGroupId', array(0));
-                    $num_group_ids = sizeof( $group_id_array );
-                    if( $num_group_ids == 1 )
-                    {
-                        // if only one group pass the groupid
-                        $raidplan->group_id = $group_id_array[0];
-                    }
-                    elseif( $num_group_ids > 1 )
-                    {
-                        // if we want multiple groups then pass the array
-                        for( $group_index = 0; $group_index < $num_group_ids; $group_index++ )
-                        {
-                            if( $group_id_array[$group_index] == "" )
-                            {
-                                continue;
-                            }
-                            $raidplan->group_id_list .= $group_id_array[$group_index] . ",";
-                        }
-                    }
-
-                    $raidplan->accesslevel = request_var('accesslevel', 0);
-                    //assign raid team
-                    switch($raidplan->accesslevel)
-                    {
-                        case 0:
-                            //non raid, manual event.
-                            $raidplan->signups_allowed = 0;
-                            $raidplan->raidteam = 0;
-                            break;
-                        case 1:
-                            //all
-                            // if we selected group access but didn't actually choose a group then throw error
-                            if ($num_group_ids < 1)
-                            {
-                                $error[] = $user->lang['NO_GROUP_SELECTED'];
-                            }
-                            //no break
-                        case 2:
-                            $raidplan->signups_allowed = 1;
-                            $raidroles = request_var('role_needed', array(0=> 0));
-                            foreach($raidroles as $role_id => $needed)
-                            {
-                                $raidplan->raidroles[$role_id] = array(
-                                    'role_needed' => (int) $needed,
-                                );
-                            }
-                            $raidplan->raidteam = request_var('teamselect', request_var('team_id', 0));
-
-                    }
-
-                    $raidplan->signups['yes'] = 0;
-                    $raidplan->signups['no'] = 0;
-                    $raidplan->signups['maybe'] = 0;
-                    //set event type
-                    $raidplan->event_type = request_var('bbdkp_events', 0);
-
-                    // invite/start date values from pulldown click
-                    $inv_d = request_var('calD', 0);
-                    $inv_m = request_var('calM', 0);
-                    $inv_y = request_var('calY', 0);
-                    $inv_hr = request_var('calinvHr', 0);
-                    $inv_mn = request_var('calinvMn', 0);
-                    $raidplan->invite_time = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
-
-                    $start_hr = request_var('calHr', 0);
-                    $start_mn = request_var('calMn', 0);
-                    $raidplan->start_time = gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
-
-                    $end_m = request_var('calMEnd', 0);
-                    $end_d = request_var('calDEnd', 0);
-                    $end_y = request_var('calYEnd', 0);
-
-                    $end_hr = request_var('calEndHr', 0);
-                    $end_mn = request_var('calEndMn', 0);
-                    $raidplan->end_time = gmmktime( $end_hr, $end_mn, 0, $end_m, $end_d, $end_y ) - $user->timezone - $user->dst;
-                    if ($raidplan->end_time < $raidplan->start_time)
-                    {
-                        //check for enddate before begindate
-                        // if the end hour is earlier than start hour then roll over a day
-                        $raidplan->end_time += 3600*24;
-                    }
-
-                    //if this is not an "all day event"
-                    $raidplan->all_day=0;
-                    $raidplan->day = sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y);
-
-                    // read subjectline
-                    $raidplan->subject = utf8_normalize_nfc(request_var('subject', '', true));
-
-                    //read comment section
-                    $raidplan->body = utf8_normalize_nfc(request_var('message', '', true));
-
-                    $raidplan->bbcode['uid'] = $raidplan->bbcode['bitfield'] = $options = '';
-                    $allow_bbcode = $allow_urls = $allow_smilies = true;
-                    generate_text_for_storage($raidplan->body, $raidplan->bbcode['uid'], $raidplan->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
-
-                    $raidplan->Check_auth();
-
-                    if(count($error) > 0)
-                    {
-                        trigger_error(implode($error,"<br /> "), E_USER_WARNING);
-                    }
-
-                    $str  = serialize($raidplan);
-                    $str1 = base64_encode($str);
-
-                    if($submit)
-                    {
-
-                        if(!$raidplan->auth_canadd)
-                        {
-                           trigger_error('USER_CANNOT_POST_RAIDPLAN');
-                        }
-
-                        $s_hidden_fields = build_hidden_fields(array(
-                                'addraid'	=> true,
-                                'raidobject'	=> $str1
-                            )
-                        );
-
-                        $template->assign_vars(array(
-                                'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
-                        );
-                        confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
-                    }
-
-                    if($update)
-                    {
-
-
-                        if(!$raidplan->auth_canedit)
-                        {
-                            trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
-                        }
-
-                        $s_hidden_fields = build_hidden_fields(array(
-                                'updateraid'	=> true,
-                                'raidobject'	=> $str1,
-                                'raidplan_id'	=> $this->id
-                            )
-                        );
-
-                        $template->assign_vars(array(
-                                'S_HIDDEN_FIELDS'	 => $s_hidden_fields)
-                        );
-
-                        confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
-                    }
+                    $this->AddUpdateRaidplan_Collect_data($raidplan, $submit, $update);
                 }
 
                 //show add form
@@ -516,5 +362,168 @@ class viewPlanner implements iViews
         $raidplan->make_obj();
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
+    }
+
+    /**
+     * collect data from POST after submit or update
+     *
+     * @param $raidplan
+     * @param $submit
+     * @param $update
+     */
+    private function AddUpdateRaidplan_Collect_data($raidplan, $submit, $update)
+    {
+        global $user, $template;
+        $error = array();
+        $raidplan->poster = $user->data['user_id'];
+
+        // get member group id
+        $raidplan->group_id_list = ',';
+        $raidplan->group_id = 0;
+        $group_id_array = request_var('calGroupId', array(0));
+        $num_group_ids = sizeof($group_id_array);
+        if ($num_group_ids == 1)
+        {
+            // if only one group pass the groupid
+            $raidplan->group_id = $group_id_array[0];
+        } elseif ($num_group_ids > 1)
+        {
+            // if we want multiple groups then pass the array
+            for ($group_index = 0; $group_index < $num_group_ids; $group_index++)
+            {
+                if ($group_id_array[$group_index] == "")
+                {
+                    continue;
+                }
+                $raidplan->group_id_list .= $group_id_array[$group_index] . ",";
+            }
+        }
+
+        $raidplan->accesslevel = request_var('accesslevel', 0);
+        //assign raid team
+        switch ($raidplan->accesslevel)
+        {
+            case 0:
+                //non raid, manual event.
+                $raidplan->signups_allowed = 0;
+                $raidplan->raidteam = 0;
+                break;
+            case 1:
+                //all
+                // if we selected group access but didn't actually choose a group then throw error
+                if ($num_group_ids < 1)
+                {
+                    $error[] = $user->lang['NO_GROUP_SELECTED'];
+                }
+            //no break
+            case 2:
+                $raidplan->signups_allowed = 1;
+                $raidroles = request_var('role_needed', array(0 => 0));
+                foreach ($raidroles as $role_id => $needed)
+                {
+                    $raidplan->raidroles[$role_id] = array(
+                        'role_needed' => (int)$needed,
+                    );
+                }
+                $raidplan->raidteam = request_var('teamselect', request_var('team_id', 0));
+
+        }
+
+        $raidplan->signups['yes'] = 0;
+        $raidplan->signups['no'] = 0;
+        $raidplan->signups['maybe'] = 0;
+        //set event type
+        $raidplan->event_type = request_var('bbdkp_events', 0);
+
+        // invite/start date values from pulldown click
+        $inv_d = request_var('calD', 0);
+        $inv_m = request_var('calM', 0);
+        $inv_y = request_var('calY', 0);
+        $inv_hr = request_var('calinvHr', 0);
+        $inv_mn = request_var('calinvMn', 0);
+        $raidplan->invite_time = gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
+
+        $start_hr = request_var('calHr', 0);
+        $start_mn = request_var('calMn', 0);
+        $raidplan->start_time = gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
+
+        $end_m = request_var('calMEnd', 0);
+        $end_d = request_var('calDEnd', 0);
+        $end_y = request_var('calYEnd', 0);
+
+        $end_hr = request_var('calEndHr', 0);
+        $end_mn = request_var('calEndMn', 0);
+        $raidplan->end_time = gmmktime($end_hr, $end_mn, 0, $end_m, $end_d, $end_y) - $user->timezone - $user->dst;
+        if ($raidplan->end_time < $raidplan->start_time)
+        {
+            //check for enddate before begindate
+            // if the end hour is earlier than start hour then roll over a day
+            $raidplan->end_time += 3600 * 24;
+        }
+
+        //if this is not an "all day event"
+        $raidplan->all_day = 0;
+        $raidplan->day = sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y);
+
+        // read subjectline
+        $raidplan->subject = utf8_normalize_nfc(request_var('subject', '', true));
+
+        //read comment section
+        $raidplan->body = utf8_normalize_nfc(request_var('message', '', true));
+
+        $raidplan->bbcode['uid'] = $raidplan->bbcode['bitfield'] = $options = '';
+        $allow_bbcode = $allow_urls = $allow_smilies = true;
+        generate_text_for_storage($raidplan->body, $raidplan->bbcode['uid'], $raidplan->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
+
+        $raidplan->Check_auth();
+
+        if (count($error) > 0)
+        {
+            trigger_error(implode($error, "<br /> "), E_USER_WARNING);
+        }
+
+        $str = serialize($raidplan);
+        $str1 = base64_encode($str);
+
+        if ($submit)
+        {
+
+            if (!$raidplan->auth_canadd)
+            {
+                trigger_error('USER_CANNOT_POST_RAIDPLAN');
+            }
+
+            $s_hidden_fields = build_hidden_fields(array(
+                    'addraid' => true,
+                    'raidobject' => $str1
+                )
+            );
+
+            $template->assign_vars(array(
+                    'S_HIDDEN_FIELDS' => $s_hidden_fields)
+            );
+            confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
+        }
+
+        if ($update)
+        {
+            if (!$raidplan->auth_canedit)
+            {
+                trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+            }
+
+            $s_hidden_fields = build_hidden_fields(array(
+                    'updateraid' => true,
+                    'raidobject' => $str1,
+                    'raidplan_id' => $this->id
+                )
+            );
+
+            $template->assign_vars(array(
+                    'S_HIDDEN_FIELDS' => $s_hidden_fields)
+            );
+
+            confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
+        }
     }
 }
