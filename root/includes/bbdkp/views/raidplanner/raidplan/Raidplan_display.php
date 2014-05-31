@@ -139,10 +139,7 @@ class Raidplan_display
                 $this->Signups_show_available($raidplan, $role);
 
             }
-
             $this->Signups_display_notavail($raidplan);
-
-
         }
 
         // button with url to push raidplan to bbdkp

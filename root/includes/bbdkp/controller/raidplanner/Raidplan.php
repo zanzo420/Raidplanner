@@ -438,6 +438,10 @@ class Raidplan
             //no tracking
             $this->signups_allowed = false;
         }
+        //get your raid team
+        $this->raidteam = $row['raidteam'];
+
+        unset ($row);
 
         //if raid invite time is in the past then raid signups are frozen.
         $this->frozen = false;
@@ -450,21 +454,16 @@ class Raidplan
             }
         }
 
-        //get your raid team
-        $this->raidteam = $row['raidteam'];
-
-        unset ($row);
-
+        //get team name
         $sql = 'SELECT teams_id, team_name FROM ' . RP_TEAMS . '  WHERE teams_id = ' . $this->raidteam . ' ORDER BY teams_id';
         $db->sql_query($sql);
         $result = $db->sql_query($sql);
         while ( $row = $db->sql_fetchrow ( $result ) )
         {
-                $this->raidteamname = $row ['team_name'];
+            $this->raidteamname = $row ['team_name'];
         }
         $db->sql_freeresult($result);
         unset ($row);
-
 
         // get array of raid roles with signups and confirmations per role (available+confirmed)
         $this->raidroles = array();
@@ -489,15 +488,15 @@ class Raidplan
         // are you currently signed up for a raidplan ?
         // check it, and lock signup pane if your char is already registered for a role
         // setting signed_up, signed_up_maybe,confirmed to true locks popup/pane
-        $this->signed_up = false;
 
+        $this->signed_up = false;
         $this->signed_up_maybe = false;
         foreach($this->raidroles as $rid => $myrole)
         {
             // there are signups?
             if(is_array($myrole['role_signups']))
             {
-                //loop them
+                //loop signups
                 foreach($myrole['role_signups'] as $signid => $asignup)
                 {
                     if(isset($this->mychars))
@@ -523,15 +522,18 @@ class Raidplan
                 }
             }
 
+            $this->confirmed = false;
+            // there are confirmations?
             if(is_array($myrole['role_confirmations']))
             {
-                foreach($myrole['role_confirmations'] as $asignup)
+                //loop confirmations
+                foreach($myrole['role_confirmations'] as $aconfirmation)
                 {
                     if(isset($this->mychars))
                     {
                         foreach($this->mychars as $chid => $mychar)
                         {
-                            if($mychar['id'] == $asignup->dkpmemberid)
+                            if($mychar['id'] == $aconfirmation->dkpmemberid)
                             {
                                 $this->confirmed = true;
                             }
@@ -926,25 +928,26 @@ class Raidplan
         unset($rpsignup);
 
         //fill signups array
-        foreach ($this->raidroles as $roleid => $role)
+        foreach ($this->raidroles as $role_id => $role)
         {
-            $sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val > 0 and role_id  = " . $roleid;
+            $sql = "select signup_id from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val > 0 and role_id  = " . $role_id;
             $result = $db->sql_query($sql);
 
             while ($row = $db->sql_fetchrow($result))
             {
                 //bind all public object vars of signup class instance to signup array and add to role array
                 $rpsignup = new RaidplanSignup();
-                $rpsignup->getSignup($row['signup_id'], $this->eventlist->events[$this->event_type]['dkpid']);
+                $rpsignup->getSignup($row['signup_id']);
+
                 if($rpsignup->signup_val == 1 || $rpsignup->signup_val == 2)
                 {
                     // maybe + available
-                    $this->raidroles[$roleid]['role_signups'][] = $rpsignup;
+                    $this->raidroles[$role_id]['role_signups'][] = $rpsignup;
                 }
                 elseif($rpsignup->signup_val == 3)
                 {
                     //confirmed
-                    $this->raidroles[$roleid]['role_confirmations'][] = $rpsignup;
+                    $this->raidroles[$role_id]['role_confirmations'][] = $rpsignup;
                 }
                 unset($rpsignup);
             }
@@ -952,8 +955,9 @@ class Raidplan
             $db->sql_freeresult($result);
         }
 
-        unset($roleid);
+        unset($role_id);
         unset($role);
+        unset($row);
 
     }
 
@@ -974,7 +978,7 @@ class Raidplan
 
         while ($row = $db->sql_fetchrow($result))
         {
-            $rpsignup->getSignup($row['signup_id'], $this->eventlist->events[$this->event_type]['dkpid']);
+            $rpsignup->getSignup($row['signup_id']);
             //get all public object vars to signup array and bind to role
             $this->signoffs[] = $rpsignup;
         }

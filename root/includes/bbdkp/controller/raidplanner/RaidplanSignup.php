@@ -106,11 +106,11 @@ class RaidplanSignup
 
     /**
      * makes a Signup object
+     * @todo Sajaki fetch current dkp
      *
      * @param $signup_id
-     * @param int $dkpid
      */
-    public function getSignup($signup_id, $dkpid=1)
+    public function getSignup($signup_id)
 	{
 		
 		global $phpbb_root_path, $phpEx, $db;
@@ -157,7 +157,7 @@ class RaidplanSignup
 		$this->genderid = $this->Member->member_gender_id;
 
         $this->Points->member_id = (int) $this->dkpmemberid;
-        $this->Points->dkpid =  $this->dkpmemberid;
+        $this->Points->dkpid =  $this->dkpmemberid; //wrong, need to fetch
         $this->dkp_current = $this->Points->total_net;
 		$this->priority_ratio = $this->Points->pr_net;
 		$this->lastraid = $this->Points->lastraid;
