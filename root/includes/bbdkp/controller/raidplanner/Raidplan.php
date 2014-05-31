@@ -50,14 +50,38 @@ if (!class_exists('\bbdkp\controller\raidplanner\Raidmessenger'))
  */
 class Raidplan
 {
+
     /**
      * pk
      * raidplan_id
      *
      * @var int
      */
-    protected $id;
+    public $id;
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     private $eventlist;
+    /**
+     * @param \bbdkp\controller\raidplanner\rpevents $eventlist
+     */
+    public function setEventlist($eventlist)
+    {
+        $this->eventlist = $eventlist;
+    }
+
+    /**
+     * @return \bbdkp\controller\raidplanner\rpevents
+     */
+    public function getEventlist()
+    {
+        return $this->eventlist;
+    }
 
     /**
      * raidplan event type
@@ -65,7 +89,23 @@ class Raidplan
      *
      * @var int
      */
-    protected $event_type;
+    private $event_type;
+
+    /**
+     * @param int $event_type
+     */
+    public function setEventType($event_type)
+    {
+        $this->event_type = $event_type;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEventType()
+    {
+        return $this->event_type;
+    }
 
     /**
      * Invite time timestamp
@@ -73,7 +113,22 @@ class Raidplan
      *
      * @var int
      */
-    protected $invite_time;
+    private $invite_time;
+    /**
+     * @param int $invite_time
+     */
+    public function setInviteTime($invite_time)
+    {
+        $this->invite_time = $invite_time;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInviteTime()
+    {
+        return $this->invite_time;
+    }
 
     /**
      * Start time timestamp
@@ -81,7 +136,22 @@ class Raidplan
      *
      * @var int
      */
-    protected $start_time;
+    private $start_time;
+    /**
+     * @param int $start_time
+     */
+    public function setStartTime($start_time)
+    {
+        $this->start_time = $start_time;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStartTime()
+    {
+        return $this->start_time;
+    }
 
     /**
      * endtime timestamp
@@ -89,7 +159,22 @@ class Raidplan
      *
      * @var int
      */
-    protected $end_time;
+    private $end_time;
+    /**
+     * @param int $end_time
+     */
+    public function setEndTime($end_time)
+    {
+        $this->end_time = $end_time;
+    }
+
+    /**
+     * @return int
+     */
+    public function getEndTime()
+    {
+        return $this->end_time;
+    }
 
     /**
      * 1 if allday event, 0 if timed event
@@ -97,7 +182,22 @@ class Raidplan
      *
      * @var int
      */
-    protected $all_day;
+    private $all_day;
+    /**
+     * @param int $all_day
+     */
+    public function setAllDay($all_day)
+    {
+        $this->all_day = $all_day;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAllDay()
+    {
+        return $this->all_day;
+    }
 
     /**
      * day of alldayevent (dd-mm-yyyy)
@@ -105,7 +205,23 @@ class Raidplan
      *
      * @var string
      */
-    protected $day;
+    private $day;
+
+    /**
+     * @param string $day
+     */
+    public function setDay($day)
+    {
+        $this->day = $day;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDay()
+    {
+        return $this->day;
+    }
 
     /**
      * one line subject
@@ -113,87 +229,403 @@ class Raidplan
      *
      * @var string
      */
-    public $subject;
+    private $subject;
+    /**
+     * @param string $subject
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
 
     /**
      * raidplan_body MEDIUMTEXT
      *
      * @var unknown_type
      */
-    public $body;
-    public $bbcode = array();
+    private $body;
+    /**
+     * @param \bbdkp\controller\raidplanner\unknown_type $body
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @return \bbdkp\controller\raidplanner\unknown_type
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    private $bbcode = array();
+    /**
+     * @param array $bbcode
+     */
+    public function setBbcode($bbcode)
+    {
+        $this->bbcode = $bbcode;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBbcode()
+    {
+        return $this->bbcode;
+    }
+
+
 
     /**
      * poster_id
      *
      * @var unknown_type
      */
-    protected $poster;
+    private $poster;
+
+    /**
+     * @param \bbdkp\controller\raidplanner\unknown_type $poster
+     */
+    public function setPoster($poster)
+    {
+        $this->poster = $poster;
+    }
+
+    /**
+     * @return \bbdkp\controller\raidplanner\unknown_type
+     */
+    public function getPoster()
+    {
+        return $this->poster;
+    }
 
     /**
      * access level 0 = personal, 1 = groups, 2 = all
      * default to 2
      * @var int
      */
-    protected $accesslevel = 2;
+    private $accesslevel = 2;
+    /**
+     * @param int $accesslevel
+     */
+    public function setAccesslevel($accesslevel)
+    {
+        $this->accesslevel = $accesslevel;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccesslevel()
+    {
+        return $this->accesslevel;
+    }
 
     private $auth_cansee = false;
-    private $auth_canedit = false;
-    private $auth_candelete = false;
-    private $auth_canadd = false;
-    private $auth_signup_raidplans = false;
-    private $group_id;
-    private $group_id_list;
+    /**
+     * @param boolean $auth_cansee
+     */
+    public function setAuthCansee($auth_cansee)
+    {
+        $this->auth_cansee = $auth_cansee;
+    }
 
+    /**
+     * @return boolean
+     */
+    public function getAuthCansee()
+    {
+        return $this->auth_cansee;
+    }
+
+    private $auth_canedit = false;
+    /**
+     * @param boolean $auth_canedit
+     */
+    public function setAuthCanedit($auth_canedit)
+    {
+        $this->auth_canedit = $auth_canedit;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAuthCanedit()
+    {
+        return $this->auth_canedit;
+    }
+
+
+    private $auth_candelete = false;
+    /**
+     * @param boolean $auth_candelete
+     */
+    public function setAuthCandelete($auth_candelete)
+    {
+        $this->auth_candelete = $auth_candelete;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAuthCandelete()
+    {
+        return $this->auth_candelete;
+    }
+
+
+
+    private $auth_canadd = false;
+    /**
+     * @param boolean $auth_canadd
+     */
+    public function setAuthCanadd($auth_canadd)
+    {
+        $this->auth_canadd = $auth_canadd;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAuthCanadd()
+    {
+        return $this->auth_canadd;
+    }
+
+
+    private $auth_signup_raidplans = false;
+    /**
+     * @param boolean $auth_signup_raidplans
+     */
+    public function setAuthSignupRaidplans($auth_signup_raidplans)
+    {
+        $this->auth_signup_raidplans = $auth_signup_raidplans;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getAuthSignupRaidplans()
+    {
+        return $this->auth_signup_raidplans;
+    }
+
+
+    private $group_id;
+    /**
+     * @param mixed $group_id
+     */
+    public function setGroupId($group_id)
+    {
+        $this->group_id = $group_id;
+    }
+    /**
+     * @return mixed
+     */
+    public function getGroupId()
+    {
+        return $this->group_id;
+    }
+
+    private $group_id_list;
+    /**
+     * @param mixed $group_id_list
+     */
+    public function setGroupIdList($group_id_list)
+    {
+        $this->group_id_list = $group_id_list;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupIdList()
+    {
+        return $this->group_id_list;
+    }
     /**
      * array of possible roles
      *
      * @var array
      */
-    public $roles= array();
+    private $roles= array();
+    /**
+     * @param array $roles
+     */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
 
     /**
      * array of raid roles, subarray of signups per role
      *
      * @var array
      */
-    public $raidroles= array();
+    private $raidroles= array();
+    /**
+     * @param array $raidroles
+     */
+    public function setRaidroles($raidroles)
+    {
+        $this->raidroles = $raidroles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRaidroles()
+    {
+        return $this->raidroles;
+    }
 
     /**
      * raidteam int
      *
      * @var int
      */
-    protected $raidteam;
+    private $raidteam;
+    /**
+     * @param int $raidteam
+     */
+    public function setRaidteam($raidteam)
+    {
+        $this->raidteam = $raidteam;
+    }
 
+    /**
+     * @return int
+     */
+    public function getRaidteam()
+    {
+        return $this->raidteam;
+    }
 
     /**
      * Team name
      *
      * @var string
      */
-    protected $raidteamname;
+    private $raidteamname;
+
+    /**
+     * @param string $raidteamname
+     */
+    public function setRaidteamname($raidteamname)
+    {
+        $this->raidteamname = $raidteamname;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRaidteamname()
+    {
+        return $this->raidteamname;
+    }
 
     /**
      * signups allowed ?
      *
      * @var boolean
      */
-    protected $signups_allowed;
+    private $signups_allowed;
+    /**
+     * @param boolean $signups_allowed
+     */
+    public function setSignupsAllowed($signups_allowed)
+    {
+        $this->signups_allowed = $signups_allowed;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getSignupsAllowed()
+    {
+        return $this->signups_allowed;
+    }
 
     /**
      * aray of signups
      *
      * @var array
      */
-    public $signups =array();
+    private $signups =array();
+    /**
+     * @param array $signups
+     */
+    public function setSignups($signups)
+    {
+        $this->signups = $signups;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSignups()
+    {
+        return $this->signups;
+    }
 
     /**
      * If you currently signed up as maybe
      *
      * @var boolean
      */
-    protected $signed_up_maybe;
+    private $signed_up_maybe;
+
+    /**
+     * @return boolean
+     */
+    public function getSignedUpMaybe()
+    {
+
+        $this->signed_up_maybe = false;
+        foreach($this->raidroles as $k => $myrole)
+        {
+            // there are signups?
+            if(is_array($myrole['role_signups']))
+            {
+                //loop signups
+                foreach($myrole['role_signups'] as $l => $asignup)
+                {
+                    if(isset($this->mychars))
+                    {
+                        foreach($this->mychars as $m => $mychar)
+                        {
+                            if($mychar['id'] == $asignup->dkpmemberid && $asignup->signup_val == 1)
+                            {
+                                $this->signed_up_maybe = true;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return $this->signed_up_maybe;
+    }
 
     /**
      * array of signoffs
@@ -201,61 +633,232 @@ class Raidplan
      * @var array
      */
     public $signoffs= array();
+    /**
+     * @param array $signoffs
+     */
+    public function setSignoffs($signoffs)
+    {
+        $this->signoffs = $signoffs;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSignoffs()
+    {
+        return $this->signoffs;
+    }
 
     /**
      * If you are currently signed off
      *
      * @var boolean
      */
-    protected $signed_off;
+    private $signed_off;
+
+    /**
+     * @return boolean
+     */
+    public function getSignedOff()
+    {
+
+        // to lock signup pane if your char is signed off
+        $this->signed_off = false;
+        if(is_array($this->signoffs))
+        {
+            foreach($this->signoffs as $k => $asignoff)
+            {
+                if(isset($this->mychars))
+                {
+                    foreach($this->mychars as $l => $mychar)
+                    {
+                        if($mychar['id'] == $asignoff->dkpmemberid)
+                        {
+                            $this->signed_off = true;
+                        }
+                    }
+                }
+            }
+        }
+        return $this->signed_off;
+    }
 
     /**
      * all my eligible chars
      *
      * @var array
      */
-    public $mychars = array();
+    private $mychars = array();
+    /**
+     * @param array $mychars
+     */
+    public function setMychars($mychars)
+    {
+        $this->mychars = $mychars;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMychars()
+    {
+        return $this->mychars;
+    }
+
 
     /**
      * url of the poster
      *
      * @var string
      */
-    protected $poster_url = '';
+    private $poster_url = '';
+    /**
+     * @param string $poster_url
+     */
+    public function setPosterUrl($poster_url)
+    {
+        $this->poster_url = $poster_url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPosterUrl()
+    {
+        return $this->poster_url;
+    }
+
+
 
     /**
      * string representing invited groups
      *
      * @var string
      */
-    protected $invite_list = '';
+    private $invite_list = '';
+    /**
+     * @param string $invite_list
+     */
+    public function setInviteList($invite_list)
+    {
+        $this->invite_list = $invite_list;
+    }
 
+    /**
+     * @return string
+     */
+    public function getInviteList()
+    {
+        return $this->invite_list;
+    }
 
     /**
      * If raid is locked due to authorisation ?
      *
      * @var boolean
      */
-    public $locked;
+    private $locked;
+    /**
+     * @param boolean $locked
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
 
     /**
      * if raid signups are frozen ?
      */
-    protected $frozen;
+    private $frozen;
+
+    /**
+     * if raid invite time is in the past then raid signups are frozen.
+     * @return mixed
+     */
+    public function getFrozen()
+    {
+        global $config;
+        $this->frozen = false;
+        if ($config['rp_default_freezetime'] != 0 && $config['rp_enable_past_raids'] == 0)
+        {
+            //compare invite epoch time plus (raid freeze time in hours times 3600) with the current epoch time. if expired then freeze signups
+            if( $this->invite_time + (3600 * (int) $config['rp_default_freezetime'])  < time() )
+            {
+                $this->frozen = true;
+            }
+        }
+        return $this->frozen;
+    }
+
 
     /**
      * If user has no characters bound then set nochar to true
      *
      * @var boolean
      */
-    protected $nochar;
+    private $nochar;
+    /**
+     * @param boolean $nochar
+     */
+    public function setNochar($nochar)
+    {
+        $this->nochar = $nochar;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getNochar()
+    {
+        return $this->nochar;
+    }
 
     /**
      * If you currently signed up as available
      *
      * @var boolean
      */
-    protected $signed_up;
+    private $signed_up;
+    /**
+     * @return boolean
+     */
+    public function getSignedUp()
+    {
+        $this->signed_up = false;
+        foreach($this->raidroles as $k => $myrole)
+        {
+            // there are signups?
+            if(is_array($myrole['role_signups']))
+            {
+                //loop signups
+                foreach($myrole['role_signups'] as $l => $asignup)
+                {
+                    if(isset($this->mychars))
+                    {
+                        foreach($this->mychars as $m => $mychar)
+                        {
+                            if($mychar['id'] == $asignup->dkpmemberid && $asignup->signup_val == 2)
+                            {
+                                $this->signed_up = true;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        return $this->signed_up;
+
+    }
 
 
     /**
@@ -263,21 +866,68 @@ class Raidplan
      *
      * @var boolean
      */
-    protected $confirmed;
+    private $confirmed;
+
+    /**
+     * @return boolean
+     */
+    public function getConfirmed()
+    {
+        $this->confirmed = false;
+        foreach($this->raidroles as $k => $myrole)
+        {
+            // there are confirmations?
+            if(is_array($myrole['role_confirmations']))
+            {
+                //loop confirmations
+                foreach($myrole['role_confirmations'] as $aconfirmation)
+                {
+                    if(isset($this->mychars))
+                    {
+                        foreach($this->mychars as $l => $mychar)
+                        {
+                            if($mychar['id'] == $aconfirmation->dkpmemberid)
+                            {
+                                $this->confirmed = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $this->confirmed;
+    }
 
     /**
      * bbdkp raid_id
      *
      * @var unknown_type
      */
-    protected $raid_id;
+    private $raid_id;
+
+    /**
+     * @return \bbdkp\controller\raidplanner\unknown_type
+     */
+    public function getRaidId()
+    {
+        return $this->raid_id;
+    }
+
 
     /**
      * redirect link for raid
      *
      * @var string
      */
-    protected $link;
+    private $link;
+
+    /**
+     * @return string
+     */
+    public function getLink()
+    {
+        return $this->link;
+    }
 
 
     /**
@@ -293,7 +943,7 @@ class Raidplan
 
         if($this->id !=0)
         {
-            $this->make_obj();
+            $this->Get_Raidplan();
             $this->Check_auth();
         }
 
@@ -302,55 +952,12 @@ class Raidplan
     }
 
     /**
-     * raidplan class property getter
-     * @param string $fieldName
-     */
-    public function __get($fieldName)
-    {
-        global $user;
-
-        if (property_exists($this, $fieldName))
-        {
-            return $this->$fieldName;
-        }
-        else
-        {
-            trigger_error($user->lang['ERROR'] . '  '. $fieldName, E_USER_WARNING);
-        }
-    }
-
-    /**
-     * raidplan class property setter
-     * @param string $property
-     * @param string $value
-     */
-    public function __set($property, $value)
-    {
-        global $user;
-        switch ($property)
-        {
-            case 'xxx':
-                // is readonly
-                break;
-            default:
-                if (property_exists($this, $property))
-                {
-                    $this->$property = $value;
-                }
-                else
-                {
-                    trigger_error($user->lang['ERROR'] . '  '. $property, E_USER_WARNING);
-                }
-        }
-    }
-
-    /**
      * make raidplan object for display
      *
      */
-    public function make_obj()
+    public function Get_Raidplan()
     {
-        global $user, $config, $phpEx, $phpbb_root_path, $db;
+        global $phpEx, $db;
 
         // reinitialise
         $this->event_type = 0;
@@ -405,54 +1012,27 @@ class Raidplan
 
         $this->link = generate_board_url() . "/dkp.$phpEx?page=planner&view=raidplan&raidplanid=" . $this->id;
         $this->raid_id = $row['raid_id'];
-
         $this->accesslevel=$row['raidplan_access_level'];
         $this->poster=$row['poster_id'];
         $this->group_id=$row['group_id'];
         $this->group_id_list=$row['group_id_list'];
-
-        // now go add raid properties
         $this->event_type= $row['etype_id'];
         $this->invite_time=$row['raidplan_invite_time'];
         $this->start_time=$row['raidplan_start_time'];
         $this->end_time=$row['raidplan_end_time'];
         $this->all_day=$row['raidplan_all_day'];
         $this->day=$row['raidplan_day'];
-
         $this->subject=$row['raidplan_subject'];
         $this->body=$row['raidplan_body'];
-
         $this->bbcode['bitfield']= $row['bbcode_bitfield'];
         $this->bbcode['uid']= $row['bbcode_uid'];
-        //enable_bbcode & enable_smilies & enable_magic_url always 1
-
-        //if signups are allowed
         $this->signups['no'] = $row['signup_no'];
         $this->signups['maybe'] = $row['signup_maybe'];
         $this->signups['yes'] = $row['signup_yes'];
         $this->signups['confirmed'] = $row['signup_confirmed'];
-
-        $this->signups_allowed = true;
-        if ($row['track_signups'] == 0)
-        {
-            //no tracking
-            $this->signups_allowed = false;
-        }
-        //get your raid team
+        $this->signups_allowed = ($row['track_signups'] == 0 ? false : true);
         $this->raidteam = $row['raidteam'];
-
         unset ($row);
-
-        //if raid invite time is in the past then raid signups are frozen.
-        $this->frozen = false;
-        if ($config['rp_default_freezetime'] != 0 && $config['rp_enable_past_raids'] == 0)
-        {
-            //compare invite epoch time plus (raid freeze time in hours times 3600) with the current epoch time. if expired then freeze signups
-            if( $this->invite_time + (3600 * (int) $config['rp_default_freezetime'])  < time() )
-            {
-                $this->frozen = true;
-            }
-        }
 
         //get team name
         $sql = 'SELECT teams_id, team_name FROM ' . RP_TEAMS . '  WHERE teams_id = ' . $this->raidteam . ' ORDER BY teams_id';
@@ -465,186 +1045,36 @@ class Raidplan
         $db->sql_freeresult($result);
         unset ($row);
 
-        // get array of raid roles with signups and confirmations per role (available+confirmed)
-        $this->raidroles = array();
+        // fill mychars array
+        $rpsignup = new RaidplanSignup();
+        $this->mychars = $rpsignup->getmychars($this->id);
+        unset($rpsignup);
+
         //get array of possible roles
-        $this->get_roles();
-        $this->get_raid_roles();
-
+        $this->roles = $this->_get_roles();
+        // get bare array of raid roles
+        $this->_get_raid_roles();
         // attach signups to roles (available+confirmed)
-        $this->getSignups();
-
+        $this->raidroles = $this->_get_Signups();
         //get all that signed unavailable
-        $this->get_unavailable();
+        $this->signoffs = $this->_get_signoffs();
 
         // lock signup pane if you have no characters bound to your account
-        $this->nochar = false;
-        if(count ($this->mychars) == 0)
-        {
-            $this->nochar = true;
-        }
-        $this->locked = false;
-
-        // are you currently signed up for a raidplan ?
-        // check it, and lock signup pane if your char is already registered for a role
-        // setting signed_up, signed_up_maybe,confirmed to true locks popup/pane
-
-        $this->signed_up = false;
-        $this->signed_up_maybe = false;
-        foreach($this->raidroles as $rid => $myrole)
-        {
-            // there are signups?
-            if(is_array($myrole['role_signups']))
-            {
-                //loop signups
-                foreach($myrole['role_signups'] as $signid => $asignup)
-                {
-                    if(isset($this->mychars))
-                    {
-                        foreach($this->mychars as $chid => $mychar)
-                        {
-                            if($mychar['id'] == $asignup->dkpmemberid)
-                            {
-                                switch ($asignup->signup_val)
-                                {
-                                    case 1:
-                                        $this->signed_up_maybe = true;
-                                        break;
-                                    case 2:
-                                        $this->signed_up = true;
-                                        break;
-                                }
-
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            $this->confirmed = false;
-            // there are confirmations?
-            if(is_array($myrole['role_confirmations']))
-            {
-                //loop confirmations
-                foreach($myrole['role_confirmations'] as $aconfirmation)
-                {
-                    if(isset($this->mychars))
-                    {
-                        foreach($this->mychars as $chid => $mychar)
-                        {
-                            if($mychar['id'] == $aconfirmation->dkpmemberid)
-                            {
-                                $this->confirmed = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // also lock signup pane if your char is signed off
-        $this->signed_off = false;
-        if(is_array($this->signoffs))
-        {
-            foreach($this->signoffs as $signoffid => $asignoff)
-            {
-                if(isset($this->mychars))
-                {
-                    foreach($this->mychars as $chid => $mychar)
-                    {
-                        if($mychar['id'] == $asignoff->dkpmemberid)
-                        {
-                            $this->signed_off = true;
-                            $this->signed_up = false;
-                        }
-                    }
-                }
-            }
-        }
+        $this->nochar = count ($this->mychars) == 0 ? true : false;
+        $this->locked = $this->nochar;
 
         $sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . ' WHERE user_id = '.$db->sql_escape($this->poster);
         $result = $db->sql_query($sql);
         $row = $db->sql_fetchrow($result);
         $db->sql_freeresult($result);
         $this->poster_url = get_username_string( 'full', $this->poster, $row['username'], $row['user_colour'] );
+        $this->invite_list = $this->_get_InviteList();
 
-        //depending on access level invite different phpbb groups.
-        switch( $this->accesslevel )
-        {
-            case 0:
-                // personal raidplan... only raidplan creator is invited
-                $this->invite_list = $this->poster_url;
-                break;
-            case 1:
-                if( $this->group_id != 0 )
-                {
-                    // this is a group raidplan... only phpbb accounts of this group are invited
-                    $sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
-								WHERE group_id = '.$db->sql_escape($this->group_id);
-
-                    $result = $db->sql_query($sql);
-                    $group_data = $db->sql_fetchrow($result);
-                    $db->sql_freeresult($result);
-
-                    $temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-                    $temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$this->group_id);
-                    $temp_color_start = "";
-                    $temp_color_end = "";
-                    if( $group_data['group_colour'] !== "" )
-                    {
-                        $temp_color_start = "<span style='color:#".$group_data['group_colour']."'>";
-                        $temp_color_end = "</span>";
-                    }
-                    $this->invite_list = "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-                }
-                else
-                {
-                    // multiple groups invited
-                    $group_list = explode( ',', $this->group_id_list );
-                    $num_groups = sizeof( $group_list );
-                    for( $i = 0; $i < $num_groups; $i++ )
-                    {
-                        if( $group_list[$i] == "")
-                        {
-                            continue;
-                        }
-
-                        // group raidplan... only phpbb accounts  of specified group are invited
-                        $sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
-									WHERE group_id = '.$db->sql_escape($group_list[$i]);
-                        $result = $db->sql_query($sql);
-                        $group_data = $db->sql_fetchrow($result);
-                        $db->sql_freeresult($result);
-                        $temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-                        $temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=".$group_list[$i]);
-                        $temp_color_start = "";
-                        $temp_color_end = "";
-                        if( $group_data['group_colour'] !== "" )
-                        {
-                            $temp_color_start = "<span style='color:#".$group_data['group_colour']."'>";
-                            $temp_color_end = "</span>";
-                        }
-
-                        if( $this->invite_list == "" )
-                        {
-                            $this->invite_list = "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-                        }
-                        else
-                        {
-                            $this->invite_list .=  ", " . "<a href='".$temp_url."'>".$temp_color_start.$temp_list.$temp_color_end."</a>";
-                        }
-                    }
-                }
-                break;
-            case 2:
-                // public raidplan... everyone is invited
-                $this->invite_list = $user->lang['EVERYONE'];
-                break;
-        }
     }
 
-
+    /**
+     *
+     */
     public function Check_auth()
     {
         $RaidAuth = new RaidAuth($this);
@@ -666,7 +1096,7 @@ class Raidplan
      * insert new or update existing raidplan object
      *
      */
-    public function storeplan()
+    public function Store_Raidplan()
     {
         global $db;
 
@@ -850,10 +1280,37 @@ class Raidplan
     }
 
     /**
+     * builds roles property, needed when you make new raid
+     * called by constructor only !
+     */
+    private function _get_roles()
+    {
+        global $db;
+
+        $sql_array = array(
+            'SELECT'    => 'r.role_id, r.role_name, r.role_color, r.role_icon ',
+            'FROM'      => array(
+                RP_ROLES   => 'r'
+            ),
+            'ORDER_BY'  => 'r.role_id'
+        );
+        $sql = $db->sql_build_query('SELECT', $sql_array);
+        $result = $db->sql_query($sql);
+        while ( $row = $db->sql_fetchrow ( $result ) )
+        {
+            $this->roles[$row['role_id']]['role_name'] = $row['role_name'];
+            $this->roles[$row['role_id']]['role_color'] = $row['role_color'];
+            $this->roles[$row['role_id']]['role_icon'] = $row['role_icon'];
+        }
+        $db->sql_freeresult($result);
+        return $this->roles;
+    }
+
+    /**
      * builds raid roles property, needed sor displaying signups
      *
      */
-    private function get_raid_roles()
+    private function _get_raid_roles()
     {
         global $db;
 
@@ -888,44 +1345,17 @@ class Raidplan
     }
 
     /**
-     * builds roles property, needed when you make new raid
+     * Completes the raidroles, selects all signups that have a role, then makes signup objects, returns array of objects to role
+     *  0 unavailable
+     *  1 maybe
+     *  2 available
+     *  3 confirmed
+     * called by constructor only !
      *
      */
-    public function get_roles()
+    private function _get_Signups()
     {
         global $db;
-
-        $sql_array = array(
-            'SELECT'    => 'r.role_id, r.role_name, r.role_color, r.role_icon ',
-            'FROM'      => array(
-                RP_ROLES   => 'r'
-            ),
-            'ORDER_BY'  => 'r.role_id'
-        );
-        $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query($sql);
-        while ( $row = $db->sql_fetchrow ( $result ) )
-        {
-            $this->roles[$row['role_id']]['role_name'] = $row['role_name'];
-            $this->roles[$row['role_id']]['role_color'] = $row['role_color'];
-            $this->roles[$row['role_id']]['role_icon'] = $row['role_icon'];
-        }
-        $db->sql_freeresult($result);
-    }
-
-    /**
-     * selects all signups that have a role, then makes signup objects, returns array of objects to role code
-     * 0 unavailable 1 maybe 2 available 3 confirmed
-     *
-     */
-    private function getSignups()
-    {
-        global $db;
-
-        // fill mychars array for popup
-        $rpsignup = new RaidplanSignup();
-        $this->mychars = $rpsignup->getmychars($this->id);
-        unset($rpsignup);
 
         //fill signups array
         foreach ($this->raidroles as $role_id => $role)
@@ -964,9 +1394,9 @@ class Raidplan
     /**
      * get all those that signed unavailable
      * 0 unavailable 1 maybe 2 available 3 confirmed
-     *
+     * called by constructor only !
      */
-    public function get_unavailable()
+    private function _get_signoffs()
     {
         global $db;
 
@@ -984,6 +1414,7 @@ class Raidplan
         }
         unset($rpsignup);
         $db->sql_freeresult($result);
+        return $this->signoffs;
     }
 
     /**
@@ -1343,6 +1774,94 @@ class Raidplan
         $RaidController = new RaidController($this->raid_id);
         $RaidController->deleteraider($this->raid_id,$member_id);
         unset($RaidController);
+    }
+
+    /**
+     * depending on access level invite different phpbb groups.
+     *
+     * @return string
+     */
+    private function _get_InviteList()
+    {
+        global $db, $user, $phpbb_root_path, $phpEx;
+        $invite_list = "";
+
+        switch ($this->accesslevel)
+        {
+            case 0:
+                // personal raidplan... only raidplan creator is invited
+                $invite_list = $this->poster_url;
+                break;
+            case 1:
+                if ($this->group_id != 0)
+                {
+                    // this is a group raidplan... only phpbb accounts of this group are invited
+                    $sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
+								WHERE group_id = ' . $db->sql_escape($this->group_id);
+
+                    $result = $db->sql_query($sql);
+                    $group_data = $db->sql_fetchrow($result);
+                    $db->sql_freeresult($result);
+
+                    $temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
+                    $temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=" . $this->group_id);
+                    $temp_color_start = "";
+                    $temp_color_end = "";
+                    if ($group_data['group_colour'] !== "")
+                    {
+                        $temp_color_start = "<span style='color:#" . $group_data['group_colour'] . "'>";
+                        $temp_color_end = "</span>";
+                    }
+                    $invite_list = "<a href='" . $temp_url . "'>" . $temp_color_start . $temp_list . $temp_color_end . "</a>";
+                }
+                else
+                {
+                    // multiple groups invited
+                    $group_list = explode(',', $this->group_id_list);
+                    $num_groups = sizeof($group_list);
+                    for ($i = 0; $i < $num_groups; $i++)
+                    {
+                        if ($group_list[$i] == "")
+                        {
+                            continue;
+                        }
+
+                        // group raidplan... only phpbb accounts  of specified group are invited
+                        $sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
+									WHERE group_id = ' . $db->sql_escape($group_list[$i]);
+                        $result = $db->sql_query($sql);
+                        $group_data = $db->sql_fetchrow($result);
+                        $db->sql_freeresult($result);
+                        $temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
+                        $temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=" . $group_list[$i]);
+                        $temp_color_start = "";
+                        $temp_color_end = "";
+                        if ($group_data['group_colour'] !== "")
+                        {
+                            $temp_color_start = "<span style='color:#" . $group_data['group_colour'] . "'>";
+                            $temp_color_end = "</span>";
+                        }
+
+                        if ($invite_list == "")
+                        {
+                            //at first loop
+                            $invite_list = "<a href='" . $temp_url . "'>" . $temp_color_start . $temp_list . $temp_color_end . "</a>";
+                        }
+                        else
+                        {
+                            $invite_list .= ", " . "<a href='" . $temp_url . "'>" . $temp_color_start . $temp_list . $temp_color_end . "</a>";
+                        }
+
+                    }
+                }
+                break;
+            case 2:
+                // public raidplan... everyone is invited
+                $invite_list = $user->lang['EVERYONE'];
+                break;
+        }
+        return $invite_list;
+
     }
 
 }
