@@ -81,7 +81,7 @@ class rpblocks
 	 */
 	private function _display_top_signups()
 	{
-		global $config, $user, $db, $template, $phpEx, $phpbb_root_path;
+		global $config, $db, $template, $phpbb_root_path;
 		// build sql 
 
 		// get top signups
@@ -179,9 +179,9 @@ class rpblocks
 			
 			unset($raidplan);
 			$raidplan = new Raidplan($row['raidplan_id']);
-			if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
+			if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
 				
 			}
 			else 
@@ -191,15 +191,15 @@ class rpblocks
 			
 			$template->assign_block_vars('upcoming', array(
 				'RAID_ID'				=> $raidplan->id,
-				'EVENTNAME'			 	=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'],
+				'EVENTNAME'			 	=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
 				'EVENT_ID'  			=> $raidplan->id,
-				'COLOR' 				=> $raidplan->eventlist->events[$raidplan->event_type]['color'],
-				'SUBJECT'				=> censor_text($raidplan->subject),
+				'COLOR' 				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'],
+				'SUBJECT'				=> censor_text($raidplan->getSubject()),
 				'IMAGE' 				=> $eventimg, 
-				'START_TIME'			=> $user->format_date($raidplan->start_time, $config['rp_date_format'], true),
-				'END_TIME' 				=> $user->format_date($raidplan->end_time, $config['rp_time_format'], true),
-				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->poster) ? true : false,
+				'START_TIME'			=> $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true),
+				'END_TIME' 				=> $user->format_date($raidplan->getEndTime(), $config['rp_time_format'], true),
+				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->getPoster()) ? true : false,
 			));
 		}
 		$db->sql_freeresult($result);

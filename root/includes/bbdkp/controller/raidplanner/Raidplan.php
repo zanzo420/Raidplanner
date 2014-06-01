@@ -488,7 +488,7 @@ class Raidplan
      * @param $role_id
      * @param $needed
      */
-    public function set_Raidroles($role_id, $needed)
+    public function setRaidroles($role_id, $needed)
     {
         $this->raidroles[$role_id]['role_needed'] = $needed;
     }
@@ -970,6 +970,12 @@ class Raidplan
         $this->signed_up=false;
         $this->signed_off=false;
         $this->signed_up_maybe=false;
+        $this->signups = array(
+            'yes' => 0,
+            'no'  => 0,
+            'maybe' => 0,
+            'confirmed' => 0
+         );
         $this->raid_id=0;
         $this->link='';
 
@@ -1003,7 +1009,7 @@ class Raidplan
         $sql_array = array (
             'SELECT' => ' rp.*, t.teams_id, t.team_name, t.team_needed, u.username, u.user_colour ',
             'FROM' => array (
-                RP_RAIDS_TABLE 		=> 'rp',
+                RP_RAIDS_TABLE 	=> 'rp',
                 RP_TEAMS 		=> 't' ,
                 USERS_TABLE     =>  'u'
             ),
@@ -1038,11 +1044,13 @@ class Raidplan
         $this->body=$row['raidplan_body'];
         $this->bbcode['bitfield']= $row['bbcode_bitfield'];
         $this->bbcode['uid']= $row['bbcode_uid'];
-        $this->signups['no'] = $row['signup_no'];
-        $this->signups['maybe'] = $row['signup_maybe'];
-        $this->signups['yes'] = $row['signup_yes'];
-        $this->signups['confirmed'] = $row['signup_confirmed'];
         $this->signups_allowed = ($row['track_signups'] == 0 ? false : true);
+        $this->signups = array(
+            'yes' => $row['signup_yes'],
+            'no'  => $row['signup_no'],
+            'maybe' => $row['signup_maybe'],
+            'confirmed' => $row['signup_confirmed']
+        );
         $this->raidteam = $row['raidteam'];
         $this->raidteamname = $row ['team_name'];
 
@@ -1121,6 +1129,7 @@ class Raidplan
             'signup_yes'			=> $this->signups['yes'],
             'signup_no'				=> $this->signups['no'],
             'signup_maybe'			=> $this->signups['maybe'],
+            'signup_confirmed'      => $this->signups['confirmed']
         );
 
         /*

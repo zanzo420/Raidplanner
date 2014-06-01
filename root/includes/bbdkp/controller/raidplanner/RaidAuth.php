@@ -62,7 +62,7 @@ class RaidAuth
     {
         global $user;
 
-        if (!in_array($raidplan->accesslevel, $this->valid_accesslevel))
+        if (!in_array($raidplan->getAccesslevel(), $this->valid_accesslevel))
         {
             trigger_error($user->lang['USER_INVALIDACTION']);
         }
@@ -135,7 +135,7 @@ class RaidAuth
             return 0;
         }
 
-        if ($this->raidplan->poster == $user->data['user_id'])
+        if ($this->raidplan->getPoster() == $user->data['user_id'])
         {
             //own raids - creator always can see
             $this->auth_cansee = true;
@@ -143,7 +143,7 @@ class RaidAuth
         }
 
         // if not own raid then look at access level.
-        switch($this->raidplan->accesslevel)
+        switch($this->raidplan->getAccesslevel())
         {
             case 0:
                 // personal raidplan... only raidplan creator is invited
@@ -152,19 +152,19 @@ class RaidAuth
             case 1:
                 // group raidplan... only members of specified phpbb usergroup are invited
                 // is this user a member of the group?
-                if($this->raidplan->group_id !=0)
+                if($this->raidplan->getGroupId() !=0)
                 {
                     $sql = 'SELECT g.group_id
                             FROM ' . GROUPS_TABLE . ' g, ' . USER_GROUP_TABLE . ' ug
                             WHERE ug.user_id = '.$db->sql_escape($user->data['user_id']).'
                                 AND g.group_id = ug.group_id
-                                AND g.group_id = '.$db->sql_escape($this->raidplan->group_id).'
+                                AND g.group_id = '.$db->sql_escape($this->raidplan->getGroupId()).'
                                 AND ug.user_pending = 0';
                     $result = $db->sql_query($sql);
                     if($result)
                     {
                         $row = $db->sql_fetchrow($result);
-                        if( $row['group_id'] == $this->raidplan->group_id )
+                        if( $row['group_id'] == $this->raidplan->getGroupId() )
                         {
                             $this->auth_cansee = true;
                         }
@@ -173,7 +173,7 @@ class RaidAuth
                 }
                 else
                 {
-                    $group_list = explode( ',', $this->raidplan->group_id_list);
+                    $group_list = explode( ',', $this->raidplan->getGroupIdList());
                     $num_groups = sizeof( $group_list );
                     $group_options = '';
                     for( $i = 0; $i < $num_groups; $i++ )
@@ -222,7 +222,7 @@ class RaidAuth
     {
         global $auth;
         $this->auth_canadd = false;
-        switch ($this->raidplan->accesslevel)
+        switch ($this->raidplan->getAccesslevel())
         {
             case 0:
                 // can create personal appointment ?
@@ -282,7 +282,7 @@ class RaidAuth
                 }
 
                 // has user right to edit others raids ?
-                if (!$auth->acl_get('m_raidplanner_edit_other_users_raidplans') && ($user->data['user_id'] != $this->raidplan->poster) )
+                if (!$auth->acl_get('m_raidplanner_edit_other_users_raidplans') && ($user->data['user_id'] != $this->raidplan->getPoster()) )
                 {
                     $this->auth_canedit = false;
                 }
@@ -292,7 +292,7 @@ class RaidAuth
                 // this way officers cant fiddle with statistics
                 if ($config['rp_default_expiretime'] != 0 && $config['rp_enable_past_raids'] == 0)
                 {
-                    if (time() + $user->timezone + $user->dst - date('Z') - $this->raidplan->end_time > $config['rp_default_expiretime']*60)
+                    if (time() + $user->timezone + $user->dst - date('Z') - $this->raidplan->getEndTime() > $config['rp_default_expiretime']*60)
                     {
                         // assign editing expired raids only to administrator.
                         if (!$auth->acl_get('a_raid_config') )
@@ -324,7 +324,7 @@ class RaidAuth
                 $this->auth_candelete = true;
 
                 // is raidleader trying to delete other raid ?
-                if ($user->data['user_id'] != $this->raidplan->poster)
+                if ($user->data['user_id'] != $this->raidplan->getPoster())
                 {
                     if (! $auth->acl_get('m_raidplanner_delete_other_users_raidplans'))
                     {

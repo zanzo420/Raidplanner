@@ -1204,7 +1204,9 @@ class Raidplan_display
         $allow_bbcode = $allow_urls = $allow_smilies = true;
         generate_text_for_storage($body, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
 
-        $raidplan->setBbcode(array($uid, $bitfield));
+        $raidplan->setBbcode(array(
+            'uid' => $uid,
+            'bitfield' => $bitfield));
         $raidplan->setBody($body);
         $raidplan->setPoster($user->data['user_id']);
 
@@ -1295,7 +1297,6 @@ class Raidplan_display
         //if this is not an "all day event"
         $raidplan->setAllDay(0);
         $raidplan->setday(sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y));
-
 
         $raidplan->Check_auth();
 
