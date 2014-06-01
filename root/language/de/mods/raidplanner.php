@@ -103,7 +103,6 @@ $lang = array_merge($lang, array(
 	'ADVRPSETTINGS_UPDATED'					=> 'Erweiterte Raidplaner Einstellungen erfolgreich aktualisiert', 
 	'RP_UPD_MOD'							=> 'Raidplanner aktualisiert auf %s', 
 	'RP_UNINSTALL_MOD'						=> 'Raidplanner deinstalliert', 
-
 	
 	//confirms
 	'ROLE_DELETE_SUCCESS'		=> 'Die Rolle %s wurde gelöscht.', 
@@ -265,7 +264,7 @@ $lang = array_merge($lang, array(
 	'RP_SHOW_WELCOME'			=> 'Zeige Willkommensnachricht',
 	'RP_WELCOME'				=> 'Willkommensnachricht',
 	'RP_WELCOME_EXPLAIN'		=> 'Nachricht wird über dem Planer angezeigt. Unterstützt BBCodes. ', 
-	'RP_WELCOME_DEFAULT'		=> '[b]Willkommen in unserem Raid Planer[/b]! Alle Raids werden hier geplant. Du benötigst keinen neuen Account, solange du im Forum angemeldet bist.', 
+	'RP_WELCOME_DEFAULT'		=> '[b]Willkommen in unserem Raid Planer[/b]! Alle Raids werden hier geplant. ', 
 	'SHOW_PREV'					=> 'Zeige vorherige', 
 	'SHOW_NEXT'					=> 'Zeige nächste', 
 	'SIGNUPS'					=> 'Anmeldungen', 
