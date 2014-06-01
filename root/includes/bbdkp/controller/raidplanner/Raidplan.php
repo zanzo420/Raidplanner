@@ -285,8 +285,6 @@ class Raidplan
         return $this->bbcode;
     }
 
-
-
     /**
      * poster_id
      *
@@ -460,13 +458,6 @@ class Raidplan
      * @var array
      */
     private $roles= array();
-    /**
-     * @param array $roles
-     */
-    public function setRoles($roles)
-    {
-        $this->roles = $roles;
-    }
 
     /**
      * @return array
@@ -483,13 +474,25 @@ class Raidplan
      * @var array
      */
     private $raidroles= array();
+
     /**
-     * @param array $raidroles
+     * initialises raidroles array. this takes no arguments, just sets default from role.
      */
-    public function setRaidroles($raidroles)
+    public function init_raidplan_roles()
     {
-        $this->raidroles = $raidroles;
+        $this->raidroles = $this->_init_raidplan_roles();
     }
+
+    /**
+     * set needed amount
+     * @param $role_id
+     * @param $needed
+     */
+    public function set_Raidroles($role_id, $needed)
+    {
+        $this->raidroles[$role_id]['role_needed'] = $needed;
+    }
+
 
     /**
      * @return array
@@ -728,21 +731,12 @@ class Raidplan
         return $this->poster_url;
     }
 
-
-
     /**
      * string representing invited groups
      *
      * @var string
      */
     private $invite_list = '';
-    /**
-     * @param string $invite_list
-     */
-    public function setInviteList($invite_list)
-    {
-        $this->invite_list = $invite_list;
-    }
 
     /**
      * @return string
@@ -906,7 +900,7 @@ class Raidplan
     private $raid_id;
 
     /**
-     * @return \bbdkp\controller\raidplanner\unknown_type
+     * @return int
      */
     public function getRaidId()
     {
@@ -937,29 +931,8 @@ class Raidplan
      */
     function __construct($id = 0)
     {
-
-        $this->id = $id;
-
-
-        if($this->id !=0)
-        {
-            $this->Get_Raidplan();
-            $this->Check_auth();
-        }
-
-        $this->eventlist= new rpevents();
-
-    }
-
-    /**
-     * make raidplan object for display
-     *
-     */
-    public function Get_Raidplan()
-    {
-        global $phpEx, $db;
-
         // reinitialise
+        $this->id = $id;
         $this->event_type = 0;
         $this->invite_time = 0;
         $this->start_time = 0;
@@ -1000,8 +973,46 @@ class Raidplan
         $this->raid_id=0;
         $this->link='';
 
+        //get array of possible roles
+        $this->roles = $this->_get_roles();
+        $this->raidroles  = $this->_init_raidplan_roles();
+
+        //fetch event list
+        $this->eventlist= new rpevents();
+
+        // if this is an existing raidplan then get the values from database
+        if($this->id !=0)
+        {
+            $this->Get_Raidplan();
+            $this->Check_auth();
+        }
+        //assume all
+        $this->_set_InviteList(2, 0, 0);
+
+    }
+
+    /**
+     * make raidplan object for display
+     *
+     */
+    public function Get_Raidplan()
+    {
+        global $phpEx, $db;
+
         // populate properties
-        $sql = 'SELECT * FROM ' . RP_RAIDS_TABLE . ' WHERE raidplan_id = '. (int) $this->id;
+        $sql_array = array (
+            'SELECT' => ' rp.*, t.teams_id, t.team_name, t.team_needed, u.username, u.user_colour ',
+            'FROM' => array (
+                RP_RAIDS_TABLE 		=> 'rp',
+                RP_TEAMS 		=> 't' ,
+                USERS_TABLE     =>  'u'
+            ),
+            'WHERE' => ' t.teams_id = rp.raidteam
+				AND rp.raidplan_id = ' . (int) $this->id . '
+                AND rp.poster_id = u.user_id ',
+        );
+
+        $sql = $db->sql_build_query('SELECT', $sql_array);
         $result = $db->sql_query($sql);
         $row = $db->sql_fetchrow($result);
         $db->sql_freeresult($result);
@@ -1014,6 +1025,7 @@ class Raidplan
         $this->raid_id = $row['raid_id'];
         $this->accesslevel=$row['raidplan_access_level'];
         $this->poster=$row['poster_id'];
+        $this->poster_url = get_username_string( 'full', $this->poster, $row['username'], $row['user_colour'] );
         $this->group_id=$row['group_id'];
         $this->group_id_list=$row['group_id_list'];
         $this->event_type= $row['etype_id'];
@@ -1032,17 +1044,9 @@ class Raidplan
         $this->signups['confirmed'] = $row['signup_confirmed'];
         $this->signups_allowed = ($row['track_signups'] == 0 ? false : true);
         $this->raidteam = $row['raidteam'];
-        unset ($row);
+        $this->raidteamname = $row ['team_name'];
 
-        //get team name
-        $sql = 'SELECT teams_id, team_name FROM ' . RP_TEAMS . '  WHERE teams_id = ' . $this->raidteam . ' ORDER BY teams_id';
-        $db->sql_query($sql);
-        $result = $db->sql_query($sql);
-        while ( $row = $db->sql_fetchrow ( $result ) )
-        {
-            $this->raidteamname = $row ['team_name'];
-        }
-        $db->sql_freeresult($result);
+
         unset ($row);
 
         // fill mychars array
@@ -1050,25 +1054,18 @@ class Raidplan
         $this->mychars = $rpsignup->getmychars($this->id);
         unset($rpsignup);
 
-        //get array of possible roles
-        $this->roles = $this->_get_roles();
-        // get bare array of raid roles
+        // lock signup pane if you have no characters bound to your account
+        $this->nochar = count ($this->mychars) == 0 ? true : false;
+        $this->locked = $this->nochar;
+
+        // get array of raid roles
         $this->_get_raid_roles();
         // attach signups to roles (available+confirmed)
         $this->raidroles = $this->_get_Signups();
         //get all that signed unavailable
         $this->signoffs = $this->_get_signoffs();
 
-        // lock signup pane if you have no characters bound to your account
-        $this->nochar = count ($this->mychars) == 0 ? true : false;
-        $this->locked = $this->nochar;
-
-        $sql = 'SELECT user_id, username, user_colour FROM ' . USERS_TABLE . ' WHERE user_id = '.$db->sql_escape($this->poster);
-        $result = $db->sql_query($sql);
-        $row = $db->sql_fetchrow($result);
-        $db->sql_freeresult($result);
-        $this->poster_url = get_username_string( 'full', $this->poster, $row['username'], $row['user_colour'] );
-        $this->invite_list = $this->_get_InviteList();
+        $this->invite_list = $this->_set_InviteList($this->accesslevel, $this->group_id, $this->group_id_list);
 
     }
 
@@ -1307,7 +1304,26 @@ class Raidplan
     }
 
     /**
-     * builds raid roles property, needed sor displaying signups
+     * sets initial raidroles array
+     */
+    private function _init_raidplan_roles()
+    {
+        foreach($this->roles as $id => $role)
+        {
+            $this->raidroles[$id]['role_name'] = $role['role_name'];
+            $this->raidroles[$id]['role_color'] = $role['role_color'];
+            $this->raidroles[$id]['role_icon'] = $role['role_icon'];
+            $this->raidroles[$id]['role_needed'] = 0;
+            $this->raidroles[$id]['role_signedup'] = 0;
+            $this->raidroles[$id]['role_confirmed'] = 0;
+            $this->raidroles[$id]['role_confirmations'] =  array();
+            $this->raidroles[$id]['role_signups'] = array();
+        }
+
+    }
+
+    /**
+     * gets raid roles property array, needed sor displaying signups
      *
      */
     private function _get_raid_roles()
@@ -1779,14 +1795,17 @@ class Raidplan
     /**
      * depending on access level invite different phpbb groups.
      *
+     * @param int $accesslevel 0, 1 or 2
+     * @param string $group_id
+     * @param string $group_id_list
      * @return string
      */
-    private function _get_InviteList()
+    private function _set_InviteList($accesslevel, $group_id, $group_id_list )
     {
         global $db, $user, $phpbb_root_path, $phpEx;
         $invite_list = "";
 
-        switch ($this->accesslevel)
+        switch ($accesslevel)
         {
             case 0:
                 // personal raidplan... only raidplan creator is invited
@@ -1797,14 +1816,14 @@ class Raidplan
                 {
                     // this is a group raidplan... only phpbb accounts of this group are invited
                     $sql = 'SELECT group_name, group_type, group_colour FROM ' . GROUPS_TABLE . '
-								WHERE group_id = ' . $db->sql_escape($this->group_id);
+								WHERE group_id = ' . $db->sql_escape($group_id);
 
                     $result = $db->sql_query($sql);
                     $group_data = $db->sql_fetchrow($result);
                     $db->sql_freeresult($result);
 
                     $temp_list = (($group_data['group_type'] == GROUP_SPECIAL) ? $user->lang['G_' . $group_data['group_name']] : $group_data['group_name']);
-                    $temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=" . $this->group_id);
+                    $temp_url = append_sid("{$phpbb_root_path}memberlist.$phpEx", "mode=group&amp;g=" . $group_id);
                     $temp_color_start = "";
                     $temp_color_end = "";
                     if ($group_data['group_colour'] !== "")
@@ -1817,7 +1836,7 @@ class Raidplan
                 else
                 {
                     // multiple groups invited
-                    $group_list = explode(',', $this->group_id_list);
+                    $group_list = explode(',', $group_id_list);
                     $num_groups = sizeof($group_list);
                     for ($i = 0; $i < $num_groups; $i++)
                     {

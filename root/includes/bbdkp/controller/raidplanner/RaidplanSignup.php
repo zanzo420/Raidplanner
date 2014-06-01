@@ -106,7 +106,7 @@ class RaidplanSignup
 
     /**
      * makes a Signup object
-     * @todo Sajaki fetch current dkp
+     * @todo Sajaki fetch current dkp  $raidplan->eventlist->events[$raidplan->event_type]['dkpid']
      *
      * @param $signup_id
      */
@@ -613,14 +613,17 @@ class RaidplanSignup
 				case 4:
 					// send signup to RL				
 					$messenger->template('signup_new', $row['user_lang']);
-					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' .$user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
-					$data['address_list'] = array('u' => array($raidplan->poster => 'to'));
+					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' .
+                                $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+                        $user->format_date($raidplan->getStartTime()  , $config['rp_date_time_format'], true);
+					$data['address_list'] = array('u' => array($raidplan->getPoster() => 'to'));
 					
 					break;
 				case 5:
 					// send confirmation to RL and raider
 					$messenger->template('signup_confirm', $row['user_lang']);
-					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+                        $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => 
 						array(
 							$row['user_id'] => 'to'
@@ -630,28 +633,29 @@ class RaidplanSignup
 				case 6:
 					// send cancellation to RL and raider
 					$messenger->template('signup_unsign', $row['user_lang']);
-					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+                        $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => 
 						array(
 							$row['user_id'] => 'to'
 						));
 					break;						
 			}
-		   $userids = array($raidplan->poster);
+		   $userids = array($raidplan->getPoster());
 		   $rlname = array();
 		   user_get_id_name($userids, $rlname);
 		   
 		   $messenger->assign_vars(array(
-		   		'RAIDLEADER'		=> $rlname[$raidplan->poster],
+		   		'RAIDLEADER'		=> $rlname[$raidplan->getPoster()],
 				'EVENT_SUBJECT'		=> $subject, 
 		   		'SIGNUP_TIME'		=> $user->format_date($this->signup_time, $config['rp_date_time_format'], true),
 				'USERNAME'			=> htmlspecialchars_decode($user->data['username']),
 		   		'RAIDER'			=> $this->dkpmembername, 
-		   		'EVENT'				=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'], 
+		   		'EVENT'				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
 		   		'ROLE'				=> $this->role_name, 
-				'INVITE_TIME'		=> $user->format_date($raidplan->invite_time, $config['rp_date_time_format'], true),
-				'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
-				'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
+				'INVITE_TIME'		=> $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true),
+				'START_TIME'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true),
+				'END_TIME'			=> $user->format_date($raidplan->getEndTime(), $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
 				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id
 			));
