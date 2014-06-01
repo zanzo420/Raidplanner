@@ -1046,10 +1046,10 @@ class Raidplan
         $this->bbcode['uid']= $row['bbcode_uid'];
         $this->signups_allowed = ($row['track_signups'] == 0 ? false : true);
         $this->signups = array(
-            'yes' => $row['signup_yes'],
-            'no'  => $row['signup_no'],
-            'maybe' => $row['signup_maybe'],
-            'confirmed' => $row['signup_confirmed']
+            'yes' => (int) $row['signup_yes'],
+            'no'  => (int) $row['signup_no'],
+            'maybe' => (int) $row['signup_maybe'],
+            'confirmed' => (int) $row['signup_confirmed']
         );
         $this->raidteam = $row['raidteam'];
         $this->raidteamname = $row ['team_name'];
@@ -1126,10 +1126,10 @@ class Raidplan
             'bbcode_bitfield'		=> $this->bbcode['bitfield'],
             'bbcode_uid'			=> $this->bbcode['uid'],
             'track_signups'			=> $this->signups_allowed,
-            'signup_yes'			=> $this->signups['yes'],
-            'signup_no'				=> $this->signups['no'],
-            'signup_maybe'			=> $this->signups['maybe'],
-            'signup_confirmed'      => $this->signups['confirmed']
+            'signup_yes'			=> (int) $this->signups['yes'],
+            'signup_no'				=> (int) $this->signups['no'],
+            'signup_maybe'			=> (int) $this->signups['maybe'],
+            'signup_confirmed'      => (int) $this->signups['confirmed']
         );
 
         /*
@@ -1180,7 +1180,7 @@ class Raidplan
                 $sql_raidroles = array(
                     'raidplan_id'		=> $this->id,
                     'role_id'			=> $role_id,
-                    'role_needed'		=> $role['role_needed']
+                    'role_needed'		=> (int) $role['role_needed']
                 );
 
                 //insert new
@@ -1193,7 +1193,7 @@ class Raidplan
                 // update
                 $sql_raidroles = array(
                     'role_id'			=> $role_id,
-                    'role_needed'		=> $role['role_needed']
+                    'role_needed'		=> (int) $role['role_needed']
                 );
 
                 $sql = 'UPDATE ' . RP_RAIDPLAN_ROLES . '
@@ -1361,11 +1361,11 @@ class Raidplan
             $this->raidroles[$row['role_id']]['role_name'] = $row['role_name'];
             $this->raidroles[$row['role_id']]['role_color'] = $row['role_color'];
             $this->raidroles[$row['role_id']]['role_icon'] = $row['role_icon'];
-            $this->raidroles[$row['role_id']]['role_needed'] = $row['role_needed'];
-            $this->raidroles[$row['role_id']]['role_signedup'] = $row['role_signedup'];
-            $this->raidroles[$row['role_id']]['role_confirmed'] = $row['role_confirmed'];
-            $this->raidroles[$row['role_id']]['role_confirmations'] =  $confirmations;
-            $this->raidroles[$row['role_id']]['role_signups'] =  $signups;
+            $this->raidroles[$row['role_id']]['role_needed'] = (int) $row['role_needed'];
+            $this->raidroles[$row['role_id']]['role_signedup'] = (int) $row['role_signedup'];
+            $this->raidroles[$row['role_id']]['role_confirmed'] = (int) $row['role_confirmed'];
+            $this->raidroles[$row['role_id']]['role_confirmations'] = $confirmations;
+            $this->raidroles[$row['role_id']]['role_signups'] = $signups;
         }
         $db->sql_freeresult($result);
         return $this->raidroles;
