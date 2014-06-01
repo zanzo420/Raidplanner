@@ -1,14 +1,14 @@
 <?php
 /** 
+* This is the user interface for the ucp planner integration
 *
 * @package ucp
-* @copyright (c) 2011 bbDKP 
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License 
+* @copyright (c) 2011 bbDKP
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Sajaki
-* This is the user interface for the ucp planner integration
+* @version 0.12
 */
-use bbdkp\raidplanner\Raidplan;
-
+use bbdkp\controller\raidplanner\Raidplan;
 /**
 * @package ucp
 */
@@ -35,7 +35,7 @@ class ucp_planner
 	    
 		if (!class_exists('Raidplan'))
 		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
+			include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
 		}
 	
 	    // get the groups of which this user is part of. 
@@ -85,9 +85,9 @@ class ucp_planner
 		{
 			unset($raidplan);
 			$raidplan = new Raidplan($row['raidplan_id']);
-			if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
+			if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
 				
 			}
 			else 
@@ -95,12 +95,12 @@ class ucp_planner
 				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
 			}
 			
-			$subj = $raidplan->subject;
+			$subj = $raidplan->getSubject();
 			if( $config['rp_display_truncated_name'] > 0 )
 			{
-				if(utf8_strlen($raidplan->subject) > $config['rp_display_truncated_name'])
+				if(utf8_strlen($raidplan->getSubject()) > $config['rp_display_truncated_name'])
 				{
-					$subj = truncate_string(utf8_strlen($raidplan->subject), $config['rp_display_truncated_name']) . '…';
+					$subj = truncate_string(utf8_strlen($raidplan->getSubject()), $config['rp_display_truncated_name']) . '…';
 				}
 			}
 
@@ -110,38 +110,37 @@ class ucp_planner
 			{
 				// can user edit ?
 				if( $auth->acl_get('u_raidplanner_edit_raidplans') &&
-				(($user->data['user_id'] == $raidplan->poster) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans') ))
+				(($user->data['user_id'] == $raidplan->getPoster()) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans') ))
 				{
-					 $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calEid=". $raidplan->id);
+					 $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;raidplanid=". $raidplan->id);
 				}
 				//can user delete ?
 				if( $auth->acl_get('u_raidplanner_delete_raidplans') &&
-				(($user->data['user_id'] == $raidplan->poster)|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
+				(($user->data['user_id'] == $raidplan->getPoster())|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
 				{
-					$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;calEid=".$raidplan->id);
-				
+					$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;raidplanid=".$raidplan->id);
 				}
 			}
 				
 			$template->assign_block_vars('raids', array(
 				'RAID_ID'				=> $raidplan->id,
 				'IMAGE' 				=> $eventimg, 
-				'EVENTNAME'			 	=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'],
-				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;calEid=".$raidplan->id),
+				'EVENTNAME'			 	=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
+				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
 				'EVENT_ID'  			=> $raidplan->id,
-				'COLOR' 				=> $raidplan->eventlist->events[$raidplan->event_type]['color'],
+				'COLOR' 				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'],
 				'SUBJECT'				=> $subj,
 				'U_DELETE' 				=> $delete_url,
 				'U_EDIT' 				=> $edit_url,
-				'POSTER'				=> $raidplan->poster_url,
-				'START_TIME'			=> $user->format_date($raidplan->start_time, $disp_date_time_format, true),
-				'START_TIME'			=> $user->format_date($raidplan->start_time, $config['rp_date_format'], true),
-				'END_TIME' 				=> $user->format_date($raidplan->end_time, $config['rp_time_format'], true),
-				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->poster) ? true : false,
+				'POSTER'				=> $raidplan->getPosterUrl(),
+				'START_TIME'			=> $user->format_date($raidplan->getStartTime(), $disp_date_time_format, true),
+				'START_TIME'			=> $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true),
+				'END_TIME' 				=> $user->format_date($raidplan->getEndTime(), $config['rp_time_format'], true),
+				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->getPoster()) ? true : false,
 			));
 			
 			// get signups
-			foreach($raidplan->raidroles as $key => $role)
+			foreach($raidplan->getRaidroles() as $key => $role)
 			{
 				foreach($role['role_signups'] as $signup)
 				{
@@ -190,4 +189,3 @@ class ucp_planner
 		
 	}
 }
-?>
