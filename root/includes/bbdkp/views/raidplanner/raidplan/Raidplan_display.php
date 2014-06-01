@@ -98,8 +98,6 @@ class Raidplan_display
         $month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$day."&amp;calM=".
             $month."&amp;calY=".$year);
 
-        $total_needed = 0;
-
         /* make url for signup action */
         $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $raidplan->id);
 
@@ -123,8 +121,6 @@ class Raidplan_display
             //loop all roles
             foreach($raidplan->getRaidroles() as $key => $role)
             {
-                $total_needed += $role['role_needed'];
-
                 // loop signups per role
                 $template->assign_block_vars('raidroles', array(
                     'ROLE_ID'        => $key,
@@ -190,24 +186,24 @@ class Raidplan_display
                 'S_CANSIGNUP'		=> $raidplan->getSignupsAllowed(),
                 'S_LEGITUSER'		=> ($user->data['is_bot'] || $user->data['user_id'] == ANONYMOUS) ? false : true,
                 'S_SIGNUPMAYBE'		=> $raidplan->getSignedUpMaybe(),
-                'RAID_TOTAL'		=> $total_needed,
+                'RAID_TOTAL'		=> (int) $raidplan->getRaidTeamNeeded(),
                 'TZ'				=> $user->lang['tz'][$tz],
 
                 'CURR_CONFIRMED_COUNT'	 => $raidplan->getSignups()['confirmed'],
                 'S_CURR_CONFIRMED_COUNT' => ($raidplan->getSignups()['confirmed'] > 0) ? true: false,
-                'CURR_CONFIRMEDPCT'	=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['confirmed']) /  $total_needed, 2)*100 : 0)),
+                'CURR_CONFIRMEDPCT'	=> sprintf( "%.2f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['confirmed']) /  $raidplan->getRaidTeamNeeded(), 2)*100 : 0)),
 
                 'CURR_YES_COUNT'	=> $raidplan->getSignups()['yes'],
                 'S_CURR_YES_COUNT'	=> ($raidplan->getSignups()['yes'] + $raidplan->getSignups()['maybe'] > 0) ? true: false,
-                'CURR_YESPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['yes']) /  $total_needed, 2)*100 : 0)),
+                'CURR_YESPCT'		=> sprintf( "%.2f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['yes']) /  $raidplan->getRaidTeamNeeded(), 2)*100 : 0)),
 
                 'CURR_MAYBE_COUNT'	=> $raidplan->getSignups()['maybe'],
                 'S_CURR_MAYBE_COUNT' => ($raidplan->getSignups()['maybe'] > 0) ? true: false,
-                'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['maybe']) /  $total_needed, 2)*100 : 0)),
+                'CURR_MAYBEPCT'		=> sprintf( "%.2f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['maybe']) /  $raidplan->getRaidTeamNeeded(), 2)*100 : 0)),
 
                 'CURR_NO_COUNT'		=> $raidplan->getSignups()['no'],
                 'S_CURR_NO_COUNT'	=> ($raidplan->getSignups()['no'] > 0) ? true: false,
-                'CURR_NOPCT'		=> sprintf( "%.2f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['no']) /  $total_needed, 2)*100 : 0)),
+                'CURR_NOPCT'		=> sprintf( "%.2f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['no']) /  $raidplan->getRaidTeamNeeded(), 2)*100 : 0)),
 
                 'CURR_TOTAL_COUNT'  => $raidplan->getSignups()['yes'] + $raidplan->getSignups()['maybe'],
 
@@ -334,7 +330,7 @@ class Raidplan_display
 
             $rolesinfo = array();
             $userchars = array();
-            $total_needed = 0;
+
 
             // only show signup tooltip if user can actually sign up
             if($raidplan->getSignupsAllowed()== true
@@ -365,8 +361,8 @@ class Raidplan_display
                         'ROLE_ID'        => $key,
                         'ROLE_NAME'      => $role['role_name'],
                     );
-                    //@todo fix
-                   //$total_needed += $role['role_needed'];
+
+
                 }
             }
 
@@ -416,23 +412,23 @@ class Raidplan_display
                 'SHOW_TIME'				=> ($mode == "day" || $mode == "week" ) ? true : false,
                 'COUNTER'				=> $raidplan_counter++,
 
-                'RAID_TOTAL'			=> $total_needed,
+                'RAID_TOTAL'			=> $raidplan->getRaidTeamNeeded(),
 
                 'CURR_CONFIRMED_COUNT'	 => $raidplan->getSignups()['confirmed'],
                 'S_CURR_CONFIRMED_COUNT' => ($raidplan->getSignups()['confirmed'] > 0) ? true: false,
-                'CURR_CONFIRMEDPCT'		=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['confirmed']) /  $total_needed, 2) *100 : 0)),
+                'CURR_CONFIRMEDPCT'		=> sprintf( "%.0f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['confirmed']) /  $raidplan->getRaidTeamNeeded(), 2) *100 : 0)),
 
                 'CURR_YES_COUNT'		=> $raidplan->getSignups()['yes'],
                 'S_CURR_YES_COUNT'		=> ($raidplan->getSignups()['yes'] + $raidplan->getSignups()['maybe'] > 0) ? true: false,
-                'CURR_YESPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['yes']) /  $total_needed, 2) *100 : 0)),
+                'CURR_YESPCT'			=> sprintf( "%.0f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['yes']) /  $raidplan->getRaidTeamNeeded(), 2) *100 : 0)),
 
                 'CURR_MAYBE_COUNT'		=> $raidplan->getSignups()['maybe'],
                 'S_CURR_MAYBE_COUNT' 	=> ($raidplan->getSignups()['maybe'] > 0) ? true: false,
-                'CURR_MAYBEPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['maybe']) /  $total_needed, 2) *100 : 0)),
+                'CURR_MAYBEPCT'			=> sprintf( "%.0f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['maybe']) /  $raidplan->getRaidTeamNeeded(), 2) *100 : 0)),
 
                 'CURR_NO_COUNT'			=> $raidplan->getSignups()['no'],
                 'S_CURR_NO_COUNT'		=> ($raidplan->getSignups()['no'] > 0) ? true: false,
-                'CURR_NOPCT'			=> sprintf( "%.0f%%", ($total_needed > 0 ? round(($raidplan->getSignups()['no']) /  $total_needed, 2) *100 : 0)),
+                'CURR_NOPCT'			=> sprintf( "%.0f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($raidplan->getSignups()['no']) /  $raidplan->getRaidTeamNeeded(), 2) *100 : 0)),
 
                 'CURR_TOTAL_COUNT'  	=> $raidplan->getSignups()['yes'] + $raidplan->getSignups()['maybe'],
 
@@ -1338,7 +1334,7 @@ class Raidplan_display
             $s_hidden_fields = build_hidden_fields(array(
                     'updateraid' => true,
                     'raidobject' => $str1,
-                    'raidplan_id' => $this->id
+                    'raidplan_id' => $raidplan->getId()
                 )
             );
 

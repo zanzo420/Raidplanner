@@ -548,6 +548,29 @@ class Raidplan
     }
 
     /**
+     * size of team
+     * @var
+     */
+    private $RaidTeamNeeded;
+
+    /**
+     * @return string
+     */
+    public function getRaidTeamNeeded()
+    {
+        return $this->RaidTeamNeeded;
+    }
+
+
+    /**
+     * @param $RaidTeamNeeded
+     */
+    public function setRaidTeamNeeded($RaidTeamNeeded)
+    {
+        $this->RaidTeamNeeded = (int) $RaidTeamNeeded;
+    }
+
+    /**
      * signups allowed ?
      *
      * @var boolean
@@ -947,6 +970,7 @@ class Raidplan
         $this->group_id=0;
         $this->raidteam=0;
         $this->raidteamname="";
+        $this->RaidTeamNeeded = 0;
         $this->group_id_list=array();
         $this->roles= array();
         $this->signoffs= array();
@@ -1053,7 +1077,7 @@ class Raidplan
         );
         $this->raidteam = $row['raidteam'];
         $this->raidteamname = $row ['team_name'];
-
+        $this->RaidTeamNeeded = (int) $row ['team_needed'];
 
         unset ($row);
 
