@@ -1319,15 +1319,17 @@ class Raidplan
     {
         foreach($this->roles as $id => $role)
         {
-            $this->raidroles[$id]['role_name'] = $role['role_name'];
-            $this->raidroles[$id]['role_color'] = $role['role_color'];
-            $this->raidroles[$id]['role_icon'] = $role['role_icon'];
-            $this->raidroles[$id]['role_needed'] = 0;
-            $this->raidroles[$id]['role_signedup'] = 0;
-            $this->raidroles[$id]['role_confirmed'] = 0;
-            $this->raidroles[$id]['role_confirmations'] =  array();
-            $this->raidroles[$id]['role_signups'] = array();
+            $raidroles[$id]['role_name'] = $role['role_name'];
+            $raidroles[$id]['role_color'] = $role['role_color'];
+            $raidroles[$id]['role_icon'] = $role['role_icon'];
+            $raidroles[$id]['role_needed'] = 0;
+            $raidroles[$id]['role_signedup'] = 0;
+            $raidroles[$id]['role_confirmed'] = 0;
+            $raidroles[$id]['role_confirmations'] =  array();
+            $raidroles[$id]['role_signups'] = array();
         }
+
+        return $raidroles;
 
     }
 
@@ -1413,6 +1415,8 @@ class Raidplan
         unset($role_id);
         unset($role);
         unset($row);
+
+        return $this->raidroles;
 
     }
 
