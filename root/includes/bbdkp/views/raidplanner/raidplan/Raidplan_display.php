@@ -894,7 +894,7 @@ class Raidplan_display
     {
         global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
         include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-        $s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id."&amp;action=showadd");
+        $s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->getId() ."&amp;action=showadd");
 
         /*
          * fill template
@@ -903,7 +903,7 @@ class Raidplan_display
         $user->setup('posting');
         $user->add_lang ( array ('posting', 'mods/dkp_common','mods/raidplanner'  ));
 
-        if($raidplan->id > 0)
+        if($raidplan->getId() > 0)
         {
             $page_title = $user->lang['CALENDAR_EDIT_RAIDPLAN'];
         }
@@ -913,7 +913,7 @@ class Raidplan_display
         }
 
         //count events from bbDKP, put them in a pulldown...
-        foreach( $raidplan->eventlist->events as $eventid => $event)
+        foreach( $raidplan->getEventlist()->events as $eventid => $event)
         {
             $selected = '';
 
@@ -923,7 +923,7 @@ class Raidplan_display
             }
             else
             {
-                if($raidplan->event_type == $eventid)
+                if($raidplan->getEventType() == $eventid)
                 {
                     $selected = ' selected="selected" ';
                 }
@@ -957,7 +957,7 @@ class Raidplan_display
             $template->assign_block_vars('accesslevel_options', array(
                 'KEY' 		=> $key,
                 'VALUE' 	=> $value ,
-                'SELECTED' 	=>  ($raidplan->accesslevel == $key) ? ' selected="selected"' : '',
+                'SELECTED' 	=>  ($raidplan->getAccesslevel() == $key) ? ' selected="selected"' : '',
             ));
         }
 
@@ -1013,20 +1013,13 @@ class Raidplan_display
         }
         $db->sql_freeresult($result);
 
-
-        // format and translate to user timezone + dst
-        //$invite_date_txt = $user->format_date($raidplan->invite_time, $config['rp_date_time_format'], true);
-        //$start_date_txt = $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
-        //$end_date_txt = $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true);
-
         /**
          *	populate Raid invite time select
          */
         $hour_mode = $config['rp_hour_mode'];
-        $presetinvhour = intval( ($raidplan->invite_time > 0 ? $user->format_date($raidplan->invite_time, 'G', true) * 60: $config['rp_default_invite_time']) / 60);
+        $presetinvhour = intval( ($raidplan->getInviteTime() > 0 ? $user->format_date($raidplan->getInviteTime(), 'G', true) * 60: $config['rp_default_invite_time']) / 60);
         for( $i = 0; $i < 24; $i++ )
         {
-            $selected = ($i == $presetinvhour ) ? ' selected="selected"' : '';
             $mod_12 = $i % 12;
             if( $mod_12 == 0 )
             {
@@ -1046,9 +1039,9 @@ class Raidplan_display
         }
 
         // minute
-        if ( $raidplan->invite_time > 0 )
+        if ( $raidplan->getInviteTime() > 0 )
         {
-            $presetinvmin = $user->format_date($raidplan->invite_time, 'i', true);
+            $presetinvmin = $user->format_date($raidplan->getInviteTime(), 'i', true);
         }
         else
         {
@@ -1064,12 +1057,11 @@ class Raidplan_display
             ));
         }
 
-
         /**
          *	populate Raid start hour pulldown
          */
         $hour_start_selcode = "";
-        $presetstarthour = intval( ($raidplan->start_time > 0 ? $user->format_date($raidplan->start_time, 'G', true) * 60: $config['rp_default_start_time']) / 60);
+        $presetstarthour = intval( ($raidplan->getStartTime() > 0 ? $user->format_date($raidplan->getStartTime(), 'G', true) * 60: $config['rp_default_start_time']) / 60);
         for( $i = 0; $i < 24; $i++ )
         {
             $mod_12 = $i % 12;
@@ -1095,7 +1087,7 @@ class Raidplan_display
          */
         if($raidplan->id > 0)
         {
-            $presetstartmin = $user->format_date($raidplan->start_time, 'i', true);
+            $presetstartmin = $user->format_date($raidplan->getStartTime(), 'i', true);
         }
         else
         {
@@ -1142,10 +1134,11 @@ class Raidplan_display
                 'SELECTED' 	=> ( (int) $cal->date['year'] == $i ) ? ' selected="selected"' : '',
             ));
         }
+
         /**
          *	populate Raid END time pulldown
          */
-        $presetendhour = intval( ($raidplan->end_time > 0 ? $user->format_date($raidplan->end_time, 'G', true) * 60: $config['rp_default_end_time']) / 60);
+        $presetendhour = intval( ($raidplan->getEndTime() > 0 ? $user->format_date($raidplan->getEndTime(), 'G', true) * 60: $config['rp_default_end_time']) / 60);
         for( $i = 0; $i < 24; $i++ )
         {
 
@@ -1170,9 +1163,9 @@ class Raidplan_display
         /**
          *	populate Raid end minute pulldown
          */
-        if ( $raidplan->end_time > 0 )
+        if ( $raidplan->getEndTime() > 0 )
         {
-            $presetendmin = $user->format_date($raidplan->end_time, 'i', true);
+            $presetendmin = $user->format_date($raidplan->getEndTime(), 'i', true);
         }
         else
         {
@@ -1187,15 +1180,24 @@ class Raidplan_display
                 'SELECTED' 	=> ($i == $presetendmin) ? ' selected="selected"' : '',
             ));
         }
-
-        $day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
-        $week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$cal->date['day'] ."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
-        $month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$cal->date['day']."&amp;calM=".$cal->date['month_no']."&amp;calY=".$cal->date['year']);
+        // format and translate to user timezone + dst
+        //$invite_date_txt = $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true);
+        //$start_date_txt = $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
+        //$end_date_txt = $user->format_date($raidplan->getEndTime(), $config['rp_date_time_format'], true);
+        $day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$cal->date['day'] .
+                "&amp;calM=".$cal->date['month_no'].
+                "&amp;calY=".$cal->date['year']);
+        $week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$cal->date['day'] .
+                "&amp;calM=".$cal->date['month_no'].
+                "&amp;calY=".$cal->date['year']);
+        $month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$cal->date['day'].
+                "&amp;calM=".$cal->date['month_no'].
+                "&amp;calY=".$cal->date['year']);
 
         /*
          * make raid composition proposal
          */
-        if($raidplan->id  == 0)
+        if($raidplan->getId() == 0)
         {
             // new raid
             $sql = 'SELECT * FROM ' . RP_TEAMS . '
@@ -1205,16 +1207,12 @@ class Raidplan_display
             while ( $row = $db->sql_fetchrow ( $result ) )
             {
                 $team_id = $row ['teams_id'];
-                $teamname = $row ['team_name'];
-                $teamsize = $row ['team_needed'];
                 $template->assign_block_vars( 'team_row', array (
                     'VALUE' => $row ['teams_id'],
                     'SELECTED' => ' selected="selected"',
                     'OPTION' => $row ['team_name'] . ': ' .  $row['team_needed']));
             }
             $db->sql_freeresult($result);
-            $raidplan->raidteam = $team_id;
-            $raidplan->raidteamname = $teamname;
 
             // make roles proposal
             $sql_array = array(
@@ -1226,7 +1224,6 @@ class Raidplan_display
                 'ORDER_BY'  => 'r.role_id',
                 'WHERE'  	=> 'r.role_id = t.role_id AND t.teams_id = ' . $team_id
             );
-
             $sql = $db->sql_build_query('SELECT', $sql_array);
             $result = $db->sql_query($sql);
             while ($row = $db->sql_fetchrow($result))
@@ -1234,14 +1231,14 @@ class Raidplan_display
                 $template->assign_block_vars('teamsize', array(
                     'ROLE_COLOR'     => $row['role_color'],
                     'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
-                    'ROLE_ICON'      => (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $row['role_icon'] . ".png" : '',
+                    'ROLE_ICON'      => (strlen($row['role_icon']) > 1) ? $phpbb_root_path .
+                            "images/bbdkp/raidrole_images/" . $row['role_icon'] . ".png" : '',
                     'ROLE_ID'        => $row['role_id'],
                     'ROLE_NAME'      => $row['role_name'],
                     'ROLE_NEEDED'    => $row['team_needed'],
                 ));
             }
             $db->sql_freeresult($result);
-
 
         }
         else
@@ -1255,7 +1252,7 @@ class Raidplan_display
             {
                 $template->assign_block_vars( 'team_row', array (
                     'VALUE' 	=> $row ['teams_id'],
-                    'SELECTED' 	=> ($row ['teams_id'] == $raidplan->raidteam) ? ' selected="selected"' : '',
+                    'SELECTED' 	=> ($row ['teams_id'] == $raidplan->getRaidteam()) ? ' selected="selected"' : '',
                     'OPTION' 	=> $row ['team_name'] . ': ' .  $row['team_needed']));
             }
             $db->sql_freeresult($result);
@@ -1263,7 +1260,7 @@ class Raidplan_display
 
             // get roles from object
 
-            foreach($raidplan->raidroles as $key => $role)
+            foreach($raidplan->getRaidroles() as $key => $role)
             {
                 $template->assign_block_vars('teamsize', array(
                     'ROLE_COLOR'     => $role['role_color'],
@@ -1278,9 +1275,9 @@ class Raidplan_display
 
         }
 
-        $message = generate_text_for_edit($raidplan->body,
-            (isset($raidplan->bbcode['uid']) ? $raidplan->bbcode['uid'] : ''),
-            (isset($raidplan->bbcode['bitfield']) ? $raidplan->bbcode['bitfield'] : '') , 7);
+        $body = $raidplan->getBody();
+        $bbcode = $raidplan->getBbcode();
+        $message = generate_text_for_edit($body, isset($bbcode['uid'])  ? $bbcode['uid'] : '', isset($bbcode['bitfield']) ? $bbcode['bitfield'] : '', 7);
 
         // HTML, BBCode, Smilies, Images and Flash status
         $bbcode_status	= ($config['allow_bbcode']) ? true : false;
@@ -1308,7 +1305,7 @@ class Raidplan_display
             'S_POST_ACTION'				=> $s_action,
             'RAIDPLAN_ID'				=> $raidplan->id,
             'S_EDIT'					=> ($raidplan->id > 0) ? true : false,
-            'S_DELETE_ALLOWED'			=> $raidplan->auth_candelete,
+            'S_DELETE_ALLOWED'			=> $raidplan->getAuthCandelete(),
             'S_BBCODE_ALLOWED'			=> $bbcode_status,
             'S_SMILIES_ALLOWED'			=> $smilies_status,
             'S_LINKS_ALLOWED'			=> $url_status,
@@ -1317,11 +1314,11 @@ class Raidplan_display
             'S_BBCODE_FLASH'			=> $flash_status,
             'S_BBCODE_QUOTE'			=> false,
             'S_PLANNER_ADD'				=> true,
-            'TEAM_ID'					=> $raidplan->raidteam,
-            'TEAM_NAME'					=> $raidplan->raidteamname,
+            'TEAM_ID'					=> $raidplan->getRaidteam(),
+            'TEAM_NAME'					=> $raidplan->getRaidteamname(),
             //'TEAM_SIZE'				=> $teamsize,
             'L_POST_A'					=> $page_title,
-            'SUBJECT'					=> $raidplan->subject,
+            'SUBJECT'					=> $raidplan->getSubject(),
             'MESSAGE'					=> $message['text'],
             'START_DATE'				=> $user->format_date($start_date, $config['rp_date_format'], true),
             'START_HOUR_SEL'			=> $hour_start_selcode,
