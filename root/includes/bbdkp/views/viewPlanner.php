@@ -153,25 +153,21 @@ class viewPlanner implements iViews
     private function ViewRaidplan($raidplan_id)
     {
 
-        global $user;
-
         $raidplan = new Raidplan($raidplan_id);
         $raidplan_display = new Raidplan_display();
 
-        $deleteraidplan	= (isset($_POST['deleteraidplan'])) ? true : false;
-        $pushraidplan	= (isset($_POST['pushraidplan'])) ? true : false;
-        $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;
         $addraidplan	= (isset($_POST['addraidplan'])) ? true : false;
-
+        $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;
         $submit	= (isset($_POST['addraid'])) ? true : false;
         $update	= (isset($_POST['updateraid'])) ? true : false;
+        $deleteraidplan	= (isset($_POST['deleteraidplan'])) ? true : false;
+        $pushraidplan	= (isset($_POST['pushraidplan'])) ? true : false;
 
-        if($deleteraidplan)
+
+        if($addraidplan || $editraidplan)
         {
-            if(!$raidplan->raidplan_delete())
-            {
-                $raidplan_display->DisplayRaidplan($raidplan);
-            }
+            //show add form
+            $raidplan_display->showadd($raidplan, $this->cal);
         }
 
         if (($submit || $update) && confirm_box(true))
@@ -184,10 +180,12 @@ class viewPlanner implements iViews
             $raidplan_display->SetRaidplan($raidplan, $submit, $update);
         }
 
-        if($addraidplan || $editraidplan)
+        if($deleteraidplan)
         {
-            //show add form
-            $raidplan_display->showadd($raidplan, $this->cal);
+            if(!$raidplan->raidplan_delete())
+            {
+                $raidplan_display->DisplayRaidplan($raidplan);
+            }
         }
 
         if($pushraidplan)
@@ -195,16 +193,8 @@ class viewPlanner implements iViews
             $raidplan->raidplan_push();
         }
 
-        $raidplan_display->DisplayRaidplan($raidplan);
 
         $action = request_var('action', 'display');
-        $valid_actions = array(
-            'signup',
-            'delsign',
-            'editsign',
-            'requeue',
-            'confirm',
-        );
 
         switch($action)
         {
@@ -228,7 +218,10 @@ class viewPlanner implements iViews
                 $this->ConfirmSignup($raidplan, $raidplan_display);
                 break;
         }
+        $raidplan_display->DisplayRaidplan($raidplan);
+
         unset($raidplan);
+
     }
 
     /**
