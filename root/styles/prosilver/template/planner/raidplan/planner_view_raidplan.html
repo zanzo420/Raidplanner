@@ -12,16 +12,24 @@
         <div style="width:40%; float: right;">
             <ul class="raidplanner-icons" style="float: right;">
                 <!-- IF U_ADDRAID -->
-                <li class="planner-new-button"><a href="{U_ADDRAID}" title="{L_NEW_RAID}"><span></span></a></li>
+                <li>
+                    <input type="image" name="newraidplan" id="newraidplan" src="{T_IMAGESET_PATH}/planner/button_add.png" width="24" height="24" src="{U_ADDRAID}" alt="{L_ADD_RAID}" />
+                </li>
                 <!-- ENDIF -->
                 <!-- IF U_EDITRAID -->
-                <li class="planner-edit-button"><a href="{U_EDITRAID}" title="{L_EDIT_RAID}"><span></span></a></li>
+                <li>
+                    <input type="image" name="editraidplan" id="editraidplan" src="{T_IMAGESET_PATH}/planner/button_edit.png" width="24" height="24" src="{U_EDITRAID}" alt="{L_EDIT_RAID}" />
+                </li>
                 <!-- ENDIF -->
                 <!-- IF U_PUSHRAID -->
-                <li class="planner-push-button"><a href="{U_PUSHRAID}" title="{L_PUSH_RAID}"><span></span></a></li>
+                <li>
+                    <input type="image" name="pushraidplan" id="pushraidplan" src="{T_IMAGESET_PATH}/planner/button_push.png" width="24" height="24" src="{U_PUSHRAID}" alt="{L_PUSH_RAID}" />
+                </li>
                 <!-- ENDIF -->
                 <!-- IF U_DELETERAID -->
-                <li class="planner-delete-button"><a href="{U_DELETERAID}" title="{L_DELETE_RAID}"><span></span></a></li>
+                <li>
+                    <input type="image" name="deleteraidplan" id="deleteraidplan" src="{T_IMAGESET_PATH}/planner/button_delete.png" width="24" height="24" src="{U_DELETERAID}" alt="{L_DELETE_RAID}" />
+                </li>
                 <!-- ENDIF -->
             </ul>
 
