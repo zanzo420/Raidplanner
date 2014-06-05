@@ -504,7 +504,6 @@ class Raidplan_display
 
         global $auth, $user, $phpbb_root_path, $phpEx, $template, $config;
 
-
         foreach ($role['role_confirmations'] as $confirmation)
         {
             $confdetail = new RaidplanSignup();
@@ -1151,7 +1150,7 @@ class Raidplan_display
             'S_PLANNER_ADD'				=> true,
             'TEAM_ID'					=> $raidplan->getRaidteam(),
             'TEAM_NAME'					=> $raidplan->getRaidteamname(),
-            //'TEAM_SIZE'				=> $teamsize,
+            'TEAM_SIZE'				    => $raidplan->getRaidTeamNeeded(),
             'L_POST_A'					=> $page_title,
             'SUBJECT'					=> $raidplan->getSubject(),
             'MESSAGE'					=> $message['text'],

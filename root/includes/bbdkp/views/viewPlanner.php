@@ -156,7 +156,7 @@ class viewPlanner implements iViews
         $raidplan = new Raidplan($raidplan_id);
         $raidplan_display = new Raidplan_display();
 
-        $addraidplan	= (isset($_POST['addraidplan'])) ? true : false;
+        $addraidplan	= (isset($_POST['addraidplan']) ) ? true : false;
         $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;
         $submit	= (isset($_POST['addraid'])) ? true : false;
         $update	= (isset($_POST['updateraid'])) ? true : false;
@@ -217,8 +217,17 @@ class viewPlanner implements iViews
             case 'confirm':
                 $this->ConfirmSignup($raidplan, $raidplan_display);
                 break;
+
+            case 'showadd':
+                $raidplan_display->showadd($raidplan, $this->cal);
+                break;
+
+            default:
+                $raidplan_display->DisplayRaidplan($raidplan);
+                break;
+
         }
-        $raidplan_display->DisplayRaidplan($raidplan);
+
 
         unset($raidplan);
 
