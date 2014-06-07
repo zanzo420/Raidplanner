@@ -83,7 +83,6 @@ class viewPlanner implements iViews
         }
 
         $raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
-
         $valid_viewsmodes = array(
             'day',
             'week',
@@ -97,6 +96,7 @@ class viewPlanner implements iViews
             trigger_error($user->lang['USER_INVALID_RAIDPLANVIEW'] . ' "' . $view_mode . '" ' );
         }
 
+        $action = request_var('action', 'display');
         // display header
         $this->cal = new DisplayFrame($view_mode);
         $this->cal->display();
@@ -105,7 +105,7 @@ class viewPlanner implements iViews
         {
             case "raidplan":
                 // display a raidplan
-                $this->ViewRaidplan($raidplan_id);
+                $this->ViewRaidplan($raidplan_id, $action);
                 break;
 
             case "day":
@@ -150,12 +150,10 @@ class viewPlanner implements iViews
      * Builds the actual raidplan
      *
      */
-    private function ViewRaidplan($raidplan_id)
+    private function ViewRaidplan($raidplan_id, $action)
     {
 
         $raidplan = new Raidplan($raidplan_id);
-        $action = request_var('action', 'display');
-
 
         $addraidplan	= (isset($_POST['addraidplan']) ) ? true : false;
         $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;

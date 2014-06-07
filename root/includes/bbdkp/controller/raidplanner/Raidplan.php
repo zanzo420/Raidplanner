@@ -1301,7 +1301,7 @@ class Raidplan
                     'raidplan_id'=> $this->id,
                     'page'	=> 'planner',
                     'view'	=> 'raidplan',
-                    'action'	=> 'delete')
+                    'action'	=> 'deleteraidplan')
             );
 
             return confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
@@ -1480,7 +1480,7 @@ class Raidplan
      *
      * @param $trigger
      */
-    private function raidmessenger($trigger)
+    public function raidmessenger($trigger)
     {
         global $user, $config;
         global $phpEx, $phpbb_root_path;
@@ -1737,7 +1737,7 @@ class Raidplan
                             'hidden_startraid_date' 	=> $this->start_time,
                             'hidden_endraid_date' 		=> $this->end_time,
                             'hidden_raid_attendees' 	=> $raid_attendees,
-                            'add'    					=> true,
+                            'pushraidplan'    			=> true,
                         )
                     );
 
