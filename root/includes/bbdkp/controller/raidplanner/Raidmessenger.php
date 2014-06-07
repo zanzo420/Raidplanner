@@ -5,9 +5,9 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
+namespace bbdkp\controller\raidplanner;
 
 /**
  * @ignore
@@ -21,7 +21,7 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
  * Class raidmessenger
  * @package bbdkp\raidplanner
  */
-class raidmessenger
+class Raidmessenger
 {
 	/**
 	 * holds users that get notified on raid change or addition
@@ -29,13 +29,14 @@ class raidmessenger
 	 * @var array
 	 */
 	public $send_user_data = array();
-	
-	/**
-	 * initialises array with users who get notified
-	 *
-	 * @param int $trigger
-	 */
-	public function get_notifiable_users($trigger, $raidplan_id, $signup_poster = 0)
+
+    /**
+     * initialises array with users who get notified
+     * @param $trigger
+     * @param $raidplan_id
+     * @param int $signup_poster`
+     */
+    public function get_notifiable_users($trigger, $raidplan_id, $signup_poster = 0)
 	{
 		global $db;
 		switch ($trigger)
@@ -89,4 +90,3 @@ class raidmessenger
 	
 
 }
-?>

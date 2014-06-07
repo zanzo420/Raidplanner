@@ -7,8 +7,8 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner 0.11.0]]></title>
-		<description lang="en"><![CDATA[Raidplanner 0.11.0 plugin for bbDKP
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.12.0]]></title>
+		<description lang="en"><![CDATA[Raidplanner 0.12.0 plugin for bbDKP
 		forked from phpbb3 Calendar and phpRaider.
 		see /docs/install.html and /docs/changelog.html
 		Requires bbDKP 1.3.0 or higher to be installed.
@@ -40,17 +40,16 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.11.0</mod-version>
+		<mod-version>0.12.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>600</time>
 			<target-version>3.0.12</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="https://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.3.0.4</link>		
+			<link type="dependency" href="https://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.3.0.5</link>		
 			<link type="language" href="contrib/languages/fr.xml" lang="en">French</link>
-			<link type="language" href="contrib/languages/de.xml" lang="en">German</link>
-			<link type="contrib" href="contrib/upgrade/0_10_0_to_0_11_0.xml" lang="en">Upgrade: from 0.10.0 to 0.11.0</link>	
+			<link type="language" href="contrib/languages/de.xml" lang="en">German</link>	
 		</link-group>
 	</header>
 	<action-group>
@@ -62,8 +61,12 @@
 			<file from="root/images/bbdkp/raidrole_images/*.*" to="images/bbdkp/raidrole_images/*.*"/>
 			<file from="root/images/bbdkp/event_images/*.*" to="images/bbdkp/event_images/*.*"/>
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
-			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>
-			<file from="root/includes/bbdkp/raidplanner/*.*" to="includes/bbdkp/raidplanner/*.*"/>
+			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>		
+			
+			<file from="root/includes/bbdkp/controller/raidplanner/*.*" to="includes/bbdkp/controller/raidplanner/*.*"/>			
+			<file from="root/includes/bbdkp/views/raidplanner/*.*" to="includes/bbdkp/views/raidplanner/*.*"/>			
+			<file from="root/includes/bbdkp/views/viewPlanner.php" to="includes/bbdkp/views/viewPlanner.php"/>						
+			
 			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php"/>
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php"/>
 			<file from="root/install/*.*" to="install/*.*"/>
@@ -89,13 +92,13 @@
 				<comment lang="en"><![CDATA[Include class]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
 				<action type="after-add"><![CDATA[// [+]Raidplanner
-if (!class_exists('\bbdkp\raidplanner\rpweek', false))
+if (!class_exists('\bbdkp\views\raidplanner\rpweek', false))
 {
 	if ($config['rp_index_display_week'] == 1)
 	{
 		// display the entire week
 		define('IN_BBDKP', true);
-		include($phpbb_root_path . 'includes/bbdkp/raidplanner/rpweek.' . $phpEx);
+		include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rpweek.' . $phpEx);
 		$user->add_lang ( array ('mods/raidplanner'));
 	}
 }
@@ -108,7 +111,7 @@ if (!class_exists('\bbdkp\raidplanner\rpweek', false))
 if ($config['rp_index_display_week'] == 1)
 {
 	$user->add_lang ( array ('mods/raidplanner'));
-	$cal = new \bbdkp\raidplanner\rpweek();
+	$cal = new \bbdkp\views\raidplanner\rpweek();
 	$cal->display();
 }
 // [-]Raidplanner

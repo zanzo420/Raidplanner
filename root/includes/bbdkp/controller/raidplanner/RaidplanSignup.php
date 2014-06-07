@@ -5,10 +5,10 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
-use bbdkp\raidplanner\raidmessenger;
+namespace bbdkp\controller\raidplanner;
+use bbdkp\controller\raidplanner\Raidmessenger;
 
 /**
  * @ignore
@@ -27,6 +27,8 @@ if (!class_exists('\bbdkp\controller\points\Points'))
 {
     require("{$phpbb_root_path}includes/bbdkp/controller/points/Points.$phpEx");
 }
+use bbdkp\controller\points\Points;
+use \bbdkp\controller\members\Members;
 
 /**
  * implements Raid signups
@@ -78,13 +80,15 @@ class RaidplanSignup
 
     public function __construct()
     {
-        $this->Points = new \bbdkp\controller\points\Points();
-        $this->Member = new \bbdkp\controller\members\Members();
+        $this->Points = new Points();
+        $this->Member = new Members();
     }
 
     /**
      * Signup class property getter
-     * @param string $fieldName
+     *
+     * @param $fieldName
+     * @return mixed
      */
     public function __get($fieldName)
     {
@@ -102,14 +106,14 @@ class RaidplanSignup
 
     /**
      * makes a Signup object
+     * @todo Sajaki fetch current dkp  $raidplan->eventlist->events[$raidplan->event_type]['dkpid']
      *
      * @param $signup_id
-     * @param int $dkpid
      */
-    public function getSignup($signup_id, $dkpid=1)
+    public function getSignup($signup_id)
 	{
 		
-		global $db, $config, $phpbb_root_path, $phpEx, $db;
+		global $phpbb_root_path, $phpEx, $db;
 		
 		$this->signup_id = $signup_id;
 		$sql = "select * from " . RP_SIGNUPS . " where signup_id = " . $this->signup_id;
@@ -153,7 +157,7 @@ class RaidplanSignup
 		$this->genderid = $this->Member->member_gender_id;
 
         $this->Points->member_id = (int) $this->dkpmemberid;
-        $this->Points->dkpid =  $this->dkpmemberid;
+        $this->Points->dkpid =  $this->dkpmemberid; //wrong, need to fetch
         $this->dkp_current = $this->Points->total_net;
 		$this->priority_ratio = $this->Points->pr_net;
 		$this->lastraid = $this->Points->lastraid;
@@ -161,14 +165,16 @@ class RaidplanSignup
 		$this->dkmemberpurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $this->dkpmemberid . '&amp;' . URI_DKPSYS . '=' . $this->dkpmemberid );
 
 	}
-	
-	
-	/**
-	 * get all my chars
-	 *
-	 * @param int $userid
-	 * @param int $raidplan_id
-	 */
+
+
+    /**
+     * get all my chars
+     *
+     * @param $raidplanid
+     * @return array
+     * @internal param int $userid
+     * @internal param int $raidplan_id
+     */
 	public function getmychars($raidplanid)
 	{
 		global $db, $user;
@@ -364,13 +370,14 @@ class RaidplanSignup
 		return true;
 
 	}
-		
-	
-	/**
-	 * requeues a deleted signup
-	 *
-	 * @param int $signup_id
-	 */
+
+
+    /**
+     * requeues a deleted signup
+     *
+     * @param int $signup_id
+     * @return bool
+     */
 	public function requeuesignup($signup_id)
 	{
 		global $db;
@@ -511,12 +518,13 @@ class RaidplanSignup
 		$db->sql_transaction('commit');
 	}
 
-	
-	/**
-	 * confirms a signup
-	 *
-	 * @param int $signup_id
-	 */
+
+    /**
+     * confirms a signup
+     *
+     * @param int $signup_id
+     * @return bool
+     */
 	public function confirmsignup($signup_id)
 	{
 		global $db;
@@ -585,12 +593,12 @@ class RaidplanSignup
 		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
 		// get recipient data (email, etc)  
-		if (!class_exists('\bbdkp\raidplanner\raidmessenger'))
+		if (!class_exists('\bbdkp\controller\raidplanner\Raidmessenger'))
 		{
-			require("{$phpbb_root_path}includes/bbdkp/raidplanner/raidmessenger.$phpEx");
+			require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/raidmessenger.$phpEx");
 		}
 		
-		$rpm = new raidmessenger();
+		$rpm = new Raidmessenger();
 		$rpm->get_notifiable_users($trigger, $this->raidplan_id, $this->signup_id);
 		
 		$emailrecipients = array();
@@ -605,14 +613,17 @@ class RaidplanSignup
 				case 4:
 					// send signup to RL				
 					$messenger->template('signup_new', $row['user_lang']);
-					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' .$user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
-					$data['address_list'] = array('u' => array($raidplan->poster => 'to'));
+					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' .
+                                $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+                        $user->format_date($raidplan->getStartTime()  , $config['rp_date_time_format'], true);
+					$data['address_list'] = array('u' => array($raidplan->getPoster() => 'to'));
 					
 					break;
 				case 5:
 					// send confirmation to RL and raider
 					$messenger->template('signup_confirm', $row['user_lang']);
-					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+                        $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => 
 						array(
 							$row['user_id'] => 'to'
@@ -622,28 +633,29 @@ class RaidplanSignup
 				case 6:
 					// send cancellation to RL and raider
 					$messenger->template('signup_unsign', $row['user_lang']);
-					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->eventlist->events[$raidplan->event_type]['event_name'] . ' ' . $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true);
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+                        $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => 
 						array(
 							$row['user_id'] => 'to'
 						));
 					break;						
 			}
-		   $userids = array($raidplan->poster);
+		   $userids = array($raidplan->getPoster());
 		   $rlname = array();
 		   user_get_id_name($userids, $rlname);
 		   
 		   $messenger->assign_vars(array(
-		   		'RAIDLEADER'		=> $rlname[$raidplan->poster],
+		   		'RAIDLEADER'		=> $rlname[$raidplan->getPoster()],
 				'EVENT_SUBJECT'		=> $subject, 
 		   		'SIGNUP_TIME'		=> $user->format_date($this->signup_time, $config['rp_date_time_format'], true),
 				'USERNAME'			=> htmlspecialchars_decode($user->data['username']),
 		   		'RAIDER'			=> $this->dkpmembername, 
-		   		'EVENT'				=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'], 
+		   		'EVENT'				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
 		   		'ROLE'				=> $this->role_name, 
-				'INVITE_TIME'		=> $user->format_date($raidplan->invite_time, $config['rp_date_time_format'], true),
-				'START_TIME'		=> $user->format_date($raidplan->start_time, $config['rp_date_time_format'], true),
-				'END_TIME'			=> $user->format_date($raidplan->end_time, $config['rp_date_time_format'], true),
+				'INVITE_TIME'		=> $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true),
+				'START_TIME'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true),
+				'END_TIME'			=> $user->format_date($raidplan->getEndTime(), $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
 				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id
 			));
@@ -701,5 +713,3 @@ class RaidplanSignup
 	
 
 }
-
-?>

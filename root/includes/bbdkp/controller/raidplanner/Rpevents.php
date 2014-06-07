@@ -5,9 +5,9 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
+namespace bbdkp\controller\raidplanner;
 
 
 /**
@@ -37,10 +37,9 @@ class rpevents
 			$this->events[$row['event_id']]['dkpid'] = $row['event_dkpid'];
 			$this->events[$row['event_id']]['value'] = $row['event_value'];
 		}
+
 		$db->sql_freeresult($result);
 		
 	}
 	
 }
-
-?>

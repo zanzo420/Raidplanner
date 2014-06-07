@@ -7,9 +7,10 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
+namespace bbdkp\views\raidplanner;
+use  bbdkp\views\raidplanner\Raidplan_display;
 
 /**
  * @ignore
@@ -20,9 +21,13 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 }
 
 // Include the base class
-if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
+if (!class_exists('\bbdkp\views\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
+    require($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/RaidCalendar.' . $phpEx);
+}
+if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
+{
+    include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/raidplan/Raidplan_display.' . $phpEx);
 }
 
 /**
@@ -101,12 +106,9 @@ class rpweek extends RaidCalendar
 		}
 		
 		// array of raid days
-		if (!class_exists('\bbdkp\raidplanner\Raidplan'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-		}
-		$raidplan = new Raidplan();
-		$raiddays = $raidplan->GetRaiddaylist($fdaystamp, $ldaystamp);
+        $Raidplandisplay = new Raidplan_display();
+		$raiddays = $Raidplandisplay->GetRaiddaylist($fdaystamp, $ldaystamp);
+
 		// array of bdays
 		$birthdays = $this->generate_birthday_list( $fdaystamp, $ldaystamp);
 		
@@ -157,7 +159,7 @@ class rpweek extends RaidCalendar
 			
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
-				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
+				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
 			}
 			$calendar_days['DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
 			$calendar_days['MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
@@ -233,7 +235,7 @@ class rpweek extends RaidCalendar
 						if($raidday['day'] == $true_j)
 						{
 							//raid(s) found get detail
-							$raidplan_output = $raidplan->GetRaidinfo($true_m, $true_j, $true_y, $this->group_options, $this->mode);
+							$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($true_m, $true_j, $true_y, $this->group_options, $this->mode);
 							foreach($raidplan_output as $raid )
 							{
 								$template->assign_block_vars('calendar_days.raidplans', $raid['raidinfo']);
@@ -286,5 +288,3 @@ class rpweek extends RaidCalendar
 		));
 	}
 }
-
-?>

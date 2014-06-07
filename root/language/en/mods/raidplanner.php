@@ -275,7 +275,7 @@ $lang = array_merge($lang, array(
 	'RP_SHOW_WELCOME'			=> 'Show welcome message',
 	'RP_WELCOME'				=> 'Welcome message',
 	'RP_WELCOME_EXPLAIN'		=> 'Message shown on top of planner. supports bbcodes. ', 
-	'RP_WELCOME_DEFAULT'		=> '[b]Welcome to our Raid Scheduler[/b]! All raids will be planned here. You do not need to make a new account as long as you have signed up on the forums.', 
+	'RP_WELCOME_DEFAULT'		=> '[b]Welcome to our Raid Scheduler[/b]! All raids will be planned here. Before signing up, please link to your character in the UCP. ',
 	'SHOW_PREV'					=> 'Show previous', 
 	'SHOW_NEXT'					=> 'Show next', 
 	'SIGNUPS'					=> 'Signups', 
@@ -310,6 +310,7 @@ $lang = array_merge($lang, array(
 	'USER_CANNOT_VIEW_RAIDPLAN'	=> 'You do not have permission to view raidplans.',
 	'USER_ALREADY_SIGNED_UP'	=> '%s is already signed up to this raidplan.',
     'USER_INVALIDACTION'        => 'Invalid Action Request',
+    'USER_INVALID_RAIDPLANVIEW'          => 'Invalid raidplan viewpage',
 
 	'VIEW_RAIDPLAN'				=> '%sView your submitted raid%s',
 	'WEEK'						=> 'Week',

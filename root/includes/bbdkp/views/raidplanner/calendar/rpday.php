@@ -6,10 +6,10 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
-namespace bbdkp\raidplanner;
-
+namespace bbdkp\views\raidplanner;
+use  bbdkp\views\raidplanner\Raidplan_display;
 
 /**
  * @ignore
@@ -18,11 +18,15 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
 	exit;
 }
-
 // Include the base class
-if (!class_exists('\bbdkp\raidplanner\RaidCalendar'))
+if (!class_exists('\bbdkp\views\raidplanner\RaidCalendar'))
 {
-	require($phpbb_root_path . 'includes/bbdkp/raidplanner/RaidCalendar.' . $phpEx);
+    require($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/RaidCalendar.' . $phpEx);
+}
+
+if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
+{
+    include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/raidplan/Raidplan_display.' . $phpEx);
 }
 
 /**
@@ -63,7 +67,7 @@ class rpday extends RaidCalendar
 		if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 		{
 				
-			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;mode=showadd&amp;calD=".
+			$add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".
 					$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']);
 		
 			if( (int) $this->date['month_no'] > (int) date('m') || ( (int) $this->date['month_no']  == (int) date('m')  && (int) $this->date['day'] >= (int) date('d') )
@@ -93,13 +97,10 @@ class rpday extends RaidCalendar
 		{
 			// get raid info
 			$raidplan_output = array();
-			if (!class_exists('\bbdkp\raidplanner\Raidplan'))
-			{
-				include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-			}
-			$raidplan = new Raidplan();
+
+            $Raidplandisplay = new Raidplan_display();
 			// get all raids on this day
-			$raidplan_output = $raidplan->GetRaidinfo($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+			$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 		}
 		
 		/* assemble events */ 
@@ -189,5 +190,3 @@ class rpday extends RaidCalendar
 		
 	}
 }
-
-?>

@@ -5,17 +5,22 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.10.0
+* @version 0.12.0
 */
 
-namespace bbdkp\raidplanner;
-
+namespace bbdkp\views\raidplanner;
+use bbdkp\controller\raidplanner\Raidplan;
 /**
  * @ignore
  */
 if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
 	exit;
+}
+
+if (!class_exists('\bbdkp\controller\raidplanner\Raidplan'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
 }
 
 /**
@@ -26,13 +31,8 @@ class rpblocks
 {
 	
 	public $group_options;
-	
-	/**
-	 * @see calendar::display($x)
-	 *
-	 * @param int $x
-	 */
-	public function display()
+
+    public function display()
 	{
 		global $template, $auth, $user, $db;
 	
@@ -81,7 +81,7 @@ class rpblocks
 	 */
 	private function _display_top_signups()
 	{
-		global $config, $user, $db, $template, $phpEx, $phpbb_root_path;
+		global $config, $db, $template, $phpbb_root_path;
 		// build sql 
 
 		// get top signups
@@ -154,10 +154,9 @@ class rpblocks
 	
 	/**
 	 * displays the next x number of upcoming raidplans 
-	 *
-	 * @param string $this->group_options
-	 */
-	private function _display_next_raidplans()
+     *
+     */
+    private function _display_next_raidplans()
 	{
 		global $config, $user, $db, $template, $phpEx, $phpbb_root_path;
 		// build sql 
@@ -173,19 +172,16 @@ class rpblocks
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		
 		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0);
-		if (!class_exists('\bbdkp\raidplanner\Raidplan', false))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/raidplanner/raidplan.' . $phpEx);
-		}
+
 					
 		while ($row = $db->sql_fetchrow($result))
 		{
 			
 			unset($raidplan);
 			$raidplan = new Raidplan($row['raidplan_id']);
-			if(strlen( $raidplan->eventlist->events[$raidplan->event_type]['imagename'] ) > 1)
+			if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->eventlist->events[$raidplan->event_type]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
 				
 			}
 			else 
@@ -195,15 +191,15 @@ class rpblocks
 			
 			$template->assign_block_vars('upcoming', array(
 				'RAID_ID'				=> $raidplan->id,
-				'EVENTNAME'			 	=> $raidplan->eventlist->events[$raidplan->event_type]['event_name'],
+				'EVENTNAME'			 	=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
 				'EVENT_ID'  			=> $raidplan->id,
-				'COLOR' 				=> $raidplan->eventlist->events[$raidplan->event_type]['color'],
-				'SUBJECT'				=> censor_text($raidplan->subject),
+				'COLOR' 				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'],
+				'SUBJECT'				=> censor_text($raidplan->getSubject()),
 				'IMAGE' 				=> $eventimg, 
-				'START_TIME'			=> $user->format_date($raidplan->start_time, $config['rp_date_format'], true),
-				'END_TIME' 				=> $user->format_date($raidplan->end_time, $config['rp_time_format'], true),
-				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->poster) ? true : false,
+				'START_TIME'			=> $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true),
+				'END_TIME' 				=> $user->format_date($raidplan->getEndTime(), $config['rp_time_format'], true),
+				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->getPoster()) ? true : false,
 			));
 		}
 		$db->sql_freeresult($result);
@@ -215,5 +211,3 @@ class rpblocks
 	}
 			
 }
-
-?>
