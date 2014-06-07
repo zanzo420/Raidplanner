@@ -343,8 +343,9 @@ class viewPlanner implements iViews
         $signup_id = request_var('signup_id', 0);
         $signup = new RaidplanSignup();
         $signup->confirmsignup($signup_id);
+        $confirmed = $raidplan->getSignups();
 
-        if($config['rp_rppushmode'] == 0 && $raidplan->getSignups()['confirmed'] > 0 )
+        if($config['rp_rppushmode'] == 0 && $confirmed['confirmed'] > 0 )
         {
             //autopush
             $raidplan->raidplan_push();
