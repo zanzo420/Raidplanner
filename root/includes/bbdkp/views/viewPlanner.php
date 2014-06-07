@@ -154,6 +154,8 @@ class viewPlanner implements iViews
     {
 
         $raidplan = new Raidplan($raidplan_id);
+        $action = request_var('action', 'display');
+
 
         $addraidplan	= (isset($_POST['addraidplan']) ) ? true : false;
         $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;
@@ -188,7 +190,7 @@ class viewPlanner implements iViews
             $raidplan_display = new Raidplan_display();
             $raidplan_display->SetRaidplan($raidplan, $submit, $update);
         }
-        elseif($deleteraidplan)
+        elseif($deleteraidplan || $action =='deleteraidplan')
         {
             if(!$raidplan->raidplan_delete())
             {
@@ -196,51 +198,49 @@ class viewPlanner implements iViews
                 $raidplan_display->DisplayRaidplan($raidplan);
             }
         }
-        elseif($pushraidplan)
+        elseif($pushraidplan || $action =='pushraidplan')
         {
             $raidplan->raidplan_push();
         }
         else
         {
             $raidplan_display = new Raidplan_display();
-            $raidplan_display->DisplayRaidplan($raidplan);
+            switch($action)
+            {
+                case 'signup':
+                    $this->AddSignup($raidplan, $raidplan_display);
+                    break;
+
+                case 'delsign':
+                    $this->DeleteSignup($raidplan, $raidplan_display);
+                    break;
+
+                case 'editsign':
+                    $this->EditComment($raidplan, $raidplan_display);
+                    break;
+
+                case 'requeue':
+                    $this->Requeue($raidplan, $raidplan_display);
+                    break;
+
+                case 'confirm':
+                    $this->ConfirmSignup($raidplan, $raidplan_display);
+                    break;
+
+                case 'showadd':
+                    $raidplan_display->showadd($raidplan, $this->cal);
+                    break;
+
+                default:
+                    $raidplan_display->DisplayRaidplan($raidplan);
+                    break;
+            }
+
         }
 
         unset($raidplan);
         unset($raidplan_display);
 
-        /*
-         *
-         *
-         *  $action = request_var('action', 'display');
-        switch($action)
-        {
-            case 'signup':
-                $this->AddSignup($raidplan, $raidplan_display);
-                break;
-
-            case 'delsign':
-                $this->DeleteSignup($raidplan, $raidplan_display);
-                break;
-
-            case 'editsign':
-                $this->EditComment($raidplan, $raidplan_display);
-                break;
-
-            case 'requeue':
-                $this->Requeue($raidplan, $raidplan_display);
-                break;
-
-            case 'confirm':
-                $this->ConfirmSignup($raidplan, $raidplan_display);
-                break;
-
-            case 'showadd':
-                $raidplan_display->showadd($raidplan, $this->cal);
-                break;
-        }
-         *
-         */
     }
 
     /**

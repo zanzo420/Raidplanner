@@ -1289,7 +1289,7 @@ class Raidplan_display
 
         //if this is not an "all day event"
         $raidplan->setAllDay(0);
-        $raidplan->setday(sprintf('%2d-%2d-%4d', $end_y, $end_y, $end_y));
+        $raidplan->setday(sprintf('%2d-%2d-%4d', $end_m, $end_d, $end_y));
 
         $raidplan->Check_auth();
 
