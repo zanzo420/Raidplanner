@@ -728,7 +728,7 @@ class Raidplan_display
     {
         global $db, $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
         include($phpbb_root_path . 'includes/functions_display.' . $phpEx);
-        $s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->getId() ."&amp;action=showadd");
+        $s_action = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->getId());
 
         /*
          * fill template
@@ -1263,20 +1263,18 @@ class Raidplan_display
         $raidplan->setEventType(request_var('bbdkp_events', 0));
 
         // invite/start date values from pulldown click
-        $inv_d = request_var('calD', 0);
-        $inv_m = request_var('calM', 0);
-        $inv_y = request_var('calY', 0);
-        $inv_hr = request_var('calinvHr', 0);
-        $inv_mn = request_var('calinvMn', 0);
-        $raidplan->setInviteTime(gmmktime($inv_hr, $inv_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst);
-
-        $start_hr = request_var('calHr', 0);
-        $start_mn = request_var('calMn', 0);
-        $raidplan->setStartTime(gmmktime($start_hr, $start_mn, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst);
-
         $end_m = request_var('calMEnd', 0);
         $end_d = request_var('calDEnd', 0);
         $end_y = request_var('calYEnd', 0);
+
+        $inv_hr = request_var('calinvHr', 0);
+        $inv_mn = request_var('calinvMn', 0);
+        $raidplan->setInviteTime(gmmktime($inv_hr, $inv_mn, 0, $end_m, $end_d, $end_y) - $user->timezone - $user->dst);
+
+        $start_hr = request_var('calHr', 0);
+        $start_mn = request_var('calMn', 0);
+        $raidplan->setStartTime(gmmktime($start_hr, $start_mn, 0, $end_m, $end_d, $end_y) - $user->timezone - $user->dst);
+
         $end_hr = request_var('calEndHr', 0);
         $end_mn = request_var('calEndMn', 0);
         $raidplan->setEndTime(gmmktime($end_hr, $end_mn, 0, $end_m, $end_d, $end_y) - $user->timezone - $user->dst);
@@ -1291,7 +1289,7 @@ class Raidplan_display
 
         //if this is not an "all day event"
         $raidplan->setAllDay(0);
-        $raidplan->setday(sprintf('%2d-%2d-%4d', $inv_d, $inv_m, $inv_y));
+        $raidplan->setday(sprintf('%2d-%2d-%4d', $end_y, $end_y, $end_y));
 
         $raidplan->Check_auth();
 

@@ -72,9 +72,9 @@
                 <dd>
 
                     <div id="teamname">
-                    <h3>{TEAM_NAME}
+                        <h3>{TEAM_NAME}
 
-                    </h3>
+                        </h3>
                     </div>
 
                     <select name="teamselect" id="teamselect" onchange="return getteamroles(this.value)">{TEAMSELECT}
@@ -87,7 +87,7 @@
                         <dl>
                             <dt>
                                 <!-- IF teamsize.S_ROLE_ICON_EXISTS --><img src="{teamsize.ROLE_ICON}" alt="image" /><!-- ENDIF -->&nbsp;
-                                <label style="font-weight: normal;" for="subject">{teamsize.ROLE_NAME}:</label></dt>
+                                <label style="font-weight: normal;">{teamsize.ROLE_NAME}:</label></dt>
                             <dd>
                                 <input type="hidden" name="role[{teamsize.ROLE_ID}]" value="{teamsize.ROLE_ID}" />
                                 <input type="text" name="role_needed[{teamsize.ROLE_ID}]" size="5" maxlength="2" tabindex="2" value="{teamsize.ROLE_NEEDED}" class="inputbox autowidth" />
@@ -111,64 +111,68 @@
         <span class="corners-top"><span></span></span>
         <fieldset class="fields2">
 
-        <dl style="clear: right;">
-            <dt><label for="calinvHr">{L_RAID_INVITE_TIME}:</label></dt>
-            <dd>
-                <select name='calinvHr' id='calinvHr'>
-                    <!-- BEGIN invhouroptions -->
-                    <option value="{invhouroptions.KEY}" {invhouroptions.SELECTED}>{invhouroptions.VALUE}</option><!-- END invhouroptions -->
-                </select>
-                <select name='calinvMn' id='calinvMn'>
-                    <!-- BEGIN invminoptions -->
-                    <option value="{invminoptions.KEY}" {invminoptions.SELECTED}>{invminoptions.VALUE}</option><!-- END invminoptions -->
-                </select>
-            </dd>
-        </dl>
-        <dl style="clear: right;">
-            <dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
-            <dd>
-                <select name='calHr' id='calHr'>
-                    <!-- BEGIN starthouroptions -->
-                    <option value="{starthouroptions.KEY}" {starthouroptions.SELECTED}>{starthouroptions.VALUE}</option><!-- END starthouroptions -->
-                </select>
-                <select name='calMn' id='calMn'>
-                    <!-- BEGIN startminoptions -->
-                    <option value="{startminoptions.KEY}" {startminoptions.SELECTED}>{startminoptions.VALUE}</option><!-- END startminoptions -->
-                </select>
-            </dd>
-        </dl>
-        <dl style="clear: right;">
-            <dt><label for="calEndHr">{L_RAID_END_TIME}:</label></dt>
-            <dd>
-                <select name='calDEnd' id='calDEnd'>
-                    <!-- BEGIN enddayoptions -->
-                    <option value="{enddayoptions.KEY}" {enddayoptions.SELECTED}>{enddayoptions.VALUE}</option><!-- END enddayoptions -->
-                </select>
+            <dl style="clear: right;">
+                <dt><label for="calinvHr">{L_RAID_DATE}:</label></dt>
+                <dd>
+                    <select name='calDEnd' id='calDEnd'>
+                        <!-- BEGIN enddayoptions -->
+                        <option value="{enddayoptions.KEY}" {enddayoptions.SELECTED}>{enddayoptions.VALUE}</option><!-- END enddayoptions -->
+                    </select>
 
-                <select name='calMEnd' id='calMEnd'>
-                    <!-- BEGIN endmonthoptions -->
-                    <option value="{endmonthoptions.KEY}" {endmonthoptions.SELECTED}>{endmonthoptions.VALUE}</option><!-- END endmonthoptions -->
-                </select>
+                    <select name='calMEnd' id='calMEnd'>
+                        <!-- BEGIN endmonthoptions -->
+                        <option value="{endmonthoptions.KEY}" {endmonthoptions.SELECTED}>{endmonthoptions.VALUE}</option><!-- END endmonthoptions -->
+                    </select>
 
-                <select name='calYEnd' id='calYEnd'>
-                    <!-- BEGIN endyearoptions -->
-                    <option value="{endyearoptions.KEY}" {endyearoptions.SELECTED}>{endyearoptions.VALUE}</option><!-- END endyearoptions -->
-                </select>
+                    <select name='calYEnd' id='calYEnd'>
+                        <!-- BEGIN endyearoptions -->
+                        <option value="{endyearoptions.KEY}" {endyearoptions.SELECTED}>{endyearoptions.VALUE}</option><!-- END endyearoptions -->
+                    </select>
+                </dd>
+            </dl>
 
-                <select name='calEndHr' id='calEndHr'>
-                    <!-- BEGIN endhouroptions -->
-                    <option value="{endhouroptions.KEY}" {endhouroptions.SELECTED}>{endhouroptions.VALUE}</option><!-- END endhouroptions -->
-                </select>
+            <dl style="clear: right;">
+                <dt><label for="calinvHr">{L_RAID_INVITE_TIME}:</label></dt>
+                <dd>
+                    <select name='calinvHr' id='calinvHr'>
+                        <!-- BEGIN invhouroptions -->
+                        <option value="{invhouroptions.KEY}" {invhouroptions.SELECTED}>{invhouroptions.VALUE}</option><!-- END invhouroptions -->
+                    </select>
+                    <select name='calinvMn' id='calinvMn'>
+                        <!-- BEGIN invminoptions -->
+                        <option value="{invminoptions.KEY}" {invminoptions.SELECTED}>{invminoptions.VALUE}</option><!-- END invminoptions -->
+                    </select>
+                </dd>
+            </dl>
+            <dl style="clear: right;">
+                <dt><label for="calHr">{L_RAID_START_TIME}:</label></dt>
+                <dd>
+                    <select name='calHr' id='calHr'>
+                        <!-- BEGIN starthouroptions -->
+                        <option value="{starthouroptions.KEY}" {starthouroptions.SELECTED}>{starthouroptions.VALUE}</option><!-- END starthouroptions -->
+                    </select>
+                    <select name='calMn' id='calMn'>
+                        <!-- BEGIN startminoptions -->
+                        <option value="{startminoptions.KEY}" {startminoptions.SELECTED}>{startminoptions.VALUE}</option><!-- END startminoptions -->
+                    </select>
+                </dd>
+            </dl>
+            <dl style="clear: right;">
+                <dt><label for="calEndHr">{L_RAID_END_TIME}:</label></dt>
+                <dd>
+                    <select name='calEndHr' id='calEndHr'>
+                        <!-- BEGIN endhouroptions -->
+                        <option value="{endhouroptions.KEY}" {endhouroptions.SELECTED}>{endhouroptions.VALUE}</option><!-- END endhouroptions -->
+                    </select>
 
-                <select name='calEndMn' id='calEndMn'>
-                    <!-- BEGIN endminuteoptions -->
-                    <option value="{endminuteoptions.KEY}" {endhouroptions.SELECTED}>{endminuteoptions.VALUE}</option><!-- END endminuteoptions -->
-                </select>
-            </dd>
-        </dl>
+                    <select name='calEndMn' id='calEndMn'>
+                        <!-- BEGIN endminuteoptions -->
+                        <option value="{endminuteoptions.KEY}" {endhouroptions.SELECTED}>{endminuteoptions.VALUE}</option><!-- END endminuteoptions -->
+                    </select>
+                </dd>
+            </dl>
         </fieldset>
 
         <span class="corners-bottom"><span></span></span>
     </div>
 </div>
-

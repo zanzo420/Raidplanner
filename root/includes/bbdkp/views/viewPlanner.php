@@ -154,7 +154,6 @@ class viewPlanner implements iViews
     {
 
         $raidplan = new Raidplan($raidplan_id);
-        $raidplan_display = new Raidplan_display();
 
         $addraidplan	= (isset($_POST['addraidplan']) ) ? true : false;
         $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;
@@ -163,39 +162,57 @@ class viewPlanner implements iViews
         $deleteraidplan	= (isset($_POST['deleteraidplan'])) ? true : false;
         $pushraidplan	= (isset($_POST['pushraidplan'])) ? true : false;
 
-
-        if($addraidplan || $editraidplan)
+        if($addraidplan)
         {
             //show add form
+            $raidplan = new Raidplan();
+            $raidplan_display = new Raidplan_display();
             $raidplan_display->showadd($raidplan, $this->cal);
         }
-
-        if (($submit || $update) && confirm_box(true))
+        elseif($editraidplan)
+        {
+            //show edit form
+            $raidplan_display = new Raidplan_display();
+            $raidplan_display->showadd($raidplan, $this->cal);
+        }
+        elseif (($submit || $update) && confirm_box(true))
         {
              // insert in database
-             $this->AddUpdateRaidplan($raidplan_display);
+            $raidplan_display = new Raidplan_display();
+            $this->AddUpdateRaidplan($raidplan_display);
+
         }
         elseif ($submit || $update)
         {
+            // request_var edit or new raidplan
+            $raidplan_display = new Raidplan_display();
             $raidplan_display->SetRaidplan($raidplan, $submit, $update);
         }
-
-        if($deleteraidplan)
+        elseif($deleteraidplan)
         {
             if(!$raidplan->raidplan_delete())
             {
+                $raidplan_display = new Raidplan_display();
                 $raidplan_display->DisplayRaidplan($raidplan);
             }
         }
-
-        if($pushraidplan)
+        elseif($pushraidplan)
         {
             $raidplan->raidplan_push();
         }
+        else
+        {
+            $raidplan_display = new Raidplan_display();
+            $raidplan_display->DisplayRaidplan($raidplan);
+        }
 
+        unset($raidplan);
+        unset($raidplan_display);
 
-        $action = request_var('action', 'display');
-
+        /*
+         *
+         *
+         *  $action = request_var('action', 'display');
         switch($action)
         {
             case 'signup':
@@ -221,16 +238,9 @@ class viewPlanner implements iViews
             case 'showadd':
                 $raidplan_display->showadd($raidplan, $this->cal);
                 break;
-
-            default:
-                $raidplan_display->DisplayRaidplan($raidplan);
-                break;
-
         }
-
-
-        unset($raidplan);
-
+         *
+         */
     }
 
     /**

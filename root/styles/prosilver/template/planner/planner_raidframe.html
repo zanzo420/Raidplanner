@@ -17,21 +17,19 @@
             <!-- INCLUDE planner/RaidCalendar/welcome.html -->
             <br />
             <!-- INCLUDE planner/raidplan/planner_navbar.html -->
-            <form id="postform" method="post" action="{S_POST_ACTION}" onsubmit="return checkForm(this);">
-                <!-- IF S_PLANNER_RAIDPLAN -->
-                <!-- INCLUDE planner/raidplan/planner_view_raidplan.html -->
-                <!-- ENDIF -->
-                <!-- IF S_PLANNER_ADD -->
-                <!-- INCLUDE planner/raidplan/planner_post_body.html -->
-                <!-- ENDIF -->
-                <!-- IF S_PLANNER_DAY -->
-                <!-- INCLUDE planner/RaidCalendar/planner_view_day.html -->
-                <!-- ELSEIF S_PLANNER_WEEK -->
-                <!-- INCLUDE planner/RaidCalendar/planner_view_month.html -->
-                <!-- ELSEIF S_PLANNER_MONTH -->
-                <!-- INCLUDE planner/RaidCalendar/planner_view_month.html -->
-                <!-- ENDIF -->
-            </form>
+            <!-- IF S_PLANNER_RAIDPLAN -->
+            <!-- INCLUDE planner/raidplan/planner_view_raidplan.html -->
+            <!-- ENDIF -->
+            <!-- IF S_PLANNER_ADD -->
+            <!-- INCLUDE planner/raidplan/planner_post_body.html -->
+            <!-- ENDIF -->
+            <!-- IF S_PLANNER_DAY -->
+            <!-- INCLUDE planner/RaidCalendar/planner_view_day.html -->
+            <!-- ELSEIF S_PLANNER_WEEK -->
+            <!-- INCLUDE planner/RaidCalendar/planner_view_month.html -->
+            <!-- ELSEIF S_PLANNER_MONTH -->
+            <!-- INCLUDE planner/RaidCalendar/planner_view_month.html -->
+            <!-- ENDIF -->
         </div>
         <span class="corners-bottom"><span></span></span>
     </div>
