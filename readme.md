@@ -2,7 +2,6 @@
 
 #Raidplanner Beta 12
 
-***not stable, please don't install in prod.***
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
 
@@ -55,7 +54,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v0.12 dev
+v0.12
 
 ## Installation
 * 	Unzip the zip file into /store/mods
