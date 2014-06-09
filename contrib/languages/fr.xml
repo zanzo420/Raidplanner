@@ -7,7 +7,7 @@
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
-		<title lang="en"><![CDATA[bbDKP Raidplanner 0.12.0]]></title>
+		<title lang="en"><![CDATA[bbDKP Raidplanner 0.13.0]]></title>
 		<description lang="fr"><![CDATA[fichiers français]]></description>
 		<author-notes lang="fr"><![CDATA[fichiers français]]></author-notes>
 		<author-group>
@@ -21,15 +21,13 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>0.12.0</mod-version>
+		<mod-version>0.13.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
 			<target-version>3.0.12</target-version>
 		</installation>
 		<link-group>
-				<description lang="de"><![CDATA[Deutsche Sprachdateien]]></description>
-		<author-notes lang="de"><![CDATA[Deutsche Sprachdateien]]></author-notes>
 			<link type="parent" href="../../install.xml" lang="en">Installation manual</link>
 		</link-group>
 	</header>
@@ -38,6 +36,31 @@
 			<file from="root/language/fr/mods/*.*" to="language/fr/mods/*.*"/>
 			<file from="root/language/fr/email/*.*" to="language/fr/email/*.*"/>	
 		</copy>
+		<open src="language/de/common.php">
+			<edit>
+				<comment lang="en"><![CDATA[Define Calendar string]]></comment>
+				<comment lang="de"><![CDATA[Definiere Kalender-String]]></comment>
+				<find><![CDATA[=> 'Bytes',]]></find>
+				<action type="after-add"><![CDATA[    'PLANNER'                => 'Raidplanner',
+]]></action>
+			</edit>
+		</open>
+		<open src="language/de/ucp.php">
+			<edit>
+				<comment lang="en"><![CDATA[Add Raidplanner UCP strings]]></comment>
+				<find><![CDATA[	'DISABLE_CENSORS'			=> 'Activer la censure de mots ',]]></find>
+				<action type="after-add"><![CDATA[	'DISPLAY_EVENTS_DAYCOUNT'	=> 'Combien de jours voulez-vous montrer ?',
+		]]></action>
+			</edit>
+			<edit>
+				<comment lang="en"><![CDATA[Define Calendar UCP module name strings]]></comment>
+				<comment lang="de"><![CDATA[Definieren Kalender UCP Modulnamen Strings]]></comment>
+				<find><![CDATA[	'UCP_MAIN_ATTACHMENTS'		=> 'Gérer les pièces jointes',]]></find>
+				<action type="after-add"><![CDATA[	'UCP_MAIN_RAIDPLANNER_MYEVENTS'	=> 'Gère mes Raids',
+			'UCP_MAIN_RAIDPLANNER_REGISTRATION'=> 'Gère Inscription au Raid',
+		]]></action>
+			</edit>
+		</open>
 		<diy-instructions lang="en"><![CDATA[See general install.xml file]]></diy-instructions>
 		<diy-instructions lang="fr"><![CDATA[voir install.xml]]></diy-instructions>
 	</action-group>

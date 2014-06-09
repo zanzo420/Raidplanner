@@ -6,7 +6,7 @@
  * @package bbDkp.acp
  * @copyright (c) 2010 bbdkp http://code.google.com/p/bbdkp/
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 0.11.0
+ * @version 0.13.0
  *
  **/
 

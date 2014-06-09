@@ -1,6 +1,6 @@
 [![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
 
-#Raidplanner Beta 12
+#Raidplanner Beta 13
 
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
@@ -54,7 +54,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v0.12
+v0.13
 
 ## Installation
 * 	Unzip the zip file into /store/mods
@@ -73,6 +73,11 @@ v0.12
 
 ### changes
 
+*   0.13 2014-06-09
+	*   [FIX] #49 ajax file should be in super path
+	*   [FIX] fix french translation
+	*   [FIX] #49 fix block path
+			
 *   0.12 2014-06-07 
 	*   [FIX] #46 show size of raid team on popup 
 	*   [FIX] #41 use explicit getters/setters for the raidplan class
