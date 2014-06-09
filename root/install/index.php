@@ -5,7 +5,7 @@
  * @author sajaki9@gmail.com
  * @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- * v.0.12.0
+ * v.0.13.0
  */
 
 define('UMIL_AUTO', true);
@@ -656,17 +656,20 @@ $versions = array(
 
             ),
 
-            'custom' => array('purgecaches', 'versionupdater'),
 
         ),
 
     '0.12.0' =>
         array(
-            // beta 12
+			// beta 12
+
+        ),
+    '0.13.0' =>
+        array(
+            // beta 13
             'custom' => array('purgecaches', 'versionupdater'),
 
         ),
-
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
