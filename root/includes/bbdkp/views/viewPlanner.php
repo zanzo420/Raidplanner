@@ -44,10 +44,10 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
     include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/raidplan/Raidplan_display.' . $phpEx);
 }
 
-if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
+if (!class_exists('\bbdkp\views\raidplanner\rpblocks', false))
 {
     //display left side blocks
-    include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/block/Rpblocks.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/block/Rpblocks.' . $phpEx);
 }
 
 /**
