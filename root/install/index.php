@@ -416,10 +416,9 @@ $versions = array(
 		// inserting roles
 		array('phpbb_rp_roles',
            array(
-                  array('role_name' => 'Ranged DPS', 'role_needed1' => 3, 'role_needed2' => 7, 'role_color' => '#BB00AA', 'role_icon' => 'range'),          
-                  array('role_name' => 'Melee DPS', 'role_needed1' => 1, 'role_needed2' => 3, 'role_color' => '#FFCC66', 'role_icon' => 'melee'),
-                  array('role_name' => 'Tank' , 'role_needed1' => 1,  'role_needed2' => 2, 'role_color' => '#777777', 'role_icon' => 'tank'),
-                  array('role_name' => 'Off Tank', 'role_needed1' => 1,  'role_needed2' => 2, 'role_color' => '#AAAAAA', 'role_icon' => 'tank'),
+                  array('role_name' => 'Ranged DPS', 'role_needed1' => 3, 'role_needed2' => 7, 'role_color' => '#69CCF0', 'role_icon' => 'range'),          
+                  array('role_name' => 'Melee DPS', 'role_needed1' => 1, 'role_needed2' => 3, 'role_color' => '#FF2233', 'role_icon' => 'melee'),
+                  array('role_name' => 'Tank' , 'role_needed1' => 1,  'role_needed2' => 2, 'role_color' => '#C79C6E', 'role_icon' => 'tank'),
                   array('role_name' => 'Healer', 'role_needed1' => 2,  'role_needed2' => 5, 'role_color' => '#00EECC', 'role_icon' => 'healer'),
                   array('role_name' => 'Hybrid' , 'role_needed1' => 2,  'role_needed2' => 6, 'role_color' => '#9999FF', 'role_icon' => 'unknown'),
            )),

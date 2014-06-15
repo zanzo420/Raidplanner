@@ -171,9 +171,9 @@ class DisplayFrame extends RaidCalendar
 			'FRAME_CALD'			=> $this->date['day'],
 			'FRAME_CALM'			=> $this->date['month_no'],
 			'FRAME_CALY'			=> $this->date['year'],
-			'DAY_VIEW_URL'  		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
-			'WEEK_VIEW_URL' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
-			'MONTH_VIEW_URL' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
+			'U_DAY_VIEW_URL'  		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
+			'U_WEEK_VIEW_URL' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
+			'U_MONTH_VIEW_URL' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
 
 		));
 		

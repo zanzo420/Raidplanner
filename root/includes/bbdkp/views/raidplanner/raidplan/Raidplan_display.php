@@ -54,41 +54,32 @@ class Raidplan_display
         $bbcode = $raidplan->getBbcode();
         $message = generate_text_for_display($body, isset($bbcode['uid'])  ? $bbcode['uid'] : '', isset($bbcode['bitfield']) ? $bbcode['bitfield'] : '', $bbcode_options);
 
-
         // translate raidplan start and end time into user's timezone
         $day = gmdate("d", $raidplan->getStartTime());
         $month = gmdate("n", $raidplan->getStartTime());
         $year =	gmdate('Y', $raidplan->getStartTime());
 
-        // url to add raid
-        $add_raidplan_url = "";
+        // add raid ?
+        $add_raidplan = false;
         if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans'))
         {
-            $add_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".
-                $day."&amp;calM=". $month. "&amp;calY=".$year);
+            $add_raidplan = true;
         }
 
-       /* make the url for the edit button
-        *  show if user is registered
-        * belongs to u_raidplanner_edit_raidplans usergroup
-        * created this raid or belongs to group that can edit any raid
-        */
-        $edit_url = "";
+        $edit_raidplan = false;
         if( $user->data['is_registered']
             && $auth->acl_get('u_raidplanner_edit_raidplans') &&
             (($user->data['user_id'] == $raidplan->getPoster() ) || $auth->acl_get('m_raidplanner_edit_other_users_raidplans')))
         {
-            $edit_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;raidplanid=".
-                $raidplan->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+            $edit_raidplan = true;
         }
 
         /* make the url for the delete button */
-        $delete_url = "";
+        $delete_raidplan = "";
         if( $user->data['is_registered'] && $auth->acl_get('u_raidplanner_delete_raidplans') &&
             (($user->data['user_id'] == $raidplan->getPoster() )|| $auth->acl_get('m_raidplanner_delete_other_users_raidplans') ))
         {
-            $delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;raidplanid=".
-                $raidplan->id."&amp;calD=".$day."&amp;calM=".$month."&amp;calY=".$year);
+            $delete_raidplan = true;
         }
 
         $day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$day ."&amp;calM=".
@@ -100,6 +91,8 @@ class Raidplan_display
 
         /* make url for signup action */
         $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $raidplan->id);
+
+
 
         //display signups
         if($raidplan->getAccesslevel() != 0)
@@ -146,11 +139,11 @@ class Raidplan_display
         // 1) rp_rppushmode == 1
         // 2) the user belongs to group having u_raidplanner_push permission
         // 3) there are confirmations
-        $push_raidplan_url = '';
+        $push_raidplan = false;
         $signuplist = $raidplan->getSignups();
         if ( $auth->acl_gets('u_raidplanner_push') &&  $config['rp_rppushmode'] == 1 && $signuplist['confirmed'] > 0 )
         {
-            $push_raidplan_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=push&amp;raidplanid=". $raidplan->id);
+            $push_raidplan = true;
         }
 
         // event image on top
@@ -229,17 +222,17 @@ class Raidplan_display
                 'POSTER'			=> $raidplan->getPosterUrl(),
                 'INVITED'			=> $raidplan->getInviteList(),
                 'TEAM_NAME'			=> $raidplan->getRaidteamname(),
-                'U_EDITRAID'		=> $edit_url,
-                'U_DELETERAID'		=> $delete_url,
-                'U_ADDRAID'			=> $add_raidplan_url,
-                'U_PUSHRAID'		=> $push_raidplan_url,
+                'S_EDITRAID'		=> $edit_raidplan,
+                'S_DELETERAID'		=> $delete_raidplan,
+                'S_ADDRAID'			=> $add_raidplan,
+                'S_PUSHRAID'		=> $push_raidplan,
 
                 'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),
                 'WEEK_IMG'			=> $user->img('button_calendar_week', 'WEEK'),
                 'MONTH_IMG'			=> $user->img('button_calendar_month', 'MONTH'),
-                'DAY_VIEW_URL'		=> $day_view_url,
-                'WEEK_VIEW_URL'		=> $week_view_url,
-                'MONTH_VIEW_URL'	=> $month_view_url,
+                'U_DAY_VIEW_URL'	=> $day_view_url,
+                'U_WEEK_VIEW_URL'	=> $week_view_url,
+                'U_MONTH_VIEW_URL'	=> $month_view_url,
             )
         );
     }
@@ -1160,9 +1153,9 @@ class Raidplan_display
             'MESSAGE'					=> $message['text'],
             'START_DATE'				=> $user->format_date($start_date, $config['rp_date_format'], true),
             'START_HOUR_SEL'			=> $hour_start_selcode,
-            'DAY_VIEW_URL'				=> $day_view_url,
-            'WEEK_VIEW_URL'				=> $week_view_url,
-            'MONTH_VIEW_URL'			=> $month_view_url,
+            'U_DAY_VIEW_URL'			=> $day_view_url,
+            'U_WEEK_VIEW_URL'			=> $week_view_url,
+            'U_MONTH_VIEW_URL'			=> $month_view_url,
 
             'BBCODE_STATUS'				=> ($bbcode_status) ?
                     sprintf($user->lang['BBCODE_IS_ON'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>') :
