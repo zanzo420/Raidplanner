@@ -208,7 +208,7 @@ class Raidplan_display
                 'EVENT_IMAGE' 		=> $eventimg,
 
                 'SUBJECT'			=> $raidplan->getSubject(),
-                'MESSAGE' => $message,
+                'RAIDPLANNERMESSAGE' => $message,
                 'INVITE_TIME'		=> $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true),
                 'START_TIME'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true),
                 'START_DATE'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true),
@@ -1108,7 +1108,7 @@ class Raidplan_display
         $body = $raidplan->getBody();
         $bbcode = $raidplan->getBbcode();
         $message = generate_text_for_edit($body, isset($bbcode['uid'])  ? $bbcode['uid'] : '', isset($bbcode['bitfield']) ? $bbcode['bitfield'] : '', 7);
-        decode_message($message, isset($bbcode['uid'])  ? $bbcode['uid'] : '');
+        //decode_message($message, isset($bbcode['uid'])  ? $bbcode['uid'] : '');
 
         // HTML, BBCode, Smilies, Images and Flash status
         $bbcode_status	= ($config['allow_bbcode']) ? true : false;
@@ -1171,7 +1171,7 @@ class Raidplan_display
         ));
 
         // Build custom bbcodes array
-        display_custom_bbcodes();
+       display_custom_bbcodes();
     }
 
 
