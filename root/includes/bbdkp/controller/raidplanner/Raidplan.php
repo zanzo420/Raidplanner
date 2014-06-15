@@ -61,6 +61,7 @@ class Raidplan
     /**
      * @return int
      */
+
     public function getId()
     {
         return $this->id;
@@ -683,11 +684,11 @@ class Raidplan
     private $signed_off;
 
     /**
+     * get the signoff property
      * @return boolean
      */
     public function getSignedOff()
     {
-
         // to lock signup pane if your char is signed off
         $this->signed_off = false;
         if(is_array($this->signoffs))
@@ -1098,7 +1099,6 @@ class Raidplan
         $this->signoffs = $this->_get_signoffs();
 
         $this->invite_list = $this->_set_InviteList($this->accesslevel, $this->group_id, $this->group_id_list);
-
     }
 
     /**
@@ -1453,17 +1453,18 @@ class Raidplan
     {
         global $db;
 
-        $rpsignup = new RaidplanSignup();
-
         $sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val = 0";
+
         $result = $db->sql_query($sql);
         $this->signoffs = array();
 
         while ($row = $db->sql_fetchrow($result))
         {
+            $rpsignup = new RaidplanSignup();
             $rpsignup->getSignup($row['signup_id']);
             //get all public object vars to signup array and bind to role
             $this->signoffs[] = $rpsignup;
+            unset($rpsignup);
         }
         unset($rpsignup);
         $db->sql_freeresult($result);

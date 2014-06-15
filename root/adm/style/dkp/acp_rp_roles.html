@@ -4,18 +4,16 @@
  @package bbDkp.acp
  @copyright (c) 2010 bbDkp <http://www.bbdkp.com>
  @license http://opensource.org/licenses/gpl-license.php GNU Public License
- @version 0.11.0
+ @version 1.0-RC1
 //-->
 <script type="text/javascript">
     // <![CDATA[
 
-
-    function check_form()
+   function newrole_check()
     {
         var a1 = document.getElementById("newrole").value.length;
         var a2 = document.getElementById("newrole_color").value.length;
         var a3 = document.getElementById("newrole_icon").value.length;
-
 
         if (a1 < 2)
         {
@@ -96,7 +94,7 @@
 
                 <fieldset><legend>{L_RAIDROLES}</legend>
 
-                    <form id="rproles" method="post" action="{U_ACTION}" onsubmit="return check_form();" >
+                    <form id="rproles" method="post" action="{U_ACTION}">
 
                         <p>{L_ACP_RAIDROLES_EXPLAIN}</p>
 
@@ -113,14 +111,14 @@
                             <tr class="row2">
                                 <td style="text-align: right" colspan="3">{L_EDITRAIDROLES}</td>
                                 <td style="text-align: center">
-                                    <input class="button2" name="roleupdate" type="submit" value="{L_EDIT}" />
+                                    <input class="button2" name="roleupdate" type="submit"  value="{L_EDIT}" />
                                 </td>
                             </tr>
                             <tr class="row2">
                                 <td><input type="text" id="newrole" name="newrole" value="" class="autowidth" /></td>
                                 <td><input type="text" id="newrole_color" name="newrole_color" value="" class="autowidth" /></td>
                                 <td><input type="text" id="newrole_icon" name="newrole_icon" value="" class="autowidth" /></td>
-                                <td style="text-align: center"> <input class="button2" name="roleadd" type="submit" value="{L_ADD}" /></td>
+                                <td style="text-align: center"> <input class="button2" onclick="return newrole_check();"  name="roleadd" type="submit" value="{L_ADD}" /></td>
                             </tr>
                             </tfoot>
                             <tbody>

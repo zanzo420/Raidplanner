@@ -152,6 +152,7 @@ class viewPlanner implements iViews
      */
     private function ViewRaidplan($raidplan_id, $action)
     {
+        global $phpbb_root_path, $phpEx;
 
         $raidplan = new Raidplan($raidplan_id);
 
@@ -180,6 +181,8 @@ class viewPlanner implements iViews
              // insert in database
             $raidplan_display = new Raidplan_display();
             $this->AddUpdateRaidplan($raidplan_display);
+            $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+            redirect($url);
 
         }
         elseif ($submit || $update)
@@ -207,22 +210,32 @@ class viewPlanner implements iViews
             {
                 case 'signup':
                     $this->AddSignup($raidplan, $raidplan_display);
+                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                    redirect($url);
                     break;
 
                 case 'delsign':
                     $this->DeleteSignup($raidplan, $raidplan_display);
+                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                    redirect($url);
                     break;
 
                 case 'editsign':
                     $this->EditComment($raidplan, $raidplan_display);
+                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                    redirect($url);
                     break;
 
                 case 'requeue':
                     $this->Requeue($raidplan, $raidplan_display);
+                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                    redirect($url);
                     break;
 
                 case 'confirm':
                     $this->ConfirmSignup($raidplan, $raidplan_display);
+                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                    redirect($url);
                     break;
 
                 case 'showadd':
@@ -266,8 +279,6 @@ class viewPlanner implements iViews
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
         // display it
-        $raidplan_display->DisplayRaidplan($raidplan);
-        return $action;
     }
 
     /**
@@ -354,6 +365,7 @@ class viewPlanner implements iViews
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
+
     }
 
 }
