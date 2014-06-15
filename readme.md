@@ -48,7 +48,6 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	Detailed permissions for ability to create private, group, or public Raidplans - now you can give some users the power to create public Raidplans, and others only permission to create private Raidplans, or whatever combination makes sense for your forum.
 
 ##### ACP
-*	Auto pruning of past Raidplans - From the ACP you control how often Raidplans are pruned, and how old they have to be before they are added to the delete list.
 *	Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred date/time format, so you can display just the time in hours where it makes sense (like in the week view) or the whole date+time (like in the display Raidplan)
 *	UCP module that displays upcoming Raidplans (that the user has registered for) for the next X days.
 
@@ -64,7 +63,7 @@ v1.0 RC1
 
 
 ## Requirements
-*	bbDKP 1.3.0 or higher
+*	bbDKP 1.3.0.6
 *	phpBB 3.0.12
 
 ### History and credits 
@@ -75,8 +74,9 @@ v1.0 RC1
 *   1.0 RC1 2014-06-15
 	*   [FIX] #52 fix display signoffs
 	*	[FIX] #52 fix can't edit raid roles
-	*	redesign raidplan form
-		
+	*	redesign raidplan form, add shadows
+	*	[FIX] #50 font size in block was too high
+	*	[FIX] #42 add bbTips bbcode to Raidplanner. 			
 *   0.13 014-06-09
 	*   [FIX] #49 ajax file should be in super path
 	*   [FIX] fix french translation

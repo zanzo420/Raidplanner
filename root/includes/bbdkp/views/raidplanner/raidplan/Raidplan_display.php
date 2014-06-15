@@ -208,8 +208,7 @@ class Raidplan_display
                 'EVENT_IMAGE' 		=> $eventimg,
 
                 'SUBJECT'			=> $raidplan->getSubject(),
-                'MESSAGE'			=> $message,
-
+                'MESSAGE' => $message,
                 'INVITE_TIME'		=> $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true),
                 'START_TIME'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true),
                 'START_DATE'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true),
@@ -1109,6 +1108,7 @@ class Raidplan_display
         $body = $raidplan->getBody();
         $bbcode = $raidplan->getBbcode();
         $message = generate_text_for_edit($body, isset($bbcode['uid'])  ? $bbcode['uid'] : '', isset($bbcode['bitfield']) ? $bbcode['bitfield'] : '', 7);
+        decode_message($message, isset($bbcode['uid'])  ? $bbcode['uid'] : '');
 
         // HTML, BBCode, Smilies, Images and Flash status
         $bbcode_status	= ($config['allow_bbcode']) ? true : false;
@@ -1150,7 +1150,7 @@ class Raidplan_display
             'TEAM_SIZE'				    => $raidplan->getRaidTeamNeeded(),
             'L_POST_A'					=> $page_title,
             'SUBJECT'					=> $raidplan->getSubject(),
-            'MESSAGE'					=> $message['text'],
+            'MESSAGE'		            => $message['text'],
             'START_DATE'				=> $user->format_date($start_date, $config['rp_date_format'], true),
             'START_HOUR_SEL'			=> $hour_start_selcode,
             'U_DAY_VIEW_URL'			=> $day_view_url,
