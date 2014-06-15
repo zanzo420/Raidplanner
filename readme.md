@@ -72,11 +72,15 @@ v1.0 RC1
 *	Raidplanner mod was partly made from Alightner's Calendar mod and phpRaider, refactored into functional classes to work with bbDKP. 
 
 ### changes
-
-*   1.0 RC1 2014-06-09
+*   1.0 RC1 2014-06-15
+	*   [FIX] #52 fix display signoffs
+	*	[FIX] #52 fix can't edit raid roles
+	*	redesign raidplan form
+		
+*   0.13 014-06-09
 	*   [FIX] #49 ajax file should be in super path
 	*   [FIX] fix french translation
-	*   [FIX] #49 fix block path
+	*   [FIX] #49 fix block path		
 			
 *   0.12 2014-06-07 
 	*   [FIX] #46 show size of raid team on popup 
