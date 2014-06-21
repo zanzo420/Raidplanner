@@ -56,7 +56,6 @@ class DisplayFrame extends RaidCalendar
     {
         global $db;
         $sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
-        $db->sql_query($sql);
         $result = $db->sql_query($sql, 864000);
         while ( $row = $db->sql_fetchrow($result) )
         {

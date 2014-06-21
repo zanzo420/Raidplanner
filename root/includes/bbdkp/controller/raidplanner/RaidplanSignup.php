@@ -116,7 +116,10 @@ class RaidplanSignup
 		global $phpbb_root_path, $phpEx, $db;
 		
 		$this->signup_id = $signup_id;
-		$sql = "select * from " . RP_SIGNUPS . " where signup_id = " . $this->signup_id;
+		$sql = 'SELECT * from ' . RP_SIGNUPS . ' a INNER JOIN ' . RP_ROLES . ' b
+		    ON a.role_id = b.role_id
+		    WHERE a.signup_id = ' . $this->signup_id;
+
         //cache for a day
 		$result = $db->sql_query($sql, 86400);
 		$row = $db->sql_fetchrow($result);
@@ -140,12 +143,8 @@ class RaidplanSignup
 		$this->confirm = $row['role_confirm'];
 		$this->dkpmemberid = $row['dkpmember_id'];
 		$this->roleid = $row['role_id'];
+		$this->role_name = $row['role_name'];
         unset ($row);
-
-        $sql='SELECT role_name FROM ' . RP_ROLES . ' WHERE role_id = ' . $this->roleid;
-		$result = $db->sql_query($sql);
-		$this->role_name = $db->sql_fetchfield('role_name');
-		$db->sql_freeresult($result);
 
         $this->Member->member_id = (int) $this->dkpmemberid;
         $this->Member->Getmember();
@@ -391,6 +390,10 @@ class RaidplanSignup
 	public function requeuesignup($signup_id)
 	{
 		global $cache, $db;
+        //destroy sql cache for signup / raidplan / roles table
+        $cache->destroy( 'sql', RP_SIGNUPS );
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
 
 		//make object
 		$this->getSignup($signup_id);
@@ -426,7 +429,7 @@ class RaidplanSignup
 				}
 				$db->sql_transaction('commit');
 
-                //destroy sql cache for signup / raidplan / roles table
+                //AGAIN ! destroy sql cache for signup / raidplan / roles table
                 $cache->destroy( 'sql', RP_SIGNUPS );
                 $cache->destroy( 'sql', RP_RAIDS_TABLE );
                 $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
@@ -574,7 +577,13 @@ class RaidplanSignup
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
-				return true;
+
+                //destroy sql cache for signup / raidplan / roles table
+                $cache->destroy( 'sql', RP_SIGNUPS );
+                $cache->destroy( 'sql', RP_RAIDS_TABLE );
+                $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
+
+                return true;
 				break;
 				
 			case 2:	
@@ -590,7 +599,13 @@ class RaidplanSignup
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
-				return true;
+
+                // again destroy sql cache for signup / raidplan / roles table
+                $cache->destroy( 'sql', RP_SIGNUPS );
+                $cache->destroy( 'sql', RP_RAIDS_TABLE );
+                $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
+
+                return true;
 				break;
 		}
 		
