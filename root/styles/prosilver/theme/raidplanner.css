@@ -1,6 +1,6 @@
 /* -------------------------
    raidplanner css
-   version 0.12
+   version 1.0-RC2
   ------------------------- */
 
 .leather {
@@ -353,7 +353,7 @@ hr.hrCal {
     color: #333333;
     line-height: 1.48em;
     padding: 10px;
-    width:45%;
+    width: 115%;
     float:left;
 
 }
