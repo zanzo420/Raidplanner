@@ -160,7 +160,8 @@ class RaidAuth
                                 AND g.group_id = ug.group_id
                                 AND g.group_id = '.$db->sql_escape($this->raidplan->getGroupId()).'
                                 AND ug.user_pending = 0';
-                    $result = $db->sql_query($sql);
+                    //cache for a week
+                    $result = $db->sql_query($sql, 604800);
                     if($result)
                     {
                         $row = $db->sql_fetchrow($result);
@@ -194,7 +195,7 @@ class RaidAuth
                                 AND g.group_id = ug.group_id
                                 AND ('.$group_options.')
                                 AND ug.user_pending = 0';
-                    $result = $db->sql_query($sql);
+                    $result = $db->sql_query($sql, 604800);
                     if( $result )
                     {
                         $this->auth_cansee = true;

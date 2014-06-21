@@ -1044,7 +1044,8 @@ class Raidplan
         );
 
         $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query($sql);
+        //cache for 1 day
+        $result = $db->sql_query($sql, 86400);
         $row = $db->sql_fetchrow($result);
         $db->sql_freeresult($result);
         if(!$row)
@@ -1127,7 +1128,8 @@ class Raidplan
      */
     public function Store_Raidplan()
     {
-        global $db;
+        global $cache, $db;
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
 
         $sql_raid = array(
             'etype_id'		 		=> (int) $this->event_type,
@@ -1194,7 +1196,8 @@ class Raidplan
      */
     public function store_raidroles($mode = 0)
     {
-        global $db;
+        global $cache, $db;
+        $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
 
         foreach($this->raidroles as $role_id => $role)
         {
@@ -1247,7 +1250,11 @@ class Raidplan
     public function raidplan_delete()
     {
         // recheck if user can delete
-        global $user, $db, $phpbb_root_path, $phpEx;
+        global $user, $db, $cache, $phpbb_root_path, $phpEx;
+
+        $cache->destroy( 'sql', RP_SIGNUPS );
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
 
         if($this->auth_candelete == false)
         {
@@ -1325,7 +1332,7 @@ class Raidplan
             'ORDER_BY'  => 'r.role_id'
         );
         $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query($sql);
+        $result = $db->sql_query($sql, 604800);
         while ( $row = $db->sql_fetchrow ( $result ) )
         {
             $this->roles[$row['role_id']]['role_name'] = $row['role_name'];
@@ -1376,7 +1383,7 @@ class Raidplan
             'ORDER_BY'  => 'r.role_id'
         );
         $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query($sql);
+        $result = $db->sql_query($sql, 604800);
         $signups = array();
         $confirmations = array();
         $this->raidroles = array();
@@ -1408,11 +1415,12 @@ class Raidplan
     {
         global $db;
 
+        //@todo remove sql in loop
         //fill signups array
         foreach ($this->raidroles as $role_id => $role)
         {
             $sql = "select signup_id from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val > 0 and role_id  = " . $role_id;
-            $result = $db->sql_query($sql);
+            $result = $db->sql_query($sql, 86400);
 
             while ($row = $db->sql_fetchrow($result))
             {
@@ -1455,7 +1463,7 @@ class Raidplan
 
         $sql = "select * from " . RP_SIGNUPS . " where raidplan_id = " . $this->id . " and signup_val = 0";
 
-        $result = $db->sql_query($sql);
+        $result = $db->sql_query($sql, 86400);
         $this->signoffs = array();
 
         while ($row = $db->sql_fetchrow($result))
@@ -1588,7 +1596,7 @@ class Raidplan
 
 
     /**
-     * adds raid to bbdkp
+     * Adds raid to bbdkp
      *
      */
     public function raidplan_push()
@@ -1599,6 +1607,7 @@ class Raidplan
         {
             require("{$phpbb_root_path}includes/bbdkp/controller/raids/RaidController.$phpEx");
         }
+
         // check if raid exists in bbdkp
         if ($this->raid_id > 0)
         {
@@ -1763,7 +1772,9 @@ class Raidplan
      */
     private function exec_pushraid($raid)
     {
-        global $db, $phpbb_root_path, $phpEx;
+        global $db, $cache, $phpbb_root_path, $phpEx;
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+
 
         if (!class_exists('\bbdkp\controller\raids\RaidController'))
         {

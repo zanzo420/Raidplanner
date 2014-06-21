@@ -117,7 +117,8 @@ class RaidplanSignup
 		
 		$this->signup_id = $signup_id;
 		$sql = "select * from " . RP_SIGNUPS . " where signup_id = " . $this->signup_id;
-		$result = $db->sql_query($sql);
+        //cache for a day
+		$result = $db->sql_query($sql, 86400);
 		$row = $db->sql_fetchrow($result);
 		if( !$row )
 		{
@@ -180,7 +181,6 @@ class RaidplanSignup
 		global $db, $user;
 		
 		// get memberinfo
-		
 		$sql_array = array();
 		
 		$sql_array['SELECT'] = ' s.*,  m.member_id, m.member_name, m.member_level, m.member_gender_id '; 
@@ -194,7 +194,9 @@ class RaidplanSignup
 		
 		$mychars = array();
 		$sql = $db->sql_build_query('SELECT', $sql_array);
-		$result = $db->sql_query($sql);
+
+        //cache for a week
+		$result = $db->sql_query($sql, 604800);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$mychars[] = array(
@@ -216,7 +218,7 @@ class RaidplanSignup
      */
     public function signup($raidplan_id)
 	{
-		global $user;
+		global  $user;
 		
 		$this->raidplan_id = $raidplan_id;
 		
@@ -239,7 +241,7 @@ class RaidplanSignup
                 $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
 		
 		$this->storesignup();
-		
+
 		return true;
 	}
 	
@@ -249,7 +251,7 @@ class RaidplanSignup
 	 */
 	private function storesignup()
 	{
-		global $user, $db;
+		global $user, $cache, $db;
 		
 		$sql_signup = array(
 			'raidplan_id'	=> $this->raidplan_id,
@@ -268,7 +270,12 @@ class RaidplanSignup
 			'role_id'		=> $this->roleid
 			
 			);
-		
+
+        //destroy sql cache for signup / raidplan / roles table
+        $cache->destroy( 'sql', RP_SIGNUPS );
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
+
 		/*
 		 * start transaction
 		 */
@@ -348,9 +355,10 @@ class RaidplanSignup
      */
     public function editSignupComment($signup_id)
 	{
-		global $db;
-		//make object
-		$this->getSignup($signup_id);
+		global $cache, $db;
+
+
+        $this->getSignup($signup_id);
 		$message = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
 		$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
@@ -360,13 +368,15 @@ class RaidplanSignup
 			'signup_detail'		=> $message,
 			'bbcode_bitfield' 	=> $this->bbcode['bitfield'],
 			'bbcode_uid'		=> $this->bbcode['uid'],
-			'bbcode_options'	=> 7, 
+			'bbcode_options'	=> 7,
 			);
 		$sql = 'UPDATE ' . RP_SIGNUPS . ' SET ' . $db->sql_build_array('UPDATE', $sql_signup) . ' WHERE signup_id = ' . (int) $this->signup_id;
 		unset($sql_signup);
 		$db->sql_query($sql);
 		$db->sql_transaction('commit');
-		
+
+        //destroy sql cache for signup table
+        $cache->destroy( 'sql', RP_SIGNUPS );
 		return true;
 
 	}
@@ -380,7 +390,8 @@ class RaidplanSignup
      */
 	public function requeuesignup($signup_id)
 	{
-		global $db;
+		global $cache, $db;
+
 		//make object
 		$this->getSignup($signup_id);
 		$this->signup_sync();
@@ -414,11 +425,16 @@ class RaidplanSignup
 					$db->sql_query($sql);
 				}
 				$db->sql_transaction('commit');
-				
+
+                //destroy sql cache for signup / raidplan / roles table
+                $cache->destroy( 'sql', RP_SIGNUPS );
+                $cache->destroy( 'sql', RP_RAIDS_TABLE );
+                $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
+
 				return true;
 				break;
 		}
-		
+
 		// if already >0 then don't do anything
 		return false;
 		
@@ -434,8 +450,13 @@ class RaidplanSignup
 	 */
 	public function deletesignup($signup_id, $raidplan_id)
 	{
-		global $db;
-		
+		global $cache, $db;
+
+        //destroy sql cache for signup / raidplan / roles table
+        $cache->destroy( 'sql', RP_SIGNUPS );
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
+
 		//make object
 		$this->getSignup($signup_id);
 		$this->signup_sync();
@@ -496,12 +517,13 @@ class RaidplanSignup
 	}
 	
 	/**
-	 * synchronises raidplan stats 
-	 * 
+	 * synchronises raidplan stats
+     * make sure that calling function cleared sql cache
 	 */
 	private function signup_sync()
 	{
 		global $db;
+
 		$db->sql_transaction('begin');
 		$sql = "update " . RP_RAIDS_TABLE . " set signup_no = (select count(*) from " . RP_SIGNUPS . 
 			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 0) where raidplan_id = " . (int) $this->raidplan_id;
@@ -527,7 +549,13 @@ class RaidplanSignup
      */
 	public function confirmsignup($signup_id)
 	{
-		global $db;
+		global $cache, $db;
+
+        //destroy sql cache for signup / raidplan / roles table
+        $cache->destroy( 'sql', RP_SIGNUPS );
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
+
 		//make object
 		$this->getSignup($signup_id);
 		$this->signup_sync();

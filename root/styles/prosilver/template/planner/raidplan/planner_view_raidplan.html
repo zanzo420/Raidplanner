@@ -1,45 +1,52 @@
 <!-- [+] raidplan view -->
 <br/>
 <div class="panel bg3">
-    <div class="inner">
+    <div class="inner" >
         <span class="corners-top"><span></span></span>
-        <div style="width:10%; float: left;">
-            <img src="{EVENT_IMAGE}" alt="{ETYPE_DISPLAY_NAME}" width="48" height="48" />
-        </div>
-        <div class="blockhead" style="width:50%; float: left;">
-            <h1 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!-- ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h1>
-        </div>
-        <form id="raidplanactions" method="post" action="{S_POST_ACTION}">
-            <div style="width:40%; float: right;">
-                <ul class="raidplanner-icons" style="float: right;">
-                    <!-- IF S_ADDRAID -->
-                    <li>
-                        <button type="submit" style="border:none; background-color: transparent; cursor:pointer; padding:0px 6px;"
-                                name="addraidplan" id="addraidplan"  alt="{L_ADD_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_add.png" width="24" height="24" ></button>
-                    </li>
-                    <!-- ENDIF -->
-                    <!-- IF S_EDITRAID -->
-                    <li>
-                        <button type="submit" style="border:none; background-color: transparent; cursor:pointer; padding:0px 6px;"
-                                name="editraidplan" id="editraidplan" alt="{L_EDIT_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_edit.png" width="24" height="24" ></button>
-                    </li>
-                    <!-- ENDIF -->
-                    <!-- IF S_PUSHRAID -->
-                    <li>
-                        <button type="submit" style="border:none; background-color: transparent; cursor:pointer; padding:0px 6px;"
-                                name="pushraidplan" id="pushraidplan" alt="{L_PUSH_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_push.png"  width="24" height="24" ></button>
-                    </li>
-                    <!-- ENDIF -->
-                    <!-- IF S_DELETERAID -->
-                    <li>
-                        <button type="submit" style="border:none; background-color: transparent; cursor:not-allowed; padding:0px 6px;"
-                                name="deleteraidplan" id="deleteraidplan" alt="{L_DELETE_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_delete.png" width="24" height="24" ></button>
-                    </li>
-                    <!-- ENDIF -->
-                </ul>
+        <div style="width:90%; float: left; display: table-cell; vertical-align: middle;">
 
+            <div class="blockhead"  style="width:10%; float: left; ">
+                <img src="{EVENT_IMAGE}" alt="{ETYPE_DISPLAY_NAME}" width="48px" height="48px" />
             </div>
-        </form>
+            <div class="blockhead" style="width:50%; float: left;line-height: 39px; ">
+                <div>
+                    <h1 style="color:<!-- IF EVENT_COLOR -->{EVENT_COLOR}<!-- ELSE -->#dfc065<!-- ENDIF -->"><!-- IF ETYPE_DISPLAY_NAME -->{ETYPE_DISPLAY_NAME}<!-- ENDIF --></h1>
+                </div>
+            </div>
+
+            <div style="width:40%; float: right;">
+                <form id="raidplanactions" method="post" action="{S_POST_ACTION}">
+                    <ul class="raidplanner-icons" style="float: right;">
+                        <!-- IF S_ADDRAID -->
+                        <li>
+                            <button type="submit" style="border:none; background-color: transparent; cursor:pointer; padding:0px 6px;"
+                                    name="addraidplan" id="addraidplan"  alt="{L_ADD_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_add.png" width="24" height="24" ></button>
+                        </li>
+                        <!-- ENDIF -->
+                        <!-- IF S_EDITRAID -->
+                        <li>
+                            <button type="submit" style="border:none; background-color: transparent; cursor:pointer; padding:0px 6px;"
+                                    name="editraidplan" id="editraidplan" alt="{L_EDIT_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_edit.png" width="24" height="24" ></button>
+                        </li>
+                        <!-- ENDIF -->
+                        <!-- IF S_PUSHRAID -->
+                        <li>
+                            <button type="submit" style="border:none; background-color: transparent; cursor:pointer; padding:0px 6px;"
+                                    name="pushraidplan" id="pushraidplan" alt="{L_PUSH_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_push.png"  width="24" height="24" ></button>
+                        </li>
+                        <!-- ENDIF -->
+                        <!-- IF S_DELETERAID -->
+                        <li>
+                            <button type="submit" style="border:none; background-color: transparent; cursor:not-allowed; padding:0px 6px;"
+                                    name="deleteraidplan" id="deleteraidplan" alt="{L_DELETE_RAID}" ><img src="{T_IMAGESET_PATH}/planner/button_delete.png" width="24" height="24" ></button>
+                        </li>
+                        <!-- ENDIF -->
+                    </ul>
+
+                </form>
+            </div>
+
+        </div>
         <span class="corners-bottom"><span></span></span>
     </div>
 </div>

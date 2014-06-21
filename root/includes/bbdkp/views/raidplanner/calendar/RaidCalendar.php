@@ -245,7 +245,9 @@ abstract class RaidCalendar
 					AND user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( '%2d', $month2)  .'-' . $db->any_char) . ' ) 
 					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')
 					ORDER BY user_birthday ASC';
-			$result = $db->sql_query($sql);
+
+            // cache the list of birthdays for a month.
+			$result = $db->sql_query($sql, 2419200);
 			$oldday= $newday = "";
 			while ($row = $db->sql_fetchrow($result))
 			{
@@ -306,7 +308,8 @@ abstract class RaidCalendar
 					AND g.group_id = ug.group_id
 					AND ug.user_pending = 0
 				ORDER BY g.group_type, g.group_name';
-		$result = $db->sql_query($sql);
+        // cache the list of groups for a week.
+		$result = $db->sql_query($sql, 604800);
 
 		$group_options = '';
 		while ($row = $db->sql_fetchrow($result))
@@ -344,7 +347,8 @@ abstract class RaidCalendar
 			$sql = 'SELECT smiley_id
 				FROM ' . SMILIES_TABLE . '
 				WHERE display_on_posting = 0';
-			$result = $db->sql_query_limit($sql, 1, 0, 3600);
+            //cache smiley list forever
+			$result = $db->sql_query_limit($sql, 1, 0, 29030400);
 
 			if ($row = $db->sql_fetchrow($result))
 			{
@@ -359,7 +363,7 @@ abstract class RaidCalendar
 			FROM ' . SMILIES_TABLE .
 			(($mode == 'inline') ? ' WHERE display_on_posting = 1 ' : '') . '
 			ORDER BY smiley_order';
-		$result = $db->sql_query($sql, 3600);
+		$result = $db->sql_query($sql, 29030400);
 
 		$smilies = array();
 		while ($row = $db->sql_fetchrow($result))

@@ -82,7 +82,7 @@ class Raidmessenger
 				break;
 		}
 		
-		$result = $db->sql_query($sql);
+		$result = $db->sql_query($sql, 604800);
 		$this->send_user_data = $db->sql_fetchrowset($result);
 		$db->sql_freeresult($result);
 		

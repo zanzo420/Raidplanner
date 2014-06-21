@@ -180,8 +180,8 @@ class viewPlanner implements iViews
         {
              // insert in database
             $raidplan_display = new Raidplan_display();
-            $this->AddUpdateRaidplan($raidplan_display);
-            $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+            $id = $this->AddUpdateRaidplan($raidplan_display);
+            $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $id);
             redirect($url);
 
         }
@@ -278,6 +278,8 @@ class viewPlanner implements iViews
         //make object
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
+
+        return $raidplan->getId();
         // display it
     }
 

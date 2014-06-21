@@ -47,7 +47,7 @@ class rpblocks
 					AND g.group_id = ug.group_id
 					AND ug.user_pending = 0
 				ORDER BY g.group_type, g.group_name';
-		$result = $db->sql_query($sql);
+		$result = $db->sql_query($sql, 3600);
 	
 		$this->group_options = '';
 		while ($row = $db->sql_fetchrow($result))
@@ -118,7 +118,7 @@ class rpblocks
 		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$limit = 10;
-		$result = $db->sql_query_limit($sql, $limit, 0);
+		$result = $db->sql_query_limit($sql, $limit, 0, 3600);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$dkpmembername = $row['member_name'];
@@ -171,7 +171,7 @@ class rpblocks
 		
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		
-		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0);
+		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0, 3600);
 
 					
 		while ($row = $db->sql_fetchrow($result))
