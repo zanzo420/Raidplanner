@@ -857,8 +857,20 @@ class Raidplan_display
          * populate day pulldown
          */
 
+        if($raidplan->getId() > 0)
+        {
+            $day = $user->format_date($raidplan->getStartTime(), 'd', true);
+            $month = $user->format_date($raidplan->getStartTime(), 'm', true);
+            $year = $user->format_date($raidplan->getStartTime(), 'Y', true);
+        }
+        else
+        {
+            $day = $cal->date['day'];
+            $month = $cal->date['month_no'];
+            $year = $cal->date['year'];
+        }
+
         //day dropdown
-        $day = $user->format_date($raidplan->getStartTime(), 'd', true);
         for( $i = 1; $i <= $cal->days_in_month; $i++ )
         {
             $template->assign_block_vars('enddayoptions', array(
@@ -869,7 +881,7 @@ class Raidplan_display
         }
 
         // month dropdown
-        $month = $user->format_date($raidplan->getStartTime(), 'm', true);
+
         for( $i = 1; $i <= 12; $i++ )
         {
             $template->assign_block_vars('endmonthoptions', array(
@@ -880,7 +892,7 @@ class Raidplan_display
         }
 
         //year dropdown
-        $year = $user->format_date($raidplan->getStartTime(), 'Y', true);
+
         $temp_year	= gmdate('Y');
         for( $i = $temp_year - 1; $i < ($temp_year + 5); $i++ )
         {
