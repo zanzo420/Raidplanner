@@ -28,7 +28,7 @@ class rpevents
 		global $db; 
 		
 		$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' WHERE event_status = 1 ORDER BY event_id';
-		$result = $db->sql_query($sql);
+		$result = $db->sql_query($sql, 604800);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$this->events[$row['event_id']]['event_name'] = $row['event_name'];

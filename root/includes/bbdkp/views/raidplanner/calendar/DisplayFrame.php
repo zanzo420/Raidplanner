@@ -57,7 +57,7 @@ class DisplayFrame extends RaidCalendar
         global $db;
         $sql = 'SELECT announcement_msg, bbcode_uid, bbcode_bitfield, bbcode_options FROM ' . RP_RAIDPLAN_ANNOUNCEMENT;
         $db->sql_query($sql);
-        $result = $db->sql_query($sql);
+        $result = $db->sql_query($sql, 864000);
         while ( $row = $db->sql_fetchrow($result) )
         {
             $text = $row['announcement_msg'];
@@ -160,7 +160,9 @@ class DisplayFrame extends RaidCalendar
 			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
 		}
 
+        global $db;
 		$template->assign_vars(array(
+            'DEBUG_NUMQUERIES'      => $db->num_queries['normal'],
 			'CURRENT_TIME'			=> sprintf($user->lang['CURRENT_TIME'], $user->format_date(time(), false, true)), 
 			'TZ'					=> $this->timezone,
 			'S_PLANNER_RAIDFRAME'	=> true,

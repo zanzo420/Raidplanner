@@ -5,7 +5,7 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2014 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 0.12.0
+ * @version 1.0-RC2
  */
 namespace bbdkp\views\raidplanner;
 use bbdkp\controller\raidplanner\Raidplan;
@@ -32,7 +32,6 @@ if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup'))
  */
 class Raidplan_display
 {
-
     /***
      * display a raidplan with signup form
      *
@@ -41,7 +40,7 @@ class Raidplan_display
     public function DisplayRaidplan(Raidplan $raidplan)
     {
         global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-
+        global $db;
         // check if it is private
         if( !$raidplan->getAuthCansee())
         {
@@ -173,6 +172,7 @@ class Raidplan_display
         }
 
         $template->assign_vars( array(
+                'DEBUG_NUMQUERIES'  => $db->num_queries['normal'],
                 'S_LOCKED'			=> $raidplan->getLocked(),
                 'S_FROZEN'			=> $raidplan->getFrozen(),
                 'S_NOCHAR'			=> $raidplan->getNochar(),
@@ -208,7 +208,7 @@ class Raidplan_display
                 'EVENT_IMAGE' 		=> $eventimg,
 
                 'SUBJECT'			=> $raidplan->getSubject(),
-                'MESSAGE' => $message,
+                'RAIDPLANNERMESSAGE' => $message,
                 'INVITE_TIME'		=> $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true),
                 'START_TIME'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true),
                 'START_DATE'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true),
@@ -271,7 +271,7 @@ class Raidplan_display
         );
 
         $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query_limit($sql, $x, 0);
+        $result = $db->sql_query_limit($sql, $x, 0, 86400);
 
         // we need to find out the time zone to display on tooltip
         if ($user->data['user_id'] == ANONYMOUS)
@@ -466,7 +466,8 @@ class Raidplan_display
             'ORDER_BY'	=> 'r.raidplan_start_time ASC');
 
         $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query($sql);
+        // list of raid days. cache this for a week.
+        $result = $db->sql_query($sql, 604800);
         $raiddaylist = array();
         while ($row = $db->sql_fetchrow($result))
         {
@@ -572,13 +573,18 @@ class Raidplan_display
             $signupdetail->getSignup($signup->signup_id, $raidplan->getEventlist()->events[$raidplan->getEventType()]['dkpid']);
             $edit_text_array = generate_text_for_edit($signupdetail->comment, $signupdetail->bbcode['uid'], 7);
 
-            if ($signupdetail->signup_val == 1) {
+            if ($signupdetail->signup_val == 1)
+            {
                 $signupcolor = '#C9B634';
                 $signuptext = $user->lang['MAYBE'];
-            } elseif ($signupdetail->signup_val == 2) {
+            }
+            elseif ($signupdetail->signup_val == 2)
+            {
                 $signupcolor = '#FFB100';
                 $signuptext = $user->lang['YES'];
-            } elseif ($signupdetail->signup_val == 3) {
+            }
+            elseif ($signupdetail->signup_val == 3)
+            {
                 $signupcolor = '#006B02';
                 $signuptext = $user->lang['CONFIRMED'];
             }
@@ -586,7 +592,8 @@ class Raidplan_display
             // if user can delete other signups ?
             $confirm_signup_url = "";
             $canconfirmsignup = false;
-            if ($auth->acl_get('m_raidplanner_edit_other_users_signups')) {
+            if ($auth->acl_get('m_raidplanner_edit_other_users_signups'))
+            {
                 $canconfirmsignup = true;
                 $confirm_signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx",
                     "page=planner&amp;view=raidplan&amp;action=confirm&amp;raidplanid=" . $raidplan->id . "&amp;signup_id=" . $signupdetail->signup_id);
@@ -598,7 +605,8 @@ class Raidplan_display
             $deletesignupurl = "";
             $editsignupurl = "";
             $deletekey = 0;
-            if ($auth->acl_get('m_raidplanner_edit_other_users_signups') || $signupdetail->poster_id == $user->data['user_id']) {
+            if ($auth->acl_get('m_raidplanner_edit_other_users_signups') || $signupdetail->poster_id == $user->data['user_id'])
+            {
                 // then if signup is not frozen then show deletion button
                 //@todo calculate frozen
                 $candeletesignup = true;
@@ -773,10 +781,12 @@ class Raidplan_display
         {
             $level_sel[2] = $user->lang['EVENT_ACCESS_LEVEL_PUBLIC'];
         }
+
         if( $auth->acl_get('u_raidplanner_create_group_raidplans') )
         {
             $level_sel[1] = $user->lang['EVENT_ACCESS_LEVEL_GROUP'];
         }
+
         if( $auth->acl_get('u_raidplanner_create_private_raidplans') )
         {
             $level_sel[0] =  $user->lang['EVENT_ACCESS_LEVEL_PERSONAL'];
@@ -844,6 +854,44 @@ class Raidplan_display
         $db->sql_freeresult($result);
 
         /**
+         * populate day pulldown
+         */
+
+        //day dropdown
+        $day = $user->format_date($raidplan->getStartTime(), 'd', true);
+        for( $i = 1; $i <= $cal->days_in_month; $i++ )
+        {
+            $template->assign_block_vars('enddayoptions', array(
+                'KEY' 		=> $i,
+                'VALUE' 	=> $i,
+                'SELECTED' 	=> ( (int) $day == $i ) ? ' selected="selected"' : '',
+            ));
+        }
+
+        // month dropdown
+        $month = $user->format_date($raidplan->getStartTime(), 'm', true);
+        for( $i = 1; $i <= 12; $i++ )
+        {
+            $template->assign_block_vars('endmonthoptions', array(
+                'KEY' 		=> $i,
+                'VALUE' 	=> $user->lang['datetime'][$cal->month_names[$i]],
+                'SELECTED' 	=> ($month == $i ) ? ' selected="selected"' : '',
+            ));
+        }
+
+        //year dropdown
+        $year = $user->format_date($raidplan->getStartTime(), 'Y', true);
+        $temp_year	= gmdate('Y');
+        for( $i = $temp_year - 1; $i < ($temp_year + 5); $i++ )
+        {
+            $template->assign_block_vars('endyearoptions', array(
+                'KEY' 		=> $i,
+                'VALUE' 	=> $i,
+                'SELECTED' 	=> ( (int) $year == $i ) ? ' selected="selected"' : '',
+            ));
+        }
+
+        /**
          *	populate Raid invite time select
          */
         $hour_mode = $config['rp_hour_mode'];
@@ -868,7 +916,9 @@ class Raidplan_display
 
         }
 
-        // minute
+        /**
+         *	populate Raid invite minute
+         */
         if ( $raidplan->getInviteTime() > 0 )
         {
             $presetinvmin = $user->format_date($raidplan->getInviteTime(), 'i', true);
@@ -934,38 +984,6 @@ class Raidplan_display
         }
 
         /**
-         * populate end day pulldown
-         */
-        for( $i = 1; $i <= $cal->days_in_month; $i++ )
-        {
-            $template->assign_block_vars('enddayoptions', array(
-                'KEY' 		=> $i,
-                'VALUE' 	=> $i,
-                'SELECTED' 	=> ( (int) $cal->date['day'] == $i ) ? ' selected="selected"' : '',
-            ));
-        }
-
-        // month dropdown
-        for( $i = 1; $i <= 12; $i++ )
-        {
-            $template->assign_block_vars('endmonthoptions', array(
-                'KEY' 		=> $i,
-                'VALUE' 	=> $user->lang['datetime'][$cal->month_names[$i]],
-                'SELECTED' 	=> ($cal->date['month_no'] == $i ) ? ' selected="selected"' : '',
-            ));
-        }
-
-        $temp_year	= gmdate('Y');
-        for( $i = $temp_year - 1; $i < ($temp_year + 5); $i++ )
-        {
-            $template->assign_block_vars('endyearoptions', array(
-                'KEY' 		=> $i,
-                'VALUE' 	=> $i,
-                'SELECTED' 	=> ( (int) $cal->date['year'] == $i ) ? ' selected="selected"' : '',
-            ));
-        }
-
-        /**
          *	populate Raid END time pulldown
          */
         $presetendhour = intval( ($raidplan->getEndTime() > 0 ? $user->format_date($raidplan->getEndTime(), 'G', true) * 60: $config['rp_default_end_time']) / 60);
@@ -1010,19 +1028,6 @@ class Raidplan_display
                 'SELECTED' 	=> ($i == $presetendmin) ? ' selected="selected"' : '',
             ));
         }
-        // format and translate to user timezone + dst
-        //$invite_date_txt = $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true);
-        //$start_date_txt = $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
-        //$end_date_txt = $user->format_date($raidplan->getEndTime(), $config['rp_date_time_format'], true);
-        $day_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$cal->date['day'] .
-                "&amp;calM=".$cal->date['month_no'].
-                "&amp;calY=".$cal->date['year']);
-        $week_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=week&amp;calD=".$cal->date['day'] .
-                "&amp;calM=".$cal->date['month_no'].
-                "&amp;calY=".$cal->date['year']);
-        $month_view_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$cal->date['day'].
-                "&amp;calM=".$cal->date['month_no'].
-                "&amp;calY=".$cal->date['year']);
 
         /*
          * make raid composition proposal
@@ -1108,7 +1113,6 @@ class Raidplan_display
         $body = $raidplan->getBody();
         $bbcode = $raidplan->getBbcode();
         $message = generate_text_for_edit($body, isset($bbcode['uid'])  ? $bbcode['uid'] : '', isset($bbcode['bitfield']) ? $bbcode['bitfield'] : '', 7);
-        decode_message($message, isset($bbcode['uid'])  ? $bbcode['uid'] : '');
 
         // HTML, BBCode, Smilies, Images and Flash status
         $bbcode_status	= ($config['allow_bbcode']) ? true : false;
@@ -1123,19 +1127,42 @@ class Raidplan_display
             $cal->generate_calendar_smilies('inline');
         }
 
-        $inv_d = $cal->date['day'];
-        $inv_m = $cal->date['month_no'];
-        $inv_y = $cal->date['year'];
-
-        $start_hr = request_var('calHr', 0);
-        $start_mn = request_var('calMn', 0);
-        $start_date = gmmktime(0, 0, 0, $inv_m, $inv_d, $inv_y) - $user->timezone - $user->dst;
-
+        $start_date = gmmktime(0, 0, 0, $month, $day, $year) - $user->timezone - $user->dst;
         $ajaxpath = append_sid($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template/planner/raidplan/ajax1.'. $phpEx, "ajax=1");
+
+        if($raidplan->id > 0)
+        {
+            $eventname = $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'];
+            $eventcolor = $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'];
+
+            if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
+            {
+                $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
+
+            }
+            else
+            {
+                $eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
+            }
+        }
+        else
+        {
+            $eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
+            $eventcolor = '';
+            $eventname = $user->lang['NEW_RAID'];
+        }
+
         $template->assign_vars(array(
+            'ETYPE_DISPLAY_NAME'        => $eventname,
+            'EVENT_COLOR'		        => $eventcolor,
+            'EVENT_IMAGE' 		        => $eventimg,
+
             'S_POST_ACTION'				=> $s_action,
             'RAIDPLAN_ID'				=> $raidplan->id,
-            'S_EDIT'					=> ($raidplan->id > 0) ? true : false,
+
+            'S_PLANNER_EDIT'			=> ($raidplan->id > 0) ? true : false,
+            'S_PLANNER_ADD'				=> $raidplan->getId() > 0 ? false : true,
+
             'S_DELETE_ALLOWED'			=> $raidplan->getAuthCandelete(),
             'S_BBCODE_ALLOWED'			=> $bbcode_status,
             'S_SMILIES_ALLOWED'			=> $smilies_status,
@@ -1144,7 +1171,7 @@ class Raidplan_display
             'S_BBCODE_URL'				=> $url_status,
             'S_BBCODE_FLASH'			=> $flash_status,
             'S_BBCODE_QUOTE'			=> false,
-            'S_PLANNER_ADD'				=> true,
+
             'TEAM_ID'					=> $raidplan->getRaidteam(),
             'TEAM_NAME'					=> $raidplan->getRaidteamname(),
             'TEAM_SIZE'				    => $raidplan->getRaidTeamNeeded(),
@@ -1153,9 +1180,6 @@ class Raidplan_display
             'MESSAGE'		            => $message['text'],
             'START_DATE'				=> $user->format_date($start_date, $config['rp_date_format'], true),
             'START_HOUR_SEL'			=> $hour_start_selcode,
-            'U_DAY_VIEW_URL'			=> $day_view_url,
-            'U_WEEK_VIEW_URL'			=> $week_view_url,
-            'U_MONTH_VIEW_URL'			=> $month_view_url,
 
             'BBCODE_STATUS'				=> ($bbcode_status) ?
                     sprintf($user->lang['BBCODE_IS_ON'], '<a href="' . append_sid("{$phpbb_root_path}faq.$phpEx", 'mode=bbcode') . '">', '</a>') :
@@ -1171,7 +1195,7 @@ class Raidplan_display
         ));
 
         // Build custom bbcodes array
-        display_custom_bbcodes();
+       display_custom_bbcodes();
     }
 
 
