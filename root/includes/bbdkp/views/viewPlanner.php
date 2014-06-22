@@ -270,11 +270,9 @@ class viewPlanner implements iViews
         {
             trigger_error('ERROR',E_USER_WARNING);
         }
-
         $action = $raidplan->Store_Raidplan();
         // store the raid & roles.
         $raidplan->store_raidroles($action);
-
         //make object
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
@@ -305,7 +303,6 @@ class viewPlanner implements iViews
     private function DeleteSignup(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
         $signup_id = request_var('signup_id', 0);
-
         $signup = new RaidplanSignup();
         $signup->getSignup($signup_id);
         if ($signup->deletesignup($signup_id, $raidplan->id) ==3)
@@ -313,27 +310,22 @@ class viewPlanner implements iViews
             if($raidplan->getRaidId() > 0)
             {
                 //raid was pushed already
-                $raidplan->deleteraider($signup->dkpmemberid);
+                $raidplan->deleteraider($signup->getDkpmemberid());
             }
         }
         $signup->signupmessenger(6, $raidplan);
-
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
-
     }
 
 
     private function EditComment(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {
-
         // edit a signup comment
-
         $signup_id = request_var('signup_id', 0);
         $signup = new RaidplanSignup();
         $signup->editsignupcomment($signup_id);
-
         $raidplan_display->DisplayRaidplan($raidplan);
     }
 
