@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.12.0
+* @version 1.0-RC2
 */
 namespace bbdkp\controller\raidplanner;
 use bbdkp\controller\raidplanner\Raidmessenger;
@@ -17,16 +17,7 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
 	exit;
 }
-// Include the member class
-if (!class_exists('\bbdkp\controller\members\Members'))
-{
-    require("{$phpbb_root_path}includes/bbdkp/controller/members/Members.$phpEx");
-}
-// add points class
-if (!class_exists('\bbdkp\controller\points\Points'))
-{
-    require("{$phpbb_root_path}includes/bbdkp/controller/points/Points.$phpEx");
-}
+
 use bbdkp\controller\points\Points;
 use \bbdkp\controller\members\Members;
 
@@ -36,19 +27,18 @@ use \bbdkp\controller\members\Members;
  */
 class RaidplanSignup
 {
-	
-	protected $signup_id=0;
+    protected $signup_id=0;
     protected $raidplan_id;
     protected $poster_id;
     protected $poster_name;
     protected $poster_colour;
     protected $poster_ip;
-	
-	/**
-	 * 0 unavailable 1 maybe 2 available 3 confirmed
-	 *
-	 * @var int
-	 */
+
+    /**
+     * 0 unavailable 1 maybe 2 available 3 confirmed
+     *
+     * @var int
+     */
     protected $signup_val;
     protected $signup_time;
     protected $signup_count;
@@ -75,46 +65,451 @@ class RaidplanSignup
     protected $role_name;
     protected $confirm;
 
-    private $Points;
-    private $Member;
-
-    public function __construct()
+    /**
+     * @param mixed $attendanceP1
+     */
+    public function setAttendanceP1($attendanceP1)
     {
-        $this->Points = new Points();
-        $this->Member = new Members();
+        $this->attendanceP1 = $attendanceP1;
     }
 
     /**
-     * Signup class property getter
-     *
-     * @param $fieldName
      * @return mixed
      */
-    public function __get($fieldName)
+    public function getAttendanceP1()
     {
-        global $user;
+        return $this->attendanceP1;
+    }
 
-        if (property_exists($this, $fieldName))
-        {
-            return $this->$fieldName;
-        }
-        else
-        {
-            trigger_error($user->lang['ERROR'] . '  '. $fieldName, E_USER_WARNING);
-        }
+    /**
+     * @param array $bbcode
+     */
+    public function setBbcode($bbcode)
+    {
+        $this->bbcode = $bbcode;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBbcode()
+    {
+        return $this->bbcode;
+    }
+
+    /**
+     * @param mixed $classname
+     */
+    public function setClassname($classname)
+    {
+        $this->classname = $classname;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClassname()
+    {
+        return $this->classname;
+    }
+
+    /**
+     * @param mixed $colorcode
+     */
+    public function setColorcode($colorcode)
+    {
+        $this->colorcode = $colorcode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColorcode()
+    {
+        return $this->colorcode;
+    }
+
+    /**
+     * @param mixed $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param mixed $confirm
+     */
+    public function setConfirm($confirm)
+    {
+        $this->confirm = $confirm;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfirm()
+    {
+        return $this->confirm;
+    }
+
+    /**
+     * @param mixed $dkmemberpurl
+     */
+    public function setDkmemberpurl($dkmemberpurl)
+    {
+        $this->dkmemberpurl = $dkmemberpurl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDkmemberpurl()
+    {
+        return $this->dkmemberpurl;
+    }
+
+    /**
+     * @param mixed $dkp_current
+     */
+    public function setDkpCurrent($dkp_current)
+    {
+        $this->dkp_current = $dkp_current;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDkpCurrent()
+    {
+        return $this->dkp_current;
+    }
+
+    /**
+     * @param mixed $dkpmemberid
+     */
+    public function setDkpmemberid($dkpmemberid)
+    {
+        $this->dkpmemberid = $dkpmemberid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDkpmemberid()
+    {
+        return $this->dkpmemberid;
+    }
+
+    /**
+     * @param mixed $dkpmembername
+     */
+    public function setDkpmembername($dkpmembername)
+    {
+        $this->dkpmembername = $dkpmembername;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDkpmembername()
+    {
+        return $this->dkpmembername;
+    }
+
+    /**
+     * @param mixed $genderid
+     */
+    public function setGenderid($genderid)
+    {
+        $this->genderid = $genderid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGenderid()
+    {
+        return $this->genderid;
+    }
+
+    /**
+     * @param mixed $imagename
+     */
+    public function setImagename($imagename)
+    {
+        $this->imagename = $imagename;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImagename()
+    {
+        return $this->imagename;
+    }
+
+    /**
+     * @param mixed $lastraid
+     */
+    public function setLastraid($lastraid)
+    {
+        $this->lastraid = $lastraid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastraid()
+    {
+        return $this->lastraid;
+    }
+
+    /**
+     * @param mixed $level
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLevel()
+    {
+        return $this->level;
+    }
+
+    /**
+     * @param mixed $poster_colour
+     */
+    public function setPosterColour($poster_colour)
+    {
+        $this->poster_colour = $poster_colour;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPosterColour()
+    {
+        return $this->poster_colour;
+    }
+
+    /**
+     * @param mixed $poster_id
+     */
+    public function setPosterId($poster_id)
+    {
+        $this->poster_id = $poster_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPosterId()
+    {
+        return $this->poster_id;
+    }
+
+    /**
+     * @param mixed $poster_ip
+     */
+    public function setPosterIp($poster_ip)
+    {
+        $this->poster_ip = $poster_ip;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPosterIp()
+    {
+        return $this->poster_ip;
+    }
+
+    /**
+     * @param mixed $poster_name
+     */
+    public function setPosterName($poster_name)
+    {
+        $this->poster_name = $poster_name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPosterName()
+    {
+        return $this->poster_name;
+    }
+
+    /**
+     * @param mixed $priority_ratio
+     */
+    public function setPriorityRatio($priority_ratio)
+    {
+        $this->priority_ratio = $priority_ratio;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPriorityRatio()
+    {
+        return $this->priority_ratio;
+    }
+
+    /**
+     * @param mixed $raceimg
+     */
+    public function setRaceimg($raceimg)
+    {
+        $this->raceimg = $raceimg;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRaceimg()
+    {
+        return $this->raceimg;
+    }
+
+    /**
+     * @param mixed $raidplan_id
+     */
+    public function setRaidplanId($raidplan_id)
+    {
+        $this->raidplan_id = $raidplan_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRaidplanId()
+    {
+        return $this->raidplan_id;
+    }
+
+    /**
+     * @param mixed $role_name
+     */
+    public function setRoleName($role_name)
+    {
+        $this->role_name = $role_name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoleName()
+    {
+        return $this->role_name;
+    }
+
+    /**
+     * @param mixed $roleid
+     */
+    public function setRoleid($roleid)
+    {
+        $this->roleid = $roleid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoleid()
+    {
+        return $this->roleid;
+    }
+
+    /**
+     * @param mixed $signup_count
+     */
+    public function setSignupCount($signup_count)
+    {
+        $this->signup_count = $signup_count;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSignupCount()
+    {
+        return $this->signup_count;
+    }
+
+    /**
+     * @param int $signup_id
+     */
+    public function setSignupId($signup_id)
+    {
+        $this->signup_id = $signup_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSignupId()
+    {
+        return $this->signup_id;
+    }
+
+    /**
+     * @param mixed $signup_time
+     */
+    public function setSignupTime($signup_time)
+    {
+        $this->signup_time = $signup_time;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSignupTime()
+    {
+        return $this->signup_time;
+    }
+
+    /**
+     * @param int $signup_val
+     */
+    public function setSignupVal($signup_val)
+    {
+        $this->signup_val = $signup_val;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSignupVal()
+    {
+        return $this->signup_val;
+    }
+	
+    public function __construct()
+    {
+
     }
 
     /**
      * makes a Signup object
-     * @todo Sajaki fetch current dkp  $raidplan->eventlist->events[$raidplan->event_type]['dkpid']
      *
      * @param $signup_id
      */
     public function getSignup($signup_id)
 	{
-		
-		global $phpbb_root_path, $phpEx, $db;
-		
+		global $db;
 		$this->signup_id = $signup_id;
 		$sql = 'SELECT * from ' . RP_SIGNUPS . ' a INNER JOIN ' . RP_ROLES . ' b
 		    ON a.role_id = b.role_id
@@ -145,24 +540,6 @@ class RaidplanSignup
 		$this->roleid = $row['role_id'];
 		$this->role_name = $row['role_name'];
         unset ($row);
-
-        $this->Member->member_id = (int) $this->dkpmemberid;
-        $this->Member->Getmember();
-		$this->dkpmembername = $this->Member->member_name;
-		$this->classname = $this->Member->member_class;
-		$this->imagename = $this->Member->class_image;
-		$this->colorcode = $this->Member->colorcode;
-		$this->raceimg = $this->Member->race_image;
-		$this->level =  $this->Member->member_level;
-		$this->genderid = $this->Member->member_gender_id;
-
-        $this->Points->member_id = (int) $this->dkpmemberid;
-        $this->Points->dkpid =  $this->dkpmemberid; //wrong, need to fetch
-        $this->dkp_current = $this->Points->total_net;
-		$this->priority_ratio = $this->Points->pr_net;
-		$this->lastraid = $this->Points->lastraid;
-		$this->attendanceP1 = 0;
-		$this->dkmemberpurl = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $this->dkpmemberid . '&amp;' . URI_DKPSYS . '=' . $this->dkpmemberid );
 
 	}
 
@@ -195,7 +572,7 @@ class RaidplanSignup
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 
         //cache for a week
-		$result = $db->sql_query($sql, 604800);
+		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
 			$mychars[] = array(
@@ -342,6 +719,12 @@ class RaidplanSignup
 		unset ($sql_signup);
 		
 		$db->sql_transaction('commit');
+
+        //destroy sql cache for signup / raidplan / roles table
+        $cache->destroy( 'sql', RP_SIGNUPS );
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
+
 		$this->getSignup($this->signup_id);
 		return true;
 	}
