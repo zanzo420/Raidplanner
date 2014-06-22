@@ -204,6 +204,8 @@ class viewPlanner implements iViews
         {
             $raidplan = new Raidplan($raidplan_id);
             $raidplan->raidplan_push();
+            $raidplan_display = new Raidplan_display();
+            $raidplan_display->DisplayRaidplan($raidplan);
         }
         else
         {
@@ -321,7 +323,6 @@ class viewPlanner implements iViews
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
     }
-
 
     private function EditComment(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {

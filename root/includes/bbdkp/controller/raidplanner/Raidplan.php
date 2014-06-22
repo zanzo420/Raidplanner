@@ -429,7 +429,6 @@ class Raidplan
         return $this->auth_signup_raidplans;
     }
 
-
     private $group_id;
     /**
      * @param mixed $group_id
@@ -1587,15 +1586,18 @@ class Raidplan
             {
                 case 1:
                     $messenger->template('raidplan_add', $row['user_lang']);
-                    $subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+                    $subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWRAID'] . ': ' .
+                            $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
                     break;
                 case 2:
                     $messenger->template('raidplan_update', $row['user_lang']);
-                    $subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UPDRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' .$user->format_date($this->start_time, $config['rp_date_time_format'], true);
+                    $subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UPDRAID'] . ': ' .
+                            $this->eventlist->events[$this->event_type]['event_name'] . ' ' .$user->format_date($this->start_time, $config['rp_date_time_format'], true);
                     break;
                 case 3:
                     $messenger->template('raidplan_delete', $row['user_lang']);
-                    $subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['DELRAID'] . ': ' . $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+                    $subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['DELRAID'] . ': ' .
+                            $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
                     break;
             }
 
@@ -1669,14 +1671,16 @@ class Raidplan
 
     }
 
-
     /**
      * Adds raid to bbdkp
      *
      */
     public function raidplan_push()
     {
-        global $user, $config, $phpbb_root_path, $phpEx ;
+        global $cache, $user, $config, $phpbb_root_path, $phpEx ;
+
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $this->Get_Raidplan();
 
         if (!class_exists('\bbdkp\controller\raids\RaidController'))
         {
@@ -1706,7 +1710,10 @@ class Raidplan
             {
                 foreach($role['role_confirmations'] as $confirmation)
                 {
-                    $raid_attendees[] = $confirmation->dkpmemberid;
+                    if (is_object($confirmation) && $confirmation instanceof \bbdkp\controller\raidplanner\RaidplanSignup)
+                    {
+                        $raid_attendees[] = $confirmation->getDkpmemberid();
+                    }
                 }
             }
 
@@ -1742,7 +1749,6 @@ class Raidplan
         else
         {
             //new raid
-
             if($config['rp_rppushmode'] == 0 && $this->signups['confirmed'] > 0 )
             {
                 // automatic mode, don't ask permisison
@@ -1751,7 +1757,10 @@ class Raidplan
                 {
                     foreach($role['role_confirmations'] as $confirmation)
                     {
-                        $raid_attendees[] = $confirmation->dkpmemberid;
+                        if (is_object($confirmation) && $confirmation instanceof \bbdkp\controller\raidplanner\RaidplanSignup)
+                        {
+                            $raid_attendees[] = $confirmation->getDkpmemberid();
+                        }
                     }
                 }
 
@@ -1806,7 +1815,10 @@ class Raidplan
                     {
                         foreach($role['role_confirmations'] as $confirmation)
                         {
-                            $raid_attendees[] = $confirmation->dkpmemberid;
+                            if (is_object($confirmation) && $confirmation instanceof \bbdkp\controller\raidplanner\RaidplanSignup)
+                            {
+                                $raid_attendees[] = $confirmation->getDkpmemberid();
+                            }
                         }
                     }
 
@@ -1836,7 +1848,8 @@ class Raidplan
         }
 
         unset($RaidController);
-
+        $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $this->Get_Raidplan();
     }
 
     /**
@@ -1849,7 +1862,6 @@ class Raidplan
     {
         global $db, $cache, $phpbb_root_path, $phpEx;
         $cache->destroy( 'sql', RP_RAIDS_TABLE );
-
 
         if (!class_exists('\bbdkp\controller\raids\RaidController'))
         {
