@@ -182,7 +182,11 @@ class Raidplan_display
                 'S_SIGNUPMAYBE'		=> $raidplan->getSignedUpMaybe(),
                 'RAID_TOTAL'		=> (int) $raidplan->getRaidTeamNeeded(),
                 'TZ'				=> $user->lang['tz'][$tz],
-
+                'S_BBDKP'           => $raidplan->getRaidId() > 0 ? true : false,
+                'BBDKPLINK'         => ($raidplan->getRaidId() > 0 ?  append_sid("{$phpbb_root_path}dkp.$phpEx", "page=raid&amp;raid_id=" . $raidplan->getRaidId() ) : ''),
+                 'L_RAID_ON' 		 => sprintf($user->lang['RAID_ON'], $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] ,
+                     $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true)
+                 ),
                 'CURR_CONFIRMED_COUNT'	 => $signuplist['confirmed'],
                 'S_CURR_CONFIRMED_COUNT' => ($signuplist['confirmed'] > 0) ? true: false,
                 'CURR_CONFIRMEDPCT'	=> sprintf( "%.2f%%", ($raidplan->getRaidTeamNeeded() > 0 ? round(($signuplist['confirmed']) /  $raidplan->getRaidTeamNeeded(), 2)*100 : 0)),
@@ -544,9 +548,9 @@ class Raidplan_display
                 'LEVEL' => $confirmation->getLevel(),
                 'CLASS' => $confirmation->getClassname(),
                 'COLORCODE' => ($confirmation->getColorcode() == '') ? '#123456' : $confirmation->getColorcode(),
-                'CLASS_IMAGE' => (strlen($confirmation->getImagename()) > 1) ? $confirmation->getImagename() : '',
+                'CLASS_IMAGE' => (strlen($confirmation->getImagename()) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $confirmation->getImagename() . ".png" : '',
                 'S_CLASS_IMAGE_EXISTS' => (strlen($confirmation->getImagename()) > 1) ? true : false,
-                'RACE_IMAGE' => (strlen($confirmation->getRaceimg()) > 1) ? $confirmation->getRaceimg() : '',
+                'RACE_IMAGE' => (strlen($confirmation->getRaceimg()) > 1) ?  $phpbb_root_path . "images/bbdkp/race_images/" . $confirmation->getRaceimg() . ".png" : '',
                 'S_RACE_IMAGE_EXISTS' => (strlen($confirmation->getRaceimg()) > 1) ? true : false,
                 'S_DELETE_SIGNUP' => $candeleteconf,
                 'S_EDIT_SIGNUP' => $caneditconf,
@@ -599,10 +603,10 @@ class Raidplan_display
                     $candeletesignup = true;
                     $caneditsignup = true;
                     $editsignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx",
-                        "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=" . $raidplan->getId() . "&amp;signup_id=" . $signup->getSignupId());
+                        "page=planner&amp;view=raidplan&amp;action=editsign&amp;raidplanid=" . $raidplan->getId() . "&amp;signup_id=" . $signup->getSignupId()  );
                     $deletekey = rand(1, 1000);
                     $deletesignupurl = append_sid("{$phpbb_root_path}dkp.$phpEx",
-                        "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=" . $raidplan->getId() . "&amp;signup_id=" . $signup->getSignupId());
+                        "page=planner&amp;view=raidplan&amp;action=delsign&amp;raidplanid=" . $raidplan->getId() . "&amp;signup_id=" . $signup->getSignupId() );
                 }
 
                 switch ($signup->getSignupVal())
@@ -640,9 +644,9 @@ class Raidplan_display
                     'LEVEL' => $signup->getLevel(),
                     'CLASS' => $signup->getClassname(),
                     'COLORCODE' => ($signup->getColorcode() == '') ? '#123456' : $signup->getColorcode(),
-                    'CLASS_IMAGE' => (strlen($signup->getImagename()) > 1) ? $signup->getImagename() : '',
+                    'CLASS_IMAGE' => (strlen($signup->getImagename()) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $signup->getImagename() . ".png": '',
                     'S_CLASS_IMAGE_EXISTS' => (strlen($signup->getImagename()) > 1) ? true : false,
-                    'RACE_IMAGE' => (strlen($signup->getRaceimg()) > 1) ? $signup->getRaceimg() : '',
+                    'RACE_IMAGE' => (strlen($signup->getRaceimg()) > 1) ?  $phpbb_root_path . "images/bbdkp/race_images/" .  $signup->getRaceimg() . ".png" : '',
                     'S_RACE_IMAGE_EXISTS' => (strlen($signup->getRaceimg()) > 1) ? true : false,
                     'S_DELETE_SIGNUP' => $candeletesignup,
                     'S_EDIT_SIGNUP' => $caneditsignup,
@@ -705,9 +709,9 @@ class Raidplan_display
                     'LEVEL' => $signoff->getLevel(),
                     'CLASS' => $signoff->getClassname(),
                     'COLORCODE' => ($signoff->getColorcode() == '') ? '#123456' : $signoff->getColorcode(),
-                    'CLASS_IMAGE' => (strlen($signoff->getImagename()) > 1) ? $signoff->getImagename() : '',
+                    'CLASS_IMAGE' => (strlen($signoff->getImagename()) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" .  $signoff->getImagename() . '.png': '',
                     'S_CLASS_IMAGE_EXISTS' => (strlen($signoff->getImagename()) > 1) ? true : false,
-                    'RACE_IMAGE' => (strlen($signoff->getRaceimg()) > 1) ? $signoff->getRaceimg() : '',
+                    'RACE_IMAGE' => (strlen($signoff->getRaceimg()) > 1) ? $phpbb_root_path . "images/bbdkp/race_images/" .  $signoff->getRaceimg() . '.png' : '',
                     'S_RACE_IMAGE_EXISTS' => (strlen($signoff->getRaceimg()) > 1) ? true : false,
                     'S_REQUEUE_ACTION' => $requeueurl,
                     'S_REQUEUE_SIGNUP' => $requeue,

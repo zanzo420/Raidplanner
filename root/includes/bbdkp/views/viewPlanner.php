@@ -154,8 +154,6 @@ class viewPlanner implements iViews
     {
         global $phpbb_root_path, $phpEx;
 
-        $raidplan = new Raidplan($raidplan_id);
-
         $addraidplan	= (isset($_POST['addraidplan']) ) ? true : false;
         $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;
         $submit	= (isset($_POST['addraid'])) ? true : false;
@@ -173,6 +171,7 @@ class viewPlanner implements iViews
         elseif($editraidplan)
         {
             //show edit form
+            $raidplan = new Raidplan($raidplan_id);
             $raidplan_display = new Raidplan_display();
             $raidplan_display->showadd($raidplan, $this->cal);
         }
@@ -188,11 +187,13 @@ class viewPlanner implements iViews
         elseif ($submit || $update)
         {
             // request_var edit or new raidplan
+            $raidplan = new Raidplan($raidplan_id);
             $raidplan_display = new Raidplan_display();
             $raidplan_display->SetRaidplan($raidplan, $submit, $update);
         }
         elseif($deleteraidplan || $action =='deleteraidplan')
         {
+            $raidplan = new Raidplan($raidplan_id);
             if(!$raidplan->raidplan_delete())
             {
                 $raidplan_display = new Raidplan_display();
@@ -201,10 +202,14 @@ class viewPlanner implements iViews
         }
         elseif($pushraidplan || $action =='pushraidplan')
         {
+            $raidplan = new Raidplan($raidplan_id);
             $raidplan->raidplan_push();
+            $raidplan_display = new Raidplan_display();
+            $raidplan_display->DisplayRaidplan($raidplan);
         }
         else
         {
+            $raidplan = new Raidplan($raidplan_id);
             $raidplan_display = new Raidplan_display();
             switch($action)
             {
@@ -318,7 +323,6 @@ class viewPlanner implements iViews
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
     }
-
 
     private function EditComment(Raidplan $raidplan, Raidplan_display $raidplan_display)
     {

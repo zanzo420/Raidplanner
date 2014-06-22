@@ -206,7 +206,7 @@ class rpmonth extends RaidCalendar
 							if (isset($Raidplandisplay))
 							{
 								// note not recreating a new raidplan object for each date. that would take too much mem.
-								// we just reuse the same object and reset its properties in Get_Raidplan
+								// we just reuse the same object and reset its properties
 								$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($this->date['month_no'], $j, $this->date['year'], $this->group_options, "month");
 
 								foreach($raidplan_output as $raid )
