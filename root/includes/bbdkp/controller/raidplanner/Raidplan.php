@@ -1116,10 +1116,9 @@ class Raidplan
 
         // get array of raid roles
         $this->_get_raid_roles();
-        // attach signups to roles (available+confirmed)
+
+        // attach signoffs & signups to roles (available+confirmed)
         $this->raidroles = $this->_get_Signups($Points, $Member);
-        //get all that signed unavailable
-        $this->signoffs = $this->_get_signoffs($Points, $Member);
 
         $this->invite_list = $this->_set_InviteList($this->accesslevel, $this->group_id, $this->group_id_list);
     }
@@ -1430,80 +1429,136 @@ class Raidplan
      *  1 maybe
      *  2 available
      *  3 confirmed
-     * called by constructor only !
      *
      */
     private function _get_Signups(\bbdkp\controller\points\Points $Points, \bbdkp\controller\members\Members $Member)
     {
-        global $phpbb_root_path, $phpEx, $db;
+        global $config, $phpbb_root_path, $phpEx, $db;
 
-        //fill signups array
+        //fill signups/signoff array
         $sql = 'SELECT a.raidplan_id, a.role_id,  a.role_needed, a.role_signedup, a.role_confirmed, b.signup_id, b.poster_id, b.signup_count, b.role_confirm,
               b.poster_name, b.poster_ip, b.poster_colour, b.post_time, b.signup_val, b.signup_detail,
-              b.bbcode_bitfield, b.bbcode_options, b.bbcode_uid, b.dkpmember_id, r.*
-              FROM ' . RP_RAIDPLAN_ROLES .' a INNER JOIN ' . RP_SIGNUPS . ' b ON a.raidplan_id = b.raidplan_id AND a.role_id = b.role_id
+              b.bbcode_bitfield, b.bbcode_options, b.bbcode_uid, b.dkpmember_id, r.*,
+              m.member_name , m.member_level, m.member_gender_id,
+              c.colorcode , c.imagename,  l.name AS member_class,
+              l1.name AS member_race, ra.image_female, ra.image_male
+              FROM ' . RP_RAIDPLAN_ROLES . ' a
+              INNER JOIN ' . RP_SIGNUPS . ' b ON a.raidplan_id = b.raidplan_id AND a.role_id = b.role_id
               INNER JOIN ' . RP_ROLES . ' r ON a.role_id = r.role_id
-              WHERE b.signup_val > 0  AND a.raidplan_id = ' . $this->id;
+              INNER JOIN ' . MEMBER_LIST_TABLE . ' m ON b.dkpmember_id = m.member_id
+              INNER JOIN ' . CLASS_TABLE .  ' c ON m.game_id = c.game_id AND m.member_class_id = c.class_id
+              INNER JOIN ' . BB_LANGUAGE . " l ON l.attribute_id = c.class_id AND l.game_id = c.game_id AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class'
+              INNER JOIN " . RACE_TABLE .  ' ra ON m.game_id = ra.game_id AND m.member_race_id = ra.race_id
+              INNER JOIN ' . BB_LANGUAGE . " l1 ON l1.attribute_id = ra.race_id AND l1.game_id = ra.game_id AND l1.language= '" . $config['bbdkp_lang'] . "' AND l1.attribute = 'class'
+              WHERE a.raidplan_id = " . $this->id;
 
         $result = $db->sql_query($sql, 86400);
+        $this->signoffs = array();
 
         while ($row = $db->sql_fetchrow($result))
         {
-            //bind signup class instance to role array
-            $rpsignup = new RaidplanSignup();
-            $rpsignup->setSignupId($row['signup_id']);
-            $rpsignup->setRaidplanId($row['raidplan_id']);
-            $rpsignup->setPosterId($row['poster_id']);
-            $rpsignup->setPosterName($row['poster_name']);
-            $rpsignup->setPosterColour($row['poster_colour']);
-            $rpsignup->setPosterIp($row['poster_ip']);
-            $rpsignup->setSignupTime($row['post_time']);
-            $rpsignup->setSignupVal($row['signup_val']);
-            $rpsignup->setSignupCount($row['signup_count']);
-            $rpsignup->setComment($row['signup_detail']);
-            $bbcode = array(
-                'bitfield' => $row['bbcode_bitfield'],
-                'uid' => $row['bbcode_uid']);
-            $rpsignup->setBbcode($bbcode);
-            $rpsignup->setConfirm($row['role_confirm']);
-            $rpsignup->setRoleid($row['role_id']);
-            $rpsignup->setRoleName($row['role_name']);
-
-            $rpsignup->setDkpmemberid($row['dkpmember_id']);
-            $Member->member_id = (int) $rpsignup->getDkpmemberid();
-            $Member->Getmember();
-
-            $rpsignup->setDkpmembername($Member->member_name);
-            $rpsignup->setClassname($Member->member_class);
-            $rpsignup->setImagename($Member->class_image);
-            $rpsignup->setColorcode($Member->colorcode);
-            $rpsignup->setRaceimg($Member->race_image);
-            $rpsignup->setlevel($Member->member_level);
-            $rpsignup->setGenderid($Member->member_gender_id);
-
-            $Points->member_id = (int) $rpsignup->getDkpmemberid();
-            $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
-            $Points->read_account();
-
-            $rpsignup->setDkpCurrent($Points->total_net);
-            $rpsignup->setPriorityRatio($Points->pr_net);
-            $rpsignup->setLastraid($Points->lastraid);
-            $rpsignup->setAttendanceP1(0); // @todo
-            $rpsignup->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $rpsignup->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
-
-            // now add to raidrole array
-            if($rpsignup->getSignupVal() == 1 || $rpsignup->getSignupVal() == 2)
+            if ($row['signup_val'] > 0 )
             {
-                // maybe + available
-                $this->raidroles[ $row['role_id']  ]['role_signups'][] = $rpsignup;
-            }
-            elseif($rpsignup->getSignupVal() == 3)
-            {
-                //confirmed
-                $this->raidroles[$row['role_id']]['role_confirmations'][] = $rpsignup;
-            }
-            unset($rpsignup);
+                //bind signup class instance to role array
+                $rpsignup = new RaidplanSignup();
+                $rpsignup->setSignupId($row['signup_id']);
+                $rpsignup->setRaidplanId($row['raidplan_id']);
+                $rpsignup->setPosterId($row['poster_id']);
+                $rpsignup->setPosterName($row['poster_name']);
+                $rpsignup->setPosterColour($row['poster_colour']);
+                $rpsignup->setPosterIp($row['poster_ip']);
+                $rpsignup->setSignupTime($row['post_time']);
+                $rpsignup->setSignupVal($row['signup_val']);
+                $rpsignup->setSignupCount($row['signup_count']);
+                $rpsignup->setComment($row['signup_detail']);
+                $bbcode = array(
+                    'bitfield' => $row['bbcode_bitfield'],
+                    'uid' => $row['bbcode_uid']);
+                $rpsignup->setBbcode($bbcode);
+                $rpsignup->setConfirm($row['role_confirm']);
+                $rpsignup->setRoleid($row['role_id']);
+                $rpsignup->setRoleName($row['role_name']);
+                $rpsignup->setDkpmemberid($row['dkpmember_id']);
 
+                $rpsignup->setDkpmembername($row['member_name']);
+                $rpsignup->setClassname($row['member_class']);
+                $rpsignup->setImagename($row['imagename']);
+                $rpsignup->setColorcode($row['colorcode']);
+                $rpsignup->setRaceimg( (string) (($row['member_gender_id'] == 0) ? $row['image_male'] : $row['image_female']) );
+                $rpsignup->setlevel($row['member_level']);
+                $rpsignup->setGenderid($row['member_gender_id']);
+
+                $Points->member_id = (int) $rpsignup->getDkpmemberid();
+                $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
+                $Points->read_account();
+
+                $rpsignup->setDkpCurrent($Points->total_net);
+                $rpsignup->setPriorityRatio($Points->pr_net);
+                $rpsignup->setLastraid($Points->lastraid);
+                $rpsignup->setAttendanceP1(0); // @todo
+                $rpsignup->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $rpsignup->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
+
+                // now add to raidrole array
+                if($rpsignup->getSignupVal() == 1 || $rpsignup->getSignupVal() == 2)
+                {
+                    // maybe + available
+                    $this->raidroles[ $row['role_id']  ]['role_signups'][] = $rpsignup;
+                }
+                elseif($rpsignup->getSignupVal() == 3)
+                {
+                    //confirmed
+                    $this->raidroles[$row['role_id']]['role_confirmations'][] = $rpsignup;
+                }
+                unset($rpsignup);
+
+            }
+            else
+            {
+                //sign offs
+                //bind signup class instance to role array
+                $rpsignoff = new RaidplanSignup();
+                $rpsignoff->setSignupId($row['signup_id']);
+                $rpsignoff->setRaidplanId($row['raidplan_id']);
+                $rpsignoff->setPosterId($row['poster_id']);
+                $rpsignoff->setPosterName($row['poster_name']);
+                $rpsignoff->setPosterColour($row['poster_colour']);
+                $rpsignoff->setPosterIp($row['poster_ip']);
+                $rpsignoff->setSignupTime($row['post_time']);
+                $rpsignoff->setSignupVal($row['signup_val']);
+                $rpsignoff->setSignupCount($row['signup_count']);
+                $rpsignoff->setComment($row['signup_detail']);
+                $bbcode = array(
+                    'bitfield' => $row['bbcode_bitfield'],
+                    'uid' => $row['bbcode_uid']);
+                $rpsignoff->setBbcode($bbcode);
+                $rpsignoff->setConfirm($row['role_confirm']);
+                $rpsignoff->setRoleid($row['role_id']);
+                $rpsignoff->setRoleName($row['role_name']);
+
+                $rpsignoff->setDkpmemberid($row['dkpmember_id']);
+
+                $rpsignoff->setDkpmembername($row['member_name']);
+                $rpsignoff->setClassname($row['member_class']);
+                $rpsignoff->setImagename($row['imagename']);
+                $rpsignoff->setColorcode($row['colorcode']);
+                $rpsignoff->setRaceimg( (string) (($row['member_gender_id'] == 0) ? $row['image_male'] : $row['image_female']) );
+                $rpsignoff->setlevel($row['member_level']);
+                $rpsignoff->setGenderid($row['member_gender_id']);
+
+                $Points->member_id = (int) $rpsignoff->getDkpmemberid();
+                $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
+                $Points->read_account();
+
+                $rpsignoff->setDkpCurrent($Points->total_net);
+                $rpsignoff->setPriorityRatio($Points->pr_net);
+                $rpsignoff->setLastraid($Points->lastraid);
+                $rpsignoff->setAttendanceP1(0); // @todo
+                $rpsignoff->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $rpsignoff->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
+
+                $this->signoffs[] = $rpsignoff;
+                unset($rpsignoff);
+
+            }
         }
 
         $db->sql_freeresult($result);
@@ -1513,82 +1568,6 @@ class Raidplan
         unset($row);
 
         return $this->raidroles;
-    }
-
-    /**
-     * get all those that signed unavailable
-     * 0 unavailable 1 maybe 2 available 3 confirmed
-     * called by constructor only !
-     */
-    private function _get_signoffs(\bbdkp\controller\points\Points $Points, \bbdkp\controller\members\Members $Member)
-    {
-        global  $phpbb_root_path, $phpEx, $db;
-
-        //fill signoffs array
-        $sql = 'SELECT a.raidplan_id, a.role_id,  a.role_needed, a.role_signedup, a.role_confirmed, b.signup_id, b.poster_id, b.signup_count, b.role_confirm,
-              b.poster_name, b.poster_ip, b.poster_colour, b.post_time, b.signup_val, b.signup_detail,
-              b.bbcode_bitfield, b.bbcode_options, b.bbcode_uid, b.dkpmember_id, r.*
-              FROM ' . RP_RAIDPLAN_ROLES .' a INNER JOIN ' . RP_SIGNUPS . ' b ON a.raidplan_id = b.raidplan_id AND a.role_id = b.role_id
-              INNER JOIN ' . RP_ROLES . ' r ON a.role_id = r.role_id
-              WHERE b.signup_val = 0  AND a.raidplan_id = ' . $this->id;
-
-
-        $result = $db->sql_query($sql, 86400);
-        $this->signoffs = array();
-
-        $result = $db->sql_query($sql, 86400);
-
-        while ($row = $db->sql_fetchrow($result))
-        {
-            //bind signup class instance to role array
-            $rpsignoff = new RaidplanSignup();
-            $rpsignoff->setSignupId($row['signup_id']);
-            $rpsignoff->setRaidplanId($row['raidplan_id']);
-            $rpsignoff->setPosterId($row['poster_id']);
-            $rpsignoff->setPosterName($row['poster_name']);
-            $rpsignoff->setPosterColour($row['poster_colour']);
-            $rpsignoff->setPosterIp($row['poster_ip']);
-            $rpsignoff->setSignupTime($row['post_time']);
-            $rpsignoff->setSignupVal($row['signup_val']);
-            $rpsignoff->setSignupCount($row['signup_count']);
-            $rpsignoff->setComment($row['signup_detail']);
-            $bbcode = array(
-                'bitfield' => $row['bbcode_bitfield'],
-                'uid' => $row['bbcode_uid']);
-            $rpsignoff->setBbcode($bbcode);
-            $rpsignoff->setConfirm($row['role_confirm']);
-            $rpsignoff->setRoleid($row['role_id']);
-            $rpsignoff->setRoleName($row['role_name']);
-
-            $rpsignoff->setDkpmemberid($row['dkpmember_id']);
-            $Member->member_id = (int) $rpsignoff->getDkpmemberid();
-            $Member->Getmember();
-
-            $rpsignoff->setDkpmembername($Member->member_name);
-            $rpsignoff->setClassname($Member->member_class);
-            $rpsignoff->setImagename($Member->class_image);
-            $rpsignoff->setColorcode($Member->colorcode);
-            $rpsignoff->setRaceimg($Member->race_image);
-            $rpsignoff->setlevel($Member->member_level);
-            $rpsignoff->setGenderid($Member->member_gender_id);
-
-            $Points->member_id = (int) $rpsignoff->getDkpmemberid();
-            $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
-            $Points->read_account();
-
-            $rpsignoff->setDkpCurrent($Points->total_net);
-            $rpsignoff->setPriorityRatio($Points->pr_net);
-            $rpsignoff->setLastraid($Points->lastraid);
-            $rpsignoff->setAttendanceP1(0); // @todo
-            $rpsignoff->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $rpsignoff->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
-
-            $this->signoffs[] = $rpsignoff;
-            unset($rpsignoff);
-
-        }
-
-        $db->sql_freeresult($result);
-        return $this->signoffs;
     }
 
     /**
