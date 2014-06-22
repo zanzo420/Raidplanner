@@ -967,7 +967,6 @@ class Raidplan
         return $this->link;
     }
 
-
     /**
      * constructor
      *
@@ -1039,6 +1038,7 @@ class Raidplan
         }
         //assume all
         $this->_set_InviteList(2, 0, 0);
+
 
     }
 
@@ -1118,9 +1118,10 @@ class Raidplan
         $this->_get_raid_roles();
 
         // attach signoffs & signups to roles (available+confirmed)
-        $this->raidroles = $this->_get_Signups($Points, $Member);
+        $this->_get_Signups($Points, $Member);
 
         $this->invite_list = $this->_set_InviteList($this->accesslevel, $this->group_id, $this->group_id_list);
+
     }
 
     /**
@@ -1433,26 +1434,9 @@ class Raidplan
      */
     private function _get_Signups(\bbdkp\controller\points\Points $Points, \bbdkp\controller\members\Members $Member)
     {
-        global $config, $phpbb_root_path, $phpEx, $db;
+        global $phpbb_root_path, $phpEx, $db;
 
-        //fill signups/signoff array
-        $sql = 'SELECT a.raidplan_id, a.role_id,  a.role_needed, a.role_signedup, a.role_confirmed, b.signup_id, b.poster_id, b.signup_count, b.role_confirm,
-              b.poster_name, b.poster_ip, b.poster_colour, b.post_time, b.signup_val, b.signup_detail,
-              b.bbcode_bitfield, b.bbcode_options, b.bbcode_uid, b.dkpmember_id, r.*,
-              m.member_name , m.member_level, m.member_gender_id,
-              c.colorcode , c.imagename,  l.name AS member_class,
-              l1.name AS member_race, ra.image_female, ra.image_male
-              FROM ' . RP_RAIDPLAN_ROLES . ' a
-              INNER JOIN ' . RP_SIGNUPS . ' b ON a.raidplan_id = b.raidplan_id AND a.role_id = b.role_id
-              INNER JOIN ' . RP_ROLES . ' r ON a.role_id = r.role_id
-              INNER JOIN ' . MEMBER_LIST_TABLE . ' m ON b.dkpmember_id = m.member_id
-              INNER JOIN ' . CLASS_TABLE .  ' c ON m.game_id = c.game_id AND m.member_class_id = c.class_id
-              INNER JOIN ' . BB_LANGUAGE . " l ON l.attribute_id = c.class_id AND l.game_id = c.game_id AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class'
-              INNER JOIN " . RACE_TABLE .  ' ra ON m.game_id = ra.game_id AND m.member_race_id = ra.race_id
-              INNER JOIN ' . BB_LANGUAGE . " l1 ON l1.attribute_id = ra.race_id AND l1.game_id = ra.game_id AND l1.language= '" . $config['bbdkp_lang'] . "' AND l1.attribute = 'class'
-              WHERE a.raidplan_id = " . $this->id;
-
-        $result = $db->sql_query($sql, 86400);
+        $result = RaidplanSignup::GetSignupSQL($this->id);
         $this->signoffs = array();
 
         while ($row = $db->sql_fetchrow($result))
@@ -1496,7 +1480,7 @@ class Raidplan
                 $rpsignup->setPriorityRatio($Points->pr_net);
                 $rpsignup->setLastraid($Points->lastraid);
                 $rpsignup->setAttendanceP1(0); // @todo
-                $rpsignup->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $rpsignup->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
+                $rpsignup->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=member&amp;" . URI_NAMEID . '=' . $rpsignup->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
 
                 // now add to raidrole array
                 if($rpsignup->getSignupVal() == 1 || $rpsignup->getSignupVal() == 2)
@@ -1553,7 +1537,7 @@ class Raidplan
                 $rpsignoff->setPriorityRatio($Points->pr_net);
                 $rpsignoff->setLastraid($Points->lastraid);
                 $rpsignoff->setAttendanceP1(0); // @todo
-                $rpsignoff->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=viewmember&amp;" . URI_NAMEID . '=' . $rpsignoff->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
+                $rpsignoff->setDkmemberpurl(append_sid("{$phpbb_root_path}dkp.$phpEx", "page=member&amp;" . URI_NAMEID . '=' . $rpsignoff->getDkpmemberid() . '&amp;' . URI_DKPSYS . '=' . $Points->dkpid ));
 
                 $this->signoffs[] = $rpsignoff;
                 unset($rpsignoff);
@@ -1567,7 +1551,7 @@ class Raidplan
         unset($role);
         unset($row);
 
-        return $this->raidroles;
+
     }
 
     /**
