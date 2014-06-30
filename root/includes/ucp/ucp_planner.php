@@ -6,15 +6,28 @@
 * @copyright (c) 2011 bbDKP
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Sajaki
-* @version 0.12
+* @version 1.0
 */
 use bbdkp\controller\raidplanner\Raidplan;
+use bbdkp\controller\raidplanner\RaidplanSignup;
+
 /**
-* @package ucp
-*/
-if (!defined('IN_PHPBB'))
+ * @ignore
+ */
+if ( !defined('IN_PHPBB') )
 {
-	exit;
+    exit;
+}
+@define('IN_BBDKP', true);
+
+if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/RaidplanSignup.$phpEx");
+}
+
+if (!class_exists('Raidplan'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
 }
 
 class ucp_planner
@@ -24,19 +37,13 @@ class ucp_planner
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $config, $phpbb_root_path, $phpEx;
-		define('IN_BBDKP', true);
-		
+
 		$user->add_lang(array('mods/raidplanner', 'mods/dkp_common'));
-		
-	    if ( !function_exists('group_memberships') )
-	    {
-	        include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
-	    }
-	    
-		if (!class_exists('Raidplan'))
-		{
-			include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
-		}
+
+        if ( !function_exists('group_memberships') )
+        {
+            include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
+        }
 	
 	    // get the groups of which this user is part of. 
 	    $groups = group_memberships(false,$user->data['user_id']);
@@ -121,14 +128,15 @@ class ucp_planner
 					$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;raidplanid=".$raidplan->id);
 				}
 			}
+            $eventlist = $raidplan->getEventlist();
 				
 			$template->assign_block_vars('raids', array(
 				'RAID_ID'				=> $raidplan->id,
 				'IMAGE' 				=> $eventimg, 
-				'EVENTNAME'			 	=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
+				'EVENTNAME'			 	=> $eventlist->events[$raidplan->getEventType()]['event_name'],
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
 				'EVENT_ID'  			=> $raidplan->id,
-				'COLOR' 				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'],
+				'COLOR' 				=> $eventlist->events[$raidplan->getEventType()]['color'],
 				'SUBJECT'				=> $subj,
 				'U_DELETE' 				=> $delete_url,
 				'U_EDIT' 				=> $edit_url,
@@ -142,31 +150,42 @@ class ucp_planner
 			// get signups
 			foreach($raidplan->getRaidroles() as $key => $role)
 			{
-				foreach($role['role_signups'] as $signup)
+				foreach($role['role_signups'] as  $signup)
 				{
-					if( $signup->signup_val == 0 )
-					{
-						$signupcolor = '#00FF00';
-						$signuptext = $user->lang['YES'];
-					}
-					else if( $signup->signup_val == 1 )
-					{
-						$signupcolor = '#FF0000';
-						$signuptext = $user->lang['NO'];
-					}
-					else
-					{
-						$signupcolor = '#FFCC33';
-						$signuptext = $user->lang['MAYBE'];
-					}
-					$template->assign_block_vars('raids.signups', array(
-						'COLOR' 		=> $signupcolor,
-						'CHARNAME'  	=> $signup->dkpmembername,
-						'COLORCODE' 	=> ($signup->colorcode == '') ? '#123456' : $signup->colorcode,
-						'CLASS_IMAGE' 	=> (strlen($signup->imagename) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $signup->imagename . ".png" : '',
-						'S_CLASS_IMAGE_EXISTS' => (strlen($signup->imagename) > 1) ? true : false,
-						'VALUE_TXT' 	=> " : " . $signuptext
-					));	
+
+                    if (is_object($signup) && $signup instanceof RaidplanSignup )
+                    {
+
+                        switch ($signup->getSignupVal() )
+                        {
+
+                            case 0:
+                                $signupcolor = '#00FF00';
+                                $signuptext = $user->lang['YES'];
+                                break;
+                            case 1:
+                                $signupcolor = '#FF0000';
+                                $signuptext = $user->lang['NO'];
+                                break;
+                            case 2:
+                                $signupcolor = '#FFCC33';
+                                $signuptext = $user->lang['MAYBE'];
+                                break;
+
+                        }
+
+                        $template->assign_block_vars('raids.signups', array(
+                            'COLOR' 		=> $signupcolor,
+                            'CHARNAME'  	=> $signup->getDkpmembername(),
+                            'COLORCODE' 	=> ($signup->getColorcode() == '') ? '#123456' : $signup->getColorcode(),
+                            'CLASS_IMAGE' 	=> (strlen($signup->getImagename()) > 1) ? $phpbb_root_path . "images/bbdkp/class_images/" . $signup->getImagename() . ".png" : '',
+                            'S_CLASS_IMAGE_EXISTS' => (strlen($signup->getImagename()) > 1) ? true : false,
+                            'VALUE_TXT' 	=> " : " . $signuptext
+                        ));
+
+
+                    }
+
 				}
 			}
 				

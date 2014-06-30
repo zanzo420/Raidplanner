@@ -4,8 +4,8 @@
  * @package bbDkp-installer
  * @author sajaki9@gmail.com
  * @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
- * @version 1.0-RC2
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @version 1.0
  */
 
 define('UMIL_AUTO', true);
@@ -43,21 +43,21 @@ if (!file_exists($phpbb_root_path . 'install/index.' . $phpEx))
 }
 
 
-// only allow install when bbDKP 1.3.0 is also installed 
+// only allow install when bbDKP 1.3.0 is also installed
 if  (!isset ($config['bbdkp_version']) )
 {
     trigger_error('bbDKP must be installed first.');
 }
 else
 {
-	if(version_compare($config['bbdkp_version'], '1.3.0.6') == -1 )
+	if(version_compare($config['bbdkp_version'], '1.3.0.7') == -1 )
 	{
-	    trigger_error('Radplanner 1.0-RC2 requires bbDKP 1.3.0.6 or higher.');
+	    trigger_error('Radplanner 1.0 requires bbDKP 1.3.0.7 or higher.');
 	}
 }
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 1.0-RC2';
+$mod_name = 'Raidplanner 1.0';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -80,7 +80,7 @@ $logo_img = 'install/logo.png';
 $announce = encode_announcement($user->lang['RP_WELCOME_DEFAULT']);
 
 /*
-* Run Options 
+* Run Options
 */
 $options = array(
 );
@@ -94,12 +94,12 @@ $options = array(
 */
 
 /***************************************************************
- * 
+ *
  * Welcome to the raidplanner installer
- * 
+ *
 ****************************************************************/
 $versions = array(
-    
+
     '0.2.0'    => array(
       	// raid permission
 	   'permission_add' => array(
@@ -109,12 +109,12 @@ $versions = array(
             array('m_raidplanner_edit_other_users_raidplans', true),
             array('m_raidplanner_delete_other_users_raidplans', true),
             array('m_raidplanner_edit_other_users_signups', true),
-            
+
             /* user */
             array('u_raidplanner_view_raidplans', true),
             array('u_raidplanner_view_headcount', true),
-            
-            array('u_raidplanner_signup_raidplans', true), 		            
+
+            array('u_raidplanner_signup_raidplans', true),
             array('u_raidplanner_create_raidplans', true),
             array('u_raidplanner_create_public_raidplans', true),
             array('u_raidplanner_create_group_raidplans', true),
@@ -124,10 +124,10 @@ $versions = array(
             array('u_raidplanner_delete_raidplans', true),
 
       	),
-      	
-		  // Assign default permissions 
+
+		  // Assign default permissions
         'permission_set' => array(
-      	
+
       		/*set admin permissions */
 			//may configure raidplanner
 			array('ADMINISTRATORS', 'a_raid_config', 'group', true),
@@ -140,11 +140,11 @@ $versions = array(
 			// allows deleting other peoples raidplans
 			array('ADMINISTRATORS', 'm_raidplanner_delete_other_users_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_raidplans', 'group', true),
-							
+
 			// allows editing other peoples signup
 			array('ADMINISTRATORS', 'm_raidplanner_edit_other_users_signups', 'group', true),
 			array('GLOBAL_MODERATORS', 'm_raidplanner_edit_other_users_signups', 'group', true),
-			
+
 			/*set user permissions */
 			// allows viewing raids
 			array('ADMINISTRATORS', 'u_raidplanner_view_raidplans', 'group', true),
@@ -152,34 +152,34 @@ $versions = array(
 			array('REGISTERED', 'u_raidplanner_view_raidplans', 'group', true),
 			array('NEWLY_REGISTERED', 'u_raidplanner_view_raidplans', 'group', true),
 			array('GUESTS', 'u_raidplanner_view_raidplans', 'group', true),
-			
-			// view raid participation		
+
+			// view raid participation
 			array('ADMINISTRATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_view_headcount', 'group', true),
 			array('REGISTERED', 'u_raidplanner_view_headcount', 'group', true),
-			
+
 			// allows signing up for an raidplan or raid
 			array('ADMINISTRATORS', 'u_raidplanner_signup_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_signup_raidplans', 'group', true),
 			array('REGISTERED', 'u_raidplanner_signup_raidplans', 'group', true),
 			array('NEWLY_REGISTERED', 'u_raidplanner_signup_raidplans', 'group', true),
 			array('GUESTS', 'u_raidplanner_signup_raidplans', 'group', true),
-			
+
 			// allows creating raids
 			array('ADMINISTRATORS', 'u_raidplanner_create_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_create_raidplans', 'group', true),
 			array('REGISTERED', 'u_raidplanner_create_raidplans', 'group', true),
-					
-			// allows public raidplans where every member can subscribe 
+
+			// allows public raidplans where every member can subscribe
 			array('ADMINISTRATORS', 'u_raidplanner_create_public_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_create_public_raidplans', 'group', true),
 			array('REGISTERED', 'u_raidplanner_create_public_raidplans', 'group', true),
-			
+
 			// allows group raidplans where only usergroups can subscribe
 			array('ADMINISTRATORS', 'u_raidplanner_create_group_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_create_group_raidplans', 'group', true),
 			array('REGISTERED', 'u_raidplanner_create_group_raidplans', 'group', true),
-			
+
 			// allows private raidplans - only for you - eg hairdresser
 			array('ADMINISTRATORS', 'u_raidplanner_create_private_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_create_private_raidplans', 'group', true),
@@ -189,37 +189,37 @@ $versions = array(
 			array('ADMINISTRATORS', 'u_raidplanner_create_recurring_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_create_recurring_raidplans', 'group', true),
 			array('REGISTERED', 'u_raidplanner_create_recurring_raidplans', 'group', true),
-			
+
 			// allows editing raids
 			array('ADMINISTRATORS', 'u_raidplanner_edit_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_edit_raidplans', 'group', true),
 			array('REGISTERED', 'u_raidplanner_edit_raidplans', 'group', true),
-					
+
 			// allows deleting your own raidplans
 			array('ADMINISTRATORS', 'u_raidplanner_delete_raidplans', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_delete_raidplans', 'group', true),
 			array('REGISTERED', 'u_raidplanner_delete_raidplans', 'group', true),
-			
+
 
         ),
-        
+
 		'module_add' => array(
-            /* hook acp module to dkp_raids */ 
+            /* hook acp module to dkp_raids */
         	array('acp', 'ACP_DKP_RAIDS', array(
            		 'module_basename' => 'raidplanner',
             	 'modes'           => array('rp_settings') ,
         		),
-        	 ), 
-        	 
+        	 ),
+
             // hook ucp module to ucp_dkp
 			array('ucp', 'UCP_DKP', array(
 					'module_basename'   => 'planner',
 					'module_mode'       => array('raidplanner_registration') ,
 				),
 			),
-        ), 
-     
-        	 
+        ),
+
+
 	      // adding some configs
 		'config_add' => array(
 			array('rp_first_day_of_week', 0, true),
@@ -247,12 +247,12 @@ $versions = array(
 			array('rp_show_welcomemsg', 1, true),
 			array('rp_welcomemessage', '', true),
 			array('rp_show_name', 0, true),
-			
+
 			),
-        	 
+
 			//adding some tables
 			'table_add' => array(
-						
+
 			array( 'phpbb_rp_raids', array(
                     'COLUMNS'			=> array(
                        'raidplan_id'			=> array('INT:8', NULL, 'auto_increment' ),
@@ -282,7 +282,7 @@ $versions = array(
 					   'signup_confirmed'	=> array('UINT', 0),
 					   'recurr_id' 			=> array('UINT', 0),
 					),
-                    'PRIMARY_KEY'	=> array('raidplan_id')), 
+                    'PRIMARY_KEY'	=> array('raidplan_id')),
               ),
 
 			array('phpbb_rp_recurring', array(
@@ -314,9 +314,9 @@ $versions = array(
 					   'bbcode_uid' 		=> array('VCHAR:8', ''),
 					   'track_signups' 		=> array('BOOL', 0),
 					),
-			             'PRIMARY_KEY'	=> array('recurr_id')), 
+			             'PRIMARY_KEY'	=> array('recurr_id')),
 			        ),
-                            
+
 			array( 'phpbb_rp_signups', array(
                     'COLUMNS'			=> array(
                        'signup_id'			=> array('INT:8', NULL, 'auto_increment' ),
@@ -339,11 +339,11 @@ $versions = array(
                     'PRIMARY_KEY'	=> array('signup_id'),
 					 'KEYS'            => array(
     				     'raidplan_id'   => array('INDEX', 'raidplan_id'),
-				 		 'poster_id'  => array('INDEX', 'poster_id'), 
+				 		 'poster_id'  => array('INDEX', 'poster_id'),
 						 'eid_post_time' => array('INDEX', array('raidplan_id', 'post_time'))
 						)
 					)),
-			
+
 			array( 'phpbb_rp_raidplans_watch', array(
                     'COLUMNS'			=> array(
 					   'raidplan_id' 			=> array('INT:8', 0),
@@ -353,22 +353,22 @@ $versions = array(
 					),
 					 'KEYS'       => array(
     				     'raidplan_id'     => array('INDEX', 'raidplan_id'),
-				 		 'user_id'  	=> array('INDEX', 'user_id'), 
+				 		 'user_id'  	=> array('INDEX', 'user_id'),
 						 'notify_stat'  => array('INDEX', 'notify_status'),
 						)
 					)),
-					
+
 			array( 'phpbb_rp_watch', array(
                     'COLUMNS'			=> array(
 		  			   'user_id' 			=> array('INT:8', 0),
 		  			   'notify_status' 		=> array('BOOL', 0),
 					),
 					 'KEYS'       => array(
-				 		 'user_id'  	=> array('INDEX', 'user_id'), 
+				 		 'user_id'  	=> array('INDEX', 'user_id'),
 						 'notify_stat'  => array('INDEX', 'notify_status'),
 						)
 					)),
-					
+
 			array( 'phpbb_rp_raidplanroles', array(
                     'COLUMNS'			=> array(
                        'raidplandet_id'		=> array('INT:8', NULL, 'auto_increment' ),
@@ -377,10 +377,10 @@ $versions = array(
 					   'role_needed' 		=> array('INT:8', 0),
 					   'role_signedup' 		=> array('INT:8', 0),
 					   'role_confirmed' 	=> array('INT:8', 0),
-					   
+
 					),
-                    'PRIMARY_KEY'	=> array('raidplandet_id')), 
-              ),              
+                    'PRIMARY_KEY'	=> array('raidplandet_id')),
+              ),
 
               array(
               		'phpbb_rp_roles' , array(
@@ -392,7 +392,7 @@ $versions = array(
               			'role_needed2'     => array('INT:8', 0),
  		                'role_icon'    	   => array('VCHAR', ''),
                     ),
-                    'PRIMARY_KEY'    => 'role_id'), 
+                    'PRIMARY_KEY'    => 'role_id'),
                 ),
 
               array(
@@ -407,68 +407,68 @@ $versions = array(
               			'user_id'     			=> array('INT:8', 0),
               			'bbcode_options'		=> array('UINT', 7),
                     ),
-                    'PRIMARY_KEY'    => 'announcement_id'), 
+                    'PRIMARY_KEY'    => 'announcement_id'),
                 ),
-                                
+
 		),
 
 		 'table_row_insert'	=> array(
 		// inserting roles
 		array('phpbb_rp_roles',
            array(
-                  array('role_name' => 'Ranged DPS', 'role_needed1' => 3, 'role_needed2' => 7, 'role_color' => '#69CCF0', 'role_icon' => 'range'),          
+                  array('role_name' => 'Ranged DPS', 'role_needed1' => 3, 'role_needed2' => 7, 'role_color' => '#69CCF0', 'role_icon' => 'range'),
                   array('role_name' => 'Melee DPS', 'role_needed1' => 1, 'role_needed2' => 3, 'role_color' => '#FF2233', 'role_icon' => 'melee'),
                   array('role_name' => 'Tank' , 'role_needed1' => 1,  'role_needed2' => 2, 'role_color' => '#C79C6E', 'role_icon' => 'tank'),
                   array('role_name' => 'Healer', 'role_needed1' => 2,  'role_needed2' => 5, 'role_color' => '#00EECC', 'role_icon' => 'healer'),
                   array('role_name' => 'Hybrid' , 'role_needed1' => 2,  'role_needed2' => 6, 'role_color' => '#9999FF', 'role_icon' => 'unknown'),
            )),
-		
+
         array('phpbb_rp_announcement',
            array(
                   array(
-                  	'announcement_title' => 'Raid sign-up tool', 
+                  	'announcement_title' => 'Raid sign-up tool',
                   	'announcement_timestamp' => (int) time(),
                   	'announcement_msg' => $announce['text'],
                   	'bbcode_uid' => $announce['uid'],
                   	'bbcode_bitfield' => $announce['bitfield'],
-                  	'user_id' => $user->data['user_id'] ),          
+                  	'user_id' => $user->data['user_id'] ),
            ))),
-                      
-        
+
+
         ),
-        
+
         '0.2.1' => array(
         	// php fixes
         ),
         '0.2.2' => array(
         	// php fixes
-        ),     
+        ),
         '0.3.0' => array(
         	// php fixes
-        ),    
+        ),
         '0.4.0' => array(
-        
+
 	      // adding some configs
 		'config_add' => array(
 			array('rp_show_portal', 1, true),
 			),
 
-			
-        ),    
+
+        ),
         '0.5.0' => array(
-		  // Assign default permissions 
+		  // Assign default permissions
 			// permission to push raidplan
 	   'permission_add' => array(
 			   array('u_raidplanner_push', true),
-	
+
 	      	),
 
         'permission_set' => array(
 			// can create raidplans that recur
 			array('ADMINISTRATORS', 'u_raidplanner_push', 'group', true),
 			array('GLOBAL_MODERATORS', 'u_raidplanner_push', 'group', true),
-			),        
-			
+			),
+
       		// adding some configs
 			'config_add' => array(
 			array('rp_pm_rpchange', 1, true),
@@ -486,9 +486,9 @@ $versions = array(
                         'team_name'        => array('VCHAR_UNI', ''),
               			'team_needed'     => array('INT:8', 0),
                     ),
-                    'PRIMARY_KEY'    => 'teams_id'), 
+                    'PRIMARY_KEY'    => 'teams_id'),
                 ),
-                
+
         	array(
               		'phpbb_rp_teamsizes' , array(
                     'COLUMNS'        => array(
@@ -496,10 +496,10 @@ $versions = array(
                         'teams_id'     	  => array('INT:8', 0),
               			'team_needed'     => array('INT:8', 0),
                     ),
-                    ), 
-                ),                
+                    ),
+                ),
         	),
-        	
+
         	'table_column_add' => array(
 				array('phpbb_rp_raids', 'raidteam' , array('INT:8', 0)),
 				array('phpbb_rp_raids', 'raid_id' , array('INT:8', 0)),
@@ -509,18 +509,18 @@ $versions = array(
 	        	array('phpbb_rp_roles', 'role_needed1'),
 		       	array('phpbb_rp_roles', 'role_needed2'),
         	),
-        	
+
         	 'table_row_insert'	=> array(
 
         	array('phpbb_rp_teams',
 	           array(
 	                  array('team_name' => '8man',  'team_needed' => 8),
-	                  array('team_name' => '10man', 'team_needed' => 10),          
+	                  array('team_name' => '10man', 'team_needed' => 10),
 	                  array('team_name' => '20man', 'team_needed' => 20),
 	                  array('team_name' => '25man', 'team_needed' => 25),
 	           		)
 	           ),
-           
+
         	array('phpbb_rp_teamsizes',
 	           array(
 	                  array('role_id' => 1,  'teams_id' => 1, 'team_needed' => 1),
@@ -529,21 +529,21 @@ $versions = array(
 	                  array('role_id' => 4,  'teams_id' => 1, 'team_needed' => 1),
 	                  array('role_id' => 5,  'teams_id' => 1, 'team_needed' => 2),
 	                  array('role_id' => 6,  'teams_id' => 1, 'team_needed' => 2),
-	                  
+
 	                  array('role_id' => 1,  'teams_id' => 2, 'team_needed' => 3),
 	                  array('role_id' => 2,  'teams_id' => 2, 'team_needed' => 1),
 	                  array('role_id' => 3,  'teams_id' => 2, 'team_needed' => 1),
 	                  array('role_id' => 4,  'teams_id' => 2, 'team_needed' => 1),
 	                  array('role_id' => 5,  'teams_id' => 2, 'team_needed' => 2),
 	                  array('role_id' => 6,  'teams_id' => 2, 'team_needed' => 2),
-	                  
+
 	                  array('role_id' => 1,  'teams_id' => 3, 'team_needed' => 5),
 	                  array('role_id' => 2,  'teams_id' => 3, 'team_needed' => 2),
 	                  array('role_id' => 3,  'teams_id' => 3, 'team_needed' => 2),
 	                  array('role_id' => 4,  'teams_id' => 3, 'team_needed' => 2),
 	                  array('role_id' => 5,  'teams_id' => 3, 'team_needed' => 4),
 	                  array('role_id' => 6,  'teams_id' => 3, 'team_needed' => 5),
-	                  
+
 	                  array('role_id' => 1,  'teams_id' => 4, 'team_needed' => 7),
 	                  array('role_id' => 2,  'teams_id' => 4, 'team_needed' => 3),
 	                  array('role_id' => 3,  'teams_id' => 4, 'team_needed' => 2),
@@ -553,30 +553,30 @@ $versions = array(
 
 	                  )
 	           ),
-	           
+
            ),
-		
-        	
-			'custom' => array('upd050', 'purgecaches', 'versionupdater'),                	
-        
-        ),    
-        
-        '0.6.0' => 
-        array(
-        	
+
+
+			'custom' => array('upd050', 'purgecaches', 'versionupdater'),
+
         ),
-         
-        '0.7.0' => 
-        array(
-        	
-        ),
-        
-        '0.8.0' => 
+
+        '0.6.0' =>
         array(
 
-        ),        
-        
-        '0.9.0' => 
+        ),
+
+        '0.7.0' =>
+        array(
+
+        ),
+
+        '0.8.0' =>
+        array(
+
+        ),
+
+        '0.9.0' =>
         array(
 
         ),
@@ -670,13 +670,18 @@ $versions = array(
     '1.0-RC1' =>
         array(
             'custom' => array('purgecaches', 'versionupdater'),
-        ),   
-        
+        ),
+
     '1.0-RC2' =>
         array(
             'custom' => array('purgecaches', 'versionupdater'),
-        ),                
-);
+        ),
+    '1.0' =>
+       array(
+            'custom' => array('purgecaches', 'versionupdater'),
+        ),
+
+    );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
@@ -699,20 +704,20 @@ function encode_announcement($text)
 }
 
 /**************************************
- *  
+ *
  * global function for clearing cache
- * 
+ *
  */
 function purgecaches($action, $version)
 {
     global $umil;
-    
+
     $umil->cache_purge();
     $umil->cache_purge('imageset');
     $umil->cache_purge('template');
     $umil->cache_purge('theme');
     $umil->cache_purge('auth');
-    
+
     return 'UMIL_CACHECLEARED';
 }
 
@@ -730,29 +735,29 @@ function versionupdater($action, $version)
 	{
 		case 'install' :
 		case 'update' :
-			$umil->db->sql_query('DELETE FROM ' . $table_prefix . "bbdkp_plugins WHERE name = 'raidplanner'");	
+			$umil->db->sql_query('DELETE FROM ' . $table_prefix . "bbdkp_plugins WHERE name = 'raidplanner'");
 			// We insert new data in the plugin table
 			$umil->table_row_insert($table_prefix . 'bbdkp_plugins',
 			array(
-				array( 
-					'name'  => 'raidplanner', 
-					'value'  => '1', 
-					'version'  => $version, 								
-					'orginal_copyright'  => 'Sajaki', 				
-					'bbdkp_copyright'  => 'bbDKP Team', 				
+				array(
+					'name'  => 'raidplanner',
+					'value'  => '1',
+					'version'  => $version,
+					'orginal_copyright'  => 'Sajaki',
+					'bbdkp_copyright'  => 'bbDKP Team',
 					),
 			));
-			
+
 			return array('command' => sprintf($user->lang['RP_UPD_MOD'], $version) , 'result' => 'SUCCESS');
-			
+
 			break;
-		
+
 		case 'uninstall' :
 			$umil->db->sql_query('DELETE FROM ' . $table_prefix . "bbdkp_plugins WHERE name = 'apply'");
 			return array(
-					'command' => sprintf($user->lang['RP_UNINSTALL_MOD'], $version) ,  
+					'command' => sprintf($user->lang['RP_UNINSTALL_MOD'], $version) ,
 					'result' => 'SUCCESS');
 			break;
-	
+
 	}
 }

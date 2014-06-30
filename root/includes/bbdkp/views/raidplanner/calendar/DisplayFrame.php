@@ -4,7 +4,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.12.0
+* @version 1.0
 */
 namespace bbdkp\views\raidplanner;
 
@@ -29,16 +29,16 @@ class DisplayFrame extends RaidCalendar
 {
 	private $view_mode = '';
 	private $Message = '';
-	
+
 	/**
-	 * 
+	 *
 	 */
 	function __construct($view_mode)
 	{
 		$this->view_mode = $view_mode;
 		parent::__construct($this->view_mode);
 	}
-	
+
 	/**
 	 * @see calendar::display()
 	 * implements abstract method
@@ -69,12 +69,12 @@ class DisplayFrame extends RaidCalendar
 
 	/**
 	 * Displays common Calendar elements, header message
-	 * 
+	 *
 	 */
 	private function DisplayCalendar()
 	{
 		global $config, $user, $template, $phpEx, $phpbb_root_path;
-		
+
 		//day dropdown
 		for( $i = 1; $i <= $this->days_in_month; $i++ )
 		{
@@ -84,17 +84,17 @@ class DisplayFrame extends RaidCalendar
 					'SELECTED' 	=> ( (int) $this->date['day'] == $i ) ? ' selected="selected"' : '',
 			));
 		}
-		
+
 		// month dropdown
 		for( $i = 1; $i <= 12; $i++ )
 		{
 			$template->assign_block_vars('monthoptions', array(
 					'KEY' 		=> $i,
 					'VALUE' 	=> $user->lang['datetime'][$this->month_names[$i]],
-					'SELECTED' 	=> ($this->date['month_no'] == $i ) ? ' selected="selected"' : '', 
+					'SELECTED' 	=> ($this->date['month_no'] == $i ) ? ' selected="selected"' : '',
 			));
 		}
-		
+
 		//year dropdown
 		$temp_year	= gmdate('Y');
 		for( $i = $temp_year-1; $i < ($temp_year+5); $i++ )
@@ -102,7 +102,7 @@ class DisplayFrame extends RaidCalendar
 			$template->assign_block_vars('yearoptions', array(
 					'KEY' 		=> $i,
 					'VALUE' 	=> $i,
-					'SELECTED' 	=> ( (int) $this->date['year'] == $i ) ? ' selected="selected"' : '', 
+					'SELECTED' 	=> ( (int) $this->date['year'] == $i ) ? ' selected="selected"' : '',
 			));
 		}
 
@@ -154,7 +154,7 @@ class DisplayFrame extends RaidCalendar
 			$this->date['next_month'] = gmdate("n", gmmktime(0,0,0, $this->date['month_no'] +1, $this->date['day'], $this->date['year']));
 			$this->date['prev_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'] -1, $this->date['day'], $this->date['year']));
 			$this->date['next_year']  = gmdate("Y", gmmktime(0,0,0, $this->date['month_no'] +1, $this->date['day'], $this->date['year']));
-			
+
 			$prev_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$this->date['prev_month']."&amp;calY=".$this->date['prev_year']);
 			$next_link = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$this->date['next_month']."&amp;calY=".$this->date['next_year']);
 		}
@@ -162,7 +162,7 @@ class DisplayFrame extends RaidCalendar
         global $db;
 		$template->assign_vars(array(
             'DEBUG_NUMQUERIES'      => $db->num_queries['normal'],
-			'CURRENT_TIME'			=> sprintf($user->lang['CURRENT_TIME'], $user->format_date(time(), false, true)), 
+			'CURRENT_TIME'			=> sprintf($user->lang['CURRENT_TIME'], $user->format_date(time(), false, true)),
 			'TZ'					=> $this->timezone,
 			'S_PLANNER_RAIDFRAME'	=> true,
 			'S_SHOW_WELCOME_MSG'	=> ($config ['rp_show_welcomemsg'] == 1) ? true : false,
@@ -177,9 +177,9 @@ class DisplayFrame extends RaidCalendar
 			'U_MONTH_VIEW_URL' 		=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$this->date['day']."&amp;calM=".$this->date['month_no']."&amp;calY=".$this->date['year']),
 
 		));
-		
-		
-	
+
+
+
 	}
-	
+
 }

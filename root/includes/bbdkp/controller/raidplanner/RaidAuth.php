@@ -5,7 +5,7 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2011 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 0.12
+ * @version 1.0
  */
 namespace bbdkp\controller\raidplanner;
 use \bbdkp\controller\raidplanner\Raidplan;
@@ -381,5 +381,3 @@ class RaidAuth
     }
 
 }
-
-

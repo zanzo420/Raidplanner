@@ -1,12 +1,12 @@
 <?php
 /**
  * bbdkp acp language file for raidplanner module
- * 
+ *
  * @package bbDkp
  * @copyright 2010 bbdkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version $Id$
- * 
+ *
  */
 
 /**
@@ -25,7 +25,7 @@ if (empty($lang) || !is_array($lang))
 
 // Merge the following language entries into the lang array
 $lang = array_merge($lang, array(
-	'ACP_CAT_RAIDPLANNER' 				=> 'Raidplanner', //main tab 
+	'ACP_CAT_RAIDPLANNER' 				=> 'Raidplanner', //main tab
 	'ACP_RAIDPLANNER' 					=> 'Raidplanner', //category
 
 	'RP_PLANNER_SETTINGS'  		        => 'Planner Settings', 	//module

@@ -7,7 +7,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2014 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.12.0
+* @version 1.0
 */
 namespace bbdkp\views\raidplanner;
 use  bbdkp\views\Raidplan_display;
@@ -242,7 +242,7 @@ abstract class RaidCalendar
 					FROM ' . USERS_TABLE . "
 					WHERE (( user_birthday >= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day1, $month1, $year1 )) . "'
 					AND user_birthday <= '" . $db->sql_escape(sprintf('%2d-%2d-%4d', $day2, $month2, $year2 )) . "')
-					AND user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( '%2d', $month2)  .'-' . $db->any_char) . ' ) 
+					AND user_birthday " . $db->sql_like_expression($db->any_char . '-' . sprintf( '%2d', $month2)  .'-' . $db->any_char) . ' )
 					AND user_type IN (' . USER_NORMAL . ', ' . USER_FOUNDER . ')
 					ORDER BY user_birthday ASC';
 

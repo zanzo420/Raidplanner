@@ -3,7 +3,7 @@
 * @package raidplanner.acp
 * @copyright (c) 2014 bbdkp https://github.com/bbDKP
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.13.0
+* @version 1.0
 *
 **/
 
