@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.0-RC2
+* @version 1.0
 */
 namespace bbdkp\controller\raidplanner;
 use bbdkp\controller\raidplanner\Raidmessenger;
@@ -496,7 +496,7 @@ class RaidplanSignup
     {
         return $this->signup_val;
     }
-	
+
     public function __construct()
     {
 
@@ -523,13 +523,13 @@ class RaidplanSignup
 			trigger_error( 'INVALID_SIGNUP' );
 		}
 		$db->sql_freeresult($result);
-		
+
 		$this->raidplan_id = $row['raidplan_id'];
 		$this->poster_id = $row['poster_id'];
 		$this->poster_name = $row['poster_name'];
 		$this->poster_colour = $row['poster_colour'];
 		$this->poster_ip = $row['poster_ip'];
-		$this->signup_time = $row['post_time'];		
+		$this->signup_time = $row['post_time'];
 		$this->signup_val = $row['signup_val'];
 		$this->signup_count = $row['signup_count'];
 		$this->comment = $row['signup_detail'];
@@ -579,19 +579,19 @@ class RaidplanSignup
 	public function getmychars($raidplanid)
 	{
 		global $db, $user;
-		
+
 		// get memberinfo
 		$sql_array = array();
-		
-		$sql_array['SELECT'] = ' s.*,  m.member_id, m.member_name, m.member_level, m.member_gender_id '; 
+
+		$sql_array['SELECT'] = ' s.*,  m.member_id, m.member_name, m.member_level, m.member_gender_id ';
 	    $sql_array['FROM'] 	= array(MEMBER_LIST_TABLE 	=> 'm');
 	    $sql_array['LEFT_JOIN'] = array(
 			array( 'FROM'	=> array( RP_SIGNUPS => 's'),
 				   'ON'	=> 's.dkpmember_id = m.member_id and s.raidplan_id = ' . (int) $raidplanid
 				)
 		);
-	    $sql_array['WHERE'] = 'm.member_rank_id !=90 AND m.phpbb_user_id =  ' . $user->data['user_id']; 		    	
-		
+	    $sql_array['WHERE'] = 'm.member_rank_id !=90 AND m.phpbb_user_id =  ' . $user->data['user_id'];
+
 		$mychars = array();
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 
@@ -601,10 +601,10 @@ class RaidplanSignup
 		{
 			$mychars[] = array(
 				'is_signedup'  => (isset($row['signedup_val']) ? 1: 0),
-				'signedup_val' => (isset($row['signedup_val']) ? $row['signedup_val']: 0), 
-				'role_id' 	   => (isset($row['role_id']) ? $row['role_id'] : ''), 
-				'id' 		   => $row['member_id'], 
-				'name' 		   => $row['member_name'] );	
+				'signedup_val' => (isset($row['signedup_val']) ? $row['signedup_val']: 0),
+				'role_id' 	   => (isset($row['role_id']) ? $row['role_id'] : ''),
+				'id' 		   => $row['member_id'],
+				'name' 		   => $row['member_name'] );
 		}
 		$db->sql_freeresult($result);
 		return $mychars;
@@ -619,32 +619,32 @@ class RaidplanSignup
     public function signup($raidplan_id)
 	{
 		global  $user;
-		
+
 		$this->raidplan_id = $raidplan_id;
-		
+
 		$this->poster_id = $user->data['user_id'];
 		$this->poster_name = $user->data['username'];
 		$this->poster_colour = $user->data['user_colour'];
 		$this->poster_ip = $user->ip;
 		$this->signup_time = time() - $user->timezone - $user->dst;
-		
+
 		// 0 unavailable 1 maybe 2 available 3 confirmed
 		$this->signup_val = request_var('signup_val'. $raidplan_id, 2);
-		$this->roleid = request_var('signuprole'. $raidplan_id, 0);   
+		$this->roleid = request_var('signuprole'. $raidplan_id, 0);
 		$this->dkpmemberid = request_var('signupchar'. $raidplan_id, 0);
 		$this->comment = utf8_normalize_nfc(request_var('signup_detail'. $raidplan_id, '', true));
 		$this->signup_count = 1;
-		
+
 		$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
 		$allow_bbcode = $allow_urls = $allow_smilies = true;
 		generate_text_for_storage($this->comment, $this->bbcode['uid'],
                 $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
-		
+
 		$this->storesignup();
 
 		return true;
 	}
-	
+
 	/**
 	 * stores a signup
 	 *
@@ -652,10 +652,10 @@ class RaidplanSignup
 	private function storesignup()
 	{
 		global $user, $cache, $db;
-		
+
 		$sql_signup = array(
 			'raidplan_id'	=> $this->raidplan_id,
-			'poster_id'		=> $this->poster_id, 
+			'poster_id'		=> $this->poster_id,
 			'poster_name'	=> $this->poster_name,
 			'poster_colour'	=> $this->poster_colour,
 			'poster_ip'		=> $this->poster_ip,
@@ -665,10 +665,10 @@ class RaidplanSignup
 			'signup_detail'	=> $this->comment,
 			'bbcode_bitfield' 	=> $this->bbcode['bitfield'],
 			'bbcode_uid'		=> $this->bbcode['uid'],
-			'bbcode_options'	=> 7, 
-			'dkpmember_id'	=> $this->dkpmemberid, 
+			'bbcode_options'	=> 7,
+			'dkpmember_id'	=> $this->dkpmemberid,
 			'role_id'		=> $this->roleid
-			
+
 			);
 
         //destroy sql cache for signup / raidplan / roles table
@@ -680,12 +680,12 @@ class RaidplanSignup
 		 * start transaction
 		 */
 		$db->sql_transaction('begin');
-			
+
 		if($this->signup_id == 0)
 		{
-			//prevent double submit, check if signup for char already exists (ip+charname), ignore if it does 
-			$sql = "SELECT count(*) as doublecheck from " . RP_SIGNUPS . " WHERE raidplan_id = " . $this->raidplan_id . 
-			" and poster_ip = '" . $this->poster_ip . "' 
+			//prevent double submit, check if signup for char already exists (ip+charname), ignore if it does
+			$sql = "SELECT count(*) as doublecheck from " . RP_SIGNUPS . " WHERE raidplan_id = " . $this->raidplan_id .
+			" and poster_ip = '" . $this->poster_ip . "'
 			  and dkpmember_id = '" .  $this->dkpmemberid . "'";
 			$result = $db->sql_query($sql);
 			$check = (int) $db->sql_fetchfield('doublecheck');
@@ -694,10 +694,10 @@ class RaidplanSignup
 			{
 				//insert new
 				$sql = 'INSERT INTO ' . RP_SIGNUPS . ' ' . $db->sql_build_array('INSERT', $sql_signup);
-				$db->sql_query($sql);	
+				$db->sql_query($sql);
 				$signup_id = $db->sql_nextid();
 				$this->signup_id = $signup_id;
-				
+
 				switch ( (int) $this->signup_val)
 				{
 					case 0:
@@ -709,8 +709,8 @@ class RaidplanSignup
 						// maybe
 						$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_maybe = signup_maybe + 1 WHERE raidplan_id = " . $this->raidplan_id;
 						$db->sql_query($sql);
-						
-						$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+
+						$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .
 						" AND role_id = " . $this->roleid ;
 						$db->sql_query($sql);
 						break;
@@ -718,30 +718,30 @@ class RaidplanSignup
 						//yes
 						$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_yes = signup_yes + 1 WHERE raidplan_id = " . $this->raidplan_id;
 						$db->sql_query($sql);
-						
-						$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+
+						$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .
 					" AND role_id = " . $this->roleid ;
-						
+
 						$db->sql_query($sql);
-						break; 
+						break;
 				}
-			
+
 			}
-			else 
+			else
 			{
-				$sql = "SELECT signup_id from " . RP_SIGNUPS . " WHERE raidplan_id = " . $this->raidplan_id . 
-				" and poster_ip = '" . $this->poster_ip . "' 
+				$sql = "SELECT signup_id from " . RP_SIGNUPS . " WHERE raidplan_id = " . $this->raidplan_id .
+				" and poster_ip = '" . $this->poster_ip . "'
 				  and dkpmember_id = '" .  $this->dkpmemberid . "'";
 				$result = $db->sql_query($sql);
 				$check = (int) $db->sql_fetchfield('signup_id');
-			
+
 				$this->getSignup($check);
 				trigger_error(sprintf($user->lang['USER_ALREADY_SIGNED_UP'], $this->dkpmembername));
 			}
 		}
 
 		unset ($sql_signup);
-		
+
 		$db->sql_transaction('commit');
 
         //destroy sql cache for signup / raidplan / roles table
@@ -812,11 +812,11 @@ class RaidplanSignup
 				// decrease signup_no, set as maybe
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no - 1, signup_maybe = signup_maybe + 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
-				
+
 				// set new role
-				$this->roleid = request_var('signuprole_' . $this->raidplan_id . '_' .  (int) $this->signup_id , 0);    
+				$this->roleid = request_var('signuprole_' . $this->raidplan_id . '_' .  (int) $this->signup_id , 0);
 				// assign new role
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup + 1 WHERE raidplan_id = " . $this->raidplan_id .
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 1, role_id = ' . $this->roleid . ' WHERE signup_id = ' . (int) $this->signup_id;
@@ -824,11 +824,11 @@ class RaidplanSignup
 
 				//edit the comment
 				$this->comment = utf8_normalize_nfc(request_var('signup_detail_' . $this->raidplan_id . '_' . $this->signup_id , '', true));
-				
+
 				$this->bbcode['uid'] = $this->bbcode['bitfield'] = $options = ''; // will be modified by generate_text_for_storage
 				$allow_bbcode = $allow_urls = $allow_smilies = true;
 				generate_text_for_storage($this->comment, $this->bbcode['uid'], $this->bbcode['bitfield'], $options, $allow_bbcode, $allow_urls, $allow_smilies);
-				
+
 				if($this->comment != '')
 				{
 					$sql = 'UPDATE ' . RP_SIGNUPS . " SET signup_detail = '" .  $db->sql_escape($this->comment) . "' WHERE signup_id = " . (int) $this->signup_id;
@@ -847,15 +847,15 @@ class RaidplanSignup
 
 		// if already >0 then don't do anything
 		return false;
-		
+
 	}
-	
+
 	/**
 	 * delete this signup and change to not available
-	 * 
+	 *
 	 * @param int $signup_id
 	 * @param int $raidplan_id
-	 * 
+	 *
 	 * @return int
 	 */
 	public function deletesignup($signup_id, $raidplan_id)
@@ -870,7 +870,7 @@ class RaidplanSignup
 		//make object
 		$this->getSignup($signup_id);
 		$this->signup_sync();
-		
+
 		switch ( (int) $this->signup_val)
 		{
 			case 1:
@@ -878,11 +878,11 @@ class RaidplanSignup
 				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_maybe = signup_maybe - 1 WHERE raidplan_id = " . $raidplan_id;
 				$db->sql_query($sql);
-				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $raidplan_id .  
+
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $raidplan_id .
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
-				
+
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
@@ -893,39 +893,39 @@ class RaidplanSignup
 				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_yes = signup_yes - 1 WHERE raidplan_id = " . $raidplan_id;
 				$db->sql_query($sql);
-				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $raidplan_id .  
+
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 WHERE raidplan_id = " . $raidplan_id .
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
-				
+
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
 				return 2;
-				break; 
+				break;
 			case 3:
-				
+
 				//confirmed
 				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_no = signup_no + 1, signup_confirmed = signup_confirmed - 1 WHERE raidplan_id = " . $raidplan_id;
 				$db->sql_query($sql);
-				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_confirmed = role_confirmed - 1 WHERE raidplan_id = " . $raidplan_id .  
+
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_confirmed = role_confirmed - 1 WHERE raidplan_id = " . $raidplan_id .
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
-				
+
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 0 WHERE signup_id = ' . (int) $this->signup_id;
-				$db->sql_query($sql);				
+				$db->sql_query($sql);
 				$db->sql_transaction('commit');
 				return 3;
-				break; 
+				break;
 		}
-		
-		
+
+
 		// if already 0 then don't do anything
 		return 0;
 	}
-	
+
 	/**
 	 * synchronises raidplan stats
      * make sure that calling function cleared sql cache
@@ -935,16 +935,16 @@ class RaidplanSignup
 		global $db;
 
 		$db->sql_transaction('begin');
-		$sql = "update " . RP_RAIDS_TABLE . " set signup_no = (select count(*) from " . RP_SIGNUPS . 
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_no = (select count(*) from " . RP_SIGNUPS .
 			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 0) where raidplan_id = " . (int) $this->raidplan_id;
 		$db->sql_query($sql);
-		$sql = "update " . RP_RAIDS_TABLE . " set signup_maybe = (select count(*) from " . RP_SIGNUPS . 
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_maybe = (select count(*) from " . RP_SIGNUPS .
 			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 1) where raidplan_id = " . (int) $this->raidplan_id;
 		$db->sql_query($sql);
-		$sql = "update " . RP_RAIDS_TABLE . " set signup_yes = (select count(*) from " . RP_SIGNUPS . 
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_yes = (select count(*) from " . RP_SIGNUPS .
 			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 2) where raidplan_id = " . (int) $this->raidplan_id;
 		$db->sql_query($sql);
-		$sql = "update " . RP_RAIDS_TABLE . " set signup_confirmed = (select count(*) from " . RP_SIGNUPS . 
+		$sql = "update " . RP_RAIDS_TABLE . " set signup_confirmed = (select count(*) from " . RP_SIGNUPS .
 			" where raidplan_id = " . (int) $this->raidplan_id. " and signup_val = 3) where raidplan_id = " . (int) $this->raidplan_id;
 		$db->sql_query($sql);
 		$db->sql_transaction('commit');
@@ -976,11 +976,11 @@ class RaidplanSignup
 				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_maybe = signup_maybe - 1, signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
-				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1, role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1, role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
-				
+
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
@@ -992,17 +992,17 @@ class RaidplanSignup
 
                 return true;
 				break;
-				
-			case 2:	
+
+			case 2:
 				// yes
 				$db->sql_transaction('begin');
 				$sql = "UPDATE " . RP_RAIDS_TABLE . " SET signup_yes = signup_yes - 1, signup_confirmed = signup_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id;
 				$db->sql_query($sql);
-				
-				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 , role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .  
+
+				$sql = "UPDATE " . RP_RAIDPLAN_ROLES . " SET role_signedup = role_signedup - 1 , role_confirmed = role_confirmed + 1 WHERE raidplan_id = " . $this->raidplan_id .
 				" AND role_id = " . $this->roleid ;
 				$db->sql_query($sql);
-				
+
 				$sql = 'UPDATE ' . RP_SIGNUPS . ' SET signup_val = 3, role_confirm = 1 WHERE signup_id = ' . (int) $this->signup_id;
 				$db->sql_query($sql);
 				$db->sql_transaction('commit');
@@ -1015,10 +1015,10 @@ class RaidplanSignup
                 return true;
 				break;
 		}
-		
+
 		// if already >0 then don't do anything
 		return false;
-		
+
 	}
 
 	/* signupmessenger
@@ -1029,7 +1029,7 @@ class RaidplanSignup
 	** 5) raidplan signup unavail -
 	**   send to raidleader
 	** 6) raidplan signup confirm ++
-	**   send to member 
+	**   send to member
 	**
 	*/
 	function signupmessenger($trigger, Raidplan $raidplan)
@@ -1042,15 +1042,15 @@ class RaidplanSignup
 		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 		include_once($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 
-		// get recipient data (email, etc)  
+		// get recipient data (email, etc)
 		if (!class_exists('\bbdkp\controller\raidplanner\Raidmessenger'))
 		{
 			require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/raidmessenger.$phpEx");
 		}
-		
+
 		$rpm = new Raidmessenger();
 		$rpm->get_notifiable_users($trigger, $this->raidplan_id, $this->signup_id);
-		
+
 		$emailrecipients = array();
 		$messenger = new \messenger();
 
@@ -1061,64 +1061,64 @@ class RaidplanSignup
 			switch ($trigger)
 			{
 				case 4:
-					// send signup to RL				
+					// send signup to RL
 					$messenger->template('signup_new', $row['user_lang']);
 					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' .
                                 $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
                         $user->format_date($raidplan->getStartTime()  , $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => array($raidplan->getPoster() => 'to'));
-					
+
 					break;
 				case 5:
 					// send confirmation to RL and raider
 					$messenger->template('signup_confirm', $row['user_lang']);
 					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
                         $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
-					$data['address_list'] = array('u' => 
+					$data['address_list'] = array('u' =>
 						array(
 							$row['user_id'] => 'to'
 						));
-					
-					break;						
+
+					break;
 				case 6:
 					// send cancellation to RL and raider
 					$messenger->template('signup_unsign', $row['user_lang']);
 					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
                         $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
-					$data['address_list'] = array('u' => 
+					$data['address_list'] = array('u' =>
 						array(
 							$row['user_id'] => 'to'
 						));
-					break;						
+					break;
 			}
 		   $userids = array($raidplan->getPoster());
 		   $rlname = array();
 		   user_get_id_name($userids, $rlname);
-		   
+
 		   $messenger->assign_vars(array(
 		   		'RAIDLEADER'		=> $rlname[$raidplan->getPoster()],
-				'EVENT_SUBJECT'		=> $subject, 
+				'EVENT_SUBJECT'		=> $subject,
 		   		'SIGNUP_TIME'		=> $user->format_date($this->signup_time, $config['rp_date_time_format'], true),
 				'USERNAME'			=> htmlspecialchars_decode($user->data['username']),
-		   		'RAIDER'			=> $this->dkpmembername, 
+		   		'RAIDER'			=> $this->dkpmembername,
 		   		'EVENT'				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
-		   		'ROLE'				=> $this->role_name, 
+		   		'ROLE'				=> $this->role_name,
 				'INVITE_TIME'		=> $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true),
 				'START_TIME'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true),
 				'END_TIME'			=> $user->format_date($raidplan->getEndTime(), $config['rp_date_time_format'], true),
 				'TZ'				=> $user->lang['tz'][(int) $user->data['user_timezone']],
 				'U_RAIDPLAN'		=> generate_board_url() . "/dkp.$phpEx?page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id
 			));
-			
+
 			$messenger->msg = trim($messenger->tpl_obj->assign_display('body'));
 			$messenger->msg = str_replace("\r\n", "\n", $messenger->msg);
-			
+
 		    $messenger->msg = utf8_normalize_nfc($messenger->msg);
 	   		$uid = $bitfield = $options = ''; // will be modified by generate_text_for_storage
 	   		$allow_bbcode = $allow_smilies = $allow_urls = true;
 	   		generate_text_for_storage($messenger->msg, $uid, $bitfield, $options, $allow_bbcode, $allow_urls, $allow_smilies);
-	   		$messenger->msg = generate_text_for_display($messenger->msg, $uid, $bitfield, $options); 
-			
+	   		$messenger->msg = generate_text_for_display($messenger->msg, $uid, $bitfield, $options);
+
 			$data['from_user_id']      = $user->data['user_id'];
 		    $data['from_username']     = $user->data['username'];
 		    $data['icon_id']           = 0;
@@ -1127,17 +1127,17 @@ class RaidplanSignup
 		    $data['enable_smilies']    = true;
 		    $data['enable_urls']       = true;
 		    $data['enable_sig']        = true;
-		    $data['message']           = $messenger->msg; 
+		    $data['message']           = $messenger->msg;
 		    $data['bbcode_bitfield']   = $this->bbcode['bitfield'];
 		    $data['bbcode_uid']        = $this->bbcode['uid'];
-			
-	   
+
+
 			if($config['rp_pm_signup'] == 1 &&  (int) $row['user_allow_pm'] == 1)
 			{
 				// send a PM
 				submit_pm('post',$subject, $data, false);
 			}
-			
+
 			if($config['rp_email_signup'] == 1 && $row['user_email'] != '')
 			{
 				//send email, reuse messenger object
@@ -1147,19 +1147,19 @@ class RaidplanSignup
 			   $email->anti_abuse_headers($config, $user);
 			   $email->send(0);
 			}
-				
+
 		}
-		
+
 		if($config['rp_email_signup'] == 1 && isset($email))
 		{
 			$email->save_queue();
 			$emailrecipients = implode(', ', $emailrecipients);
 			add_log('admin', 'LOG_MASS_EMAIL', $emailrecipients);
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 
 }

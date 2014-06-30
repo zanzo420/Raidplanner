@@ -8,11 +8,11 @@
 		<meta name="generator" content="Phpbb.ModTeam.Tools (c#)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Raidplanner]]></title>
-		<description lang="en"><![CDATA[Raidplanner 1.0-RC2 plugin for bbDKP
+		<description lang="en"><![CDATA[Raidplanner 1.0 plugin for bbDKP
 		forked from phpbb3 Calendar and phpRaider. see readme.md
-		Requires bbDKP 1.3.0.6 or higher to be installed.
+		Requires bbDKP 1.3.0.7 or higher to be installed.
 		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></description>
-		<author-notes lang="en"><![CDATA[Requires bbDKP 1.3.0.6 or higher to be installed.]]></author-notes>
+		<author-notes lang="en"><![CDATA[Requires bbDKP 1.3.0.7 or higher to be installed.]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -39,14 +39,14 @@
 				</contributions-group>
 			</author>
 		</author-group>
-		<mod-version>1.0-RC2</mod-version>
+		<mod-version>1.0</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>600</time>
 			<target-version>3.0.12</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="https://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.3.0.6</link>		
+			<link type="dependency" href="https://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.3.0.7</link>		
 			<link type="language" href="contrib/languages/fr.xml" lang="en">French</link>
 			<link type="language" href="contrib/languages/de.xml" lang="en">German</link>	
 		</link-group>
@@ -150,16 +150,6 @@ if ($config['rp_index_display_week'] == 1)
 ]]></action>
 			</edit>
         </open>
-        <open src="/styles/prosilver/template/dkp/view/menu.html">
-			<edit>
-				<comment lang="en"><![CDATA[raidplanner link]]></comment>
-				<comment lang="fr"><![CDATA[raidplanner link]]></comment>
-				<comment lang="de"><![CDATA[raidplanner link]]></comment>
-				<find><![CDATA[&nbsp; &nbsp;<a href="{U_LISTITEMHIST}">{L_MENU_ITEMHIST}</a>]]></find>
-				<action type="after-add"><![CDATA[	&nbsp; &nbsp;<a href="{U_PLANNER}">{L_PLANNER}</a>
-]]></action>
-			</edit>
-		</open>
 		<open src="/styles/prosilver/theme/stylesheet.css">
 			<edit>
 				<comment lang="en"><![CDATA[raidplanner css]]></comment>

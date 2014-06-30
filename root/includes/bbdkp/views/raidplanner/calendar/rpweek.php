@@ -7,7 +7,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2011 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.12.0
+* @version 1.0
 */
 namespace bbdkp\views\raidplanner;
 use  bbdkp\views\raidplanner\Raidplan_display;
@@ -37,16 +37,16 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
 class rpweek extends RaidCalendar
 {
 	private $mode = '';
-	
+
 	/**
-	 * 
+	 *
 	 */
 	function __construct()
 	{
 		$this->mode = "week";
 		parent::__construct($this->mode);
 	}
-	
+
 	/**
 	 * @see calendar::display()
 	 *
@@ -54,19 +54,19 @@ class rpweek extends RaidCalendar
 	public function display()
 	{
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-	
+
 		// create next and prev links
-		
-		// get date number 
+
+		// get date number
 		$this->date['fday'] = $this->get_firstday($this->date['day'], $this->date['month_no'], $this->date['year']);
-	
+
 		$number_days = 7;
-		$calendar_header_txt = $user->lang['WEEK_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'], 
+		$calendar_header_txt = $user->lang['WEEK_OF'] . sprintf($user->lang['LOCAL_DATE_FORMAT'],
 			$user->lang['datetime'][$this->date['month']], $this->date['day'], $this->date['year'] );
-	
+
 		$counter = 0;
 		$j_start = $this->date['day']-$this->date['fday'];
-		
+
 		$prev_month_no = $this->date['month_no'] - 1;
 		$prev_year_no = $this->date['year'];
 		if( $prev_month_no == 0 )
@@ -75,7 +75,7 @@ class rpweek extends RaidCalendar
 			$prev_year_no--;
 		}
 		$prev_month_day_count = date("t",mktime( 0,0,0,$prev_month_no, 25, $prev_year_no));
-		
+
 		// how many days are in this month?
 		$month_day_count = date("t",mktime(0,0,0,$this->date['month_no'], 25, $this->date['year']));
 		$next_month_no = $this->date['month_no'] + 1;
@@ -85,34 +85,34 @@ class rpweek extends RaidCalendar
 			$next_month_no = 1;
 			$next_year_no++;
 		}
-		
-				
+
+
 		if ($j_start < 0)
 		{
 			$fdaystamp = gmmktime(0,0,0, $this->date['month_no']-1, $j_start + $prev_month_day_count, $prev_year_no);
 		}
-		else 
+		else
 		{
 			$fdaystamp = gmmktime(0,0,0, $this->date['month_no'], $j_start, $this->date['year']);
 		}
-		
+
 		if ($j_start + $number_days > $month_day_count)
 		{
 			$ldaystamp = gmmktime(0,0,0, $next_month_no, $j_start + $number_days - $month_day_count, $next_year_no);
 		}
-		else 
+		else
 		{
 			$ldaystamp = gmmktime(0,0,0, $this->date['month_no'], $j_start + $number_days, $this->date['year']);
 		}
-		
+
 		// array of raid days
         $Raidplandisplay = new Raidplan_display();
 		$raiddays = $Raidplandisplay->GetRaiddaylist($fdaystamp, $ldaystamp);
 
 		// array of bdays
 		$birthdays = $this->generate_birthday_list( $fdaystamp, $ldaystamp);
-		
-		
+
+
 		for ($j = $j_start; $j < $j_start+7; $j++, $counter++)
 		{
 			if( $j < 1 )
@@ -124,19 +124,19 @@ class rpweek extends RaidCalendar
 			}
 			else if ($j > $month_day_count )
 			{
-				
+
 				$true_j = $j - $month_day_count;
 				$true_m = $next_month_no;
 				$true_y = $next_year_no;
 			}
 			else
 			{
-				// 1 <= $j <= $month_day_count 
+				// 1 <= $j <= $month_day_count
 				$true_j = $j;
 				$true_m = $this->date['month_no'];
 				$true_y = $this->date['year'];
 			}
-	
+
 			// start creating the data for the real days
 			$calendar_days['START_WEEK'] = false;
 			$calendar_days['END_WEEK'] = false;
@@ -146,7 +146,7 @@ class rpweek extends RaidCalendar
 			$calendar_days['NUMBER'] = 0;
 			$calendar_days['ADD_LINK'] = '';
 			$calendar_days['BIRTHDAYS'] = '';
-	
+
 			if($counter % 7 == 0)
 			{
 				$calendar_days['START_WEEK'] = true;
@@ -156,26 +156,26 @@ class rpweek extends RaidCalendar
 				$calendar_days['END_WEEK'] = true;
 			}
 			$calendar_days['NUMBER'] = $true_j;
-			
+
 			if ( $auth->acl_gets('u_raidplanner_create_public_raidplans', 'u_raidplanner_create_group_raidplans', 'u_raidplanner_create_private_raidplans') )
 			{
 				$calendar_days['ADD_LINK'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=showadd&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
 			}
 			$calendar_days['U_DAY_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=day&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
 			$calendar_days['U_MONTH_VIEW_URL'] = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calD=".$true_j."&amp;calM=".$true_m."&amp;calY=".$true_y);
-			
+
 			if( ($true_j == $this->date['day']) &&
 			    ($true_m == $this->date['month_no']) &&
 			    ($true_y == $this->date['year']) )
 			{
 				$calendar_days['DAY_CLASS'] = 'highlight';
 			}
-	
+
 			//highlight current day
 			$test_start_hi_time = mktime( 0,0,0,$true_m, $true_j, $true_y) + date('Z');
 			$test_end_hi_time = $test_start_hi_time + 86399;
 			$test_hi_time = time() + $user->timezone + $user->dst;
-	
+
 			if( ($test_start_hi_time <= $test_hi_time) &&
 			    ($test_end_hi_time >= $test_hi_time))
 			{
@@ -217,10 +217,10 @@ class rpweek extends RaidCalendar
 						}
 					}
 				}
-				
+
 			}
-			
-	
+
+
 			$template->assign_block_vars('calendar_days', $calendar_days);
 
 			// if can see raids
@@ -229,7 +229,7 @@ class rpweek extends RaidCalendar
 				$hit= false;
 				if(isset($raiddays) && is_array($raiddays))
 				{
-					// loop all days having raids			
+					// loop all days having raids
 					foreach ($raiddays as $raidday)
 					{
 						if($raidday['day'] == $true_j)
@@ -251,26 +251,26 @@ class rpweek extends RaidCalendar
 								}
 								unset($raidrole);
 								unset($key);
-							
-								
+
+
 							}
 							$hit= true;
 						}
 					}
-					
+
 					// remove hit
-					if ($hit) 
+					if ($hit)
 					{
 						$shifted = array_shift($raiddays);
 					}
 				}
-				
+
 			}
-			
-			
-	
+
+
+
 		}
-	
+
 		$template->assign_vars(array(
 				'CALENDAR_HEADER'	=> $calendar_header_txt,
 				'DAY_IMG'			=> $user->img('button_calendar_day', 'DAY'),

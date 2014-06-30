@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 0.12.0
+* @version 1.0
 */
 namespace bbdkp\controller\raidplanner;
 
@@ -22,11 +22,11 @@ class rpevents
 {
 
 	public $events = array();
-	
+
 	function __construct()
 	{
-		global $db; 
-		
+		global $db;
+
 		$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' WHERE event_status = 1 ORDER BY event_id';
 		$result = $db->sql_query($sql, 604800);
 		while ($row = $db->sql_fetchrow($result))
@@ -39,7 +39,7 @@ class rpevents
 		}
 
 		$db->sql_freeresult($result);
-		
+
 	}
-	
+
 }
