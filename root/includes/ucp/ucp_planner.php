@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
 * This is the user interface for the ucp planner integration
 *
 * @package ucp
@@ -27,13 +27,13 @@ if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup'))
 
 if (!class_exists('Raidplan'))
 {
-    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Raidplan.' . $phpEx);
 }
 
 class ucp_planner
 {
 	var $u_action;
-					
+
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $config, $phpbb_root_path, $phpEx;
@@ -44,8 +44,8 @@ class ucp_planner
         {
             include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
         }
-	
-	    // get the groups of which this user is part of. 
+
+	    // get the groups of which this user is part of.
 	    $groups = group_memberships(false,$user->data['user_id']);
 	    $group_options = "";
 	    // build the sql to get access
@@ -56,8 +56,8 @@ class ucp_planner
 				$group_options .= " OR ";
 			}
 			$group_options .= "group_id = ".$grouprec['group_id']. " OR group_id_list LIKE '%,".$grouprec['group_id']. ",%'";
-	    }  
-	    
+	    }
+
 		// build template
 		$daycount = request_var('daycount', 7 );
 		$disp_date_format = $config['rp_date_format'];
@@ -66,25 +66,25 @@ class ucp_planner
 		// show all in coming year
 		$start_temp_date = time() - 86400 ;
 		$sort_timestamp_cutoff = $start_temp_date + 86400*365;
-		
+
 		$sql_array = array(
 		    'SELECT'    => ' r.raidplan_id  ',
-		
+
 		    'FROM'      => array(
 		        RP_RAIDS_TABLE => 'r',
 		    ),
-		
+
 		    'WHERE'     =>  '
 		    	 (r.raidplan_access_level = 2)
-		    	OR  (r.poster_id = '. $db->sql_escape($user->data['user_id']) .' ) 
-		    	OR  (r.raidplan_access_level = 1 AND ('.$group_options.') )   	
-		        AND r.raidplan_start_time >= '. (int) $start_temp_date.' 
+		    	OR  (r.poster_id = '. $db->sql_escape($user->data['user_id']) .' )
+		    	OR  (r.raidplan_access_level = 1 AND ('.$group_options.') )
+		        AND r.raidplan_start_time >= '. (int) $start_temp_date.'
 		        AND r.raidplan_start_time <= '. (int) $sort_timestamp_cutoff ,
-		     
-		    'ORDER_BY' => 'r.raidplan_start_time ASC ', 
+
+		    'ORDER_BY' => 'r.raidplan_start_time ASC ',
 		);
 
-		$sql = $db->sql_build_query('SELECT', $sql_array);		
+		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0);
 
 		$template_output = array();
@@ -95,13 +95,13 @@ class ucp_planner
 			if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
 				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
-				
+
 			}
-			else 
+			else
 			{
 				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/dummy.png";
 			}
-			
+
 			$subj = $raidplan->getSubject();
 			if( $config['rp_display_truncated_name'] > 0 )
 			{
@@ -111,7 +111,7 @@ class ucp_planner
 				}
 			}
 
-			$delete_url = "";	
+			$delete_url = "";
 			$edit_url = "";
 			if($user->data['is_registered'])
 			{
@@ -129,10 +129,10 @@ class ucp_planner
 				}
 			}
             $eventlist = $raidplan->getEventlist();
-				
+
 			$template->assign_block_vars('raids', array(
 				'RAID_ID'				=> $raidplan->id,
-				'IMAGE' 				=> $eventimg, 
+				'IMAGE' 				=> $eventimg,
 				'EVENTNAME'			 	=> $eventlist->events[$raidplan->getEventType()]['event_name'],
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
 				'EVENT_ID'  			=> $raidplan->id,
@@ -146,7 +146,7 @@ class ucp_planner
 				'END_TIME' 				=> $user->format_date($raidplan->getEndTime(), $config['rp_time_format'], true),
 				'DISPLAY_BOLD'			=> ($user->data['user_id'] == $raidplan->getPoster()) ? true : false,
 			));
-			
+
 			// get signups
 			foreach($raidplan->getRaidroles() as $key => $role)
 			{
@@ -188,11 +188,11 @@ class ucp_planner
 
 				}
 			}
-				
+
 			$db->sql_freeresult($result);
-				
+
 		}
-				
+
 		$db->sql_freeresult($result);
 
 		switch ($mode)
@@ -203,8 +203,8 @@ class ucp_planner
 							'U_COUNT_ACTION'	=> $this->u_action,
 							'DAYCOUNT'			=> $daycount ));
 			break;
-		
-		}			
-		
+
+		}
+
 	}
 }

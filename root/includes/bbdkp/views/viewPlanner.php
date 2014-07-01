@@ -26,7 +26,7 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 
 if (!class_exists('\bbdkp\controller\raidplanner\Raidplan', false))
 {
-    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/raidplan.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Raidplan.' . $phpEx);
 }
 
 if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup', false))
