@@ -30,7 +30,7 @@ if (!class_exists('\bbdkp\controller\raidplanner\RaidAuth'))
 
 if (!class_exists('\bbdkp\controller\raidplanner\rpevents'))
 {
-    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/rpevents.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Rpevents.' . $phpEx);
 }
 
 if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup'))
