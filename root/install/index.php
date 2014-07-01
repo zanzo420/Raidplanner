@@ -5,7 +5,7 @@
  * @author sajaki9@gmail.com
  * @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0
+ * @version 1.0.1
  */
 
 define('UMIL_AUTO', true);
@@ -680,8 +680,11 @@ $versions = array(
        array(
             'custom' => array('purgecaches', 'versionupdater'),
         ),
-
-    );
+    '1.0.1' =>
+       array(
+        'custom' => array('purgecaches', 'versionupdater'),
+    ),
+);
 
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);

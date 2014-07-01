@@ -1,6 +1,6 @@
 [![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
 
-#Raidplanner 1.0
+#Raidplanner 1.0.1
 
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
@@ -53,7 +53,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v1.0
+v1.0.1
 
 ## Installation
 * 	Unzip the zip file into /store/mods
@@ -71,6 +71,9 @@ v1.0
 *	Raidplanner mod was partly made from Alightner's Calendar mod and phpRaider, refactored into functional classes to work with bbDKP. 
 
 ### changes
+
+*	1.0.1 2014-07-01
+	* [FIX] #56 File Name and Link Reference case mismatch.	
 
 *   1.0 2014-06-30
 	*   [FIX] compatible with bbDKP 1.3.0.7 or higher
