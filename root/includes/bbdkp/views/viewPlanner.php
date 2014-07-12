@@ -102,7 +102,6 @@ class viewPlanner implements iViews
         // display header
         $this->cal = new DisplayFrame($view_mode);
 
-
         $this->cal->display();
 
         switch($view_mode)
@@ -122,7 +121,6 @@ class viewPlanner implements iViews
                 trigger_error($user->lang['USER_INVALIDVIEW']);
                 break;
         }
-
 
         $blocks = new rpblocks();
         $blocks->display();
@@ -158,15 +156,35 @@ class viewPlanner implements iViews
     {
         global $phpbb_root_path, $phpEx;
 
-        $postaction = (isset($_POST['addraidplan']) ) ? 'addraidplan' : '';
-        $postaction = (isset($_POST['editraidplan']) ) ? 'editraidplan' : '';
-        $postaction = (isset($_POST['addraid']) ) ? 'addraid' : '';
-        $postaction = (isset($_POST['updateraid']) ) ? 'updateraid' : '';
-        $postaction = (isset($_POST['deleteraidplan']) ) ? 'deleteraidplan' : '';
-        $postaction = (isset($_POST['pushraidplan']) ) ? 'pushraidplan' : '';
-        $raidplan_display = new Raidplan_display($this->cal->getEventlist());
+        $postaction = "";
+
+        if(isset($_POST['addraidplan']))
+        {
+            $postaction = 'addraidplan';
+        }
+        elseif(isset($_POST['editraidplan']))
+        {
+            $postaction = 'editraidplan';
+        }
+        elseif(isset($_POST['addraid']))
+        {
+            $postaction = 'addraid';
+        }
+        elseif(isset($_POST['updateraid']))
+        {
+            $postaction = 'updateraid';
+        }
+        elseif(isset($_POST['deleteraidplan']))
+        {
+            $postaction = 'deleteraidplan';
+        }
+        elseif(isset($_POST['pushraidplan']))
+        {
+            $postaction = 'pushraidplan';
+        }
 
         $eventlist = $this->cal->getEventlist();
+        $raidplan_display = new Raidplan_display($this->cal->getEventlist());
         $raidplan = new Raidplan($eventlist->events, $raidplan_id);
 
         switch($postaction)
