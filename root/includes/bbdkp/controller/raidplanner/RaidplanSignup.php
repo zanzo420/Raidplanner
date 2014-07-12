@@ -497,6 +497,7 @@ class RaidplanSignup
         return $this->signup_val;
     }
 
+
     public function __construct()
     {
 
@@ -1032,7 +1033,7 @@ class RaidplanSignup
 	**   send to member
 	**
 	*/
-	function signupmessenger($trigger, Raidplan $raidplan)
+	function signupmessenger($trigger, Raidplan $raidplan, $eventlist)
 	{
 		global $user, $config;
 		global $phpEx, $phpbb_root_path;
@@ -1064,7 +1065,7 @@ class RaidplanSignup
 					// send signup to RL
 					$messenger->template('signup_new', $row['user_lang']);
 					$subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWSIGN'] . ': ' .
-                                $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+                        $eventlist->events[$raidplan->getEventType()]['event_name'] . ' ' .
                         $user->format_date($raidplan->getStartTime()  , $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' => array($raidplan->getPoster() => 'to'));
 
@@ -1072,7 +1073,7 @@ class RaidplanSignup
 				case 5:
 					// send confirmation to RL and raider
 					$messenger->template('signup_confirm', $row['user_lang']);
-					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['CONFIRMSIGN'] . ': ' . $eventlist->events[$raidplan->getEventType()]['event_name'] . ' ' .
                         $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' =>
 						array(
@@ -1083,7 +1084,7 @@ class RaidplanSignup
 				case 6:
 					// send cancellation to RL and raider
 					$messenger->template('signup_unsign', $row['user_lang']);
-					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] . ' ' .
+					$subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UNSIGNED'] . ': ' . $eventlist->events[$raidplan->getEventType()]['event_name'] . ' ' .
                         $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true);
 					$data['address_list'] = array('u' =>
 						array(
@@ -1101,7 +1102,7 @@ class RaidplanSignup
 		   		'SIGNUP_TIME'		=> $user->format_date($this->signup_time, $config['rp_date_time_format'], true),
 				'USERNAME'			=> htmlspecialchars_decode($user->data['username']),
 		   		'RAIDER'			=> $this->dkpmembername,
-		   		'EVENT'				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
+		   		'EVENT'				=> $eventlist->events[$raidplan->getEventType()]['event_name'],
 		   		'ROLE'				=> $this->role_name,
 				'INVITE_TIME'		=> $user->format_date($raidplan->getInviteTime(), $config['rp_date_time_format'], true),
 				'START_TIME'		=> $user->format_date($raidplan->getStartTime(), $config['rp_date_time_format'], true),

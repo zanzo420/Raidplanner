@@ -1532,7 +1532,7 @@ class Raidplan
                 $rpsignoff->setGenderid($row['member_gender_id']);
 
                 $Points->member_id = (int) $rpsignoff->getDkpmemberid();
-                $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
+                $Points->dkpid =  $this->eventlist[$this->event_type]['dkpid'];
                 $Points->read_account();
 
                 $rpsignoff->setDkpCurrent($Points->total_net);

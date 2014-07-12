@@ -291,7 +291,7 @@ class viewPlanner implements iViews
         {
             $signup = new RaidplanSignup();
             $signup->signup($raidplan->id);
-            $signup->signupmessenger(4, $raidplan);
+            $signup->signupmessenger(4, $raidplan, $this->cal->getEventlist());
             $raidplan->Get_Raidplan();
             $raidplan->Check_auth();
             $raidplan_display->DisplayRaidplan($raidplan);
@@ -311,7 +311,7 @@ class viewPlanner implements iViews
                 $raidplan->deleteraider($signup->getDkpmemberid());
             }
         }
-        $signup->signupmessenger(6, $raidplan);
+        $signup->signupmessenger(6, $raidplan, $this->cal->getEventlist());
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
@@ -333,7 +333,7 @@ class viewPlanner implements iViews
         $signup = new RaidplanSignup();
         $signup->requeuesignup($signup_id);
 
-        $signup->signupmessenger(4, $raidplan);
+        $signup->signupmessenger(4, $raidplan, $this->cal->getEventlist());
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
@@ -352,7 +352,7 @@ class viewPlanner implements iViews
             //autopush
             $raidplan->raidplan_push();
         }
-        $signup->signupmessenger(5, $raidplan);
+        $signup->signupmessenger(5, $raidplan, $this->cal->getEventlist());
         $raidplan->Get_Raidplan();
         $raidplan->Check_auth();
         $raidplan_display->DisplayRaidplan($raidplan);
