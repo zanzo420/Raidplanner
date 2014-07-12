@@ -73,7 +73,7 @@ v1.0.2
 ### changes
 
 *	1.0.2 2014-07-12
-	* [FIX] #5
+	* [FIX] #57 fix Function array dereferencing not being available in php 5.3. causes erratic errors in php < 5.4 (missing signups). 
 	
 *	1.0.1 2014-07-01
 	* [FIX] #56 File Name and Link Reference case mismatch.	
