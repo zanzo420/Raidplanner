@@ -106,7 +106,7 @@ class rpweek extends RaidCalendar
 		}
 
 		// array of raid days
-        $Raidplandisplay = new Raidplan_display();
+        $Raidplandisplay = new Raidplan_display($this->getEventlist());
 		$raiddays = $Raidplandisplay->GetRaiddaylist($fdaystamp, $ldaystamp);
 
 		// array of bdays

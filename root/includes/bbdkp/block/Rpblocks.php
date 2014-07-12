@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.0
+ * @version 1.0.2
 */
 
 namespace bbdkp\views\raidplanner;
@@ -22,15 +22,29 @@ if (!class_exists('\bbdkp\controller\raidplanner\Raidplan'))
 {
     include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Raidplan.' . $phpEx);
 }
+if (!class_exists('\bbdkp\controller\raidplanner\rpevents'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Rpevents.' . $phpEx);
+}
 
 /**
- * raidplanner side blocks
- * @package bbdkp\raidplanner
+ * Class rpblocks
+ *
+ * @package bbdkp\views\raidplanner
  */
 class rpblocks
 {
 
-	public $group_options;
+	private $group_options;
+
+    private $eventlist;
+
+    function __construct()
+    {
+        //constructor is called from blockfactory and viewplanner
+        $events= new \bbdkp\controller\raidplanner\rpevents();
+        $this->eventlist = $events->events;
+    }
 
     public function display()
 	{
@@ -73,7 +87,6 @@ class rpblocks
 			));
 		}
 	}
-
 
 	/**
 	 * Displays the signups
@@ -178,10 +191,10 @@ class rpblocks
 		{
 
 			unset($raidplan);
-			$raidplan = new Raidplan($row['raidplan_id']);
-			if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
+			$raidplan = new Raidplan($this->eventlist, $row['raidplan_id']);
+			if(strlen( $this->eventlist[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$raidplan->getEventType()]['imagename'] . ".png";
 
 			}
 			else
@@ -191,10 +204,10 @@ class rpblocks
 
 			$template->assign_block_vars('upcoming', array(
 				'RAID_ID'				=> $raidplan->id,
-				'EVENTNAME'			 	=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
+				'EVENTNAME'			 	=> $this->eventlist[$raidplan->getEventType()]['event_name'],
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
 				'EVENT_ID'  			=> $raidplan->id,
-				'COLOR' 				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'],
+				'COLOR' 				=> $this->eventlist[$raidplan->getEventType()]['color'],
 				'SUBJECT'				=> censor_text($raidplan->getSubject()),
 				'IMAGE' 				=> $eventimg,
 				'START_TIME'			=> $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true),

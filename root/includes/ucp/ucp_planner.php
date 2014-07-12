@@ -6,7 +6,7 @@
 * @copyright (c) 2011 bbDKP
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Sajaki
-* @version 1.0
+* @version 1.0.2
 */
 use bbdkp\controller\raidplanner\Raidplan;
 use bbdkp\controller\raidplanner\RaidplanSignup;
@@ -30,9 +30,16 @@ if (!class_exists('Raidplan'))
     include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Raidplan.' . $phpEx);
 }
 
+if (!class_exists('\bbdkp\controller\raidplanner\rpevents'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Rpevents.' . $phpEx);
+}
+
 class ucp_planner
 {
 	var $u_action;
+
+    private $eventlist;
 
 	function main($id, $mode)
 	{
@@ -44,6 +51,8 @@ class ucp_planner
         {
             include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
         }
+
+        $this->eventlist = new \bbdkp\controller\raidplanner\rpevents();
 
 	    // get the groups of which this user is part of.
 	    $groups = group_memberships(false,$user->data['user_id']);
@@ -91,10 +100,10 @@ class ucp_planner
 		while ($row = $db->sql_fetchrow($result))
 		{
 			unset($raidplan);
-			$raidplan = new Raidplan($row['raidplan_id']);
-			if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
+			$raidplan = new Raidplan($this->eventlist->events,  $row['raidplan_id']);
+			if(strlen( $this->eventlist->events[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
-				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
+				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist->events[$raidplan->getEventType()]['imagename'] . ".png";
 
 			}
 			else
@@ -128,15 +137,14 @@ class ucp_planner
 					$delete_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=delete&amp;raidplanid=".$raidplan->id);
 				}
 			}
-            $eventlist = $raidplan->getEventlist();
 
 			$template->assign_block_vars('raids', array(
 				'RAID_ID'				=> $raidplan->id,
 				'IMAGE' 				=> $eventimg,
-				'EVENTNAME'			 	=> $eventlist->events[$raidplan->getEventType()]['event_name'],
+				'EVENTNAME'			 	=> $this->eventlist->events[$raidplan->getEventType()]['event_name'],
 				'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
 				'EVENT_ID'  			=> $raidplan->id,
-				'COLOR' 				=> $eventlist->events[$raidplan->getEventType()]['color'],
+				'COLOR' 				=> $this->eventlist->events[$raidplan->getEventType()]['color'],
 				'SUBJECT'				=> $subj,
 				'U_DELETE' 				=> $delete_url,
 				'U_EDIT' 				=> $edit_url,
@@ -182,8 +190,6 @@ class ucp_planner
                             'S_CLASS_IMAGE_EXISTS' => (strlen($signup->getImagename()) > 1) ? true : false,
                             'VALUE_TXT' 	=> " : " . $signuptext
                         ));
-
-
                     }
 
 				}

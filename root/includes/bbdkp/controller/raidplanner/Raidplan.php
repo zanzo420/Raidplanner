@@ -5,7 +5,7 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2011 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0
+ * @version 1.0.2
  */
 namespace bbdkp\controller\raidplanner;
 use bbdkp\controller\raidplanner;
@@ -61,6 +61,24 @@ class Raidplan
 {
 
     /**
+     * @var array
+     */
+    private $eventlist;
+
+    public function setEventlist($eventlist)
+    {
+        $this->eventlist = $eventlist;
+    }
+
+    /**
+     * @return \bbdkp\controller\raidplanner\rpevents
+     */
+    public function getEventlist()
+    {
+        return $this->eventlist;
+    }
+
+    /**
      * pk
      * raidplan_id
      *
@@ -74,23 +92,6 @@ class Raidplan
     public function getId()
     {
         return $this->id;
-    }
-
-    private $eventlist;
-    /**
-     * @param \bbdkp\controller\raidplanner\rpevents $eventlist
-     */
-    public function setEventlist($eventlist)
-    {
-        $this->eventlist = $eventlist;
-    }
-
-    /**
-     * @return \bbdkp\controller\raidplanner\rpevents
-     */
-    public function getEventlist()
-    {
-        return $this->eventlist;
     }
 
     /**
@@ -966,14 +967,16 @@ class Raidplan
         return $this->link;
     }
 
-    /**
-     * constructor
+    /***
+     * Raidplan constructor
      *
+     * @param     $eventlist
      * @param int $id
      */
-    function __construct($id = 0)
+    function __construct($eventlist, $id = 0)
     {
         // reinitialise
+        $this->eventlist = $eventlist;
         $this->id = $id;
         $this->event_type = 0;
         $this->invite_time = 0;
@@ -1025,9 +1028,6 @@ class Raidplan
         //get array of possible roles
         $this->roles = $this->_get_roles();
         $this->raidroles  = $this->_init_raidplan_roles();
-
-        //fetch event list
-        $this->eventlist= new rpevents();
 
         // if this is an existing raidplan then get the values from database
         if($this->id !=0)
@@ -1316,6 +1316,9 @@ class Raidplan
                 $meta_info = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$month."&amp;calY=".$year);
                 $message = $user->lang['EVENT_DELETED'];
 
+                $cache->destroy( 'sql', RP_SIGNUPS );
+                $cache->destroy( 'sql', RP_RAIDS_TABLE );
+                $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
 
                 meta_refresh(3, $meta_info);
                 $message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $meta_info . '">', '</a>');
@@ -1472,7 +1475,7 @@ class Raidplan
                 $rpsignup->setGenderid($row['member_gender_id']);
 
                 $Points->member_id = (int) $rpsignup->getDkpmemberid();
-                $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
+                $Points->dkpid =  $this->eventlist[$this->event_type]['dkpid'];
                 $Points->read_account();
 
                 $rpsignup->setDkpCurrent($Points->total_net);
@@ -1529,7 +1532,7 @@ class Raidplan
                 $rpsignoff->setGenderid($row['member_gender_id']);
 
                 $Points->member_id = (int) $rpsignoff->getDkpmemberid();
-                $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
+                $Points->dkpid =  $this->eventlist[$this->event_type]['dkpid'];
                 $Points->read_account();
 
                 $rpsignoff->setDkpCurrent($Points->total_net);
@@ -1587,17 +1590,17 @@ class Raidplan
                 case 1:
                     $messenger->template('raidplan_add', $row['user_lang']);
                     $subject = '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['NEWRAID'] . ': ' .
-                            $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+                            $this->eventlist[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
                     break;
                 case 2:
                     $messenger->template('raidplan_update', $row['user_lang']);
                     $subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['UPDRAID'] . ': ' .
-                            $this->eventlist->events[$this->event_type]['event_name'] . ' ' .$user->format_date($this->start_time, $config['rp_date_time_format'], true);
+                            $this->eventlist[$this->event_type]['event_name'] . ' ' .$user->format_date($this->start_time, $config['rp_date_time_format'], true);
                     break;
                 case 3:
                     $messenger->template('raidplan_delete', $row['user_lang']);
                     $subject =  '[' . $user->lang['RAIDPLANNER']  . '] ' . $user->lang['DELRAID'] . ': ' .
-                            $this->eventlist->events[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
+                            $this->eventlist[$this->event_type]['event_name'] . ' ' . $user->format_date($this->start_time, $config['rp_date_time_format'], true);
                     break;
             }
 
@@ -1609,7 +1612,7 @@ class Raidplan
                 'RAIDLEADER'		=> $rlname[$this->poster],
                 'USERNAME'			=> htmlspecialchars_decode($row['username']),
                 'EVENT_SUBJECT'		=> $subject,
-                'EVENT'				=> $this->eventlist->events[$this->event_type]['event_name'],
+                'EVENT'				=> $this->eventlist[$this->event_type]['event_name'],
                 'INVITE_TIME'		=> $user->format_date($this->invite_time, $config['rp_date_time_format'], true),
                 'START_TIME'		=> $user->format_date($this->start_time, $config['rp_date_time_format'], true),
                 'END_TIME'			=> $user->format_date($this->end_time, $config['rp_date_time_format'], true),
@@ -1695,7 +1698,7 @@ class Raidplan
             $raidinfo = array (
                 'raid_id' 	 => (int) $this->raid_id,
                 'event_id' 	 => $this->event_type,
-                'raid_value' => (float) $this->eventlist->events[$this->event_type]['value'],
+                'raid_value' => (float) $this->eventlist[$this->event_type]['value'],
                 'time_bonus' => 0,
                 'raid_note'  => $this->body,
                 'raid_start' => $this->start_time,
@@ -1734,11 +1737,11 @@ class Raidplan
                 foreach($to_add as $member_id)
                 {
                     $newraider = new Raiddetail($this->raid_id);
-                    $newraider->raid_value = (float) $this->eventlist->events[$this->event_type]['value'];
+                    $newraider->raid_value = (float) $this->eventlist[$this->event_type]['value'];
                     $newraider->time_bonus = 0;
                     $newraider->zerosum_bonus = 0;
                     $newraider->raid_decay = 0;
-                    $newraider->dkpid = $this->eventlist->events[$this->event_type]['dkpid'];
+                    $newraider->dkpid = $this->eventlist[$this->event_type]['dkpid'];
                     $newraider->member_id = $member_id;
                     $newraider->create();
                     unset($newraider);
@@ -1767,15 +1770,15 @@ class Raidplan
                 // timebonus is hardcoded to zero but could be changed later...
                 $raid = array(
                     'raid_note' 				=> $this->body,
-                    'raid_value' 				=> $this->eventlist->events[$this->event_type]['value'],
+                    'raid_value' 				=> $this->eventlist[$this->event_type]['value'],
                     'raid_timebonus'	        => request_var ('hidden_raid_timebonus', 0.00 ),
                     'zerosum_bonus'	            => 0,
                     'raid_decay'	            => 0,
                     'raid_start'			 	=> $this->start_time,
                     'raid_end' 					=> $this->end_time,
-                    'event_name'				=> $this->eventlist->events[$this->event_type]['event_name'],
+                    'event_name'				=> $this->eventlist[$this->event_type]['event_name'],
                     'event_id' 					=> $this->event_type,
-                    'dkpid'						=> $this->eventlist->events[$this->event_type]['dkpid'],
+                    'dkpid'						=> $this->eventlist[$this->event_type]['dkpid'],
                     'raid_attendees' 			=> $raid_attendees
                 );
                 $this->exec_pushraid($raid);
@@ -1827,9 +1830,9 @@ class Raidplan
                             'hidden_raid_id' 			=> $this->raid_id,
                             'hidden_raid_note' 			=> $this->body,
                             'hidden_event_id' 			=> $this->event_type,
-                            'hidden_raid_name'			=> $this->eventlist->events[$this->event_type]['event_name'],
-                            'hidden_raid_value' 		=> $this->eventlist->events[$this->event_type]['value'],
-                            'hidden_dkpid'				=> $this->eventlist->events[$this->event_type]['dkpid'],
+                            'hidden_raid_name'			=> $this->eventlist[$this->event_type]['event_name'],
+                            'hidden_raid_value' 		=> $this->eventlist[$this->event_type]['value'],
+                            'hidden_dkpid'				=> $this->eventlist[$this->event_type]['dkpid'],
                             'hidden_raid_timebonus' 	=> 0,
                             'hidden_startraid_date' 	=> $this->start_time,
                             'hidden_endraid_date' 		=> $this->end_time,
@@ -1839,7 +1842,7 @@ class Raidplan
                     );
 
                     confirm_box(false, sprintf($user->lang['CONFIRM_CREATE_RAID'],
-                        $this->eventlist->events[$this->event_type]['event_name']) , $s_hidden_fields);
+                        $this->eventlist[$this->event_type]['event_name']) , $s_hidden_fields);
                 }
 
             }

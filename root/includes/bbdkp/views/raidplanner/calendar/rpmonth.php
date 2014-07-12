@@ -65,7 +65,7 @@ class rpmonth extends RaidCalendar
 
 		$counter = 0;
 
-        $Raidplandisplay = new Raidplan_display();
+        $Raidplandisplay = new Raidplan_display($this->getEventlist());
 
 		// fill array of raid days
 		$firstday = $this->Get1stDayofMonth($this->timestamp);

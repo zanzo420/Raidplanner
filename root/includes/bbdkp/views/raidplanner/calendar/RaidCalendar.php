@@ -7,7 +7,7 @@
 * @copyright (c) 2009 alightner
 * @copyright (c) 2014 Sajaki : refactoring, adapting to bbdkp
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.0
+* @version 1.0.2
 */
 namespace bbdkp\views\raidplanner;
 use  bbdkp\views\Raidplan_display;
@@ -19,6 +19,10 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 	exit;
 }
 
+if (!class_exists('\bbdkp\controller\raidplanner\rpevents'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Rpevents.' . $phpEx);
+}
 /**
  * the base class
  *
@@ -51,7 +55,25 @@ abstract class RaidCalendar
 	 * number of days in month
 	 *
 	 * @var int
-	 */public $days_in_month = 0;
+	 */
+    public $days_in_month = 0;
+
+    private $eventlist;
+    /**
+     * @param \bbdkp\controller\raidplanner\rpevents $eventlist
+     */
+    public function setEventlist($eventlist)
+    {
+        $this->eventlist = $eventlist;
+    }
+
+    /**
+     * @return \bbdkp\controller\raidplanner\rpevents
+     */
+    public function getEventlist()
+    {
+        return $this->eventlist;
+    }
 
 	/**
 	 *
@@ -70,6 +92,9 @@ abstract class RaidCalendar
 	function __construct()
 	{
 		global $user, $config;
+
+        //fetch event list and inject it through
+        $this->eventlist= new \bbdkp\controller\raidplanner\rpevents();
 
 		//set month names (common.php lang entry)
 		$this->month_names[1] = "January";
