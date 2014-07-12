@@ -5,7 +5,7 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2011 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0
+ * @version 1.0.2
  */
 namespace bbdkp\controller\raidplanner;
 use bbdkp\controller\raidplanner;
@@ -61,6 +61,24 @@ class Raidplan
 {
 
     /**
+     * @var array
+     */
+    private $eventlist;
+
+    public function setEventlist($eventlist)
+    {
+        $this->eventlist = $eventlist;
+    }
+
+    /**
+     * @return \bbdkp\controller\raidplanner\rpevents
+     */
+    public function getEventlist()
+    {
+        return $this->eventlist;
+    }
+
+    /**
      * pk
      * raidplan_id
      *
@@ -74,23 +92,6 @@ class Raidplan
     public function getId()
     {
         return $this->id;
-    }
-
-    private $eventlist;
-    /**
-     * @param \bbdkp\controller\raidplanner\rpevents $eventlist
-     */
-    public function setEventlist($eventlist)
-    {
-        $this->eventlist = $eventlist;
-    }
-
-    /**
-     * @return \bbdkp\controller\raidplanner\rpevents
-     */
-    public function getEventlist()
-    {
-        return $this->eventlist;
     }
 
     /**
@@ -966,14 +967,16 @@ class Raidplan
         return $this->link;
     }
 
-    /**
-     * constructor
+    /***
+     * Raidplan constructor
      *
+     * @param     $eventlist
      * @param int $id
      */
-    function __construct($id = 0)
+    function __construct($eventlist, $id = 0)
     {
         // reinitialise
+        $this->eventlist = $eventlist;
         $this->id = $id;
         $this->event_type = 0;
         $this->invite_time = 0;
@@ -1025,9 +1028,6 @@ class Raidplan
         //get array of possible roles
         $this->roles = $this->_get_roles();
         $this->raidroles  = $this->_init_raidplan_roles();
-
-        //fetch event list
-        $this->eventlist= new rpevents();
 
         // if this is an existing raidplan then get the values from database
         if($this->id !=0)
@@ -1316,6 +1316,9 @@ class Raidplan
                 $meta_info = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=month&amp;calM=".$month."&amp;calY=".$year);
                 $message = $user->lang['EVENT_DELETED'];
 
+                $cache->destroy( 'sql', RP_SIGNUPS );
+                $cache->destroy( 'sql', RP_RAIDS_TABLE );
+                $cache->destroy( 'sql', RP_RAIDPLAN_ROLES );
 
                 meta_refresh(3, $meta_info);
                 $message .= '<br /><br />' . sprintf($user->lang['RETURN_CALENDAR'], '<a href="' . $meta_info . '">', '</a>');
@@ -1472,7 +1475,7 @@ class Raidplan
                 $rpsignup->setGenderid($row['member_gender_id']);
 
                 $Points->member_id = (int) $rpsignup->getDkpmemberid();
-                $Points->dkpid =  $this->eventlist->events[$this->event_type]['dkpid'];
+                $Points->dkpid =  $this->eventlist[$this->event_type]['dkpid'];
                 $Points->read_account();
 
                 $rpsignup->setDkpCurrent($Points->total_net);

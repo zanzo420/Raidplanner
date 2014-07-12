@@ -5,7 +5,7 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2014 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0
+ * @version 1.0.2
  */
 namespace bbdkp\views\raidplanner;
 use bbdkp\controller\raidplanner\Raidplan;
@@ -26,12 +26,24 @@ if (!class_exists('\bbdkp\controller\raidplanner\RaidplanSignup'))
 {
     require("{$phpbb_root_path}includes/bbdkp/controller/raidplanner/RaidplanSignup.$phpEx");
 }
+
 /**
  * raid plan view class
  *
  */
 class Raidplan_display
 {
+
+    /**
+     * @var array
+     */
+    private $eventlist;
+
+    function __construct($eventlist)
+    {
+        $this->eventlist = $eventlist->events;
+    }
+
     /***
      * display a raidplan with signup form
      *
@@ -144,11 +156,10 @@ class Raidplan_display
         }
 
         // event image on top
-        $eventlist = $raidplan->getEventlist();
         $eventtype = $raidplan->getEventType();
-        if(strlen( $eventlist->events[$eventtype]['imagename'] ) > 1)
+        if(strlen( $this->eventlist[$eventtype]['imagename'] ) > 1)
         {
-            $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $eventlist->events[$eventtype]['imagename'] . ".png";
+            $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$eventtype]['imagename'] . ".png";
 
         }
         else
@@ -184,7 +195,7 @@ class Raidplan_display
                 'TZ'				=> $user->lang['tz'][$tz],
                 'S_BBDKP'           => $raidplan->getRaidId() > 0 ? true : false,
                 'BBDKPLINK'         => ($raidplan->getRaidId() > 0 ?  append_sid("{$phpbb_root_path}dkp.$phpEx", "page=raid&amp;raid_id=" . $raidplan->getRaidId() ) : ''),
-                 'L_RAID_ON' 		 => sprintf($user->lang['RAID_ON'], $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'] ,
+                 'L_RAID_ON' 		 => sprintf($user->lang['RAID_ON'], $this->eventlist[$raidplan->getEventType()]['event_name'] ,
                      $user->format_date($raidplan->getStartTime(), $config['rp_date_format'], true)
                  ),
                 'CURR_CONFIRMED_COUNT'	 => $signuplist['confirmed'],
@@ -205,8 +216,8 @@ class Raidplan_display
 
                 'CURR_TOTAL_COUNT'  => $signuplist['yes'] + $signuplist['maybe'],
 
-                'ETYPE_DISPLAY_NAME'=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
-                'EVENT_COLOR'		=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'],
+                'ETYPE_DISPLAY_NAME'=> $this->eventlist[$raidplan->getEventType()]['event_name'],
+                'EVENT_COLOR'		=> $this->eventlist[$raidplan->getEventType()]['color'],
                 'EVENT_IMAGE' 		=> $eventimg,
 
                 'SUBJECT'			=> $raidplan->getSubject(),
@@ -288,7 +299,7 @@ class Raidplan_display
         }
         $timezone = $user->lang['tz'][$tz];
         $rpcounter = 0;
-        $raidplan = new Raidplan;
+        $raidplan = new Raidplan($this->eventlist);
 
         while ($row = $db->sql_fetchrow($result))
         {
@@ -363,9 +374,10 @@ class Raidplan_display
                 }
             }
 
-            if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
+            ;
+            if(strlen( $this->eventlist[$raidplan->getEventType()]['imagename'] ) > 1)
             {
-                $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
+                $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$raidplan->getEventType()]['imagename'] . ".png";
 
             }
             else
@@ -380,10 +392,10 @@ class Raidplan_display
                 'PRE_PADDING'			=> $pre_padding,
                 'POST_PADDING'			=> $post_padding,
                 'PADDING'				=> $padding,
-                'ETYPE_DISPLAY_NAME' 	=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'],
+                'ETYPE_DISPLAY_NAME' 	=> $this->eventlist[$raidplan->getEventType()]['event_name'],
                 'FULL_SUBJECT' 			=> $fsubj,
                 'EVENT_SUBJECT' 		=> $subj,
-                'COLOR' 				=> $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'],
+                'COLOR' 				=> $this->eventlist[$raidplan->getEventType()]['color'],
                 'IMAGE' 				=> $eventimg,
                 'EVENT_URL'  			=> append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=".$raidplan->id),
                 'EVENT_ID'  			=> $raidplan->id,
@@ -762,7 +774,7 @@ class Raidplan_display
         }
 
         //count events from bbDKP, put them in a pulldown...
-        foreach( $raidplan->getEventlist()->events as $eventid => $event)
+        foreach( $this->eventlist as $eventid => $event)
         {
             $selected = '';
 
@@ -1155,12 +1167,12 @@ class Raidplan_display
 
         if($raidplan->id > 0)
         {
-            $eventname = $raidplan->getEventlist()->events[$raidplan->getEventType()]['event_name'];
-            $eventcolor = $raidplan->getEventlist()->events[$raidplan->getEventType()]['color'];
+            $eventname = $this->eventlist[$raidplan->getEventType()]['event_name'];
+            $eventcolor = $this->eventlist[$raidplan->getEventType()]['color'];
 
-            if(strlen( $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] ) > 1)
+            if(strlen( $this->eventlist[$raidplan->getEventType()]['imagename'] ) > 1)
             {
-                $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $raidplan->getEventlist()->events[$raidplan->getEventType()]['imagename'] . ".png";
+                $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$raidplan->getEventType()]['imagename'] . ".png";
 
             }
             else
@@ -1226,10 +1238,8 @@ class Raidplan_display
      * collect data from POST after submit or update in showadd
      *
      * @param $raidplan
-     * @param $submit
-     * @param $update
      */
-    public function SetRaidplan(Raidplan $raidplan, $submit, $update)
+    public function SetRaidplan(Raidplan $raidplan, $action)
     {
         global $user, $template;
         $error = array();
@@ -1345,46 +1355,46 @@ class Raidplan_display
         $str = serialize($raidplan);
         $str1 = base64_encode($str);
 
-        if ($submit)
+        switch($action)
         {
+            case 'addraid':
+                if (!$raidplan->getAuthCanadd())
+                {
+                    trigger_error('USER_CANNOT_POST_RAIDPLAN');
+                }
 
-            if (!$raidplan->getAuthCanadd())
-            {
-                trigger_error('USER_CANNOT_POST_RAIDPLAN');
+                $s_hidden_fields = build_hidden_fields(array(
+                        'addraid' => true,
+                        'raidobject' => $str1
+                    )
+                );
+
+                $template->assign_vars(array(
+                        'S_HIDDEN_FIELDS' => $s_hidden_fields)
+                );
+                confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
+                break;
+
+            case 'updateraid':
+                if (!$raidplan->getAuthCanedit())
+                {
+                    trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
+                }
+
+                $s_hidden_fields = build_hidden_fields(array(
+                        'updateraid' => true,
+                        'raidobject' => $str1,
+                        'raidplan_id' => $raidplan->getId()
+                    )
+                );
+
+                $template->assign_vars(array(
+                        'S_HIDDEN_FIELDS' => $s_hidden_fields)
+                );
+
+                confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
+                break;
             }
-
-            $s_hidden_fields = build_hidden_fields(array(
-                    'addraid' => true,
-                    'raidobject' => $str1
-                )
-            );
-
-            $template->assign_vars(array(
-                    'S_HIDDEN_FIELDS' => $s_hidden_fields)
-            );
-            confirm_box(false, $user->lang['CONFIRM_ADDRAID'], $s_hidden_fields);
-        }
-
-        if ($update)
-        {
-            if (!$raidplan->getAuthCanedit())
-            {
-                trigger_error('USER_CANNOT_EDIT_RAIDPLAN');
-            }
-
-            $s_hidden_fields = build_hidden_fields(array(
-                    'updateraid' => true,
-                    'raidobject' => $str1,
-                    'raidplan_id' => $raidplan->getId()
-                )
-            );
-
-            $template->assign_vars(array(
-                    'S_HIDDEN_FIELDS' => $s_hidden_fields)
-            );
-
-            confirm_box(false, $user->lang['CONFIRM_UPDATERAID'], $s_hidden_fields);
-        }
     }
 
 }

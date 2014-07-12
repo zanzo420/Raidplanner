@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.0
+* @version 1.0.2
 */
 namespace bbdkp\controller\raidplanner;
 use bbdkp\controller\raidplanner\Raidmessenger;

@@ -5,7 +5,7 @@
 * @package bbDKP Raidplanner
 * @copyright (c) 2011 Sajaki
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @version 1.0
+* @version 1.0.2
 */
 namespace bbdkp\views;
 
@@ -62,6 +62,7 @@ class viewPlanner implements iViews
      * construct view class
      * @param viewNavigation $Navigation
      */
+
     public function __construct(viewNavigation $Navigation)
     {
         $this->buildpage($Navigation);
@@ -97,8 +98,11 @@ class viewPlanner implements iViews
         }
 
         $action = request_var('action', 'display');
+
         // display header
         $this->cal = new DisplayFrame($view_mode);
+
+
         $this->cal->display();
 
         switch($view_mode)
@@ -120,7 +124,7 @@ class viewPlanner implements iViews
         }
 
 
-        $blocks = new rpblocks();
+        $blocks = new rpblocks($this->cal->getEventlist());
         $blocks->display();
 
         // Output the page
@@ -154,104 +158,93 @@ class viewPlanner implements iViews
     {
         global $phpbb_root_path, $phpEx;
 
-        $addraidplan	= (isset($_POST['addraidplan']) ) ? true : false;
-        $editraidplan	= (isset($_POST['editraidplan'])) ? true : false;
-        $submit	= (isset($_POST['addraid'])) ? true : false;
-        $update	= (isset($_POST['updateraid'])) ? true : false;
-        $deleteraidplan	= (isset($_POST['deleteraidplan'])) ? true : false;
-        $pushraidplan	= (isset($_POST['pushraidplan'])) ? true : false;
+        $postaction = (isset($_POST['addraidplan']) ) ? 'addraidplan' : '';
+        $postaction = (isset($_POST['editraidplan']) ) ? 'editraidplan' : '';
+        $postaction = (isset($_POST['addraid']) ) ? 'addraid' : '';
+        $postaction = (isset($_POST['updateraid']) ) ? 'updateraid' : '';
+        $postaction = (isset($_POST['deleteraidplan']) ) ? 'deleteraidplan' : '';
+        $postaction = (isset($_POST['pushraidplan']) ) ? 'pushraidplan' : '';
+        $raidplan_display = new Raidplan_display($this->cal->getEventlist());
 
-        if($addraidplan)
-        {
-            //show add form
-            $raidplan = new Raidplan();
-            $raidplan_display = new Raidplan_display();
-            $raidplan_display->showadd($raidplan, $this->cal);
-        }
-        elseif($editraidplan)
-        {
-            //show edit form
-            $raidplan = new Raidplan($raidplan_id);
-            $raidplan_display = new Raidplan_display();
-            $raidplan_display->showadd($raidplan, $this->cal);
-        }
-        elseif (($submit || $update) && confirm_box(true))
-        {
-             // insert in database
-            $raidplan_display = new Raidplan_display();
-            $id = $this->AddUpdateRaidplan($raidplan_display);
-            $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $id);
-            redirect($url);
+        $eventlist = $this->cal->getEventlist();
+        $raidplan = new Raidplan($eventlist->events, $raidplan_id);
 
-        }
-        elseif ($submit || $update)
+        switch($postaction)
         {
-            // request_var edit or new raidplan
-            $raidplan = new Raidplan($raidplan_id);
-            $raidplan_display = new Raidplan_display();
-            $raidplan_display->SetRaidplan($raidplan, $submit, $update);
-        }
-        elseif($deleteraidplan || $action =='deleteraidplan')
-        {
-            $raidplan = new Raidplan($raidplan_id);
-            if(!$raidplan->raidplan_delete())
-            {
-                $raidplan_display = new Raidplan_display();
-                $raidplan_display->DisplayRaidplan($raidplan);
-            }
-        }
-        elseif($pushraidplan || $action =='pushraidplan')
-        {
-            $raidplan = new Raidplan($raidplan_id);
-            $raidplan->raidplan_push();
-            $raidplan_display = new Raidplan_display();
-            $raidplan_display->DisplayRaidplan($raidplan);
-        }
-        else
-        {
-            $raidplan = new Raidplan($raidplan_id);
-            $raidplan_display = new Raidplan_display();
-            switch($action)
-            {
-                case 'signup':
-                    $this->AddSignup($raidplan, $raidplan_display);
-                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+            case 'addraidplan':
+                //show add form
+                $raidplan_display->showadd($raidplan, $this->cal);
+                break;
+            case 'editraidplan':
+                //show edit form
+                $raidplan_display->showadd($raidplan, $this->cal);
+                break;
+            case 'addraid':
+            case 'updateraid':
+                if (confirm_box(true))
+                {
+                     // insert in database
+                    $id = $this->AddUpdateRaidplan($raidplan_display);
+                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $id);
                     redirect($url);
-                    break;
-
-                case 'delsign':
-                    $this->DeleteSignup($raidplan, $raidplan_display);
-                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
-                    redirect($url);
-                    break;
-
-                case 'editsign':
-                    $this->EditComment($raidplan, $raidplan_display);
-                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
-                    redirect($url);
-                    break;
-
-                case 'requeue':
-                    $this->Requeue($raidplan, $raidplan_display);
-                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
-                    redirect($url);
-                    break;
-
-                case 'confirm':
-                    $this->ConfirmSignup($raidplan, $raidplan_display);
-                    $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
-                    redirect($url);
-                    break;
-
-                case 'showadd':
-                    $raidplan_display->showadd($raidplan, $this->cal);
-                    break;
-
-                default:
+                }
+                else
+                {
+                    // request_var edit or new raidplan
+                    $raidplan_display->SetRaidplan($raidplan, $postaction);
+                }
+                break;
+            case 'deleteraidplan':
+                if(!$raidplan->raidplan_delete())
+                {
                     $raidplan_display->DisplayRaidplan($raidplan);
-                    break;
-            }
+                }
+                break;
+            case 'pushraidplan':
+                $raidplan->raidplan_push();
+                $raidplan_display->DisplayRaidplan($raidplan);
+                break;
+            default:
+                switch($action)
+                {
+                    case 'signup':
+                        $this->AddSignup($raidplan, $raidplan_display);
+                        $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                        redirect($url);
+                        break;
 
+                    case 'delsign':
+                        $this->DeleteSignup($raidplan, $raidplan_display);
+                        $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                        redirect($url);
+                        break;
+
+                    case 'editsign':
+                        $this->EditComment($raidplan, $raidplan_display);
+                        $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                        redirect($url);
+                        break;
+
+                    case 'requeue':
+                        $this->Requeue($raidplan, $raidplan_display);
+                        $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                        redirect($url);
+                        break;
+
+                    case 'confirm':
+                        $this->ConfirmSignup($raidplan, $raidplan_display);
+                        $url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;raidplanid=". $raidplan->id);
+                        redirect($url);
+                        break;
+
+                    case 'showadd':
+                        $raidplan_display->showadd($raidplan, $this->cal);
+                        break;
+
+                    default:
+                        $raidplan_display->DisplayRaidplan($raidplan);
+                        break;
+                }
         }
 
         unset($raidplan);

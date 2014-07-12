@@ -252,6 +252,7 @@ define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
 		</open>
 
 		<php-installer><![CDATA[install/index.php]]></php-installer>
-		<diy-instructions lang="en"><![CDATA[Run database installer : Browse to install/index.php. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Note that if you run a Style other than Prosilver, you will need to apply the Prosilver changes to your style either manually - by following the edit instructions in prosilver.xml, or by automatically, by going into the "Detail" tab in Automod and applying the Prosilver changes to your style.]]></diy-instructions>
+		<diy-instructions lang="en"><![CDATA[Once all the files have been modified and uploaded to your site, point your browser to the "/install/index.php" script, (or click the highlighted link above if you are using AutoMOD) and follow the instructions. This will install the Raidplanner database tables, the ACP and UCP modules, purge the cache and refresh the template, imagesets and themes. Once that is complete,
+you can delete the "/install/" directory.]]></diy-instructions>
 	</action-group>
 </mod>

@@ -98,7 +98,7 @@ class rpday extends RaidCalendar
 			// get raid info
 			$raidplan_output = array();
 
-            $Raidplandisplay = new Raidplan_display();
+            $Raidplandisplay = new Raidplan_display($this->getEventlist());
 			// get all raids on this day
 			$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 		}
