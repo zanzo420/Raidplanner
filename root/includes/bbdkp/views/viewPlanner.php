@@ -124,7 +124,7 @@ class viewPlanner implements iViews
         }
 
 
-        $blocks = new rpblocks($this->cal->getEventlist());
+        $blocks = new rpblocks();
         $blocks->display();
 
         // Output the page
