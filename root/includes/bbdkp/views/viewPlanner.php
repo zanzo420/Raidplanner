@@ -213,10 +213,8 @@ class viewPlanner implements iViews
                 }
                 break;
             case 'deleteraidplan':
-                if(!$raidplan->raidplan_delete())
-                {
-                    $raidplan_display->DisplayRaidplan($raidplan);
-                }
+                $raidplan->raidplan_delete();
+
                 break;
             case 'pushraidplan':
                 $raidplan->raidplan_push();

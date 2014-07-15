@@ -1333,12 +1333,15 @@ class Raidplan
                     'raidplan_id'=> $this->id,
                     'page'	=> 'planner',
                     'view'	=> 'raidplan',
-                    'action'	=> 'deleteraidplan')
+                    'deleteraidplan'	=> true)
             );
 
-            return confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
+            confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
 
         }
+
+        redirect(append_sid ( "{$phpbb_root_path}dkp.$phpEx", 'page=planner&amp;view=raidplan&amp;raidplanid=' .  $this->id ));
+
     }
 
     /**
