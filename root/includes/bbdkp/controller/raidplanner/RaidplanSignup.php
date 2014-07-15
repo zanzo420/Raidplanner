@@ -563,7 +563,7 @@ class RaidplanSignup
               INNER JOIN ' . CLASS_TABLE .  ' c ON m.game_id = c.game_id AND m.member_class_id = c.class_id
               INNER JOIN ' . BB_LANGUAGE . " l ON l.attribute_id = c.class_id AND l.game_id = c.game_id AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class'
               INNER JOIN " . RACE_TABLE .  ' ra ON m.game_id = ra.game_id AND m.member_race_id = ra.race_id
-              INNER JOIN ' . BB_LANGUAGE . " l1 ON l1.attribute_id = ra.race_id AND l1.game_id = ra.game_id AND l1.language= '" . $config['bbdkp_lang'] . "' AND l1.attribute = 'class'
+              INNER JOIN ' . BB_LANGUAGE . " l1 ON l1.attribute_id = ra.race_id AND l1.game_id = ra.game_id AND l1.language= '" . $config['bbdkp_lang'] . "' AND l1.attribute = 'race'
               WHERE a.raidplan_id = " . $raidplan_id;
 
             return $db->sql_query($sql, 86400);
