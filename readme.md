@@ -1,6 +1,6 @@
 [![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
 
-#Raidplanner 1.0.2
+#Raidplanner 1.0.21.0.3
 
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
@@ -53,7 +53,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v1.0.2
+v1.0.3
 
 ## Installation
 * 	Unzip the zip file into /store/mods
@@ -72,6 +72,9 @@ v1.0.2
 
 ### changes
 
+*	1.0.3 2014-07-16
+	* [FIX] #58 signup select sql had wrong join condition
+	
 *	1.0.2 2014-07-12
 	* [FIX] #57 fix Function array dereferencing not being available in php 5.3. causes erratic errors in php < 5.4 (missing signups). 
 	

@@ -688,6 +688,12 @@ $versions = array(
        array(
         'custom' => array('purgecaches', 'versionupdater'),
     ),    
+    '1.0.3' =>
+       array(
+        'custom' => array('purgecaches', 'versionupdater'),
+    ), 
+    
+    
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.

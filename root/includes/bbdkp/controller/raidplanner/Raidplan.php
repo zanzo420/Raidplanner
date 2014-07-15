@@ -1027,6 +1027,7 @@ class Raidplan
 
         //get array of possible roles
         $this->roles = $this->_get_roles();
+
         $this->raidroles  = $this->_init_raidplan_roles();
 
         // if this is an existing raidplan then get the values from database
