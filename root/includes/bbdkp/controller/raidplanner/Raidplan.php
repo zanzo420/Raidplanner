@@ -1687,6 +1687,8 @@ class Raidplan
         global $cache, $user, $config, $phpbb_root_path, $phpEx ;
 
         $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $this->roles = $this->_get_roles();
+        $this->raidroles  = $this->_init_raidplan_roles();
         $this->Get_Raidplan();
 
         if (!class_exists('\bbdkp\controller\raids\RaidController'))

@@ -326,7 +326,8 @@ $lang = array_merge($lang, array(
 	'ZERO_LENGTH_RAIDPLAN'		=> 'The raid cannot end at the same time it starts.',
 	'ERROR_RAIDSTARTBEFORENOW'	=> 'Cannot add raids in the past.',
 	'ERROR_NOCANVAS'			=> 'Your browser does not support Canvas/HTML5.',
-
+    'ERROR_NOEVENTSDEFINED'     => 'Error. No Events defined in this point pool',
+    'ERROR_NOGUILDMEMBERSDEFINED'   => 'Error. no guild members found',
 	'ZEROTH_FROM'				=> '0th from ',
 	'numbertext'			=> array(
 		'0'		=> '0th',
