@@ -1333,12 +1333,15 @@ class Raidplan
                     'raidplan_id'=> $this->id,
                     'page'	=> 'planner',
                     'view'	=> 'raidplan',
-                    'action'	=> 'deleteraidplan')
+                    'deleteraidplan'	=> true)
             );
 
-            return confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
+            confirm_box(false, $user->lang['DELETE_RAIDPLAN_CONFIRM'], $s_hidden_fields);
 
         }
+
+        redirect(append_sid ( "{$phpbb_root_path}dkp.$phpEx", 'page=planner&amp;view=raidplan&amp;raidplanid=' .  $this->id ));
+
     }
 
     /**
@@ -1684,6 +1687,8 @@ class Raidplan
         global $cache, $user, $config, $phpbb_root_path, $phpEx ;
 
         $cache->destroy( 'sql', RP_RAIDS_TABLE );
+        $this->roles = $this->_get_roles();
+        $this->raidroles  = $this->_init_raidplan_roles();
         $this->Get_Raidplan();
 
         if (!class_exists('\bbdkp\controller\raids\RaidController'))
