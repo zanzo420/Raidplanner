@@ -5,7 +5,7 @@
  * @author sajaki9@gmail.com
  * @copyright (c) 2010 bbDkp <http://code.google.com/p/bbdkp/>
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0.2
+ * @version 1.0.4
  */
 
 define('UMIL_AUTO', true);
@@ -50,14 +50,14 @@ if  (!isset ($config['bbdkp_version']) )
 }
 else
 {
-	if(version_compare($config['bbdkp_version'], '1.3.0.7') == -1 )
+	if(version_compare($config['bbdkp_version'], '1.4.0') == -1 )
 	{
-	    trigger_error('Radplanner 1.0 requires bbDKP 1.3.0.7 or higher.');
+	    trigger_error('Radplanner 1.0.4 requires bbDKP 1.4.0 or higher.');
 	}
 }
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'Raidplanner 1.0';
+$mod_name = 'Raidplanner';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -691,9 +691,12 @@ $versions = array(
     '1.0.3' =>
        array(
         'custom' => array('purgecaches', 'versionupdater'),
-    ), 
-    
-    
+    ),
+    '1.0.4' =>
+        array(
+            'custom' => array('purgecaches', 'versionupdater'),
+        ),
+
 );
 
 // Include the UMIF Auto file and everything else will be handled automatically.
