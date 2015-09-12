@@ -694,6 +694,7 @@ $versions = array(
     ),
     '1.0.4' =>
         array(
+            'table_remove' => array('phpbb_rp_roles'),
             'custom' => array('purgecaches', 'versionupdater'),
         ),
 
