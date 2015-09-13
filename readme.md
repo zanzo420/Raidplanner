@@ -53,7 +53,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v1.0.4
+v1.0.4 DEV
 
 ## Installation
 * 	Unzip the zip file into /store/mods
