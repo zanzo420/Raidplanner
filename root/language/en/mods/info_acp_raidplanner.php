@@ -32,6 +32,7 @@ $lang = array_merge($lang, array(
     'RP_CAL_SETTINGS'  		            => 'Calendar Settings', 	//module
     'RP_ROLES'  		                => 'Raid Roles', 	//module
     'RP_TEAMS'  		                => 'Raid Teams', 	//module
+    'RP_TEAMS_EDIT'                     => 'Edit Raid Teams', //module
     'RP_COMPOSITION'  		            => 'Raid Composition',  	//module
 
 	'ACP_RAIDPLANNER_SETTINGS_EXPLAIN' 	=> 'Here you can configure Raid Planner settings',

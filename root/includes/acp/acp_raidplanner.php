@@ -42,6 +42,12 @@ class acp_raidplanner extends \bbdkp\admin\Admin
     public $u_action;
 
 
+    /**
+     * Main
+     *
+     * @param $id
+     * @param $mode
+     */
     public function main($id, $mode)
     {
         global $db, $user, $auth, $template, $cache;
@@ -60,12 +66,12 @@ class acp_raidplanner extends \bbdkp\admin\Admin
             'RAIDPLANNER_VERSION'	=> $config['bbdkp_raidplanner'],
             'U_RP_PLANNER_SETTINGS' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_settings" ),
             'U_RP_CAL_SETTINGS' 	=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_cal_settings" ),
-            'U_RP_ROLES' 			=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_roles" ),
             'U_RP_TEAMS' 		    => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ),
+            'U_RP_TEAMSLIST' 		=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ),
+            'U_RP_TEAMSEDIT' 		=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_teams_edit" ),
             'U_RP_COMPOSITION' 		=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_composition" ),
 
         ));
-
 
         $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
         $action	= request_var('action', '');
@@ -391,17 +397,20 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                 add_form_key($form_key);
                 break;
 
+
             case 'rp_teams':
-                /*******************************************/
-                /*        RAID TEAMS  phpbb_rp_teams	   */
-                /*   Team composition  phpbb_rp_teamsize   */
-                /*******************************************/
-                $update_raidrolesize = (isset($_POST['update_raidrolesize'])) ? true : false;
+
+                $this->listteam();
+                break;
+
+            case 'rp_teams_edit':
+
+                //editscreen
                 $updateteam = (isset($_POST['teamupdate'])) ? true : false;
-                $deleteteam = (request_var('teamdelete', '') != '') ? true : false;
-                $addteam = (isset($_POST['teamadd'])) ? true : false;
+
+
                 // check the form key
-                if ($updateteam || $addteam )
+                if ($updateteam)
                 {
                     if (!check_form_key('acp_raidplanner'))
                     {
@@ -409,73 +418,9 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                     }
                 }
 
-                // end of handlers
-                // build form
 
-                if(isset($this->games))
-                {
-                    foreach ($this->games as $key => $gamename)
-                    {
-                        $template->assign_block_vars('game_row', array(
-                            'VALUE' => $key ,
-                            'SELECTED' => ( 1 == $key) ? ' selected="selected"' : '' ,
-                            'OPTION' => (! empty($gamename)) ? $gamename : '(None)'));
-                    }
-
-                }
-                else
-                {
-                    trigger_error('ERROR_NOGAMES', E_USER_WARNING );
-                }
-
-                // select raid teams
-                $sql = 'SELECT teams_id, team_name, team_size, game_id, guild_id FROM ' . RP_TEAMS . ' ORDER BY teams_id';
-                $db->sql_query($sql);
-                $result1 = $db->sql_query($sql);
-
-                $total_teams = 0;
-                while ( $row = $db->sql_fetchrow($result1) )
-                {
-                    $total_teams++;
-                    $template->assign_block_vars('team_row', array(
-                        'TEAM_ID' 		=> $row['teams_id'],
-                        'TEAMNAME' 		=> $row['team_name'],
-                        'TEAMSIZE' 		=> $row['team_size'],
-                        'GAME_ID' 		=> $row['game_id'],
-                        'GUILD_ID' 		=> $row['guild_id'],
-                        'U_EDIT' 		=> $this->u_action. '&amp;teamedit=1&amp;teams_id=' . $row['teams_id'],
-                        'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
-                    ));
-
-                    /*
-                    // select raid composition
-                    $sql = 'SELECT a.role_needed as maxneeded,
-					a.team_name, b.role_name, c.teams_id, c.role_id, c.role_needed
-					FROM ' . RP_TEAMS . ' a
-					INNER JOIN ' . BBDKP_ROLES_TABLE . ' b
-					INNER JOIN ' . BB_LANGUAGE . ' l ON l.
-					LEFT JOIN ' . RP_TEAMSIZE . ' c ON c.teams_id=a.teams_id AND b.role_id=c.role_id
-					WHERE a.teams_id = ' . (int) $row['teams_id'] . '
-					ORDER BY teams_id, role_id';
-
-                    $db->sql_query($sql);
-                    $result2 = $db->sql_query($sql);
-                    while ( $row2 = $db->sql_fetchrow($result2) )
-                    {
-                        $total_teams++;
-                        $template->assign_block_vars('team_row.teamsize_row', array(
-                            'ROLE_ID' 		=> (int) $row2['role_id'],
-                            'ROLENAME' 		=> $row2['role_name'],
-                            'TEAMSIZE' 		=> (int)$row2['maxneeded'],
-                            'ROLESIZE' 		=> (int) $row2['role_needed'] == '' ? 0 :$row2['role_needed'],
-                            'ROLEPCT' 		=> (double) round($row2['role_needed'] / $row2['maxneeded'], 2) * 100,
-                        ));
-                    }
-                    $db->sql_freeresult($result2);
-                    */
-                }
-                $db->sql_freeresult($result1);
-
+                //listscren
+                $addteam = (isset($_POST['addteam'])) ? true : false;
 
                 if($addteam)
                 {
@@ -565,96 +510,166 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                     trigger_error($success_message . $link);
                 }
 
-                //used pressed red cross to delete team
-                if ($deleteteam)
-                {
-                    if (confirm_box(true))
-                    {
-                        $sql = 'DELETE from ' . RP_TEAMS . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
-                        $db->sql_query($sql);
-
-                        $sql = 'DELETE from ' . RP_TEAMSIZE . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
-                        $db->sql_query($sql);
-
-                        meta_refresh(1, $this->u_action);
-                        trigger_error(sprintf($user->lang['TEAM_DELETE_SUCCESS'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
-
-                    }
-                    else
-                    {
-                        // @todo check if there are scheduled raids with this team, ask permission
-                        /*
-                         *
-                         $sql= "SELECT count(*) as countteam FROM " . RP_RAIDS_TABLE . " WHERE raidteam = " . request_var('teams_id', 0);
-                        $result = $db->sql_query($sql);
-                        $total_raidplans = (int) $db->sql_fetchfield('countteam');
-                        if($total_raidplans  > 0 )
-                        {
-                            trigger_error(sprintf($user->lang['TEAM_DELETE_FAIL'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
-                        }
-                        */
-
-
-                        // get field content
-                        $s_hidden_fields = build_hidden_fields(array(
-                                // set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
-                                'teamdelete'	=> 1,
-                                'hiddenteamid'	=> request_var('teams_id', 0),
-                            )
-                        );
-
-                        // ask for permission
-                        confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_TEAM'], request_var('teams_id', 0)), $s_hidden_fields);
-                    }
-                }
-
-
-                if($update_raidrolesize)
-                {
-                    // get max team size from form
-                    $maxteamsize= request_var('maxteamsize', array( 0 => 0), true);
-                    // get team compositions from form
-                    $array = request_var('teamsize', array( 0 => array( 0 => 0)), true);
-                    //
-                    foreach ( $array as $team_id => $teamroles )
-                    {
-                        $teamtotal = 0;
-                        foreach ( $teamroles as $role_id => $roleneeded )
-                        {
-                            $teamtotal += $roleneeded;
-                        }
-
-                        if ($teamtotal > $maxteamsize[$team_id])
-                        {
-                            $success_message = sprintf($user->lang['TEAMROLE_UPDATE_FAIL'],$team_id, $maxteamsize[$team_id], $teamtotal);
-                            meta_refresh(3, $this->u_action);
-                            trigger_error($success_message . $link, E_USER_WARNING);
-                        }
-
-                        $roleneeded= 0;
-                        foreach ( $teamroles as $role_id => $roleneeded )
-                        {
-                            $sql = 'UPDATE ' . RP_TEAMSIZE . '
-							 	 SET role_needed = ' . $roleneeded . '
-						   	     WHERE teams_id=' . (int) $team_id . '
-						   	     AND role_id = ' . $role_id;
-                            $db->sql_query($sql);
-                        }
-                    }
-
-                    $success_message = $user->lang['TEAMROLE_UPDATE_SUCCESS'];
-                    meta_refresh(1, $this->u_action);
-                    trigger_error($success_message . $link);
-                }
-
-
-                $this->tpl_name = 'dkp/acp_' . $mode;
-                $form_key = 'acp_raidplanner';
-                add_form_key($form_key);
 
                 break;
 
+
         }
     }
+
+
+    /**
+     * edit team
+     */
+    private function editteam()
+    {
+
+        $editteam = (isset($_POST['editteam'])) ? true : false;
+        $deleteteam = (request_var('deleteteam', '') != '') ? true : false;
+
+        if(isset($this->games))
+        {
+            foreach ($this->games as $key => $gamename)
+            {
+                $template->assign_block_vars('game_row', array(
+                    'VALUE' => $key ,
+                    'SELECTED' => ( 1 == $key) ? ' selected="selected"' : '' ,
+                    'OPTION' => (! empty($gamename)) ? $gamename : '(None)'));
+            }
+        }
+        else
+        {
+            trigger_error('ERROR_NOGAMES', E_USER_WARNING );
+        }
+
+    }
+
+
+    /**
+     * list teams
+     */
+    private function listteam()
+    {
+
+        global $user, $template, $phpbb_root_path, $phpbb_admin_path, $phpEx, $db;
+        if (count($this->games) == 0)
+        {
+            trigger_error($user->lang['ERROR_NOGAMES'], E_USER_WARNING);
+        }
+
+
+        //used pressed red cross to delete team
+        if ($deleteteam)
+        {
+            if (confirm_box(true))
+            {
+                $sql = 'DELETE from ' . RP_TEAMS . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
+                $db->sql_query($sql);
+
+                $sql = 'DELETE from ' . RP_TEAMSIZE . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
+                $db->sql_query($sql);
+
+                meta_refresh(1, $this->u_action);
+                trigger_error(sprintf($user->lang['TEAM_DELETE_SUCCESS'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
+
+            }
+            else
+            {
+                // @todo check if there are scheduled raids with this team, ask permission
+                /*
+                 *
+                 $sql= "SELECT count(*) as countteam FROM " . RP_RAIDS_TABLE . " WHERE raidteam = " . request_var('teams_id', 0);
+                $result = $db->sql_query($sql);
+                $total_raidplans = (int) $db->sql_fetchfield('countteam');
+                if($total_raidplans  > 0 )
+                {
+                    trigger_error(sprintf($user->lang['TEAM_DELETE_FAIL'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
+                }
+                */
+
+
+                // get field content
+                $s_hidden_fields = build_hidden_fields(array(
+                        // set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
+                        'teamdelete'	=> 1,
+                        'hiddenteamid'	=> request_var('teams_id', 0),
+                    )
+                );
+
+                // ask for permission
+                confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_TEAM'], request_var('teams_id', 0)), $s_hidden_fields);
+            }
+        }
+
+
+        // select raid teams
+        $sql = 'SELECT teams_id, team_name, team_size, game_id, guild_id FROM ' . RP_TEAMS . ' ORDER BY teams_id';
+
+
+        $db->sql_query($sql);
+        $result1 = $db->sql_query($sql);
+
+        $total_teams = 0;
+        while ( $row = $db->sql_fetchrow($result1) )
+        {
+            $total_teams++;
+            $template->assign_block_vars('team_row', array(
+                'TEAM_ID' 		=> $row['teams_id'],
+                'TEAMNAME' 		=> $row['team_name'],
+                'TEAMSIZE' 		=> $row['team_size'],
+                'GAME_ID' 		=> $row['game_id'],
+                'GUILD_ID' 		=> $row['guild_id'],
+                'U_EDIT' 		=> $this->u_action. '&amp;teamedit=1&amp;teams_id=' . $row['teams_id'],
+                'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
+            ));
+
+        }
+        $db->sql_freeresult($result1);
+
+        if($update_raidrolesize)
+        {
+            // get max team size from form
+            $maxteamsize= request_var('maxteamsize', array( 0 => 0), true);
+            // get team compositions from form
+            $array = request_var('teamsize', array( 0 => array( 0 => 0)), true);
+            //
+            foreach ( $array as $team_id => $teamroles )
+            {
+                $teamtotal = 0;
+                foreach ( $teamroles as $role_id => $roleneeded )
+                {
+                    $teamtotal += $roleneeded;
+                }
+
+                if ($teamtotal > $maxteamsize[$team_id])
+                {
+                    $success_message = sprintf($user->lang['TEAMROLE_UPDATE_FAIL'],$team_id, $maxteamsize[$team_id], $teamtotal);
+                    meta_refresh(3, $this->u_action);
+                    trigger_error($success_message . $link, E_USER_WARNING);
+                }
+
+                $roleneeded= 0;
+                foreach ( $teamroles as $role_id => $roleneeded )
+                {
+                    $sql = 'UPDATE ' . RP_TEAMSIZE . '
+							 	 SET role_needed = ' . $roleneeded . '
+						   	     WHERE teams_id=' . (int) $team_id . '
+						   	     AND role_id = ' . $role_id;
+                    $db->sql_query($sql);
+                }
+            }
+
+            $success_message = $user->lang['TEAMROLE_UPDATE_SUCCESS'];
+            meta_refresh(1, $this->u_action);
+            trigger_error($success_message . $link);
+        }
+
+
+        $this->tpl_name = 'dkp/acp_' . $mode;
+        $form_key = 'acp_raidplanner';
+        add_form_key($form_key);
+
+    }
+
 
 }
