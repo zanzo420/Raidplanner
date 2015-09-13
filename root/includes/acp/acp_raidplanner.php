@@ -17,16 +17,34 @@ if (!defined('IN_PHPBB'))
 {
     exit;
 }
+
+// Include the base class
+if (!class_exists('\bbdkp\admin\Admin'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/admin/admin.$phpEx");
+}
+
+if (!class_exists('\bbdkp\controller\games\Game'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/games/Game.$phpEx");
+}
+
 /**
  * This class manages the Raidplanner settings
  *
  */
-class acp_raidplanner
+class acp_raidplanner extends \bbdkp\admin\Admin
 {
+    /**
+     * url action
+     * @var string
+     */
     public $u_action;
+
+
     public function main($id, $mode)
     {
-        global $db, $user, $auth, $template, $sid, $cache;
+        global $db, $user, $auth, $template, $cache;
         global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
 
@@ -394,9 +412,24 @@ class acp_raidplanner
                 // end of handlers
                 // build form
 
+                if(isset($this->games))
+                {
+                    foreach ($this->games as $key => $gamename)
+                    {
+                        $template->assign_block_vars('game_row', array(
+                            'VALUE' => $key ,
+                            'SELECTED' => ( 1 == $key) ? ' selected="selected"' : '' ,
+                            'OPTION' => (! empty($gamename)) ? $gamename : '(None)'));
+                    }
+
+                }
+                else
+                {
+                    trigger_error('ERROR_NOGAMES', E_USER_WARNING );
+                }
+
                 // select raid teams
-                $sql = 'SELECT * FROM ' . RP_TEAMS . '
-						ORDER BY teams_id';
+                $sql = 'SELECT teams_id, team_name, team_size, game_id, guild_id FROM ' . RP_TEAMS . ' ORDER BY teams_id';
                 $db->sql_query($sql);
                 $result1 = $db->sql_query($sql);
 
@@ -407,15 +440,20 @@ class acp_raidplanner
                     $template->assign_block_vars('team_row', array(
                         'TEAM_ID' 		=> $row['teams_id'],
                         'TEAMNAME' 		=> $row['team_name'],
-                        'TEAMSIZE' 		=> $row['team_needed'],
+                        'TEAMSIZE' 		=> $row['team_size'],
+                        'GAME_ID' 		=> $row['game_id'],
+                        'GUILD_ID' 		=> $row['guild_id'],
+                        'U_EDIT' 		=> $this->u_action. '&amp;teamedit=1&amp;teams_id=' . $row['teams_id'],
                         'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
                     ));
 
+                    /*
                     // select raid composition
-                    $sql = 'SELECT a.team_needed as maxneeded,
-					a.team_name, b.role_name, c.teams_id, c.role_id, c.team_needed
+                    $sql = 'SELECT a.role_needed as maxneeded,
+					a.team_name, b.role_name, c.teams_id, c.role_id, c.role_needed
 					FROM ' . RP_TEAMS . ' a
-					CROSS JOIN ' . RP_ROLES . ' b
+					INNER JOIN ' . BBDKP_ROLES_TABLE . ' b
+					INNER JOIN ' . BB_LANGUAGE . ' l ON l.
 					LEFT JOIN ' . RP_TEAMSIZE . ' c ON c.teams_id=a.teams_id AND b.role_id=c.role_id
 					WHERE a.teams_id = ' . (int) $row['teams_id'] . '
 					ORDER BY teams_id, role_id';
@@ -429,11 +467,12 @@ class acp_raidplanner
                             'ROLE_ID' 		=> (int) $row2['role_id'],
                             'ROLENAME' 		=> $row2['role_name'],
                             'TEAMSIZE' 		=> (int)$row2['maxneeded'],
-                            'ROLESIZE' 		=> (int) $row2['team_needed'] == '' ? 0 :$row2['team_needed'],
-                            'ROLEPCT' 		=> (double) round($row2['team_needed'] / $row2['maxneeded'], 2) * 100,
+                            'ROLESIZE' 		=> (int) $row2['role_needed'] == '' ? 0 :$row2['role_needed'],
+                            'ROLEPCT' 		=> (double) round($row2['role_needed'] / $row2['maxneeded'], 2) * 100,
                         ));
                     }
                     $db->sql_freeresult($result2);
+                    */
                 }
                 $db->sql_freeresult($result1);
 
@@ -442,11 +481,11 @@ class acp_raidplanner
                 {
                     $data = array(
                         'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
-                        'team_needed'     => request_var('newteamsize', 0),
+                        'role_needed'     => request_var('newteamsize', 0),
                     );
 
                     $error = $data['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
-                    $error = $data['team_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
+                    $error = $data['role_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
 
                     $sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
                     $db->sql_query($sql);
@@ -467,18 +506,18 @@ class acp_raidplanner
                         if($i == count($rolenames))
                         {
                             // ex: need 40, have 6 slots
-                            $n = $data['team_needed'] - $totalassigned;
+                            $n = $data['role_needed'] - $totalassigned;
                         }
                         else
                         {
-                            if($totalassigned < (int) $data['team_needed'])
+                            if($totalassigned < (int) $data['role_needed'])
                             {
                                 $n=1;
                             }
-                            elseif($totalassigned == (int) $data['team_needed'])
+                            elseif($totalassigned == (int) $data['role_needed'])
                             {
                                 // ex: need only 3, have 6 slots
-                                $n = $data['team_needed'] - $totalassigned;
+                                $n = $data['role_needed'] - $totalassigned;
                             }
                         }
 
@@ -487,7 +526,7 @@ class acp_raidplanner
                         $sql_ary[] = array(
                             'teams_id'      => $team_id,
                             'role_id'       => $key,
-                            'team_needed'   => $n
+                            'role_needed'   => $n
                         );
 
 
@@ -509,11 +548,11 @@ class acp_raidplanner
                     {
                         $data = array(
                             'team_name'     	=> $teamname,
-                            'team_needed'     	=> $teamsize[$team_id],
+                            'role_needed'     	=> $teamsize[$team_id],
                         );
 
                         $error = $data['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
-                        $error = $data['team_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
+                        $error = $data['role_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
 
                         $sql = 'UPDATE ' . RP_TEAMS . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
 					   	     WHERE teams_id=' . (int) $team_id;
@@ -596,7 +635,7 @@ class acp_raidplanner
                         foreach ( $teamroles as $role_id => $roleneeded )
                         {
                             $sql = 'UPDATE ' . RP_TEAMSIZE . '
-							 	 SET team_needed = ' . $roleneeded . '
+							 	 SET role_needed = ' . $roleneeded . '
 						   	     WHERE teams_id=' . (int) $team_id . '
 						   	     AND role_id = ' . $role_id;
                             $db->sql_query($sql);

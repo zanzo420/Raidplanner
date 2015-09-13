@@ -91,62 +91,13 @@
         <div id="advanced00">
             <div class="permissions-category">
                 <ul>
-                    <li class="permissions-preset-yes activetab"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_LISTTEAMS}</span></a></li>
-                    <li class="permissions-preset"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_ADDTEAM}</span></a></li>
+                    <li class="permissions-preset "><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_LISTTEAMS}</span></a></li>
+                    <li class="permissions-preset-yes activetab"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_ADDTEAM}</span></a></li>
                 </ul>
             </div>
 
             <div class="permissions-panel" id="options001">
                 <span class="corners-top"><span></span></span>
-
-                <!-- IF .team_row -->
-                <fieldset>
-                    <table cellspacing="1">
-                        <thead>
-                        <tr>
-                            <th style="width: 5%; white-space: nowrap;">{L_TEAM_ID}</th>
-                            <th style="width: 15%; white-space: nowrap;">{L_GAME}</th>
-                            <th style="width: 15%; white-space: nowrap;">{L_GUILD}</th>
-                            <th style="width: 20%; white-space: nowrap;">{L_TEAMNAME}</th>
-                            <th style="width: 5%; white-space: nowrap;">{L_ROLESIZE}</th>
-                            <th style="text-align:center;  width: 5%;">{L_ACTION}</th>
-                        </tr>
-
-                        <tbody>
-
-                        <!-- BEGIN team_row -->
-                        <!-- IF team_row.S_ROW_COUNT is even -->
-                        <tr class="row3">
-                            <!-- ELSE -->
-                        <tr class="row4">
-                            <!-- ENDIF -->
-                            <td>{team_row.TEAM_ID}</td>
-                            <td>{team_row.GAME}</td>
-                            <td>{team_row.GUILD}</td>
-                            <td>{team_row.TEAMNAME}</td>
-                            <td>{team_row.TEAMSIZE}</td>
-                            <td style="text-align: center;"><a href="{team_row.U_EDIT}">{ICON_EDIT}</a>
-                                <a href="{team_row.U_DELETE}">{ICON_DELETE}</a>
-                            </td>
-                        </tr>
-                        <!-- END team_row -->
-
-                        </tbody>
-                    </table>
-                </fieldset>
-                <fieldset class="quick" style="float: {S_CONTENT_FLOW_END};">
-                    <div style="margin: 4px;">
-                        <input type="submit" name="addraidrole" value="{L_SUBMIT}" class="button1" />
-                        <input type="reset" name="reset" value="{L_RESET}" class="button2" />
-                    </div>
-                </fieldset>
-
-                <!-- ELSE -->
-                <div class="errorbox">
-                    <h3>{L_WARNING}</h3>
-                    <p>{ERROR_MSG}</p>
-                </div>
-                <!-- ENDIF -->
 
 
                 <span class="corners-bottom"><span></span></span>

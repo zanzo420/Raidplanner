@@ -514,10 +514,8 @@ $versions = array(
 
         	array('phpbb_rp_teams',
 	           array(
-	                  array('team_name' => '8man',  'team_needed' => 8),
-	                  array('team_name' => '10man', 'team_needed' => 10),
-	                  array('team_name' => '20man', 'team_needed' => 20),
-	                  array('team_name' => '25man', 'team_needed' => 25),
+	                  array('team_name' => 'Team 1', 'team_needed' => 10),
+	                  array('team_name' => 'Team 2', 'team_needed' => 15),
 	           		)
 	           ),
 
@@ -531,25 +529,11 @@ $versions = array(
 	                  array('role_id' => 6,  'teams_id' => 1, 'team_needed' => 2),
 
 	                  array('role_id' => 1,  'teams_id' => 2, 'team_needed' => 3),
-	                  array('role_id' => 2,  'teams_id' => 2, 'team_needed' => 1),
-	                  array('role_id' => 3,  'teams_id' => 2, 'team_needed' => 1),
-	                  array('role_id' => 4,  'teams_id' => 2, 'team_needed' => 1),
-	                  array('role_id' => 5,  'teams_id' => 2, 'team_needed' => 2),
-	                  array('role_id' => 6,  'teams_id' => 2, 'team_needed' => 2),
-
-	                  array('role_id' => 1,  'teams_id' => 3, 'team_needed' => 5),
-	                  array('role_id' => 2,  'teams_id' => 3, 'team_needed' => 2),
-	                  array('role_id' => 3,  'teams_id' => 3, 'team_needed' => 2),
-	                  array('role_id' => 4,  'teams_id' => 3, 'team_needed' => 2),
-	                  array('role_id' => 5,  'teams_id' => 3, 'team_needed' => 4),
-	                  array('role_id' => 6,  'teams_id' => 3, 'team_needed' => 5),
-
-	                  array('role_id' => 1,  'teams_id' => 4, 'team_needed' => 7),
-	                  array('role_id' => 2,  'teams_id' => 4, 'team_needed' => 3),
-	                  array('role_id' => 3,  'teams_id' => 4, 'team_needed' => 2),
-	                  array('role_id' => 4,  'teams_id' => 4, 'team_needed' => 2),
-	                  array('role_id' => 5,  'teams_id' => 4, 'team_needed' => 5),
-	                  array('role_id' => 6,  'teams_id' => 4, 'team_needed' => 6),
+	                  array('role_id' => 2,  'teams_id' => 2, 'team_needed' => 2),
+	                  array('role_id' => 3,  'teams_id' => 2, 'team_needed' => 2),
+	                  array('role_id' => 4,  'teams_id' => 2, 'team_needed' => 2),
+	                  array('role_id' => 5,  'teams_id' => 2, 'team_needed' => 3),
+	                  array('role_id' => 6,  'teams_id' => 2, 'team_needed' => 3),
 
 	                  )
 	           ),
@@ -695,6 +679,22 @@ $versions = array(
     '1.0.4' =>
         array(
             'table_remove' => array('phpbb_rp_roles'),
+
+            'table_column_remove' => array(
+                array('phpbb_rp_teams', 'team_needed'),
+                array('phpbb_rp_teamsizes', 'team_needed'),
+            ),
+
+            'table_column_add' => array(
+                array('phpbb_rp_teams', 'guild_id' , array('USINT', 0)),
+                array('phpbb_rp_teams', 'game_id' , array('VCHAR:10', 0)),
+                array('phpbb_rp_teams', 'team_size' , array('INT:8', 0)),
+
+                array('phpbb_rp_teamsizes', 'role_needed' , array('INT:8', 0)),
+                array('phpbb_rp_teamsizes', 'game_id' , array('VCHAR:10', 0)),
+            ),
+
+
             'custom' => array('purgecaches', 'versionupdater'),
         ),
 
