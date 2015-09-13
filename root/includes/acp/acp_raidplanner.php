@@ -397,10 +397,8 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                 add_form_key($form_key);
                 break;
 
-
             case 'rp_teams':
-
-                $this->listteam();
+                $this->listteam($mode);
                 break;
 
             case 'rp_teams_edit':
@@ -417,7 +415,6 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                         trigger_error('FORM_INVALID');
                     }
                 }
-
 
                 //listscren
                 $addteam = (isset($_POST['addteam'])) ? true : false;
@@ -517,13 +514,17 @@ class acp_raidplanner extends \bbdkp\admin\Admin
         }
     }
 
-
     /**
      * edit team
      */
     private function editteam()
     {
 
+        $this->tpl_name = 'dkp/acp_' . $mode;
+        $form_key = 'acp_raidplanner';
+        add_form_key($form_key);
+
+        /*
         $editteam = (isset($_POST['editteam'])) ? true : false;
         $deleteteam = (request_var('deleteteam', '') != '') ? true : false;
 
@@ -542,89 +543,6 @@ class acp_raidplanner extends \bbdkp\admin\Admin
             trigger_error('ERROR_NOGAMES', E_USER_WARNING );
         }
 
-    }
-
-
-    /**
-     * list teams
-     */
-    private function listteam()
-    {
-
-        global $user, $template, $phpbb_root_path, $phpbb_admin_path, $phpEx, $db;
-        if (count($this->games) == 0)
-        {
-            trigger_error($user->lang['ERROR_NOGAMES'], E_USER_WARNING);
-        }
-
-
-        //used pressed red cross to delete team
-        if ($deleteteam)
-        {
-            if (confirm_box(true))
-            {
-                $sql = 'DELETE from ' . RP_TEAMS . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
-                $db->sql_query($sql);
-
-                $sql = 'DELETE from ' . RP_TEAMSIZE . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
-                $db->sql_query($sql);
-
-                meta_refresh(1, $this->u_action);
-                trigger_error(sprintf($user->lang['TEAM_DELETE_SUCCESS'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
-
-            }
-            else
-            {
-                // @todo check if there are scheduled raids with this team, ask permission
-                /*
-                 *
-                 $sql= "SELECT count(*) as countteam FROM " . RP_RAIDS_TABLE . " WHERE raidteam = " . request_var('teams_id', 0);
-                $result = $db->sql_query($sql);
-                $total_raidplans = (int) $db->sql_fetchfield('countteam');
-                if($total_raidplans  > 0 )
-                {
-                    trigger_error(sprintf($user->lang['TEAM_DELETE_FAIL'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
-                }
-                */
-
-
-                // get field content
-                $s_hidden_fields = build_hidden_fields(array(
-                        // set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
-                        'teamdelete'	=> 1,
-                        'hiddenteamid'	=> request_var('teams_id', 0),
-                    )
-                );
-
-                // ask for permission
-                confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_TEAM'], request_var('teams_id', 0)), $s_hidden_fields);
-            }
-        }
-
-
-        // select raid teams
-        $sql = 'SELECT teams_id, team_name, team_size, game_id, guild_id FROM ' . RP_TEAMS . ' ORDER BY teams_id';
-
-
-        $db->sql_query($sql);
-        $result1 = $db->sql_query($sql);
-
-        $total_teams = 0;
-        while ( $row = $db->sql_fetchrow($result1) )
-        {
-            $total_teams++;
-            $template->assign_block_vars('team_row', array(
-                'TEAM_ID' 		=> $row['teams_id'],
-                'TEAMNAME' 		=> $row['team_name'],
-                'TEAMSIZE' 		=> $row['team_size'],
-                'GAME_ID' 		=> $row['game_id'],
-                'GUILD_ID' 		=> $row['guild_id'],
-                'U_EDIT' 		=> $this->u_action. '&amp;teamedit=1&amp;teams_id=' . $row['teams_id'],
-                'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
-            ));
-
-        }
-        $db->sql_freeresult($result1);
 
         if($update_raidrolesize)
         {
@@ -663,7 +581,46 @@ class acp_raidplanner extends \bbdkp\admin\Admin
             meta_refresh(1, $this->u_action);
             trigger_error($success_message . $link);
         }
+        */
 
+    }
+
+
+    /**
+     * list teams
+     */
+    private function listteam($mode)
+    {
+
+        global $user, $template, $phpbb_root_path, $phpbb_admin_path, $phpEx, $db;
+        if (count($this->games) == 0)
+        {
+            trigger_error($user->lang['ERROR_NOGAMES'], E_USER_WARNING);
+        }
+
+        // select raid teams
+        $sql = 'SELECT teams_id, team_name, team_size, game_id, guild_id FROM ' . RP_TEAMS . ' ORDER BY teams_id';
+
+
+        $db->sql_query($sql);
+        $result1 = $db->sql_query($sql);
+
+        $total_teams = 0;
+        while ( $row = $db->sql_fetchrow($result1) )
+        {
+            $total_teams++;
+            $template->assign_block_vars('team_row', array(
+                'TEAM_ID' 		=> $row['teams_id'],
+                'TEAMNAME' 		=> $row['team_name'],
+                'TEAMSIZE' 		=> $row['team_size'],
+                'GAME_ID' 		=> $row['game_id'],
+                'GUILD_ID' 		=> $row['guild_id'],
+                'U_EDIT' 		=> $this->u_action. '&amp;teamedit=1&amp;teams_id=' . $row['teams_id'],
+                'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
+            ));
+
+        }
+        $db->sql_freeresult($result1);
 
         $this->tpl_name = 'dkp/acp_' . $mode;
         $form_key = 'acp_raidplanner';

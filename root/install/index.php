@@ -694,6 +694,25 @@ $versions = array(
                 array('phpbb_rp_teamsizes', 'game_id' , array('VCHAR:10', 0)),
             ),
 
+            'module_remove' => array(
+                array('acp', 'ACP_DKP_RAIDS', array(
+                    'module_basename' => 'raidplanner',
+                    'modes'           => array('rp_roles') ,
+                ),
+                ),
+            ),
+
+
+            // new tabbes interface for acp
+            'module_add' => array(
+                array('acp', 'ACP_DKP_RAIDS', array(
+                    'module_basename' => 'raidplanner',
+                    'modes'           => array(
+                        'rp_teams',
+                        'rp_teams_edit',
+                    ))),
+
+            ),
 
             'custom' => array('purgecaches', 'versionupdater'),
         ),

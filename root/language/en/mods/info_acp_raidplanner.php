@@ -38,5 +38,3 @@ $lang = array_merge($lang, array(
 	'ACP_RAIDPLANNER_SETTINGS_EXPLAIN' 	=> 'Here you can configure Raid Planner settings',
 	'ACP_RAIDPLANNER_EVENTSETTINGS'		=> 'Event Settings', //module
 ));
-
-?>
