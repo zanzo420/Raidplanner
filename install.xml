@@ -56,7 +56,7 @@
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html"/>
 			<file from="root/adm/style/dkp/acp_rp_cal_settings.html" to="adm/style/dkp/acp_rp_cal_settings.html"/>			
 			<file from="root/adm/style/dkp/acp_rp_teams.html" to="adm/style/dkp/acp_rp_teams.html"/>
-			<file from="root/adm/style/dkp/acp_rp_roles.html" to="adm/style/dkp/acp_rp_roles.html"/>
+			<file from="root/adm/style/dkp/acp_rp_teams_edit.html" to="adm/style/dkp/acp_rp_teams_edit.html"/>
 			<file from="root/images/bbdkp/raidrole_images/*.*" to="images/bbdkp/raidrole_images/*.*"/>
 			<file from="root/images/bbdkp/event_images/*.*" to="images/bbdkp/event_images/*.*"/>
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
@@ -179,7 +179,6 @@ define('RP_RECURRING',		$table_prefix . 'rp_recurring');
 define('RP_SIGNUPS',		$table_prefix . 'rp_signups');
 define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch');
 define('RP_WATCH',			$table_prefix . 'rp_watch');
-define('RP_ROLES',			$table_prefix . 'rp_roles');
 define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 define('RP_TEAMS',		$table_prefix . 'rp_teams');

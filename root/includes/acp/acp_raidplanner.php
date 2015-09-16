@@ -406,7 +406,6 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                 //editscreen
                 $updateteam = (isset($_POST['teamupdate'])) ? true : false;
 
-
                 // check the form key
                 if ($updateteam)
                 {
@@ -506,6 +505,10 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                     meta_refresh(1, $this->u_action);
                     trigger_error($success_message . $link);
                 }
+
+                $this->tpl_name = 'dkp/acp_' . $mode;
+                $form_key = 'acp_raidplanner';
+                add_form_key($form_key);
 
 
                 break;
