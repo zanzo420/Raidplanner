@@ -29,6 +29,13 @@ if (!class_exists('\bbdkp\controller\games\Game'))
     require("{$phpbb_root_path}includes/bbdkp/controller/games/Game.$phpEx");
 }
 
+//include the guilds class
+if (!class_exists('\bbdkp\controller\guilds\Guilds'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/guilds/Guilds.$phpEx");
+}
+
+
 /**
  * This class manages the Raidplanner settings
  *
@@ -398,16 +405,70 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                 break;
 
             case 'rp_teams':
+
                 $this->listteam($mode);
                 break;
 
             case 'rp_teams_edit':
 
-                //editscreen
-                $updateteam = (isset($_POST['teamupdate'])) ? true : false;
+                $action = request_var('action', '');
+                if($action=='delete')
+                {
+                    //call delete function
+                }
+                elseif ($action=='edit')
+                {
+                    //build edit template
+                    $t = request_var('teams_id', 1);
+                    $this->getteam($t);
 
-                // check the form key
-                if ($updateteam)
+                    $template->assign_vars(array(
+                        'S_UPDATE' => true,
+                    ));
+                }
+                else
+                {
+                    //build edit template
+
+                    $template->assign_vars(array(
+                        'S_ADD' => true,
+                    ));
+
+                }
+
+                $guild_id = request_var(URI_GUILD, 1);
+                $Guild = new \bbdkp\controller\guilds\Guilds();
+                $guildlist   = $Guild->guildlist(1);
+                foreach ($guildlist as $g)
+                {
+                    $template->assign_block_vars('guild_row', array(
+                        'VALUE'    => $g['id'],
+                        'SELECTED' => ($guild_id == $g['id']) ? ' selected="selected"' : '',
+                        'OPTION'   => (!empty($g['name'])) ? $g['name'] : '(None)'));
+                }
+
+                $game_id = request_var(URI_GAME, 1);
+                if (isset($this->games))
+                {
+                    foreach ($this->games as $key => $gamename)
+                    {
+                        $template->assign_block_vars('game_row', array(
+                            'VALUE'    => $key,
+                            'SELECTED' => ($game_id == $key) ? ' selected="selected"' : '',
+                            'OPTION'   => (!empty($gamename)) ? $gamename : '(None)'));
+                    }
+                }
+                else
+                {
+                    trigger_error('ERROR_NOGAMES', E_USER_WARNING);
+                }
+
+
+                $addteam = (isset($_POST['addteam'])) ? true : false;
+                $editteam = (isset($_POST['editteam'])) ? true : false;
+
+               // check the form key
+                if ($editteam || $addteam)
                 {
                     if (!check_form_key('acp_raidplanner'))
                     {
@@ -415,8 +476,6 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                     }
                 }
 
-                //listscren
-                $addteam = (isset($_POST['addteam'])) ? true : false;
 
                 if($addteam)
                 {
@@ -481,7 +540,7 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                 }
 
                 //user pressed edit team
-                if($updateteam)
+                if($editteam)
                 {
                     $teamnames = utf8_normalize_nfc(request_var('team_name', array( 0 => ''), true));
                     $teamsize = request_var('team_size', array( 0 => ''));
@@ -510,7 +569,6 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                 $form_key = 'acp_raidplanner';
                 add_form_key($form_key);
 
-
                 break;
 
 
@@ -520,7 +578,7 @@ class acp_raidplanner extends \bbdkp\admin\Admin
     /**
      * edit team
      */
-    private function editteam()
+    private function editteam($mode)
     {
 
         $this->tpl_name = 'dkp/acp_' . $mode;
@@ -595,7 +653,7 @@ class acp_raidplanner extends \bbdkp\admin\Admin
     private function listteam($mode)
     {
 
-        global $user, $template, $phpbb_root_path, $phpbb_admin_path, $phpEx, $db;
+        global $user, $template, $phpbb_admin_path,$phpEx, $db;
         if (count($this->games) == 0)
         {
             trigger_error($user->lang['ERROR_NOGAMES'], E_USER_WARNING);
@@ -603,7 +661,6 @@ class acp_raidplanner extends \bbdkp\admin\Admin
 
         // select raid teams
         $sql = 'SELECT teams_id, team_name, team_size, game_id, guild_id FROM ' . RP_TEAMS . ' ORDER BY teams_id';
-
 
         $db->sql_query($sql);
         $result1 = $db->sql_query($sql);
@@ -618,10 +675,9 @@ class acp_raidplanner extends \bbdkp\admin\Admin
                 'TEAMSIZE' 		=> $row['team_size'],
                 'GAME_ID' 		=> $row['game_id'],
                 'GUILD_ID' 		=> $row['guild_id'],
-                'U_EDIT' 		=> $this->u_action. '&amp;teamedit=1&amp;teams_id=' . $row['teams_id'],
-                'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
+                'U_EDIT' 		=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=raidplanner&amp;mode=rp_teams_edit&amp;action=edit&amp;teams_id=' . $row['teams_id']),
+                'U_DELETE' 		=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=raidplanner&amp;mode=rp_teams_edit&amp;action=delete&amp;teams_id=' . $row['teams_id']),
             ));
-
         }
         $db->sql_freeresult($result1);
 
@@ -631,5 +687,30 @@ class acp_raidplanner extends \bbdkp\admin\Admin
 
     }
 
+    /**
+     * get team
+     * @param $team_id
+     */
+    private function getteam($team_id)
+    {
+        // select raid teams
+        global $template, $db;
+
+        $sql = 'SELECT teams_id, team_name, team_size, game_id, guild_id
+          FROM ' . RP_TEAMS . '
+          WHERE teams_id = ' . $team_id;
+        $result = $db->sql_query($sql);
+        while ($row = $db->sql_fetchrow($result))
+        {
+            $template->assign_vars(array(
+                'TEAM_ID' 		=> $row['teams_id'],
+                'TEAMNAME' 		=> $row['team_name'],
+                'TEAMSIZE' 		=> $row['team_size'],
+                'GAME_ID' 		=> $row['game_id'],
+                'GUILD_ID' 		=> $row['guild_id'],
+            ));
+        }
+        $db->sql_freeresult($result);
+    }
 
 }
