@@ -125,75 +125,74 @@
 
             <div class="permissions-panel" id="options001">
                 <span class="corners-top"><span></span></span>
-
-                <fieldset style="margin:10px; background-color: #EEEEEE">
-                    <!-- IF S_UPDATE -->
-                    <dl>
-                        <dt>
-                            <label>{L_TEAM_ID}:</label>
-                        </dt>
-                        <dd>
-                        <dd><label>{TEAM_ID}</label></dd>
-                        </dd>
-                    </dl>
-                    <!-- ENDIF -->
-                    <dl>
-                        <dt>
-                            <label>{L_TEAMNAME}:</label>
-                        </dt>
-                        <dd>
-                        <dd><input type="text" id="teamname" name="teamname" size="25" maxlength="25" value="{TEAMNAME}" class="input" />
-                        </dd>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt><label for="teamsize">{L_TEAMSIZE}:</label></dt>
-                        <dd><input type="text" name="teamsize" id="teamsize" size="5" maxlength="3" value="{TEAMSIZE}" class="input" />
-                            <a id="sizeup"  href="{U_TEAMSIZE}" target="_blank"><img src="./images/icon_up.gif" /></a>
-                            <a id="sizedown" href="{U_TEAMSIZE}" target="_blank"><img src="./images/icon_down.gif" /></a>
-                        </dd>
-                    </dl>
-
-                    <dl>
-                        <dt>
-                            <label>{L_GAME}:</label>
-                        </dt>
-                        <dd>
-                            <select name="game" id="game" class="input" >
-                                <!-- BEGIN game_row -->
-                                <option value="{game_row.VALUE}"{game_row.SELECTED}>{game_row.OPTION}</option>
-                                <!-- END game_row -->
-                            </select>
-                        </dd>
-                    </dl>
-                    <dl>
-                        <dt>
-                            <label>{L_GUILD}:</label>
-                        </dt>
-                        <dd>
-                            <select id="guild_id" name="guild_id" class="input">
-                                <!-- BEGIN guild_row -->
-                                <option value="{guild_row.VALUE}"{guild_row.SELECTED}>{guild_row.OPTION}</option>
-                                <!-- END guild_row -->
-                            </select>
-                        </dd>
-                    </dl>
-
-                    <p class="quick">
-                        {S_FORM_TOKEN}
-                        <input type="hidden" name="hidden_team_id" value="{TEAM_ID}" />
-                        <!-- IF S_ADD -->
-                        <input type="submit" name="add" value="{L_ADD}" class="button1" />
-                        <input type="reset" name="reset" value="{L_RESET}" class="button1" />
-                        <!-- ELSEIF S_UPDATE -->
-                        <input type="submit" name="update" value="{L_UPDATE}" class="button1" />
-                        <input type="submit"  name="delete" value="{L_DELETE}" class="button1" />
+                <form method="post" action="{U_RP_TEAMSEDIT}" id="ediiteam">
+                    <fieldset style="margin:10px; background-color: #EEEEEE">
+                        <!-- IF S_UPDATE -->
+                        <dl>
+                            <dt>
+                                <label>{L_TEAM_ID}:</label>
+                            </dt>
+                            <dd>
+                            <dd><label>{TEAM_ID}</label>
+                            </dd>
+                        </dl>
                         <!-- ENDIF -->
-                    </p>
+                        <dl>
+                            <dt>
+                                <label>{L_TEAMNAME}:</label>
+                            </dt>
+                            <dd>
+                            <dd><input type="text" id="teamname" name="teamname" size="25" maxlength="25" value="{TEAMNAME}" class="input" />
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt><label for="teamsize">{L_TEAMSIZE}:</label></dt>
+                            <dd><input type="text" name="teamsize" id="teamsize" size="5" maxlength="3" value="{TEAMSIZE}" class="input" />
+                                <a id="sizeup"  href="{U_TEAMSIZE}" target="_blank"><img src="./images/icon_up.gif" /></a>
+                                <a id="sizedown" href="{U_TEAMSIZE}" target="_blank"><img src="./images/icon_down.gif" /></a>
+                            </dd>
+                        </dl>
+
+                        <dl>
+                            <dt>
+                                <label>{L_GAME}:</label>
+                            </dt>
+                            <dd>
+                                <select name="game_id" id="game_id" class="input" >
+                                    <!-- BEGIN game_row -->
+                                    <option value="{game_row.VALUE}"{game_row.SELECTED}>{game_row.OPTION}</option>
+                                    <!-- END game_row -->
+                                </select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <label>{L_GUILD}:</label>
+                            </dt>
+                            <dd>
+                                <select id="guild_id" name="guild_id" class="input">
+                                    <!-- BEGIN guild_row -->
+                                    <option value="{guild_row.VALUE}"{guild_row.SELECTED}>{guild_row.OPTION}</option>
+                                    <!-- END guild_row -->
+                                </select>
+                            </dd>
+                        </dl>
+
+                        <p class="quick">
+                            {S_FORM_TOKEN}
+                            <input type="hidden" name="teams_id" value="{TEAM_ID}" />
+                            <!-- IF S_ADD -->
+                            <input type="submit" name="addteam" value="{L_ADD}" class="button1" />
+                            <input type="reset" name="reset" value="{L_RESET}" class="button1" />
+                            <!-- ELSEIF S_UPDATE -->
+                            <input type="submit" name="updateteam" value="{L_UPDATE}" class="button1" />
+                            <input type="submit"  name="delete" value="{L_DELETE}" class="button1" />
+                            <!-- ENDIF -->
+                        </p>
 
 
-                </fieldset>
-
+                    </fieldset>
+                </form>
                 <span class="corners-bottom"><span></span></span>
             </div>
         </div>
