@@ -434,7 +434,7 @@ class acp_raidplanner
                         'S_UPDATE' => true,
                         'TEAM_ID' => $teams_id
                     ));
-
+                    $this->listroles($teams_id);
                     $Guild = new \bbdkp\controller\guilds\Guilds();
                     $guildlist   = $Guild->guildlist($guild_id);
                     foreach ($guildlist as $g)
@@ -569,6 +569,7 @@ class acp_raidplanner
 
     /**
      * list teams
+     * @param $mode
      */
     private function listteam($mode)
     {
@@ -603,6 +604,53 @@ class acp_raidplanner
         $db->sql_freeresult($result1);
 
         $this->tpl_name = 'dkp/acp_' . $mode;
+    }
+
+    /**
+     * get list of roles for this team
+     * @param $teams_id
+     * @return array
+     */
+    private function listroles($teams_id)
+    {
+        global $phpbb_root_path, $template, $db, $config, $phpEx;
+
+        if (!class_exists('\bbdkp\controller\games\Roles'))
+        {
+            require("{$phpbb_root_path}includes/bbdkp/controller/games/roles/Roles.$phpEx");
+        }
+
+        $sql = 'SELECT t.game_id, t.role_id, t.role_needed, t.teams_id, r.role_color, r.role_icon, l.name as role_description
+        FROM ' . RP_TEAMSIZE . ' t
+        INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON r.role_id=t.role_id
+        INNER JOIN ' . RP_TEAMS . ' e ON e.teams_id = t.teams_id
+        INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=t.game_id AND r.role_id = l.attribute_id
+        WHERE t.teams_id = ' . $teams_id . " AND l.attribute='role' AND l.language='" . $config ['bbdkp_lang'] . "'";
+
+        $result = $db->sql_query($sql);
+
+        while ($row = $db->sql_fetchrow($result))
+        {
+            $data = array(
+                'game_id' 		=> $row['game_id'],
+                'role_id' 	=> $row['role_id'],
+                'role_needed' 	=> $row['role_needed'],
+                'role_color' 		=> $row['role_color'],
+                'role_icon' 		=> $row['role_icon'],
+                'role_description' 		=> $row['role_description'],
+            );
+
+            $template->assign_block_vars('role_row', array(
+                'GAME_ID' 		=> $data['game_id'],
+                'ROLEID' 		=> $data['role_id'],
+                'NEEDED' 		=> $data['role_needed'],
+                'COLOR' 		=> $data['role_color'],
+                'ICON' 		    => $data['role_icon'],
+                'ROLENAME' 	=> $data['role_description'],
+            ));
+        }
+        $db->sql_freeresult($result);
+        return $data;
     }
 
     /**

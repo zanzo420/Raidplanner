@@ -178,20 +178,44 @@
                             </dd>
                         </dl>
 
-                        <p class="quick">
-                            {S_FORM_TOKEN}
-                            <input type="hidden" name="teams_id" value="{TEAM_ID}" />
-                            <!-- IF S_ADD -->
-                            <input type="submit" name="addteam" value="{L_ADD}" class="button1" />
-                            <input type="reset" name="reset" value="{L_RESET}" class="button1" />
-                            <!-- ELSEIF S_UPDATE -->
-                            <input type="submit" name="updateteam" value="{L_UPDATE}" class="button1" />
-                            <input type="submit"  name="delete" value="{L_DELETE}" class="button1" />
-                            <!-- ENDIF -->
-                        </p>
-
+                        <table cellspacing="0" class="tabulated">
+                            <thead>
+                            <tr>
+                                <th style="width: 50%; white-space: nowrap;">{L_ROLE}</th>
+                                <th style="width: 30%; white-space: nowrap;">{L_ROLESIZE}</th>
+                                <th style="width: 20%; text-align:center;  width: 5%;">{L_ACTION}</th>
+                            </tr>
+                            <tbody>
+                            <!-- BEGIN role_row -->
+                            <!-- IF role_row.S_ROW_COUNT is even -->
+                            <tr class="row3">
+                                <!-- ELSE -->
+                            <tr class="row4">
+                                <!-- ENDIF -->
+                                <td>{role_row.ROLENAME}</td>
+                                <td><input type="text" name="role{role_row.ROLEID}" value="{role_row.ROLESIZE}" class="medium" /></td>
+                                <td style="text-align: center;"><a href="{role_row.U_EDIT}">{ICON_EDIT}</a>
+                                    <a href="{role_row.U_DELETE}">{ICON_DELETE}</a>
+                                </td>
+                            </tr>
+                            <!-- END role_row -->
+                            </tbody>
+                        </table>
 
                     </fieldset>
+
+                    <p style="margin:10px;"  class="quick">
+                        {S_FORM_TOKEN}
+                        <input type="hidden" name="teams_id" value="{TEAM_ID}" />
+                        <!-- IF S_ADD -->
+                        <input type="submit" name="addteam" value="{L_ADD}" class="button1" />
+                        <input type="reset" name="reset" value="{L_RESET}" class="button1" />
+                        <!-- ELSEIF S_UPDATE -->
+                        <input type="submit" name="updateteam" value="{L_UPDATE}" class="button1" />
+                        <input type="submit"  name="delete" value="{L_DELETE}" class="button1" />
+                        <!-- ENDIF -->
+                    </p>
+
                 </form>
                 <span class="corners-bottom"><span></span></span>
             </div>
