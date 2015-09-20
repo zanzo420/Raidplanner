@@ -429,12 +429,16 @@ class acp_raidplanner
                 }
                 elseif ($action=='edit' )
                 {
+                    // prepare edit template
                     $data = $this->getteam($teams_id);
+
                     $template->assign_vars(array(
                         'S_UPDATE' => true,
                         'TEAM_ID' => $teams_id
                     ));
                     $this->listroles($teams_id);
+
+                    // get guilds
                     $Guild = new \bbdkp\controller\guilds\Guilds();
                     $guildlist   = $Guild->guildlist($guild_id);
                     foreach ($guildlist as $g)
@@ -445,12 +449,12 @@ class acp_raidplanner
                             'OPTION'   => (!empty($g['name'])) ? $g['name'] : '(None)'));
                     }
 
+                    //get games
                     if (!class_exists('\bbdkp\admin\Admin'))
                     {
                         require("{$phpbb_root_path}includes/bbdkp/admin/admin.$phpEx");
                     }
                     $bbdkp= new \bbdkp\admin\Admin();
-
                     if (isset($bbdkp->games))
                     {
                         foreach ($bbdkp->games as $key => $gamename)
@@ -465,6 +469,20 @@ class acp_raidplanner
                     {
                         trigger_error('ERROR_NOGAMES', E_USER_WARNING);
                     }
+
+                    // get roles
+                    $Roles           = new \bbdkp\controller\games\Roles();
+                    $Roles->game_id  = $data['game_id'];
+                    $Roles->guild_id = $data['guild_id'];
+                    $listroles       = $Roles->listroles();
+                    foreach ($listroles as $roleid => $Role)
+                    {
+                        $template->assign_block_vars('allroles', array(
+                            'VALUE'    => $Role['role_id'],
+                            'SELECTED' => '',
+                            'OPTION'   => $Role['rolename']));
+                    }
+
 
                 }
                 elseif ($action=='add')
@@ -633,7 +651,7 @@ class acp_raidplanner
         {
             $data = array(
                 'game_id' 		=> $row['game_id'],
-                'role_id' 	=> $row['role_id'],
+                'role_id' 	        => $row['role_id'],
                 'role_needed' 	=> $row['role_needed'],
                 'role_color' 		=> $row['role_color'],
                 'role_icon' 		=> $row['role_icon'],
@@ -644,7 +662,9 @@ class acp_raidplanner
                 'GAME_ID' 		=> $data['game_id'],
                 'ROLEID' 		=> $data['role_id'],
                 'NEEDED' 		=> $data['role_needed'],
-                'COLOR' 		=> $data['role_color'],
+                'S_ROLE_ICON_EXISTS'    => (strlen($data['role_icon']) > 0) ? true : false,
+                'U_ROLE_ICON' 	 => (strlen($data['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/role_icons/" . $data['role_icon'] . ".png" : '',
+                'ROLE_COLOR' 		=> $data['role_color'],
                 'ICON' 		    => $data['role_icon'],
                 'ROLENAME' 	=> $data['role_description'],
             ));
