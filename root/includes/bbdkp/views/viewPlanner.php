@@ -56,7 +56,7 @@ if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
 class viewPlanner implements iViews
 {
 
-    private $cal;
+    public $cal;
     /**
      * construct view class
      * @param viewNavigation $Navigation
@@ -67,14 +67,19 @@ class viewPlanner implements iViews
         $this->buildpage($Navigation);
     }
 
+    public $guild_id;
+    public $game_id;
+
     /**
      * Build the page
      * @param viewNavigation $Navigation
      */
     public function buildpage(viewNavigation $Navigation)
     {
-        global $auth, $user;
+        global $template, $phpbb_root_path, $phpEx, $auth, $user;
         $user->add_lang ( array ('mods/raidplanner'));
+        $this->game_id = $Navigation->getGameId();
+        $this->guild_id = $Navigation->getGuildId();
 
         //get permissions
         if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
@@ -99,7 +104,7 @@ class viewPlanner implements iViews
         $action = request_var('action', 'display');
 
         // display header
-        $this->cal = new DisplayFrame($view_mode);
+        $this->cal = new DisplayFrame($this, $view_mode);
 
         $this->cal->display();
 
@@ -124,6 +129,24 @@ class viewPlanner implements iViews
         $blocks = new rpblocks();
         $blocks->display();
 
+        // breadcrumbs
+        $navlinks_array = array(
+            array(
+                'DKPPAGE'		=> $user->lang['MENU_PLANNER'],
+                'U_DKPPAGE'	=> append_sid("{$phpbb_root_path}dkp.$phpEx", '&amp;page=planner&amp;guild_id=' . $Navigation->getGuildId()),
+            ),
+        );
+
+        foreach($navlinks_array as $name)
+        {
+            $template->assign_block_vars('dkpnavlinks', array(
+                'DKPPAGE' => $name['DKPPAGE'],
+                'U_DKPPAGE' => $name['U_DKPPAGE'],
+            ));
+        }
+
+
+
         // Output the page
         page_header($user->lang['PAGE_TITLE']);
     }
@@ -142,7 +165,7 @@ class viewPlanner implements iViews
         {
             include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rp' . $view_mode .'.' . $phpEx);
         }
-        $cal = new $calendarclass();
+        $cal = new $calendarclass($this);
         $cal->display();
         unset($cal);
     }
@@ -183,8 +206,8 @@ class viewPlanner implements iViews
         }
 
         $eventlist = $this->cal->getEventlist();
-        $raidplan_display = new Raidplan_display($this->cal->getEventlist());
-        $raidplan = new Raidplan($eventlist->events, $raidplan_id);
+        $raidplan_display = new Raidplan_display($this);
+        $raidplan = new Raidplan($this->game_id, $this->guild_id, $eventlist->events, $raidplan_id);
 
         switch($postaction)
         {
