@@ -11,8 +11,7 @@ namespace bbdkp\views;
 
 use bbdkp\views\raidplanner\DisplayFrame;
 use bbdkp\views\raidplanner\Raidplan_display;
-use bbdkp\views\raidplanner\rpblocks;
-
+use bbdkp\raidplanner\rpblocks;
 use bbdkp\controller\raidplanner\Raidplan;
 use bbdkp\controller\raidplanner\RaidplanSignup;
 
@@ -44,10 +43,10 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
     include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/raidplan/Raidplan_display.' . $phpEx);
 }
 
-if (!class_exists('\bbdkp\views\raidplanner\rpblocks', false))
+if (!class_exists('\bbdkp\raidplanner\rpblocks', false))
 {
     //display left side blocks
-    include($phpbb_root_path . 'includes/bbdkp/block/Rpblocks.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/block/rpblocks.' . $phpEx);
 }
 
 /**

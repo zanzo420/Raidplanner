@@ -191,7 +191,7 @@ class rpblocks
 		{
 
 			unset($raidplan);
-			$raidplan = new Raidplan($this->eventlist, $row['raidplan_id']);
+			$raidplan = new Raidplan($this->game_id, $this->guild_id,  $this->eventlist, $row['raidplan_id']);
 			if(strlen( $this->eventlist[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
 				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$raidplan->getEventType()]['imagename'] . ".png";

@@ -89,7 +89,7 @@ abstract class RaidCalendar
 	/**
 	 *
 	 */
-	function __construct()
+	function __construct( \bbdkp\views\viewPlanner $viewPlanner)
 	{
 		global $user, $config;
 

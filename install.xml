@@ -160,14 +160,6 @@ if ($config['rp_index_display_week'] == 1)
 ]]></action>
 			</edit>
 		</open>
-		<open src="includes/functions.php">
-			<edit>
-				<comment lang="en"><![CDATA[ adding Planner link in functions.php right after bbdkp]]></comment>
-				<find><![CDATA[		'SITENAME'						=> $config['sitename'],]]></find>
-				<action type="after-add"><![CDATA[        'U_PLANNER'            => append_sid("{$phpbb_root_path}dkp.$phpEx", 'page=planner'),
-				]]></action>
-			</edit>
-		</open>
 		<open src="includes/bbdkp/admin/constants_bbdkp.php">
 			<edit>
 				<comment lang="en"><![CDATA[adding tablenames to constants file]]></comment>

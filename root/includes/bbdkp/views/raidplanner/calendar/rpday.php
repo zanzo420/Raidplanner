@@ -9,6 +9,7 @@
 * @version 1.0
 */
 namespace bbdkp\views\raidplanner;
+
 use  bbdkp\views\raidplanner\Raidplan_display;
 
 /**
@@ -36,12 +37,13 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
 class rpday extends RaidCalendar
 {
 	private $mode = '';
+    private $viewPlanner;
 
-
-	function __construct()
+	function __construct(\bbdkp\views\viewPlanner $viewPlanner)
 	{
+        $this->viewPlanner = $viewPlanner;
 		$this->mode="day";
-		parent::__construct($this->mode);
+		parent::__construct($viewPlanner, $this->mode);
 	}
 
 	/**
@@ -57,7 +59,6 @@ class rpday extends RaidCalendar
 					$user->lang['datetime'][$this->date['month']],
 					$this->date['day'],
 					$this->date['year'] );
-
 
 		$hour_mode = $config['rp_hour_mode'];
 
@@ -98,9 +99,10 @@ class rpday extends RaidCalendar
 			// get raid info
 			$raidplan_output = array();
 
-            $Raidplandisplay = new Raidplan_display($this->getEventlist());
+            $Raidplandisplay = new Raidplan_display($this->viewPlanner);
 			// get all raids on this day
-			$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip($this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
+			$raidplan_output = $Raidplandisplay->DisplayCalendarRaidTooltip(
+                $this->date['month_no'], $this->date['day'], $this->date['year'], $this->group_options, "day");
 		}
 
 		/* assemble events */

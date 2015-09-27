@@ -5,7 +5,7 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2011 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0.2
+ * @version 1.0.4
  */
 namespace bbdkp\controller\raidplanner;
 use bbdkp\controller\raidplanner;
@@ -52,6 +52,21 @@ if (!class_exists('\bbdkp\controller\points\Points'))
 {
     require("{$phpbb_root_path}includes/bbdkp/controller/points/Points.$phpEx");
 }
+
+
+if (!class_exists('\bbdkp\controller\games\Game'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/games/Game.$phpEx");
+}
+if (!class_exists('\bbdkp\controller\games\Roles'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/games/roles/Roles.$phpEx");
+}
+if (!class_exists('\bbdkp\controller\guilds\Guilds'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/guilds/Guilds.$phpEx");
+}
+
 
 /**
  * implements a raid plan
@@ -967,15 +982,53 @@ class Raidplan
         return $this->link;
     }
 
+
+    private $game_id;
+    /**
+     * @param char $game_id
+     */
+    public function setGame_id($game_id)
+    {
+        $this->game_id = $game_id;
+    }
+
+    /**
+     * @return char
+     */
+    public function getGame_id()
+    {
+        return $this->game_id;
+    }
+
+
+    private $guild_id;
+    /**
+     * @param char $guild_id
+     */
+    public function setGuild_id($guild_id)
+    {
+        $this->guild_id = $guild_id;
+    }
+
+    /**
+     * @return char
+     */
+    public function getGuild_id()
+    {
+        return $this->guild_id;
+    }
+
+
     /***
      * Raidplan constructor
      *
      * @param     $eventlist
      * @param int $id
      */
-    function __construct($eventlist, $id = 0)
+    function __construct($game_id, $guild_id, $eventlist, $id = 0)
     {
         // reinitialise
+
         $this->eventlist = $eventlist;
         $this->id = $id;
         $this->event_type = 0;
@@ -1024,6 +1077,8 @@ class Raidplan
          );
         $this->raid_id=0;
         $this->link='';
+        $this->game_id=$game_id;
+        $this->guild_id=$guild_id;;
 
         //get array of possible roles
         $this->roles = $this->_get_roles();
@@ -1039,7 +1094,31 @@ class Raidplan
         //assume all
         $this->_set_InviteList(2, 0, 0);
 
+    }
 
+    /***
+     * get roles
+     */
+    private function _get_roles()
+    {
+        global $phpbb_root_path;
+
+        $roles = new \bbdkp\controller\games\Roles();
+        $roles->game_id = $this->game_id;
+
+        $roles = $roles->listroles();
+        $arr = array();
+        foreach ( $roles as $role_id => $role )
+        {
+            $arr[]= array(
+                'role_name' => $role['rolename'],
+                'role_color' => $role['role_color'],
+                'role_icon' => $role['role_icon'],
+                'role_icon_img' => (strlen($role['role_icon']) > 0) ? $phpbb_root_path . "images/bbdkp/role_icons/" . $role['role_icon'] . ".png" : ''
+            );
+        }
+
+        return $arr;
     }
 
     /**
@@ -1345,33 +1424,6 @@ class Raidplan
     }
 
     /**
-     * builds roles property, needed when you make new raid
-     * called by constructor only !
-     */
-    private function _get_roles()
-    {
-        global $db;
-
-        $sql_array = array(
-            'SELECT'    => 'r.role_id, r.role_name, r.role_color, r.role_icon ',
-            'FROM'      => array(
-                RP_ROLES   => 'r'
-            ),
-            'ORDER_BY'  => 'r.role_id'
-        );
-        $sql = $db->sql_build_query('SELECT', $sql_array);
-        $result = $db->sql_query($sql, 604800);
-        while ( $row = $db->sql_fetchrow ( $result ) )
-        {
-            $this->roles[$row['role_id']]['role_name'] = $row['role_name'];
-            $this->roles[$row['role_id']]['role_color'] = $row['role_color'];
-            $this->roles[$row['role_id']]['role_icon'] = $row['role_icon'];
-        }
-        $db->sql_freeresult($result);
-        return $this->roles;
-    }
-
-    /**
      * sets initial raidroles array
      */
     private function _init_raidplan_roles()
@@ -1389,7 +1441,6 @@ class Raidplan
         }
 
         return $raidroles;
-
     }
 
     /**

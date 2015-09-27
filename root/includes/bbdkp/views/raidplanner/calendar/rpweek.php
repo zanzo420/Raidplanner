@@ -37,14 +37,16 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
 class rpweek extends RaidCalendar
 {
 	private $mode = '';
+    private $viewPlanner;
 
 	/**
 	 *
 	 */
-	function __construct()
+	function __construct(\bbdkp\views\viewPlanner $viewPlanner)
 	{
+        $this->viewPlanner = $viewPlanner;
 		$this->mode = "week";
-		parent::__construct($this->mode);
+		parent::__construct($viewPlanner, $this->mode);
 	}
 
 	/**
@@ -106,7 +108,7 @@ class rpweek extends RaidCalendar
 		}
 
 		// array of raid days
-        $Raidplandisplay = new Raidplan_display($this->getEventlist());
+        $Raidplandisplay = new Raidplan_display($this->viewPlanner);
 		$raiddays = $Raidplandisplay->GetRaiddaylist($fdaystamp, $ldaystamp);
 
 		// array of bdays

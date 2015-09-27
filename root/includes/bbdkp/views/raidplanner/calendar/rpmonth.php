@@ -38,13 +38,16 @@ class rpmonth extends RaidCalendar
 {
 	private $mode = '';
 
+    private $viewPlanner;
+
 	/**
 	 *
 	 */
-	function __construct()
+	function __construct(\bbdkp\views\viewPlanner $viewPlanner)
 	{
+        $this->viewPlanner = $viewPlanner;
 		$this->mode="month";
-		parent::__construct($this->mode);
+		parent::__construct($viewPlanner, $this->mode);
 	}
 
 	/**
@@ -65,7 +68,7 @@ class rpmonth extends RaidCalendar
 
 		$counter = 0;
 
-        $Raidplandisplay = new Raidplan_display($this->getEventlist());
+        $Raidplandisplay = new Raidplan_display($this->viewPlanner);
 
 		// fill array of raid days
 		$firstday = $this->Get1stDayofMonth($this->timestamp);

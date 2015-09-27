@@ -39,9 +39,48 @@ class Raidplan_display
      */
     private $eventlist;
 
-    function __construct($eventlist)
+    private $game_id;
+    /**
+     * @param char $game_id
+     */
+    public function setGame_id($game_id)
     {
+        $this->game_id = $game_id;
+    }
+
+    /**
+     * @return char
+     */
+    public function getGame_id()
+    {
+        return $this->game_id;
+    }
+
+
+    private $guild_id;
+    /**
+     * @param char $guild_id
+     */
+    public function setGuild_id($guild_id)
+    {
+        $this->guild_id = $guild_id;
+    }
+
+    /**
+     * @return char
+     */
+    public function getGuild_id()
+    {
+        return $this->guild_id;
+    }
+
+    function __construct(\bbdkp\views\viewPlanner $viewPlanner)
+    {
+        $eventlist = $viewPlanner->cal->getEventlist();
         $this->eventlist = $eventlist->events;
+
+        $this->game_id= $viewPlanner->game_id;
+        $this->guild_id=$viewPlanner->guild_id;
     }
 
     /***
@@ -53,6 +92,7 @@ class Raidplan_display
     {
         global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
         global $db;
+
         // check if it is private
         if( !$raidplan->getAuthCansee())
         {
@@ -309,7 +349,7 @@ class Raidplan_display
         }
         $timezone = $user->lang['tz'][$tz];
         $rpcounter = 0;
-        $raidplan = new Raidplan($this->eventlist);
+        $raidplan = new Raidplan($this->game_id, $this->guild_id, $this->eventlist);
 
         while ($row = $db->sql_fetchrow($result))
         {
