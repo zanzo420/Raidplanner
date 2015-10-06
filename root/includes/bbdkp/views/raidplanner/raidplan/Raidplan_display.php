@@ -214,7 +214,7 @@ class Raidplan_display
                     'ROLE_CONFIRMED' => $role['role_confirmed'],
                     'ROLE_COLOR'	 => $role['role_color'],
                     'S_ROLE_ICON_EXISTS' => (strlen($role['role_icon']) > 1) ? true : false,
-                    'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
+                    'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/role_icons/" . $role['role_icon'] . ".png" : '',
                 ));
 
                 $this->Signups_show_confirmed($raidplan, $role);
@@ -1132,21 +1132,18 @@ class Raidplan_display
                 $template->assign_block_vars( 'team_row', array (
                     'VALUE' => $row ['teams_id'],
                     'SELECTED' => ' selected="selected"',
-                    'OPTION' => $row ['team_name'] . ': ' .  $row['team_needed']));
+                    'OPTION' => $row ['team_name'] . ': ' .  $row['team_size']));
             }
             $db->sql_freeresult($result);
 
             // make roles proposal
-            $sql_array = array(
-                'SELECT'    => 't.team_needed, r.role_id, r.role_name , r.role_color, r.role_icon ',
-                'FROM'      => array(
-                    RP_TEAMSIZE => 't',
-                    RP_ROLES   	=> 'r'
-                ),
-                'ORDER_BY'  => 'r.role_id',
-                'WHERE'  	=> 'r.role_id = t.role_id AND t.teams_id = ' . $team_id
-            );
-            $sql = $db->sql_build_query('SELECT', $sql_array);
+            $sql = 'SELECT t.game_id, t.role_id, t.role_needed, t.teams_id, r.role_color, r.role_icon, l.name as role_description
+            FROM ' . RP_TEAMSIZE . ' t
+            INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON r.role_id=t.role_id
+            INNER JOIN ' . RP_TEAMS . ' e ON e.teams_id = t.teams_id
+            INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=t.game_id AND r.role_id = l.attribute_id
+            WHERE t.teams_id = ' . $team_id . " AND l.attribute='role' AND l.language='" . $config ['bbdkp_lang'] . "'";
+
             $result = $db->sql_query($sql);
             while ($row = $db->sql_fetchrow($result))
             {
@@ -1154,10 +1151,11 @@ class Raidplan_display
                     'ROLE_COLOR'     => $row['role_color'],
                     'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
                     'ROLE_ICON'      => (strlen($row['role_icon']) > 1) ? $phpbb_root_path .
-                            "images/bbdkp/raidrole_images/" . $row['role_icon'] . ".png" : '',
+                            "images/bbdkp/role_icons/" . $row['role_icon'] . ".png" : '',
+
                     'ROLE_ID'        => $row['role_id'],
-                    'ROLE_NAME'      => $row['role_name'],
-                    'ROLE_NEEDED'    => $row['team_needed'],
+                    'ROLE_NAME'      => $row['role_description'],
+                    'ROLE_NEEDED'    => $row['role_needed'],
                 ));
             }
             $db->sql_freeresult($result);
@@ -1175,7 +1173,7 @@ class Raidplan_display
                 $template->assign_block_vars( 'team_row', array (
                     'VALUE' 	=> $row ['teams_id'],
                     'SELECTED' 	=> ($row ['teams_id'] == $raidplan->getRaidteam()) ? ' selected="selected"' : '',
-                    'OPTION' 	=> $row ['team_name'] . ': ' .  $row['team_needed']));
+                    'OPTION' 	=> $row ['team_name'] . ': ' .  $row['team_size']));
             }
             $db->sql_freeresult($result);
             unset($row);
@@ -1187,7 +1185,7 @@ class Raidplan_display
                 $template->assign_block_vars('teamsize', array(
                     'ROLE_COLOR'     => $role['role_color'],
                     'S_ROLE_ICON_EXISTS'	=>  (strlen($role['role_icon']) > 1) ? true : false,
-                    'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
+                    'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/role_icons/" . $role['role_icon'] . ".png" : '',
                     'ROLE_ID'        => $key,
                     'ROLE_NAME'      => $role['role_name'],
                     'ROLE_NEEDED'    => $role['role_needed'],
