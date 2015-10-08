@@ -39,9 +39,16 @@ class rpblocks
 
     private $eventlist;
 
-    function __construct()
+    private $guild_id;
+    private $game_id;
+
+    function __construct(\bbdkp\views\viewNavigation $Navigation)
     {
         //constructor is called from blockfactory and viewplanner
+        //blockfactory passes viewnavigation object
+        $this->game_id = $Navigation->getGameId();
+        $this->guild_id = $Navigation->getGuildId();
+
         $events= new \bbdkp\controller\raidplanner\rpevents();
         $this->eventlist = $events->events;
     }
@@ -185,7 +192,6 @@ class rpblocks
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 
 		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0, 3600);
-
 
 		while ($row = $db->sql_fetchrow($result))
 		{
