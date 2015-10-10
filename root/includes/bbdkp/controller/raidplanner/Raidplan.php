@@ -53,7 +53,6 @@ if (!class_exists('\bbdkp\controller\points\Points'))
     require("{$phpbb_root_path}includes/bbdkp/controller/points/Points.$phpEx");
 }
 
-
 if (!class_exists('\bbdkp\controller\games\Game'))
 {
     require("{$phpbb_root_path}includes/bbdkp/controller/games/Game.$phpEx");
@@ -1131,7 +1130,7 @@ class Raidplan
 
         // populate properties
         $sql_array = array (
-            'SELECT' => ' rp.*, t.teams_id, t.team_name, t.team_needed, u.username, u.user_colour ',
+            'SELECT' => ' rp.*, t.teams_id, t.team_name, t.team_size, u.username, u.user_colour ',
             'FROM' => array (
                 RP_RAIDS_TABLE 	=> 'rp',
                 RP_TEAMS 		=> 't' ,
@@ -1178,7 +1177,7 @@ class Raidplan
         );
         $this->raidteam = $row['raidteam'];
         $this->raidteamname = $row ['team_name'];
-        $this->RaidTeamNeeded = (int) $row ['team_needed'];
+        $this->RaidTeamNeeded = (int) $row ['team_size'];
 
         unset ($row);
 
@@ -1449,19 +1448,16 @@ class Raidplan
      */
     private function _get_raid_roles()
     {
-        global $db;
+        global $config, $db;
 
-        $sql_array = array(
-            'SELECT'    => 'rr.raidplandet_id, rr.role_needed, rr.role_signedup, rr.role_confirmed,
-	    					r.role_id, r.role_name, r.role_color, r.role_icon ',
-            'FROM'      => array(
-                RP_ROLES   => 'r',
-                RP_RAIDPLAN_ROLES   => 'rr'
-            ),
-            'WHERE'		=>  'r.role_id = rr.role_id and rr.raidplan_id = ' . $this->id,
-            'ORDER_BY'  => 'r.role_id'
-        );
-        $sql = $db->sql_build_query('SELECT', $sql_array);
+        $sql = ' SELECT rr.raidplandet_id, rr.role_needed, rr.role_signedup, rr.role_confirmed,
+        r.role_color, r.role_icon, l.name as role_name
+        FROM ' . RP_RAIDPLAN_ROLES . ' rr
+        INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON rr.role_id = r.role_id
+        INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=r.game_id AND r.role_id = l.attribute_id
+        WHERE l.attribute= '. "'role' AND l.language='" . $config ['bbdkp_lang'] . "' AND rr.raidplan_id = ".  $this->id . '
+        ORDER BY r.role_id ';
+
         $result = $db->sql_query($sql, 86400);
         $signups = array();
         $confirmations = array();
