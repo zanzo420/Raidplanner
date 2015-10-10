@@ -558,7 +558,7 @@ class RaidplanSignup
               l1.name AS member_race, ra.image_female, ra.image_male
               FROM ' . RP_RAIDPLAN_ROLES . ' a
               INNER JOIN ' . RP_SIGNUPS . ' b ON a.raidplan_id = b.raidplan_id AND a.role_id = b.role_id
-              INNER JOIN ' . RP_ROLES . ' r ON a.role_id = r.role_id
+              INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON a.role_id = r.role_id
               INNER JOIN ' . MEMBER_LIST_TABLE . ' m ON b.dkpmember_id = m.member_id
               INNER JOIN ' . CLASS_TABLE .  ' c ON m.game_id = c.game_id AND m.member_class_id = c.class_id
               INNER JOIN ' . BB_LANGUAGE . " l ON l.attribute_id = c.class_id AND l.game_id = c.game_id AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class'
