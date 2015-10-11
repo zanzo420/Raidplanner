@@ -126,7 +126,7 @@ class viewPlanner implements iViews
                 break;
         }
 
-        $blocks = new rpblocks();
+        $blocks = new \bbdkp\raidplanner\rpblocks($Navigation);
         $blocks->display();
 
         // breadcrumbs
