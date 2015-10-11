@@ -512,9 +512,10 @@ class RaidplanSignup
 	{
 		global $db;
 		$this->signup_id = $signup_id;
-		$sql = 'SELECT * from ' . RP_SIGNUPS . ' a INNER JOIN ' . RP_ROLES . ' b
-		    ON a.role_id = b.role_id
-		    WHERE a.signup_id = ' . $this->signup_id;
+		$sql = 'SELECT rl.name as role_name , a.*,  r.* from ' . RP_SIGNUPS . ' a
+		    INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON a.role_id = r.role_id
+		    INNER JOIN ' . BB_LANGUAGE . " rl ON rl.attribute_id = r.role_id AND rl.game_id = r.game_id AND rl.language= 'en' AND rl.attribute = 'role'
+		    WHERE a.signup_id = '" . $this->signup_id ."'";
 
         //cache for a day
 		$result = $db->sql_query($sql, 86400);
