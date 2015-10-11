@@ -1451,7 +1451,7 @@ class Raidplan
         global $config, $db;
 
         $sql = ' SELECT rr.raidplandet_id, rr.role_needed, rr.role_signedup, rr.role_confirmed,
-        r.role_color, r.role_icon, l.name as role_name
+        r.role_id, r.role_color, r.role_icon, l.name as role_name
         FROM ' . RP_RAIDPLAN_ROLES . ' rr
         INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON rr.role_id = r.role_id
         INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=r.game_id AND r.role_id = l.attribute_id
