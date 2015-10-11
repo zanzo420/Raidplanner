@@ -6,7 +6,7 @@
 * @copyright (c) 2011 bbDKP
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Sajaki
-* @version 1.0.2
+* @version 1.0.4
 */
 use bbdkp\controller\raidplanner\Raidplan;
 use bbdkp\controller\raidplanner\RaidplanSignup;
@@ -35,6 +35,14 @@ if (!class_exists('\bbdkp\controller\raidplanner\rpevents'))
     include($phpbb_root_path . 'includes/bbdkp/controller/raidplanner/Rpevents.' . $phpEx);
 }
 
+include($phpbb_root_path . 'includes/bbdkp/views/iViews.' . $phpEx);
+
+if (!class_exists('bbdkp\views\viewNavigation'))
+{
+    include($phpbb_root_path . 'includes/bbdkp/views/viewNavigation.'. $phpEx);
+}
+
+
 class ucp_planner
 {
 	var $u_action;
@@ -44,6 +52,8 @@ class ucp_planner
 	function main($id, $mode)
 	{
 		global $db, $user, $auth, $template, $config, $phpbb_root_path, $phpEx;
+
+        $Navigation = new \bbdkp\views\viewNavigation('ucp');
 
 		$user->add_lang(array('mods/raidplanner', 'mods/dkp_common'));
 
@@ -100,11 +110,11 @@ class ucp_planner
 		while ($row = $db->sql_fetchrow($result))
 		{
 			unset($raidplan);
-			$raidplan = new Raidplan($this->eventlist->events,  $row['raidplan_id']);
+			$raidplan = new Raidplan($Navigation->getGameId(), $Navigation->getGuildId(),
+                $this->eventlist->events,  $row['raidplan_id']);
 			if(strlen( $this->eventlist->events[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
 				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist->events[$raidplan->getEventType()]['imagename'] . ".png";
-
 			}
 			else
 			{

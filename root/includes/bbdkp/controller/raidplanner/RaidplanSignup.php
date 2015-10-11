@@ -552,14 +552,15 @@ class RaidplanSignup
         global $config, $db;
         $sql = 'SELECT a.raidplan_id, a.role_id,  a.role_needed, a.role_signedup, a.role_confirmed, b.signup_id, b.poster_id, b.signup_count, b.role_confirm,
               b.poster_name, b.poster_ip, b.poster_colour, b.post_time, b.signup_val, b.signup_detail,
-              b.bbcode_bitfield, b.bbcode_options, b.bbcode_uid, b.dkpmember_id, r.*,
+              b.bbcode_bitfield, b.bbcode_options, b.bbcode_uid, b.dkpmember_id, r.role_id,  r.role_id,  r.role_icon, rl.name as role_name,
               m.member_name , m.member_level, m.member_gender_id,
               c.colorcode , c.imagename,  l.name AS member_class,
               l1.name AS member_race, ra.image_female, ra.image_male
               FROM ' . RP_RAIDPLAN_ROLES . ' a
               INNER JOIN ' . RP_SIGNUPS . ' b ON a.raidplan_id = b.raidplan_id AND a.role_id = b.role_id
               INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON a.role_id = r.role_id
-              INNER JOIN ' . MEMBER_LIST_TABLE . ' m ON b.dkpmember_id = m.member_id
+              INNER JOIN ' . BB_LANGUAGE . " rl ON rl.attribute_id = r.role_id AND rl.game_id = r.game_id AND rl.language= 'en' AND rl.attribute = 'role'
+              INNER JOIN " . MEMBER_LIST_TABLE . ' m ON b.dkpmember_id = m.member_id
               INNER JOIN ' . CLASS_TABLE .  ' c ON m.game_id = c.game_id AND m.member_class_id = c.class_id
               INNER JOIN ' . BB_LANGUAGE . " l ON l.attribute_id = c.class_id AND l.game_id = c.game_id AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class'
               INNER JOIN " . RACE_TABLE .  ' ra ON m.game_id = ra.game_id AND m.member_race_id = ra.race_id
