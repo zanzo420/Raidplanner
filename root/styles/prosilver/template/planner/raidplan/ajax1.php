@@ -12,16 +12,18 @@ include($phpbb_root_path . 'common.' . $phpEx);
 
 $team_id = request_var('team_id', 0);
 $sql_array = array(
-	    'SELECT'    => 'r.role_name, r.role_color, r.role_icon, 
+	    'SELECT'    => 'rl.name as role_name, r.role_color, r.role_icon,
 	    				s.role_id, s.team_needed, t.team_name ' ,  
 	    'FROM'      => array(
-	        RP_ROLES   		=> 'r', 
+            BB_GAMEROLE_TABLE  => 'r',
+            BB_LANGUAGE     =>  'rl',
 	        RP_TEAMSIZE   	=> 's', 
 	        RP_TEAMS   		=> 't'
 	    ),
 	    'WHERE'  	=> 's.role_id = r.role_id 
 	    			AND t.teams_id = s.teams_id 
-	    			AND s.teams_id = ' . (int) $team_id, 
+	    			AND s.teams_id = ' . (int) $team_id . "
+                    AND rl.attribute_id = r.role_id AND rl.game_id = r.game_id AND rl.language= '" . $config ['bbdkp_lang'] . "' AND rl.attribute = 'role'",
 	    'ORDER_BY'  => 'r.role_id'
 );
 

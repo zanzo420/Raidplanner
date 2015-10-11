@@ -510,11 +510,11 @@ class RaidplanSignup
      */
     public function getSignup($signup_id)
 	{
-		global $db;
+		global $config, $db;
 		$this->signup_id = $signup_id;
 		$sql = 'SELECT rl.name as role_name , a.*,  r.* from ' . RP_SIGNUPS . ' a
 		    INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON a.role_id = r.role_id
-		    INNER JOIN ' . BB_LANGUAGE . " rl ON rl.attribute_id = r.role_id AND rl.game_id = r.game_id AND rl.language= 'en' AND rl.attribute = 'role'
+		    INNER JOIN ' . BB_LANGUAGE . " rl ON rl.attribute_id = r.role_id AND rl.game_id = r.game_id AND rl.language= '" . $config ['bbdkp_lang'] . "' AND rl.attribute = 'role'
 		    WHERE a.signup_id = '" . $this->signup_id ."'";
 
         //cache for a day
@@ -560,7 +560,7 @@ class RaidplanSignup
               FROM ' . RP_RAIDPLAN_ROLES . ' a
               INNER JOIN ' . RP_SIGNUPS . ' b ON a.raidplan_id = b.raidplan_id AND a.role_id = b.role_id
               INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON a.role_id = r.role_id
-              INNER JOIN ' . BB_LANGUAGE . " rl ON rl.attribute_id = r.role_id AND rl.game_id = r.game_id AND rl.language= 'en' AND rl.attribute = 'role'
+              INNER JOIN ' . BB_LANGUAGE . " rl ON rl.attribute_id = r.role_id AND rl.game_id = r.game_id AND rl.language= '". $config ['bbdkp_lang'] . "' AND rl.attribute = 'role'
               INNER JOIN " . MEMBER_LIST_TABLE . ' m ON b.dkpmember_id = m.member_id
               INNER JOIN ' . CLASS_TABLE .  ' c ON m.game_id = c.game_id AND m.member_class_id = c.class_id
               INNER JOIN ' . BB_LANGUAGE . " l ON l.attribute_id = c.class_id AND l.game_id = c.game_id AND l.language= '" . $config['bbdkp_lang'] . "' AND l.attribute = 'class'
