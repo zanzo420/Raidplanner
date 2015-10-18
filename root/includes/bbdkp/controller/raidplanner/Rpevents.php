@@ -17,29 +17,28 @@ if ( !defined('IN_PHPBB') OR !defined('IN_BBDKP') )
 {
 	exit;
 }
+if (!class_exists('\bbdkp\controller\raids\Events'))
+{
+    require("{$phpbb_root_path}includes/bbdkp/controller/raids/Events.$phpEx");
+}
 
 class rpevents
 {
-
 	public $events = array();
-
-	function __construct()
+	function __construct($dkpsys_id)
 	{
-		global $db;
+        $eventlist = new \bbdkp\controller\Raids\events;
+        $eventlist->listevents(0,'b.dkpsys_id, a.event_name', $dkpsys_id, 0, false );
 
-		$sql = 'SELECT * FROM ' . EVENTS_TABLE . ' WHERE event_status = 1 ORDER BY event_id';
-		$result = $db->sql_query($sql, 604800);
-		while ($row = $db->sql_fetchrow($result))
+		foreach($eventlist->events as $activeevent)
 		{
-			$this->events[$row['event_id']]['event_name'] = $row['event_name'];
-			$this->events[$row['event_id']]['color'] = $row['event_color'];
-			$this->events[$row['event_id']]['imagename'] = $row['event_imagename'];
-			$this->events[$row['event_id']]['dkpid'] = $row['event_dkpid'];
-			$this->events[$row['event_id']]['value'] = $row['event_value'];
+			$this->events[$activeevent['event_id']]['event_name'] = $activeevent['event_name'];
+			$this->events[$activeevent['event_id']]['color'] = $activeevent['event_color'];
+			$this->events[$activeevent['event_id']]['imagename'] = $activeevent['event_imagename'];
+			$this->events[$activeevent['event_id']]['dkpid'] = $activeevent['dkpsys_id'];
+			$this->events[$activeevent['event_id']]['value'] = $activeevent['event_value'];
+            $this->events[$activeevent['event_id']]['dkpsys_status'] = $activeevent['event_value'];
 		}
-
-		$db->sql_freeresult($result);
-
 	}
 
 }

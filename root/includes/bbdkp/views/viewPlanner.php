@@ -69,6 +69,7 @@ class viewPlanner implements iViews
 
     public $guild_id;
     public $game_id;
+    public $dkpsys_id;
 
     /**
      * Build the page
@@ -80,6 +81,7 @@ class viewPlanner implements iViews
         $user->add_lang ( array ('mods/raidplanner'));
         $this->game_id = $Navigation->getGameId();
         $this->guild_id = $Navigation->getGuildId();
+        $this->dkpsys_id = $Navigation->getDkpsysId();
 
         //get permissions
         if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
@@ -144,8 +146,6 @@ class viewPlanner implements iViews
                 'U_DKPPAGE' => $name['U_DKPPAGE'],
             ));
         }
-
-
 
         // Output the page
         page_header($user->lang['PAGE_TITLE']);

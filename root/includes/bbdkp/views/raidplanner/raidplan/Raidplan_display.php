@@ -100,7 +100,6 @@ class Raidplan_display
         }
 
         // event image on top
-
         $eventtype = $raidplan->getEventType();
         if(strlen( $this->eventlist[$eventtype]['imagename'] ) > 1)
         {
@@ -168,7 +167,7 @@ class Raidplan_display
         $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $raidplan->id);
 
 
-        // button with url to push raidplan to bbdkp
+        // show button with url to push raidplan to bbdkp
         // this appears only if
         // 1) rp_rppushmode == 1
         // 2) the user belongs to group having u_raidplanner_push permission
@@ -636,13 +635,10 @@ class Raidplan_display
 
         foreach ($role['role_signups'] as $signup)
         {
-
             if (is_object($signup) && $signup instanceof \bbdkp\controller\raidplanner\RaidplanSignup)
             {
-
                 $bbcode = (array) $signup->getBbcode();
                 $edit_text_array = generate_text_for_edit($signup->getComment(), $bbcode['uid'], 7);
-
 
                 // if user can delete other signups ?
                 $confirm_signup_url = "";
