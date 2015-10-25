@@ -76,9 +76,7 @@ class Raidplan_display
 
     function __construct(\bbdkp\views\viewPlanner $viewPlanner)
     {
-        $eventlist = $viewPlanner->cal->getEventlist();
-        $this->eventlist = $eventlist->events;
-
+        $this->eventlist = $viewPlanner->cal->getEventlist();
         $this->game_id= $viewPlanner->game_id;
         $this->guild_id=$viewPlanner->guild_id;
     }
@@ -101,6 +99,14 @@ class Raidplan_display
 
         // event image on top
         $eventtype = $raidplan->getEventType();
+
+        if(!isset($this->eventlist[$eventtype]))
+        {
+            //this event is closed, so fetch the whole eventlist including closed ones.
+            $this->eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+            $this->eventlist = $this->eventlist->events;
+        }
+
         if(strlen( $this->eventlist[$eventtype]['imagename'] ) > 1)
         {
             $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$eventtype]['imagename'] . ".png";
@@ -423,11 +429,17 @@ class Raidplan_display
                 }
             }
 
-            ;
-            if(strlen( $this->eventlist[$raidplan->getEventType()]['imagename'] ) > 1)
+            $evtype = $raidplan->getEventType();
+
+            if(!isset($this->eventlist[$evtype]))
+            {
+                $this->eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+                $this->eventlist = $this->eventlist->events;
+            }
+
+            if(strlen( $this->eventlist[$evtype]['imagename'] ) > 1)
             {
                 $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$raidplan->getEventType()]['imagename'] . ".png";
-
             }
             else
             {

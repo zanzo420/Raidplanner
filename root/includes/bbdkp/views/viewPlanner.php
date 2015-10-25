@@ -207,7 +207,7 @@ class viewPlanner implements iViews
 
         $eventlist = $this->cal->getEventlist();
         $raidplan_display = new Raidplan_display($this);
-        $raidplan = new Raidplan($this->game_id, $this->guild_id, $eventlist->events, $raidplan_id);
+        $raidplan = new Raidplan($this->game_id, $this->guild_id, $eventlist, $raidplan_id);
 
         switch($postaction)
         {

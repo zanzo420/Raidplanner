@@ -253,7 +253,7 @@ $versions = array(
 			//adding some tables
 			'table_add' => array(
 
-			array( 'phpbb_rp_raids', array(
+			array( $table_prefix. 'rp_raids', array(
                     'COLUMNS'			=> array(
                        'raidplan_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'etype_id' 			=> array('INT:8', 0),
@@ -285,7 +285,7 @@ $versions = array(
                     'PRIMARY_KEY'	=> array('raidplan_id')),
               ),
 
-			array('phpbb_rp_recurring', array(
+			array($table_prefix. 'rp_recurring', array(
 			         'COLUMNS'			=> array(
 			           'recurr_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'etype_id' 			=> array('INT:8', 0),
@@ -317,7 +317,7 @@ $versions = array(
 			             'PRIMARY_KEY'	=> array('recurr_id')),
 			        ),
 
-			array( 'phpbb_rp_signups', array(
+			array($table_prefix. 'rp_signups', array(
                     'COLUMNS'			=> array(
                        'signup_id'			=> array('INT:8', NULL, 'auto_increment' ),
 					   'raidplan_id' 			=> array('INT:8', 0),
@@ -344,7 +344,7 @@ $versions = array(
 						)
 					)),
 
-			array( 'phpbb_rp_raidplans_watch', array(
+			array($table_prefix. 'rp_raidplans_watch', array(
                     'COLUMNS'			=> array(
 					   'raidplan_id' 			=> array('INT:8', 0),
 		  			   'user_id' 			=> array('INT:8', 0),
@@ -358,7 +358,7 @@ $versions = array(
 						)
 					)),
 
-			array( 'phpbb_rp_watch', array(
+			array( $table_prefix. 'rp_watch', array(
                     'COLUMNS'			=> array(
 		  			   'user_id' 			=> array('INT:8', 0),
 		  			   'notify_status' 		=> array('BOOL', 0),
@@ -369,7 +369,7 @@ $versions = array(
 						)
 					)),
 
-			array( 'phpbb_rp_raidplanroles', array(
+			array( $table_prefix. 'rp_raidplanroles', array(
                     'COLUMNS'			=> array(
                        'raidplandet_id'		=> array('INT:8', NULL, 'auto_increment' ),
 					   'raidplan_id' 			=> array('INT:8', 0),
@@ -383,7 +383,7 @@ $versions = array(
               ),
 
               array(
-              		'phpbb_rp_roles' , array(
+              		$table_prefix. 'rp_roles' , array(
                     'COLUMNS'        => array(
                         'role_id'    	   => array('INT:8', NULL, 'auto_increment'),
                         'role_name'        => array('VCHAR_UNI', ''),
@@ -396,7 +396,7 @@ $versions = array(
                 ),
 
               array(
-              		'phpbb_rp_announcement' , array(
+              		$table_prefix. 'rp_announcement' , array(
                     'COLUMNS'        => array(
                         'announcement_id'    	=> array('INT:8', NULL, 'auto_increment'),
                         'announcement_title' 	=> array('VCHAR_UNI', ''),
@@ -414,7 +414,7 @@ $versions = array(
 
 		 'table_row_insert'	=> array(
 		// inserting roles
-		array('phpbb_rp_roles',
+		array( $table_prefix. 'rp_roles',
            array(
                   array('role_name' => 'Ranged DPS', 'role_needed1' => 3, 'role_needed2' => 7, 'role_color' => '#69CCF0', 'role_icon' => 'range'),
                   array('role_name' => 'Melee DPS', 'role_needed1' => 1, 'role_needed2' => 3, 'role_color' => '#FF2233', 'role_icon' => 'melee'),
@@ -423,7 +423,7 @@ $versions = array(
                   array('role_name' => 'Hybrid' , 'role_needed1' => 2,  'role_needed2' => 6, 'role_color' => '#9999FF', 'role_icon' => 'unknown'),
            )),
 
-        array('phpbb_rp_announcement',
+        array(  $table_prefix. 'rp_announcement',
            array(
                   array(
                   	'announcement_title' => 'Raid sign-up tool',
@@ -480,7 +480,7 @@ $versions = array(
 
 			'table_add' => array(
         	array(
-              		'phpbb_rp_teams' , array(
+              		 $table_prefix. 'rp_teams' , array(
                     'COLUMNS'        => array(
                         'teams_id'    	   => array('INT:8', NULL, 'auto_increment'),
                         'team_name'        => array('VCHAR_UNI', ''),
@@ -490,7 +490,7 @@ $versions = array(
                 ),
 
         	array(
-              		'phpbb_rp_teamsizes' , array(
+              		 $table_prefix. 'rp_teamsizes' , array(
                     'COLUMNS'        => array(
                         'role_id'    	  => array('INT:8', 0),
                         'teams_id'     	  => array('INT:8', 0),
@@ -501,25 +501,25 @@ $versions = array(
         	),
 
         	'table_column_add' => array(
-				array('phpbb_rp_raids', 'raidteam' , array('INT:8', 0)),
-				array('phpbb_rp_raids', 'raid_id' , array('INT:8', 0)),
+				array(  $table_prefix.  'rp_raids', 'raidteam' , array('INT:8', 0)),
+				array( $table_prefix. 'rp_raids', 'raid_id' , array('INT:8', 0)),
 			),
 
         	'table_column_remove' => array(
-	        	array('phpbb_rp_roles', 'role_needed1'),
-		       	array('phpbb_rp_roles', 'role_needed2'),
+	        	array(  $table_prefix. 'rp_roles', 'role_needed1'),
+		       	array(  $table_prefix. 'rp_roles', 'role_needed2'),
         	),
 
         	 'table_row_insert'	=> array(
 
-        	array('phpbb_rp_teams',
+        	array(  $table_prefix. 'rp_teams',
 	           array(
 	                  array('team_name' => 'Team 1', 'team_needed' => 10),
 	                  array('team_name' => 'Team 2', 'team_needed' => 15),
 	           		)
 	           ),
 
-        	array('phpbb_rp_teamsizes',
+        	array(  $table_prefix. 'rp_teamsizes',
 	           array(
 	                  array('role_id' => 1,  'teams_id' => 1, 'team_needed' => 1),
 	                  array('role_id' => 2,  'teams_id' => 1, 'team_needed' => 1),
@@ -608,7 +608,7 @@ $versions = array(
         ),
 
             // remove this table since we don't have recurring events
-            'table_remove'  => array('phpbb_rp_recurring'),
+            'table_remove'  => array( $table_prefix. 'rp_recurring'),
             'custom' => array('purgecaches', 'versionupdater'),
         ),
 
@@ -678,20 +678,20 @@ $versions = array(
     ),
     '1.0.4' =>
         array(
-            'table_remove' => array('phpbb_rp_roles'),
+            'table_remove' => array( $table_prefix. 'rp_roles', $table_prefix. 'rp_raidplans_watch', $table_prefix. 'rp_watch' ),                        
 
             'table_column_remove' => array(
-                array('phpbb_rp_teams', 'team_needed'),
-                array('phpbb_rp_teamsizes', 'team_needed'),
+                array(  $table_prefix . 'phpbb_rp_teams', 'team_needed'),
+                array(  $table_prefix . 'phpbb_rp_teamsizes', 'team_needed'),
             ),
 
             'table_column_add' => array(
-                array('phpbb_rp_teams', 'guild_id' , array('USINT', 0)),
-                array('phpbb_rp_teams', 'game_id' , array('VCHAR:10', 0)),
-                array('phpbb_rp_teams', 'team_size' , array('INT:8', 0)),
+                array(  $table_prefix . 'phpbb_rp_teams', 'guild_id' , array('USINT', 0)),
+                array(  $table_prefix . 'phpbb_rp_teams', 'game_id' , array('VCHAR:10', 0)),
+                array(  $table_prefix . 'phpbb_rp_teams', 'team_size' , array('INT:8', 0)),
 
-                array('phpbb_rp_teamsizes', 'role_needed' , array('INT:8', 0)),
-                array('phpbb_rp_teamsizes', 'game_id' , array('VCHAR:10', 0)),
+                array(  $table_prefix . 'phpbb_rp_teamsizes', 'role_needed' , array('INT:8', 0)),
+                array(  $table_prefix . 'phpbb_rp_teamsizes', 'game_id' , array('VCHAR:10', 0)),
             ),
 
             'module_remove' => array(

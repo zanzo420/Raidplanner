@@ -701,7 +701,7 @@ class acp_raidplanner
      * @param $teams_id
      * @return array
      */
-    private function listroles($teams_id)
+    public function listroles($teams_id)
     {
         global $phpbb_admin_path, $phpbb_root_path, $template, $db, $config, $phpEx;
 

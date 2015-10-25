@@ -1057,6 +1057,13 @@ class RaidplanSignup
 		$emailrecipients = array();
 		$messenger = new \messenger();
 
+        if(!isset($eventlist[$raidplan->getEventType()]))
+        {
+            //this event is closed, so fetch the whole eventlist including closed ones.
+            $eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+            $eventlist = $eventlist->events;
+        }
+
 		foreach($rpm->send_user_data as $id => $row)
 		{
 			$data=array();

@@ -41,6 +41,7 @@ class rpblocks
 
     private $guild_id;
     private $game_id;
+    private $dkpsys_id;
 
     function __construct(\bbdkp\views\viewNavigation $Navigation)
     {
@@ -48,8 +49,8 @@ class rpblocks
         //blockfactory passes viewnavigation object
         $this->game_id = $Navigation->getGameId();
         $this->guild_id = $Navigation->getGuildId();
-
-        $events= new \bbdkp\controller\raidplanner\rpevents();
+        $this->dkpsys_id = $Navigation->getDkpsysId();
+        $events= new \bbdkp\controller\raidplanner\rpevents($this->dkpsys_id);
         $this->eventlist = $events->events;
     }
 
@@ -198,6 +199,14 @@ class rpblocks
 
 			unset($raidplan);
 			$raidplan = new Raidplan($this->game_id, $this->guild_id,  $this->eventlist, $row['raidplan_id']);
+
+            if(!isset($this->eventlist[$raidplan->getEventType()]))
+            {
+                //this event is closed, so fetch the whole eventlist including closed ones.
+                $this->eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+                $this->eventlist = $this->eventlist->events;
+            }
+
 			if(strlen( $this->eventlist[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
 				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$raidplan->getEventType()]['imagename'] . ".png";

@@ -95,6 +95,7 @@ abstract class RaidCalendar
 
         //fetch event list and inject it through
         $this->eventlist= new \bbdkp\controller\raidplanner\rpevents($viewPlanner->dkpsys_id);
+        $this->eventlist = $this->eventlist->events;
 
 		//set month names (common.php lang entry)
 		$this->month_names[1] = "January";

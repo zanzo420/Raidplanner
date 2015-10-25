@@ -62,7 +62,7 @@ class ucp_planner
             include_once($phpbb_root_path . 'includes/functions_user.'.$phpEx);
         }
 
-        $this->eventlist = new \bbdkp\controller\raidplanner\rpevents();
+        $this->eventlist = new \bbdkp\controller\raidplanner\rpevents($Navigation->getDkpsysId());
 
 	    // get the groups of which this user is part of.
 	    $groups = group_memberships(false,$user->data['user_id']);
@@ -86,6 +86,7 @@ class ucp_planner
 		$start_temp_date = time() - 86400 ;
 		$sort_timestamp_cutoff = $start_temp_date + 86400*365;
 
+        // get
 		$sql_array = array(
 		    'SELECT'    => ' r.raidplan_id  ',
 
@@ -106,13 +107,22 @@ class ucp_planner
 		$sql = $db->sql_build_query('SELECT', $sql_array);
 		$result = $db->sql_query_limit($sql, $config['rp_display_next_raidplans'], 0);
 
-		$template_output = array();
-		while ($row = $db->sql_fetchrow($result))
+
+        while ($row = $db->sql_fetchrow($result))
 		{
-			unset($raidplan);
-			$raidplan = new Raidplan($Navigation->getGameId(), $Navigation->getGuildId(),
+
+            unset($raidplan);
+
+            $raidplan = new Raidplan($Navigation->getGameId(), $Navigation->getGuildId(),
                 $this->eventlist->events,  $row['raidplan_id']);
-			if(strlen( $this->eventlist->events[$raidplan->getEventType()]['imagename'] ) > 1)
+
+            if(!isset($this->eventlist->events[$raidplan->getEventType()]))
+            {
+                //this event is closed, so fetch the whole eventlist including closed ones.
+                $this->eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+            }
+
+            if(strlen( $this->eventlist->events[$raidplan->getEventType()]['imagename'] ) > 1)
 			{
 				$eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist->events[$raidplan->getEventType()]['imagename'] . ".png";
 			}
@@ -205,7 +215,6 @@ class ucp_planner
 				}
 			}
 
-			$db->sql_freeresult($result);
 
 		}
 

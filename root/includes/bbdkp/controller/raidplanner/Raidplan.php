@@ -1492,8 +1492,17 @@ class Raidplan
         $result = RaidplanSignup::GetSignupSQL($this->id);
         $this->signoffs = array();
 
+
+
         while ($row = $db->sql_fetchrow($result))
         {
+            if(!isset($this->eventlist[$this->event_type]))
+            {
+                //this event is closed, so fetch the whole eventlist including closed ones.
+                $this->eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+                $this->eventlist = $this->eventlist->events;
+            }
+
             if ($row['signup_val'] > 0 )
             {
                 //bind signup class instance to role array

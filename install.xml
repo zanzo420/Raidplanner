@@ -169,9 +169,9 @@ if ($config['rp_index_display_week'] == 1)
 				<action type="after-add"><![CDATA[define('RP_RAIDS_TABLE',		$table_prefix . 'rp_raids');
 define('RP_RECURRING',		$table_prefix . 'rp_recurring');
 define('RP_SIGNUPS',		$table_prefix . 'rp_signups');
-define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch');
-define('RP_WATCH',			$table_prefix . 'rp_watch');
-define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
+define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch'); //deprecated
+define('RP_WATCH',			$table_prefix . 'rp_watch');  //deprecated
+define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');  
 define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 define('RP_TEAMS',		$table_prefix . 'rp_teams');
 define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');
