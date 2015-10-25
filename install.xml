@@ -92,15 +92,17 @@
 				<comment lang="en"><![CDATA[Include class]]></comment>
 				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
 				<action type="after-add"><![CDATA[// [+]Raidplanner
-if (!class_exists('\bbdkp\views\raidplanner\rpweek', false))
+if ($config['rp_index_display_week'] == 1)
 {
-	if ($config['rp_index_display_week'] == 1)
-	{
-		// display the entire week
-		define('IN_BBDKP', true);
-		include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rpweek.' . $phpEx);
-		$user->add_lang ( array ('mods/raidplanner'));
-	}
+    include($phpbb_root_path . 'includes/bbdkp/views/iViews.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/views/viewNavigation.'. $phpEx);
+    $Navigation = new \bbdkp\views\viewNavigation('index');
+    include($phpbb_root_path . 'includes/bbdkp/views/viewplanner.'. $phpEx);
+    $viewplanner = new \bbdkp\views\viewPlanner($Navigation);
+
+	$user->add_lang ( array ('mods/raidplanner'));
+	$cal = new \bbdkp\views\raidplanner\rpweek($viewplanner);
+	$cal->display();
 }
 // [-]Raidplanner]]></action>
 			</edit>
