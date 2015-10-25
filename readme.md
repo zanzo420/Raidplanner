@@ -1,6 +1,6 @@
 [![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
 
-#Raidplanner 1.0.4 DEV
+#Raidplanner 1.0.4
 
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
@@ -53,7 +53,7 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 
 ## Current
 
-v1.0.4 DEV
+v1.0.4
 
 ## Installation
 * 	Unzip the zip file into /store/mods
@@ -72,7 +72,7 @@ v1.0.4 DEV
 
 ### changes
 
-*	1.0.4 2015-09-12
+*	1.0.4 2015-10-25
 	* [CHG] target phpbb 3.0.14 and bbdkp 1.4.1
 
 *	1.0.3 2014-07-16
@@ -110,8 +110,7 @@ v1.0.4 DEV
     *   [FIX] #37 Viewplanner refactoring    
     *   [FIX] #36 js validation for newteamsize field in raidteam acp 
     *   [FIX] #33 better icons 
- 
-	
+ 	
 *   0.11.0 2014-05-19
     *   [NEW] tabbed interface for ACP, split into 4 modules. 
     *   [FIX] #27 duplicate signups. this was due to the signup object not being rebuilt after displaying the raidplan.

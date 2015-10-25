@@ -681,17 +681,17 @@ $versions = array(
             'table_remove' => array( $table_prefix. 'rp_roles', $table_prefix. 'rp_raidplans_watch', $table_prefix. 'rp_watch' ),                        
 
             'table_column_remove' => array(
-                array(  $table_prefix . 'phpbb_rp_teams', 'team_needed'),
-                array(  $table_prefix . 'phpbb_rp_teamsizes', 'team_needed'),
+                array(  $table_prefix . 'rp_teams', 'team_needed'),
+                array(  $table_prefix . 'rp_teamsizes', 'team_needed'),
             ),
 
             'table_column_add' => array(
-                array(  $table_prefix . 'phpbb_rp_teams', 'guild_id' , array('USINT', 0)),
-                array(  $table_prefix . 'phpbb_rp_teams', 'game_id' , array('VCHAR:10', 0)),
-                array(  $table_prefix . 'phpbb_rp_teams', 'team_size' , array('INT:8', 0)),
+                array(  $table_prefix . 'rp_teams', 'guild_id' , array('USINT', 0)),
+                array(  $table_prefix . 'rp_teams', 'game_id' , array('VCHAR:10', 0)),
+                array(  $table_prefix . 'rp_teams', 'team_size' , array('INT:8', 0)),
 
-                array(  $table_prefix . 'phpbb_rp_teamsizes', 'role_needed' , array('INT:8', 0)),
-                array(  $table_prefix . 'phpbb_rp_teamsizes', 'game_id' , array('VCHAR:10', 0)),
+                array(  $table_prefix . 'rp_teamsizes', 'role_needed' , array('INT:8', 0)),
+                array(  $table_prefix . 'rp_teamsizes', 'game_id' , array('VCHAR:10', 0)),
             ),
 
             'module_remove' => array(
