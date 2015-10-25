@@ -33,10 +33,10 @@ class DisplayFrame extends RaidCalendar
 	/**
 	 *
 	 */
-	function __construct($view_mode)
+	function __construct(\bbdkp\views\viewPlanner $viewPlanner, $view_mode)
 	{
 		$this->view_mode = $view_mode;
-		parent::__construct($this->view_mode);
+		parent::__construct($viewPlanner, $view_mode);
 	}
 
 	/**

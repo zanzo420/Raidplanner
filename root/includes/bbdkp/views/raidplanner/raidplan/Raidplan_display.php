@@ -5,7 +5,7 @@
  * @package bbDKP Raidplanner
  * @copyright (c) 2014 Sajaki
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0.2
+ * @version 1.0.4
  */
 namespace bbdkp\views\raidplanner;
 use bbdkp\controller\raidplanner\Raidplan;
@@ -39,9 +39,46 @@ class Raidplan_display
      */
     private $eventlist;
 
-    function __construct($eventlist)
+    private $game_id;
+    /**
+     * @param char $game_id
+     */
+    public function setGame_id($game_id)
     {
-        $this->eventlist = $eventlist->events;
+        $this->game_id = $game_id;
+    }
+
+    /**
+     * @return char
+     */
+    public function getGame_id()
+    {
+        return $this->game_id;
+    }
+
+
+    private $guild_id;
+    /**
+     * @param char $guild_id
+     */
+    public function setGuild_id($guild_id)
+    {
+        $this->guild_id = $guild_id;
+    }
+
+    /**
+     * @return char
+     */
+    public function getGuild_id()
+    {
+        return $this->guild_id;
+    }
+
+    function __construct(\bbdkp\views\viewPlanner $viewPlanner)
+    {
+        $this->eventlist = $viewPlanner->cal->getEventlist();
+        $this->game_id= $viewPlanner->game_id;
+        $this->guild_id=$viewPlanner->guild_id;
     }
 
     /***
@@ -53,6 +90,7 @@ class Raidplan_display
     {
         global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
         global $db;
+
         // check if it is private
         if( !$raidplan->getAuthCansee())
         {
@@ -60,8 +98,15 @@ class Raidplan_display
         }
 
         // event image on top
-
         $eventtype = $raidplan->getEventType();
+
+        if(!isset($this->eventlist[$eventtype]))
+        {
+            //this event is closed, so fetch the whole eventlist including closed ones.
+            $this->eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+            $this->eventlist = $this->eventlist->events;
+        }
+
         if(strlen( $this->eventlist[$eventtype]['imagename'] ) > 1)
         {
             $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$eventtype]['imagename'] . ".png";
@@ -128,7 +173,7 @@ class Raidplan_display
         $signup_url = append_sid("{$phpbb_root_path}dkp.$phpEx", "page=planner&amp;view=raidplan&amp;action=signup&amp;raidplanid=". $raidplan->id);
 
 
-        // button with url to push raidplan to bbdkp
+        // show button with url to push raidplan to bbdkp
         // this appears only if
         // 1) rp_rppushmode == 1
         // 2) the user belongs to group having u_raidplanner_push permission
@@ -174,7 +219,7 @@ class Raidplan_display
                     'ROLE_CONFIRMED' => $role['role_confirmed'],
                     'ROLE_COLOR'	 => $role['role_color'],
                     'S_ROLE_ICON_EXISTS' => (strlen($role['role_icon']) > 1) ? true : false,
-                    'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
+                    'ROLE_ICON' 	 => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/role_icons/" . $role['role_icon'] . ".png" : '',
                 ));
 
                 $this->Signups_show_confirmed($raidplan, $role);
@@ -309,7 +354,7 @@ class Raidplan_display
         }
         $timezone = $user->lang['tz'][$tz];
         $rpcounter = 0;
-        $raidplan = new Raidplan($this->eventlist);
+        $raidplan = new Raidplan($this->game_id, $this->guild_id, $this->eventlist);
 
         while ($row = $db->sql_fetchrow($result))
         {
@@ -384,11 +429,17 @@ class Raidplan_display
                 }
             }
 
-            ;
-            if(strlen( $this->eventlist[$raidplan->getEventType()]['imagename'] ) > 1)
+            $evtype = $raidplan->getEventType();
+
+            if(!isset($this->eventlist[$evtype]))
+            {
+                $this->eventlist = new \bbdkp\controller\raidplanner\rpevents(0);
+                $this->eventlist = $this->eventlist->events;
+            }
+
+            if(strlen( $this->eventlist[$evtype]['imagename'] ) > 1)
             {
                 $eventimg = $phpbb_root_path . "images/bbdkp/event_images/" . $this->eventlist[$raidplan->getEventType()]['imagename'] . ".png";
-
             }
             else
             {
@@ -596,13 +647,10 @@ class Raidplan_display
 
         foreach ($role['role_signups'] as $signup)
         {
-
             if (is_object($signup) && $signup instanceof \bbdkp\controller\raidplanner\RaidplanSignup)
             {
-
                 $bbcode = (array) $signup->getBbcode();
                 $edit_text_array = generate_text_for_edit($signup->getComment(), $bbcode['uid'], 7);
-
 
                 // if user can delete other signups ?
                 $confirm_signup_url = "";
@@ -1092,21 +1140,18 @@ class Raidplan_display
                 $template->assign_block_vars( 'team_row', array (
                     'VALUE' => $row ['teams_id'],
                     'SELECTED' => ' selected="selected"',
-                    'OPTION' => $row ['team_name'] . ': ' .  $row['team_needed']));
+                    'OPTION' => $row ['team_name'] . ': ' .  $row['team_size']));
             }
             $db->sql_freeresult($result);
 
             // make roles proposal
-            $sql_array = array(
-                'SELECT'    => 't.team_needed, r.role_id, r.role_name , r.role_color, r.role_icon ',
-                'FROM'      => array(
-                    RP_TEAMSIZE => 't',
-                    RP_ROLES   	=> 'r'
-                ),
-                'ORDER_BY'  => 'r.role_id',
-                'WHERE'  	=> 'r.role_id = t.role_id AND t.teams_id = ' . $team_id
-            );
-            $sql = $db->sql_build_query('SELECT', $sql_array);
+            $sql = 'SELECT t.game_id, t.role_id, t.role_needed, t.teams_id, r.role_color, r.role_icon, l.name as role_description
+            FROM ' . RP_TEAMSIZE . ' t
+            INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON r.role_id=t.role_id
+            INNER JOIN ' . RP_TEAMS . ' e ON e.teams_id = t.teams_id
+            INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=t.game_id AND r.role_id = l.attribute_id
+            WHERE t.teams_id = ' . $team_id . " AND l.attribute='role' AND l.language='" . $config ['bbdkp_lang'] . "'";
+
             $result = $db->sql_query($sql);
             while ($row = $db->sql_fetchrow($result))
             {
@@ -1114,10 +1159,11 @@ class Raidplan_display
                     'ROLE_COLOR'     => $row['role_color'],
                     'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
                     'ROLE_ICON'      => (strlen($row['role_icon']) > 1) ? $phpbb_root_path .
-                            "images/bbdkp/raidrole_images/" . $row['role_icon'] . ".png" : '',
+                            "images/bbdkp/role_icons/" . $row['role_icon'] . ".png" : '',
+
                     'ROLE_ID'        => $row['role_id'],
-                    'ROLE_NAME'      => $row['role_name'],
-                    'ROLE_NEEDED'    => $row['team_needed'],
+                    'ROLE_NAME'      => $row['role_description'],
+                    'ROLE_NEEDED'    => $row['role_needed'],
                 ));
             }
             $db->sql_freeresult($result);
@@ -1135,7 +1181,7 @@ class Raidplan_display
                 $template->assign_block_vars( 'team_row', array (
                     'VALUE' 	=> $row ['teams_id'],
                     'SELECTED' 	=> ($row ['teams_id'] == $raidplan->getRaidteam()) ? ' selected="selected"' : '',
-                    'OPTION' 	=> $row ['team_name'] . ': ' .  $row['team_needed']));
+                    'OPTION' 	=> $row ['team_name'] . ': ' .  $row['team_size']));
             }
             $db->sql_freeresult($result);
             unset($row);
@@ -1147,7 +1193,7 @@ class Raidplan_display
                 $template->assign_block_vars('teamsize', array(
                     'ROLE_COLOR'     => $role['role_color'],
                     'S_ROLE_ICON_EXISTS'	=>  (strlen($role['role_icon']) > 1) ? true : false,
-                    'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $role['role_icon'] . ".png" : '',
+                    'ROLE_ICON'      => (strlen($role['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/role_icons/" . $role['role_icon'] . ".png" : '',
                     'ROLE_ID'        => $key,
                     'ROLE_NAME'      => $role['role_name'],
                     'ROLE_NEEDED'    => $role['role_needed'],

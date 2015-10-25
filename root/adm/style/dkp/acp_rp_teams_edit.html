@@ -1,0 +1,283 @@
+<!-- INCLUDE overall_header.html -->
+<!--
+ Raidplanner ACP html
+ @package bbDkp.acp
+ @copyright (c) 2010 bbDkp <http://www.bbdkp.com>
+ @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ @version 1.0.4
+//-->
+<script type="text/javascript">
+    // <![CDATA[
+    function check_form()
+    {
+        var a1 = document.getElementById("teamsize").value.length;
+        var a2 = document.getElementById("teamname").value.length;
+
+        if (a1 < 1)
+        {
+            alert('{L_TEAMSIZE_EMPTY}');
+            return false;
+        }
+
+        if (a2 < 2)
+        {
+            alert('{L_TEAMNAME_EMPTY}');
+            return false;
+        }
+
+        if (isNaN(document.getElementById("teamsize").value) && ! isFinite(document.getElementById("teamsize").value) )
+        {
+            alert('{L_TEAMSIZE_NOT_NUMERIC}');
+            return false;
+        }
+
+        if ( document.getElementById("teamsize").value < 0 )
+        {
+            alert('{L_TEAMSIZE_NLGT0}');
+            return false;
+        }
+    }
+
+
+    // ]]>
+</script>
+<h1>{L_ACP_RAIDPLANNER}</h1>
+<p>{L_ACP_RAIDPLANNER_SETTINGS_EXPLAIN}</p>
+
+<style type="text/css" >
+    fieldset
+    {
+        /*background :transparent url(../images/bg_tabs_alt2.gif) no-repeat scroll 100% -35px;*/
+        /*border-color:#D7D7D7 #CCCCCC #CCCCCC #D7D7D7;*/
+        border-style:solid;
+        border-width:0px;
+        margin:15px 0;
+        padding:10px;
+        position:relative;
+    }
+    fieldset dt {
+        width: 55%;
+        text-align: left;
+        border: none;
+        border-right: 1px solid #CCCCCC;
+        padding-top: 3px;
+    }
+
+    fieldset dd {
+        margin: 0 0 0 55%;
+        padding: 0 0 0 5px;
+        border: none;
+        border-left: 1px solid #CCCCCC;
+        vertical-align: top;
+        font-size: 1.00em;
+    }
+
+</style>
+<script type="text/javascript">
+    // <![CDATA[
+
+    window.onload = function()
+    {
+        //Get a reference to the link on the page
+        // with an id of "mylink"
+        var sizeup = document.getElementById("sizeup");
+        var sizedown = document.getElementById("sizedown");
+
+        sizeup.onclick = function()
+        {
+            var textBox = document.getElementById("teamsize");
+            textBox.value++;
+            return false;
+        }
+
+        sizedown.onclick = function()
+        {
+            var textBox = document.getElementById("teamsize");
+            textBox.value--;
+            if (textBox.value < 1)
+            {
+                textBox.value = 1;
+            }
+            return false;
+        }
+    }
+
+</script>
+<div id="advanced00">
+    <div class="permissions-category">
+        <ul>
+            <li class="permissions-preset"><a href="{U_RP_PLANNER_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPSETTINGS}</span></a></li>
+            <li class="permissions-preset"><a href="{U_RP_CAL_SETTINGS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RPADVANCEDOPTIONS}</span></a></li>
+            <li class="permissions-preset-yes activetab"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_RAIDTEAMS}</span></a></li>
+        </ul>
+    </div>
+
+    <div class="permissions-panel" id="options001">
+        <span class="corners-top"><span></span></span>
+
+        <div id="advanced00">
+            <div class="permissions-category">
+                <ul>
+                    <li class="permissions-preset "><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_LISTTEAMS}</span></a></li>
+                    <li class="permissions-preset-yes activetab"><a href="{U_RP_TEAMS}" onclick=""><span class="tabbg"><span class="colour"></span>{L_ADDTEAM}</span></a></li>
+                </ul>
+            </div>
+
+            <div class="permissions-panel" id="options001">
+                <span class="corners-top"><span></span></span>
+                <form method="post" action="{U_RP_TEAMSEDIT}" id="ediiteam">
+                    <fieldset style="margin:10px; background-color: #EEEEEE">
+                        <!-- IF S_UPDATE -->
+                        <dl>
+                            <dt style="width: 35%;">
+                                <label>{L_TEAM_ID}:</label>
+                            </dt>
+                            <dd style="margin: 0 0 0 34%">
+                                <label><strong>{TEAM_ID}</strong></label>
+                            </dd>
+                        </dl>
+                        <!-- ENDIF -->
+                        <dl>
+                            <dt style="width: 35%;">
+                                <label>{L_TEAMNAME}:</label>
+                            </dt>
+                            <dd style="margin: 0 0 0 34%">
+                                <input type="text" id="teamname" name="teamname" size="25" maxlength="25" value="{TEAMNAME}" class="input" />
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt style="width: 35%;"><label for="teamsize">{L_TEAMSIZE}:</label></dt>
+                            <dd style="margin: 0 0 0 34%">
+                                <input type="text" name="teamsize" id="teamsize" size="5" maxlength="3" value="{TEAMSIZE}" class="input" />
+                                <a id="sizeup"  href="{U_TEAMSIZE}" target="_blank"><img src="./images/icon_up.gif" /></a>
+                                <a id="sizedown" href="{U_TEAMSIZE}" target="_blank"><img src="./images/icon_down.gif" /></a>
+                            </dd>
+                        </dl>
+
+                        <dl>
+                            <dt style="width: 35%;">
+                                <label>{L_GAME}:</label>
+                            </dt>
+                            <dd style="margin: 0 0 0 34%">
+                                <select
+                                        style=" -moz-appearance: button; -webkit-user-select: none; -moz-user-select: none;
+    -webkit-padding-end: 20px; -moz-padding-end: 20px; -webkit-padding-start: 2px; -moz-padding-start: 2px;  overflow: hidden;
+    padding-top: 2px; padding-bottom: 2px; text-overflow: ellipsis; white-space: nowrap"
+
+                                        name="game_id" id="game_id" class="input" >
+                                    <!-- BEGIN game_row -->
+                                    <option value="{game_row.VALUE}"{game_row.SELECTED}>{game_row.OPTION}</option>
+                                    <!-- END game_row -->
+                                </select>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt style="width: 35%;">
+                                <label>{L_GUILD}:</label>
+                            </dt>
+                            <dd style="margin: 0 0 0 34%">
+                                <select style=" -moz-appearance: button; -webkit-user-select: none; -moz-user-select: none;
+    -webkit-padding-end: 20px; -moz-padding-end: 20px; -webkit-padding-start: 2px; -moz-padding-start: 2px;  overflow: hidden;
+    padding-top: 2px; padding-bottom: 2px; text-overflow: ellipsis; white-space: nowrap"
+
+                                        id="guild_id" name="guild_id" class="input">
+                                    <!-- BEGIN guild_row -->
+                                    <option value="{guild_row.VALUE}"{guild_row.SELECTED}>{guild_row.OPTION}</option>
+                                    <!-- END guild_row -->
+                                </select>
+                            </dd>
+                        </dl>
+
+
+                        <!-- IF S_UPDATE -->
+                        <dl>
+                            <dt style="width: 35%;">
+                                <label>{L_ROLE} {role_row.ROLEID}</label>
+                            </dt>
+                            <dd style="margin: 0 0 0 34%">
+                                <table cellspacing="0" class="tabulated">
+                                    <thead>
+                                    <tr>
+                                        <th style="width: 50%; white-space: nowrap;">{L_ROLE}</th>
+                                        <th style="width: 30%; text-align: center; white-space: nowrap;">{L_ROLESIZE}</th>
+                                        <th style="width: 20%; text-align:center;  width: 5%;">{L_ACTION}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- ***************** update roles ************************ -->
+                                    <!-- BEGIN role_row -->
+                                    <!-- IF role_row.S_ROW_COUNT is even -->
+                                    <tr class="row3">
+                                        <!-- ELSE -->
+                                    <tr class="row4">
+                                        <!-- ENDIF -->
+                                        <td><strong>{L_ROLE}</strong>:&nbsp;
+                                            <span style="font-weight: 900; color: {role_row.ROLE_COLOR}">{role_row.ROLENAME}</span>
+                                            <!-- IF role_row.S_ROLE_ICON_EXISTS -->
+                                            &nbsp;<img style="vertical-align: middle;" src="{role_row.U_ROLE_ICON}" alt="image" /><!-- ELSE -->{role_row.ROLE_ICON}
+                                            <!-- ENDIF -->
+                                        </td>
+                                        <td style="text-align: center; background-color: {role_row.ROLE_COLOR}" >
+                                            <strong>{L_ROLESIZE}: </strong>&nbsp;<input type="text" name="rolesize[{role_row.ROLEID}]" value="{role_row.ROLESIZE}" class="medium" />
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="{role_row.U_DELETE}">{ICON_DELETE}</a>
+                                        </td>
+                                    </tr>
+                                    <!-- END role_row -->
+
+                                    <!-- ***************** new role ************************ -->
+                                    <tr class="row4">
+                                        <td>
+                                            <strong>{L_ROLE}: </strong>&nbsp;
+                                            <select style=" -moz-appearance: button; -webkit-user-select: none; -moz-user-select: none;
+    -webkit-padding-end: 20px; -moz-padding-end: 20px; -webkit-padding-start: 2px; -moz-padding-start: 2px;  overflow: hidden;
+    padding-top: 2px; padding-bottom: 2px; text-overflow: ellipsis; white-space: nowrap"
+                                                    name="newrole_id" id="newrole_id" class="input" >
+                                                <!-- BEGIN allroles -->
+                                                <option value="{allroles.VALUE}"{allroles.SELECTED}>{allroles.OPTION}</option>
+                                                <!-- END allroles -->
+                                            </select>
+                                        </td>
+                                        <td style="text-align: center;" >
+                                            <strong>{L_ROLESIZE}: </strong>&nbsp;
+                                            <input type="text" name="newrolesize" value="" class="medium" />
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <input class="button1" name="newroleadd" type="submit" value="{L_ADD}" />
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </dd>
+                        </dl>
+                        <!-- ENDIF -->
+
+
+                    </fieldset>
+
+                    <p style="margin:10px;"  class="quick">
+                        {S_FORM_TOKEN}
+                        <input type="hidden" name="teams_id" value="{TEAM_ID}" />
+                        <!-- IF S_ADD -->
+                        <input type="submit" name="addteam" value="{L_ADD}" class="button1" />
+                        <input type="reset" name="reset" value="{L_RESET}" class="button1" />
+                        <!-- ELSEIF S_UPDATE -->
+                        <input type="submit" name="updateteam" value="{L_UPDATE}" class="button1" />
+                        <!-- ENDIF -->
+                    </p>
+
+                </form>
+                <span class="corners-bottom"><span></span></span>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+
+<!-- INCLUDE dkp/overall_footer.html -->

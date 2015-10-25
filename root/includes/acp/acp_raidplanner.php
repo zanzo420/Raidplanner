@@ -6,7 +6,7 @@
  * @package bbDkp.acp
  * @copyright (c) 2010 bbdkp http://code.google.com/p/bbdkp/
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * @version 1.0
+ * @version 1.0.4
  *
  **/
 
@@ -17,16 +17,29 @@ if (!defined('IN_PHPBB'))
 {
     exit;
 }
+
 /**
  * This class manages the Raidplanner settings
  *
  */
 class acp_raidplanner
 {
+    /**
+     * url action
+     * @var string
+     */
     public $u_action;
+
+
+    /**
+     * Main
+     *
+     * @param $id
+     * @param $mode
+     */
     public function main($id, $mode)
     {
-        global $db, $user, $auth, $template, $sid, $cache;
+        global $db, $user, $auth, $template, $cache;
         global $config, $phpbb_root_path, $phpbb_admin_path, $phpEx;
 
 
@@ -42,15 +55,19 @@ class acp_raidplanner
             'RAIDPLANNER_VERSION'	=> $config['bbdkp_raidplanner'],
             'U_RP_PLANNER_SETTINGS' => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_settings" ),
             'U_RP_CAL_SETTINGS' 	=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_cal_settings" ),
-            'U_RP_ROLES' 			=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_roles" ),
             'U_RP_TEAMS' 		    => append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ),
+            'U_RP_TEAMSLIST' 		=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ),
+            'U_RP_TEAMSEDIT' 		=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_teams_edit" ),
             'U_RP_COMPOSITION' 		=> append_sid ( "{$phpbb_admin_path}index.$phpEx", "i=raidplanner&amp;mode=rp_composition" ),
 
         ));
 
-
-        $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
-        $action	= request_var('action', '');
+        $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=$mode" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+        if (!class_exists('\bbdkp\admin\Admin'))
+        {
+            require("{$phpbb_root_path}includes/bbdkp/admin/admin.$phpEx");
+        }
+        $bbdkp= new \bbdkp\admin\Admin();
 
         switch ($mode)
         {
@@ -373,368 +390,410 @@ class acp_raidplanner
                 add_form_key($form_key);
                 break;
 
-            case 'rp_roles':
-                /********************************/
-                /*   RAID ROLES phpbb_rp_roles	*/
-                /********************************/
-                $updateroles = (isset($_POST['roleupdate'])) ? true : false;
-                $deleterole = (request_var('roledelete', '') != '') ? true : false;
-                $addrole = (isset($_POST['roleadd'])) ? true : false;
-                $update_raidrolesize = (isset($_POST['update_raidrolesize'])) ? true : false;
-                // check the form key
-                if ($updateroles || $addrole)
+            case 'rp_teams':
+
+                $this->listteam($mode);
+                break;
+
+            case 'rp_teams_edit':
+
+                //include the guilds class
+                if (!class_exists('\bbdkp\controller\guilds\Guilds'))
                 {
+                    require("{$phpbb_root_path}includes/bbdkp/controller/guilds/Guilds.$phpEx");
+                }
+
+                if (!class_exists('\bbdkp\controller\games\Game'))
+                {
+                    require("{$phpbb_root_path}includes/bbdkp/controller/games/Game.$phpEx");
+                }
+
+                $action = request_var('action', '');
+                $game_id = request_var('game_id', '');
+                $guild_id = request_var(URI_GUILD, 1);
+                $teams_id = request_var('teams_id', 1);
+                $role_id = request_var('role_id', 1);
+
+                $addteam = (isset($_POST['addteam'])) ? true : false;
+                $updateteam = (isset($_POST['updateteam'])) ? true : false;
+                $newroleadd = (isset($_POST['newroleadd'])) ? true : false;
+
+                if($action=='deleteteam')
+                {
+                    $this->DeleteTeam($teams_id);
+                    $success_message = sprintf($user->lang['TEAM_DELETE_SUCCESS'], $teams_id);
+                    $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+                    meta_refresh(1,append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ) );
+                    trigger_error($success_message . $link);
+                }
+                elseif ($action=='editteam' )
+                {
+                    // prepare edit template
+                    $data = $this->getteam($teams_id);
+
+                    $template->assign_vars(array(
+                        'S_UPDATE' => true,
+                        'TEAM_ID' => $teams_id
+                    ));
+                    $this->listroles($teams_id);
+
+                    // get guilds
+                    $Guild = new \bbdkp\controller\guilds\Guilds();
+                    $guildlist   = $Guild->guildlist($guild_id);
+                    foreach ($guildlist as $g)
+                    {
+                        $template->assign_block_vars('guild_row', array(
+                            'VALUE'    => $g['id'],
+                            'SELECTED' => ($data['guild_id'] == $g['id']) ? ' selected="selected"' : '',
+                            'OPTION'   => (!empty($g['name'])) ? $g['name'] : '(None)'));
+                    }
+
+                    //get games
+                    if (!class_exists('\bbdkp\admin\Admin'))
+                    {
+                        require("{$phpbb_root_path}includes/bbdkp/admin/admin.$phpEx");
+                    }
+                    $bbdkp= new \bbdkp\admin\Admin();
+                    if (isset($bbdkp->games))
+                    {
+                        foreach ($bbdkp->games as $key => $gamename)
+                        {
+                            $template->assign_block_vars('game_row', array(
+                                'VALUE'    => $key,
+                                'SELECTED' => ($data['game_id'] == $key) ? ' selected="selected"' : '',
+                                'OPTION'   => (!empty($gamename)) ? $gamename : '(None)'));
+                        }
+                    }
+                    else
+                    {
+                        trigger_error('ERROR_NOGAMES', E_USER_WARNING);
+                    }
+
+                    // get roles
+                    $Roles           = new \bbdkp\controller\games\Roles();
+                    $Roles->game_id  = $data['game_id'];
+                    $Roles->guild_id = $data['guild_id'];
+                    $listroles       = $Roles->listroles();
+                    foreach ($listroles as $roleid => $Role)
+                    {
+                        $template->assign_block_vars('allroles', array(
+                            'VALUE'    => $Role['role_id'],
+                            'SELECTED' => '',
+                            'OPTION'   => $Role['rolename']));
+                    }
+
+
+                }
+                elseif ($updateteam || $addteam)
+                {
+                    $template->assign_vars(array(
+                        'S_ADD' => true,
+                    ));
+
                     if (!check_form_key('acp_raidplanner'))
                     {
                         trigger_error('FORM_INVALID');
                     }
-                }
 
-                //user pressed add role
-                if($addrole)
-                {
-                    $data = array(
-                        'role_name'     => utf8_normalize_nfc(request_var('newrole', 'New role', true)),
-                        'role_color'     => request_var('newrole_color', ''),
-                        'role_icon'     => request_var('newrole_icon', ''),
+                    $teamdata = array(
+                        'team_name'     => utf8_normalize_nfc(request_var('teamname', 'New Team', true)),
+                        'team_size'     => request_var('teamsize', 0),
+                        'game_id'       => request_var('game_id', ''),
+                        'guild_id'      => request_var('guild_id', 0),
                     );
+                    $error = $teamdata['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
+                    $error = $teamdata['team_size'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
 
-                    $error = $data['role_name'] == '' ? trigger_error($user->lang['ROLE_NAME_EMPTY'], E_USER_WARNING): '';
-                    $error = $data['role_color'] == '' ? trigger_error($user->lang['ROLE_COLOR_EMPTY'], E_USER_WARNING): '';
-                    $error = $data['role_icon'] == '' ? trigger_error($user->lang['ROLE_ICON_EMPTY'], E_USER_WARNING): '';
-
-                    $sql = 'INSERT INTO ' . RP_ROLES . $db->sql_build_array('INSERT', $data);
-                    $db->sql_query($sql);
-
-                    $success_message = sprintf($user->lang['ROLE_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newrole', 'New role', true)));
-                    meta_refresh(1, $this->u_action);
-                    trigger_error($success_message . $link);
-
-                }
-
-                //user pressed edit roles button
-                elseif($updateroles)
-                {
-                    $rolenames = utf8_normalize_nfc(request_var('rolename', array( 0 => ''), true));
-                    $rolecolor = request_var('role_color', array( 0 => ''));
-                    $roleicon = request_var('role_icon', array( 0 => ''));
-                    foreach ( $rolenames as $role_id => $role_name )
+                    if($addteam)
                     {
-                        $data = array(
-                            'role_name'     	=> $role_name,
-                            'role_color'     	=> $rolecolor[$role_id],
-                            'role_icon'     	=> $roleicon[$role_id],
-                        );
+                        $sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $teamdata);
+                        $db->sql_query($sql);
+                        $teams_id = $db->sql_nextid();
 
-                        $error = $data['role_name'] == '' ? trigger_error($user->lang['ROLE_NAME_EMPTY'], E_USER_WARNING): '';
-                        $error = $data['role_color'] == '' ? trigger_error($user->lang['ROLE_COLOR_EMPTY'], E_USER_WARNING): '';
-                        $error = $data['role_icon'] == '' ? trigger_error($user->lang['ROLE_ICON_EMPTY'], E_USER_WARNING): '';
+                        $success_message = sprintf($user->lang['TEAM_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newteamname', 'New Team', true)));
+                        $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+                        meta_refresh(1, append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ));
+                        trigger_error($success_message . $link);
+                    }
 
-                        $sql = 'UPDATE ' . RP_ROLES . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
-					   	     WHERE role_id=' . (int) $role_id;
+                    if($updateteam)
+                    {
+                        $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams_edit&amp;action=editteam&amp;teams_id=" . $teams_id ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+
+                        $sql = 'UPDATE ' . RP_TEAMS . ' SET ' . $db->sql_build_array('UPDATE', $teamdata) . '
+                             WHERE teams_id=' . (int) $teams_id;
                         $db->sql_query($sql);
 
-                    }
+                        $roledata = request_var('rolesize', array( 0 => 0 ));
 
-                    $success_message = sprintf($user->lang['ROLE_UPDATE_SUCCESS'], $role_id);
-                    meta_refresh(1, $this->u_action);
-                    trigger_error($success_message . $link);
-                }
-                //used pressed red cross to delete role
-                elseif ($deleterole)
-                {
-                    // ask for permission
-                    if (confirm_box(true))
-                    {
-                        // @todo check if there are scheduled raids with this role, ask permission
-                        $sql = 'DELETE FROM ' . RP_ROLES . ' WHERE role_id = ' . request_var('hiddenroleid', 0) ;
-                        $db->sql_query($sql);
-
-                        meta_refresh(1, $this->u_action);
-                        trigger_error(sprintf($user->lang['ROLE_DELETE_SUCCESS'], request_var('hiddenroleid', 0)) . $link, E_USER_WARNING);
-
-                    }
-                    else
-                    {
-                        // get field content
-                        $s_hidden_fields = build_hidden_fields(array(
-                                // set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
-                                'roledelete'	=> 1,
-                                'hiddenroleid'	=> request_var('delrole_id', 0),
-                            )
-                        );
-                        confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_ROLE'], request_var('delrole_id', 0)), $s_hidden_fields);
-                    }
-
-                }
-
-                if($update_raidrolesize)
-                {
-                    // get max team size from form
-                    $maxteamsize= request_var('maxteamsize', array( 0 => 0), true);
-                    // get team compositions from form
-                    $array = request_var('teamsize', array( 0 => array( 0 => 0)), true);
-                    //
-                    foreach ( $array as $team_id => $teamroles )
-                    {
-                        $teamtotal = 0;
-                        foreach ( $teamroles as $role_id => $roleneeded )
+                        $sumneeded = 0;
+                        foreach($roledata as $roleid => $Roleneeded)
                         {
-                            $teamtotal += $roleneeded;
+                            $sumneeded += $Roleneeded;
                         }
-
-                        if ($teamtotal > $maxteamsize[$team_id])
+                        if($sumneeded > $teamdata['team_size'])
                         {
-                            $success_message = sprintf($user->lang['TEAMROLE_UPDATE_FAIL'],$team_id, $maxteamsize[$team_id], $teamtotal);
-                            meta_refresh(3, $this->u_action);
+                            $success_message = sprintf($user->lang['TEAMROLE_UPDATE_FAIL'], $teams_id, $teamdata['team_size'], $sumneeded);
                             trigger_error($success_message . $link, E_USER_WARNING);
                         }
 
-                        $roleneeded= 0;
-                        foreach ( $teamroles as $role_id => $roleneeded )
+                        foreach($roledata as $roleid => $Roleneeded)
                         {
-                            $sql = 'UPDATE ' . RP_TEAMSIZE . '
-							 	 SET team_needed = ' . $roleneeded . '
-						   	     WHERE teams_id=' . (int) $team_id . '
-						   	     AND role_id = ' . $role_id;
+                            $updroles = array (
+                                'role_needed' => $Roleneeded,
+                            );
+                            $sql = 'UPDATE ' . RP_TEAMSIZE . ' SET ' . $db->sql_build_array('UPDATE', $updroles) . ' WHERE teams_id=' . (int) $teams_id . ' AND role_id = ' . $roleid;
                             $db->sql_query($sql);
                         }
-                    }
 
-                    $success_message = $user->lang['TEAMROLE_UPDATE_SUCCESS'];
-                    meta_refresh(1, $this->u_action);
-                    trigger_error($success_message . $link);
-                }
+                        $success_message = sprintf($user->lang['TEAM_UPDATE_SUCCESS'], $teams_id);
+                        meta_refresh(1, append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ));
 
-                // select raid roles
-                $sql = 'SELECT * FROM ' . RP_ROLES . '
-						ORDER BY role_id';
-                $db->sql_query($sql);
-                $result = $db->sql_query($sql);
-                $total_roles = 0;
-                while ( $row = $db->sql_fetchrow($result) )
-                {
-                    $total_roles++;
-                    $template->assign_block_vars('role_row', array(
-                        'ROLE_ID' 		=> $row['role_id'],
-                        'ROLENAME' 		=> $row['role_name'],
-                        'ROLECOLOR' 	=> $row['role_color'],
-                        'ROLEICON' 		=> $row['role_icon'],
-                        'S_ROLE_ICON_EXISTS'	=>  (strlen($row['role_icon']) > 1) ? true : false,
-                        'ROLE_ICON' 	=> (strlen($row['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/raidrole_images/" . $row['role_icon'] . ".png" : '',
-                        'U_DELETE' 		=> $this->u_action. '&amp;roledelete=1&amp;delrole_id=' . $row['role_id'],
-                    ));
-                }
-                $db->sql_freeresult($result);
-
-
-                $this->tpl_name = 'dkp/acp_' . $mode;
-                $form_key = 'acp_raidplanner';
-                add_form_key($form_key);
-
-                break;
-
-            case 'rp_teams':
-                /****************************************/
-                /*        RAID TEAMS  phpbb_rp_teams	*/
-                /*   Team composition  phpbb_rp_teamsize  */
-                /******************************************/
-
-                $updateteam = (isset($_POST['teamupdate'])) ? true : false;
-                $deleteteam = (request_var('teamdelete', '') != '') ? true : false;
-                $addteam = (isset($_POST['teamadd'])) ? true : false;
-                // check the form key
-                if ($updateteam || $addteam )
-                {
-                    if (!check_form_key('acp_raidplanner'))
-                    {
-                        trigger_error('FORM_INVALID');
+                        trigger_error($success_message . $link);
                     }
                 }
-
-                // end of handlers
-                // build form
-
-                // select raid teams
-                $sql = 'SELECT * FROM ' . RP_TEAMS . '
-						ORDER BY teams_id';
-                $db->sql_query($sql);
-                $result1 = $db->sql_query($sql);
-
-                $total_teams = 0;
-                while ( $row = $db->sql_fetchrow($result1) )
+                elseif ($action == 'deleterole')
                 {
-                    $total_teams++;
-                    $template->assign_block_vars('team_row', array(
-                        'TEAM_ID' 		=> $row['teams_id'],
-                        'TEAMNAME' 		=> $row['team_name'],
-                        'TEAMSIZE' 		=> $row['team_needed'],
-                        'U_DELETE' 		=> $this->u_action. '&amp;teamdelete=1&amp;teams_id=' . $row['teams_id'],
+                    $this->DeleteOneRole($teams_id, $role_id);
+                }
+                elseif($newroleadd)
+                {
+                    $newrolesize = request_var('newrolesize', 1);
+                    $role_id = request_var('newrole_id', 1);
+                    $this->AddOneRole($teams_id, $game_id, $role_id, $newrolesize);
+
+                }
+                else
+                {
+                    // default load add team template
+                    $template->assign_vars(array(
+                        'S_ADD' => true,
+                        'TEAM_ID' => $teams_id
                     ));
 
-                    // select raid composition
-                    $sql = 'SELECT a.team_needed as maxneeded,
-					a.team_name, b.role_name, c.teams_id, c.role_id, c.team_needed
-					FROM ' . RP_TEAMS . ' a
-					CROSS JOIN ' . RP_ROLES . ' b
-					LEFT JOIN ' . RP_TEAMSIZE . ' c ON c.teams_id=a.teams_id AND b.role_id=c.role_id
-					WHERE a.teams_id = ' . (int) $row['teams_id'] . '
-					ORDER BY teams_id, role_id';
-
-                    $db->sql_query($sql);
-                    $result2 = $db->sql_query($sql);
-                    while ( $row2 = $db->sql_fetchrow($result2) )
+                    $Guild = new \bbdkp\controller\guilds\Guilds();
+                    $guildlist   = $Guild->guildlist($guild_id);
+                    foreach ($guildlist as $g)
                     {
-                        $total_teams++;
-                        $template->assign_block_vars('team_row.teamsize_row', array(
-                            'ROLE_ID' 		=> (int) $row2['role_id'],
-                            'ROLENAME' 		=> $row2['role_name'],
-                            'TEAMSIZE' 		=> (int)$row2['maxneeded'],
-                            'ROLESIZE' 		=> (int) $row2['team_needed'] == '' ? 0 :$row2['team_needed'],
-                            'ROLEPCT' 		=> (double) round($row2['team_needed'] / $row2['maxneeded'], 2) * 100,
-                        ));
+                        $template->assign_block_vars('guild_row', array(
+                            'VALUE'    => $g['id'],
+                            'SELECTED' => '',
+                            'OPTION'   => (!empty($g['name'])) ? $g['name'] : '(None)'));
                     }
-                    $db->sql_freeresult($result2);
-                }
-                $db->sql_freeresult($result1);
 
 
-                if($addteam)
-                {
-                    $data = array(
-                        'team_name'     => utf8_normalize_nfc(request_var('newteamname', 'New Team', true)),
-                        'team_needed'     => request_var('newteamsize', 0),
-                    );
 
-                    $error = $data['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
-                    $error = $data['team_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
-
-                    $sql = 'INSERT INTO ' . RP_TEAMS . $db->sql_build_array('INSERT', $data);
-                    $db->sql_query($sql);
-                    $team_id = $db->sql_nextid();
-
-                    // get rolelist from template
-                    $rolenames = utf8_normalize_nfc(request_var('rolename_hidden', array( 0 => ''), true));
-                    //insert default value in RP_TEAMS
-
-                    $n = 0;
-                    $totalassigned = 0;
-                    $i = 0;
-                    foreach($rolenames as $key => $rolename)
+                    if (isset($bbdkp->games))
                     {
-                        $n=0;
-                        $i += 1;
-
-                        if($i == count($rolenames))
+                        foreach ($bbdkp->games as $key => $gamename)
                         {
-                            // ex: need 40, have 6 slots
-                            $n = $data['team_needed'] - $totalassigned;
+                            $template->assign_block_vars('game_row', array(
+                                'VALUE'    => $key,
+                                'SELECTED' => '',
+                                'OPTION'   => (!empty($gamename)) ? $gamename : '(None)'));
                         }
-                        else
-                        {
-                            if($totalassigned < (int) $data['team_needed'])
-                            {
-                                $n=1;
-                            }
-                            elseif($totalassigned == (int) $data['team_needed'])
-                            {
-                                // ex: need only 3, have 6 slots
-                                $n = $data['team_needed'] - $totalassigned;
-                            }
-                        }
-
-                        $totalassigned += $n;
-
-                        $sql_ary[] = array(
-                            'teams_id'      => $team_id,
-                            'role_id'       => $key,
-                            'team_needed'   => $n
-                        );
-
-
-                    }
-                    $db->sql_multi_insert(RP_TEAMSIZE, $sql_ary);
-
-                    $success_message = sprintf($user->lang['TEAM_ADD_SUCCESS'], utf8_normalize_nfc(request_var('newteamname', 'New Team', true)));
-                    meta_refresh(1, $this->u_action);
-                    trigger_error($success_message . $link);
-
-                }
-
-                //user pressed edit team
-                elseif($updateteam)
-                {
-                    $teamnames = utf8_normalize_nfc(request_var('team_name', array( 0 => ''), true));
-                    $teamsize = request_var('team_size', array( 0 => ''));
-                    foreach ( $teamnames as $team_id => $teamname )
-                    {
-                        $data = array(
-                            'team_name'     	=> $teamname,
-                            'team_needed'     	=> $teamsize[$team_id],
-                        );
-
-                        $error = $data['team_name'] == '' ? trigger_error($user->lang['TEAMROLE_NAME_EMPTY'], E_USER_WARNING): '';
-                        $error = $data['team_needed'] == '' ? trigger_error($user->lang['TEAMROLE_SIZE_EMPTY'], E_USER_WARNING): '';
-
-                        $sql = 'UPDATE ' . RP_TEAMS . ' SET ' . $db->sql_build_array('UPDATE', $data) . '
-					   	     WHERE teams_id=' . (int) $team_id;
-                        $db->sql_query($sql);
-
-                    }
-
-                    $success_message = $user->lang['TEAM_UPDATE_SUCCESS'];
-                    meta_refresh(1, $this->u_action);
-                    trigger_error($success_message . $link);
-                }
-                //used pressed red cross to delete team
-                elseif ($deleteteam)
-                {
-                    if (confirm_box(true))
-                    {
-                        $sql = 'DELETE from ' . RP_TEAMS . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
-                        $db->sql_query($sql);
-
-                        $sql = 'DELETE from ' . RP_TEAMSIZE . ' WHERE teams_id = ' . request_var('hiddenteamid', 0) ;
-                        $db->sql_query($sql);
-
-                        meta_refresh(1, $this->u_action);
-                        trigger_error(sprintf($user->lang['TEAM_DELETE_SUCCESS'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
-
                     }
                     else
                     {
-                        // @todo check if there are scheduled raids with this team, ask permission
-                        /*
-                         *
-                         $sql= "SELECT count(*) as countteam FROM " . RP_RAIDS_TABLE . " WHERE raidteam = " . request_var('teams_id', 0);
-                        $result = $db->sql_query($sql);
-                        $total_raidplans = (int) $db->sql_fetchfield('countteam');
-                        if($total_raidplans  > 0 )
-                        {
-                            trigger_error(sprintf($user->lang['TEAM_DELETE_FAIL'], request_var('hiddenteamid', 0)) . $link, E_USER_WARNING);
-                        }
-                        */
-
-
-                        // get field content
-                        $s_hidden_fields = build_hidden_fields(array(
-                                // set roledelete to 1. so when this gets in the $_POST output, the $deleterole becomes true
-                                'teamdelete'	=> 1,
-                                'hiddenteamid'	=> request_var('teams_id', 0),
-                            )
-                        );
-
-                        // ask for permission
-                        confirm_box(false, sprintf($user->lang['CONFIRM_DELETE_TEAM'], request_var('teams_id', 0)), $s_hidden_fields);
+                        trigger_error('ERROR_NOGAMES', E_USER_WARNING);
                     }
+
                 }
+
                 $this->tpl_name = 'dkp/acp_' . $mode;
                 $form_key = 'acp_raidplanner';
                 add_form_key($form_key);
 
                 break;
-
         }
+    }
+
+    /**
+     * delete a raid team template
+     * @param $teams_id
+     */
+    private function DeleteTeam($teams_id)
+    {
+        global $db;
+        $sql = 'DELETE FROM ' . RP_TEAMS . ' WHERE teams_id = ' . $teams_id;
+        $db->sql_query($sql);
+        $sql = 'DELETE FROM ' . RP_TEAMSIZE . ' WHERE teams_id = ' . $teams_id;
+        $db->sql_query($sql);
+    }
+
+    /**
+     * add one role from a team
+     * @param $teams_id
+     * @param $game_id
+     * @param $role_id
+     * @param $newrolesize
+     */
+    private function AddOneRole($teams_id, $game_id, $role_id, $newrolesize)
+    {
+        global $db;
+        $data = array(
+            'teams_id'      => $teams_id,
+            'game_id'       => $game_id,
+            'role_needed'   => $newrolesize,
+            'role_id'       => $role_id,
+        );
+
+        $sql = 'INSERT INTO ' . RP_TEAMSIZE . $db->sql_build_array('INSERT', $data);
+        $db->sql_query($sql);
+    }
+
+    /**
+     * remove one role from a team
+     * @param $teams_id
+     * @param $role_id
+     */
+    private function DeleteOneRole($teams_id, $role_id)
+    {
+        global $db;
+        $sql = 'DELETE FROM ' . RP_TEAMSIZE . ' WHERE teams_id = ' . $teams_id . ' AND role_id = ' . $role_id;
+        $db->sql_query($sql);
+    }
+
+
+
+
+    /**
+     * list teams
+     * @param $mode
+     */
+    private function listteam($mode)
+    {
+
+        global $template, $phpbb_admin_path,$phpEx, $db;
+
+        // select raid teams
+        $sql = 'SELECT t.teams_id, t.team_name, t.team_size, t.game_id, t.guild_id, g.name as guild_name, a.game_name
+            FROM ' . RP_TEAMS . ' t
+            INNER JOIN ' . GUILD_TABLE . ' g ON g.id = t.guild_id
+            INNER JOIN ' . GAMES_TABLE . ' a ON a.game_id = t.game_id
+            ORDER BY teams_id';
+
+        $db->sql_query($sql);
+        $result1 = $db->sql_query($sql);
+
+        $total_teams = 0;
+        while ( $row = $db->sql_fetchrow($result1) )
+        {
+            $total_teams++;
+            $template->assign_block_vars('team_row', array(
+                'TEAM_ID' 		=> $row['teams_id'],
+                'TEAMNAME' 		=> $row['team_name'],
+                'TEAMSIZE' 		=> $row['team_size'],
+                'GAME_ID' 		=> $row['game_id'],
+                'GUILD' 		=> $row['guild_name'],
+                'GAME' 		    => $row['game_name'],
+                'U_EDIT' 		=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=raidplanner&amp;mode=rp_teams_edit&amp;action=editteam&amp;teams_id=' . $row['teams_id']),
+                'U_DELETE' 		=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=raidplanner&amp;mode=rp_teams_edit&amp;action=deleteteam&amp;teams_id=' . $row['teams_id']),
+            ));
+        }
+        $db->sql_freeresult($result1);
+
+        $this->tpl_name = 'dkp/acp_' . $mode;
+    }
+
+    /**
+     * get list of roles for this team
+     * @param $teams_id
+     * @return array
+     */
+    public function listroles($teams_id)
+    {
+        global $phpbb_admin_path, $phpbb_root_path, $template, $db, $config, $phpEx;
+
+        if (!class_exists('\bbdkp\controller\games\Roles'))
+        {
+            require("{$phpbb_root_path}includes/bbdkp/controller/games/roles/Roles.$phpEx");
+        }
+
+        $sql = 'SELECT t.game_id, t.role_id, t.role_needed, t.teams_id, r.role_color, r.role_icon, l.name as role_description
+        FROM ' . RP_TEAMSIZE . ' t
+        INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON r.role_id=t.role_id
+        INNER JOIN ' . RP_TEAMS . ' e ON e.teams_id = t.teams_id
+        INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=t.game_id AND r.role_id = l.attribute_id
+        WHERE t.teams_id = ' . $teams_id . " AND l.attribute='role' AND l.language='" . $config ['bbdkp_lang'] . "'";
+
+        $result = $db->sql_query($sql);
+        $data = array();
+        while ($row = $db->sql_fetchrow($result))
+        {
+            $data = array(
+                'game_id' 		    => $row['game_id'],
+                'role_id' 	        => $row['role_id'],
+                'role_needed' 	    => $row['role_needed'],
+                'role_color' 		=> $row['role_color'],
+                'role_icon' 		=> $row['role_icon'],
+                'role_description' 		=> $row['role_description'],
+            );
+
+            $data2 [] = array(
+                'game_id' 		    => $row['game_id'],
+                'role_id' 	        => $row['role_id'],
+                'role_needed' 	    => $row['role_needed'],
+                'role_color' 		=> $row['role_color'],
+                'role_icon' 		=> $row['role_icon'],
+                'role_description' 		=> $row['role_description'],
+            );
+
+            $template->assign_block_vars('role_row', array(
+                'GAME_ID' 		=> $data['game_id'],
+                'ROLEID' 		=> $data['role_id'],
+                'ROLESIZE' 		=> $data['role_needed'],
+                'S_ROLE_ICON_EXISTS'    => (strlen($data['role_icon']) > 0) ? true : false,
+                'U_ROLE_ICON' 	 => (strlen($data['role_icon']) > 1) ? $phpbb_root_path . "images/bbdkp/role_icons/" . $data['role_icon'] . ".png" : '',
+                'ROLE_COLOR' 		=> $data['role_color'],
+                'ICON' 		    => $data['role_icon'],
+                'ROLENAME' 	=> $data['role_description'],
+                'U_DELETE' 		=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=raidplanner&amp;mode=rp_teams_edit&amp;action=deleterole&amp;teams_id=' .
+                        $teams_id . '&amp;role_id='. $row['role_id'] ),
+            ));
+        }
+        $db->sql_freeresult($result);
+        return $data;
+    }
+
+    /**
+     * get one team template
+     * @param $teams_id
+     * @return array
+     */
+    private function getteam($teams_id)
+    {
+        // select raid teams
+        global $template, $db;
+
+        $sql = 'SELECT t.teams_id, t.team_name, t.team_size, t.game_id, t.guild_id, g.name as guild_name, a.game_name
+            FROM ' . RP_TEAMS . ' t
+            INNER JOIN ' . GUILD_TABLE . ' g ON g.id = t.guild_id
+            INNER JOIN ' . GAMES_TABLE . ' a ON a.game_id = t.game_id
+            WHERE t.teams_id = ' . $teams_id;
+        $result = $db->sql_query($sql);
+        while ($row = $db->sql_fetchrow($result))
+        {
+            $data = array(
+                'teams_id' 		=> $row['teams_id'],
+                'team_name' 	=> $row['team_name'],
+                'team_size' 	=> $row['team_size'],
+                'game_id' 		=> $row['game_id'],
+                'guild_id' 		=> $row['guild_id'],
+                'game_name' 		=> $row['game_name'],
+            );
+
+            $template->assign_vars(array(
+                'TEAM_ID' 		=> $data['teams_id'],
+                'TEAMNAME' 		=> $data['team_name'],
+                'TEAMSIZE' 		=> $data['team_size'],
+                'GAME_ID' 		=> $data['game_id'],
+                'GUILD' 		=> $data['guild_id'],
+                'GAME' 		    => $data['game_name'],
+            ));
+        }
+        $db->sql_freeresult($result);
+        return $data;
     }
 
 }

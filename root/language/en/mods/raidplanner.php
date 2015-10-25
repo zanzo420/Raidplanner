@@ -23,7 +23,8 @@ $lang = array_merge($lang, array(
 	//settings
     '12_HOURS'								=> '12 hours',
     '24_HOURS'								=> '24 hours',
-	'ON'									=> ' on ',
+    'ADDTEAM'                               => 'Add Team',
+    'ON'									=> ' on ',
     'CLICK_PLUS_HOUR'						=> 'Move ALL raids by one hour.',
     'CLICK_PLUS_HOUR_EXPLAIN'				=> 'Being able to move all raids in the calendar +/- one hour helps when you reset the boards daylight savings time setting.  Note clicking on the links to move the raids will loose any changes you have made above.  Please submit the form to save your work before moving the raids +/- one hour.',
     'COLOR'									=> 'Color',
@@ -213,7 +214,7 @@ $lang = array_merge($lang, array(
 	'NOCHAR'				=> 'No Character',
 	'SIGNED_UP'				=> 'Signed Up',
 	'SIGNED_OFF'			=> 'Signed off',
-
+    'LISTTEAMS'             => 'List Teams',
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'You need to login in order to add/edit/delete raids.',
 
@@ -271,8 +272,8 @@ $lang = array_merge($lang, array(
 
 	'RAIDPROFILE1'				=> '10-man',
 	'RAIDPROFILE2'				=> '25-man',
-
-	'RP_SHOW_WELCOME'			=> 'Show welcome message',
+    'TEAM_ID'                   => 'Team id',
+    'RP_SHOW_WELCOME'			=> 'Show welcome message',
 	'RP_WELCOME'				=> 'Welcome message',
 	'RP_WELCOME_EXPLAIN'		=> 'Message shown on top of planner. supports bbcodes. ',
 	'RP_WELCOME_DEFAULT'		=> '[b]Welcome to our Raid Scheduler[/b]! All raids will be planned here. Before signing up, please link to your character in the UCP. ',
