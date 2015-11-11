@@ -206,14 +206,12 @@ $versions = array(
             array(
                 $table_prefix. 'rp_teamsizes' , array(
                 'COLUMNS'        => array(
-                    'role_id'    	  => array('INT:8', 0),
-                    'teams_id'     	  => array('INT:8', 0),
-                    'role_needed'  =>  array('INT:8', 0,
-                        'game_id'  =>  array('VCHAR:10', 0),
+                    'role_id'      => array('INT:8', 0),
+                    'teams_id'     => array('INT:8', 0),
+                    'role_needed'  =>  array('INT:8', 0),
+                    'game_id'      =>  array('VCHAR:10', 0),
                     ),
                 ),
-            ),
-
             )),
 
         'table_row_insert'	=> array(
