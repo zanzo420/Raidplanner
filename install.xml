@@ -10,9 +10,9 @@
 		<title lang="en"><![CDATA[Raidplanner]]></title>
 		<description lang="en"><![CDATA[Raidplanner 1.0.4 plugin for bbDKP
 		forked from phpbb3 Calendar and phpRaider. see readme.md
-		Requires bbDKP 1.4.1 or higher to be installed.
+		Requires bbDKP 1.4.3 or higher to be installed.
 		We hope you get everything working. further development requests, support questions are welcome at www.bbdkp.com]]></description>
-		<author-notes lang="en"><![CDATA[Requires bbDKP 1.4.1 or higher to be installed.]]></author-notes>
+		<author-notes lang="en"><![CDATA[Requires bbDKP 1.4.3 or higher to be installed.]]></author-notes>
 		<author-group>
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
@@ -46,7 +46,7 @@
 			<target-version>3.0.14</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="https://www.bbdkp.com/downloads.php" lang="en">bbDKP 1.4.1</link>		
+			<link type="dependency" href="https://github.com/bbDKP/bbDKP/releases/tag/v1.4.3" lang="en">bbDKP 1.4.3</link>		
 			<link type="language" href="contrib/languages/fr.xml" lang="en">French</link>
 			<link type="language" href="contrib/languages/de.xml" lang="en">German</link>	
 		</link-group>
@@ -117,6 +117,39 @@ if ($config['rp_index_display_week'] == 1)
 	$cal->display();
 }
 // [-]Raidplanner
+
+
+// [+]Raidplanner
+if ($config['rp_index_display_week'] == 1)
+{
+    define('IN_BBDKP', true);
+
+    if (!class_exists('\bbdkp\admin\Admin'))
+    {
+        require("{$phpbb_root_path}includes/bbdkp/admin/admin.$phpEx");
+    }
+    include($phpbb_root_path . 'includes/bbdkp/views/iViews.' . $phpEx);
+    include($phpbb_root_path . 'includes/bbdkp/views/viewNavigation.'. $phpEx);
+    $Navigation = new \bbdkp\views\viewNavigation('index');
+
+    include($phpbb_root_path . 'includes/bbdkp/views/viewplanner.'. $phpEx);
+    $viewplanner = new \bbdkp\views\viewPlanner($Navigation);
+
+    if ($config['rp_index_display_week'] == 1)
+    {
+        $user->add_lang ( array ('mods/raidplanner'));
+        if (!class_exists('\bbdkp\views\raidplanner\rpweek', false))
+        {
+            include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rpweek.' . $phpEx);
+        }
+        $cal = new \bbdkp\views\raidplanner\rpweek($viewplanner);
+        $cal->display();
+    }
+
+}
+// [-]Raidplanner
+
+
 ]]></action>
 			</edit>
 		</open>
