@@ -555,12 +555,22 @@ class acp_raidplanner
                 elseif ($action == 'deleterole')
                 {
                     $this->DeleteOneRole($teams_id, $role_id);
+                    $success_message = sprintf($user->lang['ADMIN_DELETE_ROLE_SUCCESS'], $role_id);
+                    $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+                    meta_refresh(1, append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ));
+                    trigger_error($success_message . $link);
+
                 }
                 elseif($newroleadd)
                 {
                     $newrolesize = request_var('newrolesize', 1);
                     $role_id = request_var('newrole_id', 1);
                     $this->AddOneRole($teams_id, $game_id, $role_id, $newrolesize);
+
+                    $success_message = sprintf($user->lang['ADMIN_ADD_ROLE_SUCCESS'], $role_id);
+                    $link = '<br /><a href="' .  append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ) . '"><p>'. $user->lang['RETURN_RP']. '</p></a>';
+                    meta_refresh(1, append_sid("{$phpbb_root_path}adm/index.$phpEx", "i=raidplanner&amp;mode=rp_teams" ));
+                    trigger_error($success_message . $link);
 
                 }
                 else
@@ -710,11 +720,11 @@ class acp_raidplanner
             require("{$phpbb_root_path}includes/bbdkp/controller/games/roles/Roles.$phpEx");
         }
 
-        $sql = 'SELECT t.game_id, t.role_id, t.role_needed, t.teams_id, r.role_color, r.role_icon, l.name as role_description
+        $sql = 'SELECT e.game_id, t.role_id, t.role_needed, t.teams_id, r.role_color, r.role_icon, l.name as role_description
         FROM ' . RP_TEAMSIZE . ' t
         INNER JOIN ' . BB_GAMEROLE_TABLE . ' r ON r.role_id=t.role_id
         INNER JOIN ' . RP_TEAMS . ' e ON e.teams_id = t.teams_id
-        INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=t.game_id AND r.role_id = l.attribute_id
+        INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=e.game_id AND r.role_id = l.attribute_id
         WHERE t.teams_id = ' . $teams_id . " AND l.attribute='role' AND l.language='" . $config ['bbdkp_lang'] . "'";
 
         $result = $db->sql_query($sql);
