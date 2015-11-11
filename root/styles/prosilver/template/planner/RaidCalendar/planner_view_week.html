@@ -29,6 +29,7 @@
 <div class="forumbg">
     <div class="inner">
         <span class="corners-inner-top"><span></span></span>
+
         <table class="table1" cellspacing="1" cellpadding="0">
             <thead>
             <tr>
@@ -39,6 +40,7 @@
                 <th style="width: 14%; height: 24px; text-align: center"><h4>{D4}</h4></th>
                 <th style="width: 14%; height: 24px; text-align: center"><h4>{D5}</h4></th>
                 <th style="width: 14%; height: 24px; text-align: center"><h4>{D6}</h4></th>
+
             </tr>
             </thead>
             <tfoot>
@@ -50,7 +52,9 @@
             </tfoot>
             <tbody>
             <!-- BEGIN calendar_days -->
-            <!-- IF calendar_days.START_WEEK --><tr style="height: 100px"><!-- ENDIF -->
+            <!-- IF calendar_days.START_WEEK -->
+            <tr style="height: 100px">
+                <!-- ENDIF -->
                 <!-- IF calendar_days.DUMMY_DAY -->
                 <td  valign="top" class="bg3 calMon">&nbsp;</td>
                 <!-- ELSE -->
@@ -74,31 +78,38 @@
                     <br />
                     <!-- IF calendar_days.BIRTHDAYS -->{calendar_days.BIRTHDAYS}<!-- ENDIF -->
                     <!-- BEGIN raidplans -->
-                    <!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS --><hr class="hrCal" /><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
+                    <!-- IF calendar_days.raidplans.S_FIRST_ROW --><!-- IF calendar_days.BIRTHDAYS -->
+                    <hr class="hrCal" /><!-- ENDIF --><!-- ELSE --><hr class="hrCal"><!-- ENDIF -->
                     <a id="raid_id{calendar_days.raidplans.RAID_ID}" href="{calendar_days.raidplans.EVENT_URL}">
                         <img src="{calendar_days.raidplans.IMAGE}" alt="{calendar_days.raidplans.ETYPE_DISPLAY_NAME}" /> <br/>
                         <!-- IF S_DISPLAY_NAME -->
 
                         <!-- IF calendar_days.raidplans.COLOR --><span><!-- ENDIF -->
-    			    <!-- IF calendar_days.raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
+			<!-- IF calendar_days.raidplans.DISPLAY_BOLD --><strong><!-- ENDIF -->
 
                             <!-- IF calendar_days.raidplans.ETYPE_DISPLAY_NAME -->{calendar_days.raidplans.ETYPE_DISPLAY_NAME}: <!-- ENDIF -->{calendar_days.raidplans.EVENT_SUBJECT}
                             <!-- IF calendar_days.raidplans.DISPLAY_BOLD --></strong><!-- ENDIF -->
-			    	<!-- IF calendar_days.raidplans.SHOW_TIME --><br /><span class="smCalText">
+				<!-- IF calendar_days.raidplans.SHOW_TIME --><br /><span class="smCalText">
 					<!-- IF calendar_days.raidplans.ALL_DAY -->{L_ALL_DAY}
 					<!-- ELSE -->{L_FROM_TIME}: {calendar_days.raidplans.INVITE_TIME}
 					<br />{L_FROM_TIME}: {calendar_days.raidplans.START_TIME}
 					<br />{L_TO_TIME}: {calendar_days.raidplans.END_TIME}
 					<!-- ENDIF --></span>
 				<!-- ENDIF -->
-                <!-- IF calendar_days.raidplans.COLOR --></span><!-- ENDIF -->
+			<!-- IF calendar_days.raidplans.COLOR --></span><!-- ENDIF -->
+
                         <!-- ENDIF -->
+
+
                     </a>
                     <!-- INCLUDE planner/RaidCalendar/planner_tooltip.html -->
+
                     <!-- END raidplans -->
                 </td>
                 <!-- ENDIF -->
-                <!-- IF calendar_days.END_WEEK --></tr><!-- ENDIF -->
+                <!-- IF calendar_days.END_WEEK -->
+            </tr>
+            <!-- ENDIF -->
 
             <!-- END calendar_days -->
             </tbody>
