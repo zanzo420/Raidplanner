@@ -30,6 +30,7 @@ class acp_raidplanner
      */
     public $u_action;
 
+    private $rolesneeded;
 
     /**
      * Main
@@ -429,13 +430,19 @@ class acp_raidplanner
                 elseif ($action=='editteam' )
                 {
                     // prepare edit template
-                    $data = $this->getteam($teams_id);
+                    $team = $this->getteam($teams_id);
 
                     $template->assign_vars(array(
                         'S_UPDATE' => true,
                         'TEAM_ID' => $teams_id
                     ));
-                    $this->listroles($teams_id);
+                    $listroles = $this->listroles($teams_id);
+
+                    $showaddline = true;
+                    if ($this->rolesneeded >= $team['team_size'])
+                    {
+                        $showaddline = false;
+                    }
 
                     // get guilds
                     $Guild = new \bbdkp\controller\guilds\Guilds();
@@ -444,7 +451,7 @@ class acp_raidplanner
                     {
                         $template->assign_block_vars('guild_row', array(
                             'VALUE'    => $g['id'],
-                            'SELECTED' => ($data['guild_id'] == $g['id']) ? ' selected="selected"' : '',
+                            'SELECTED' => ($team['guild_id'] == $g['id']) ? ' selected="selected"' : '',
                             'OPTION'   => (!empty($g['name'])) ? $g['name'] : '(None)'));
                     }
 
@@ -460,7 +467,7 @@ class acp_raidplanner
                         {
                             $template->assign_block_vars('game_row', array(
                                 'VALUE'    => $key,
-                                'SELECTED' => ($data['game_id'] == $key) ? ' selected="selected"' : '',
+                                'SELECTED' => ($team['game_id'] == $key) ? ' selected="selected"' : '',
                                 'OPTION'   => (!empty($gamename)) ? $gamename : '(None)'));
                         }
                     }
@@ -471,8 +478,8 @@ class acp_raidplanner
 
                     // get roles
                     $Roles           = new \bbdkp\controller\games\Roles();
-                    $Roles->game_id  = $data['game_id'];
-                    $Roles->guild_id = $data['guild_id'];
+                    $Roles->game_id  = $team['game_id'];
+                    $Roles->guild_id = $team['guild_id'];
                     $listroles       = $Roles->listroles();
                     foreach ($listroles as $roleid => $Role)
                     {
@@ -481,6 +488,14 @@ class acp_raidplanner
                             'SELECTED' => '',
                             'OPTION'   => $Role['rolename']));
                     }
+
+
+                    $template->assign_vars(array(
+                        'S_ADDNEW_SHOW'		=> $showaddline
+                    ));
+
+
+
 
 
                 }
@@ -726,21 +741,14 @@ class acp_raidplanner
         INNER JOIN ' . RP_TEAMS . ' e ON e.teams_id = t.teams_id
         INNER JOIN ' . BB_LANGUAGE . ' l ON l.game_id=e.game_id AND r.role_id = l.attribute_id
         WHERE t.teams_id = ' . $teams_id . " AND l.attribute='role' AND l.language='" . $config ['bbdkp_lang'] . "'";
+        $this->rolesneeded =0;
 
         $result = $db->sql_query($sql);
         $data = array();
         while ($row = $db->sql_fetchrow($result))
         {
+            $this->rolesneeded += (int) $row['role_needed'];
             $data = array(
-                'game_id' 		    => $row['game_id'],
-                'role_id' 	        => $row['role_id'],
-                'role_needed' 	    => $row['role_needed'],
-                'role_color' 		=> $row['role_color'],
-                'role_icon' 		=> $row['role_icon'],
-                'role_description' 		=> $row['role_description'],
-            );
-
-            $data2 [] = array(
                 'game_id' 		    => $row['game_id'],
                 'role_id' 	        => $row['role_id'],
                 'role_needed' 	    => $row['role_needed'],
