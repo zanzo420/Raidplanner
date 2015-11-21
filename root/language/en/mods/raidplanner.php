@@ -218,20 +218,22 @@ $lang = array_merge($lang, array(
 	'LOCAL_DATE_FORMAT'		=> '%1$s %2$s, %3$s',
 	'LOGIN_EXPLAIN_POST_RAIDPLAN'	=> 'You need to login in order to add/edit/delete raids.',
 
-	// ERRORS
-	'NEGATIVE_LENGTH_RAIDPLAN'		=> 'The raid cannot end before it starts.',
 	'NEVER'						=> 'Never',
 	'NEW_RAIDPLAN'				=> 'New Raid',
 	'NEW_EVENT'					=> 'New Raid',
 	'NEWRAID'					=> 'New Raid',
 	'NEWSIGN'					=> 'New Signup',
-	'NO_RAIDPLAN'				=> 'The requested raid does not exist.',
-	'NO_EVENT_TYPES'			=> 'The site administrator has not set up raid types for this calendar.  Calendar raid creation has been disabled.',
-	'NO_GROUP_SELECTED'			=> 'There are no groups selected for this group raid.',
-	'NO_POST_EVENT_MODE'		=> 'No post mode specified.',
-	'NO_EVENTS_TODAY'			=> 'There are no raids scheduled for this day.',
-	'NO_RAIDS_SCHEDULED'		=> 'No raids scheduled.',
+
+	// ERRORS
+	'NEGATIVE_LENGTH_RAIDPLAN'		=> 'The raid cannot end before it starts.',
+    'NO_RAIDPLAN'				=> 'Error. The requested raid does not exist.',
+	'NO_EVENT_TYPES'			=> 'Error. The site administrator has not set up raid types for this calendar.  Calendar raid creation has been disabled.',
+	'NO_GROUP_SELECTED'			=> 'Error. There are no groups selected for this group raid.',
+	'NO_POST_EVENT_MODE'		=> 'Error. No post mode specified.',
+	'NO_EVENTS_TODAY'			=> 'Error. There are no raids scheduled for this day.',
+	'NO_RAIDS_SCHEDULED'		=> 'Error. No raids scheduled.',
 	'NOTAVAILABLE'				=> 'Not Available',
+    'NOTEAMSDEFINED'            => 'Error. No Raid teams defined',
 
 	'OCCURS_EVERY'			=> 'Occurs every',
 	'PAGE_TITLE'			=> 'Calendar',
