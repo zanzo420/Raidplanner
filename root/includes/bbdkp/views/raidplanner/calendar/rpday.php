@@ -36,14 +36,12 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
  */
 class rpday extends RaidCalendar
 {
-	private $mode = '';
     private $viewPlanner;
 
 	function __construct(\bbdkp\views\viewPlanner $viewPlanner)
 	{
         $this->viewPlanner = $viewPlanner;
-		$this->mode="day";
-		parent::__construct($viewPlanner, $this->mode);
+		parent::__construct($viewPlanner, $viewPlanner->view_mode);
 	}
 
 	/**

@@ -36,7 +36,6 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
  */
 class rpweek extends RaidCalendar
 {
-	private $mode = '';
     private $viewPlanner;
 
 	/**
@@ -45,8 +44,7 @@ class rpweek extends RaidCalendar
 	function __construct(\bbdkp\views\viewPlanner $viewPlanner)
 	{
         $this->viewPlanner = $viewPlanner;
-		$this->mode = "week";
-		parent::__construct($viewPlanner, $this->mode);
+		parent::__construct($viewPlanner, $viewPlanner->view_mode);
 	}
 
 	/**
@@ -56,8 +54,6 @@ class rpweek extends RaidCalendar
 	public function display()
 	{
 		global $auth, $user, $config, $template, $phpEx, $phpbb_root_path;
-
-		// create next and prev links
 
 		// get date number
 		$this->date['fday'] = $this->get_firstday($this->date['day'], $this->date['month_no'], $this->date['year']);

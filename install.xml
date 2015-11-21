@@ -17,7 +17,7 @@
 			<author>
 				<realname><![CDATA[A. Vandenberghe]]></realname>
 				<username><![CDATA[Sajaki]]></username>
-				<homepage><![CDATA[http://www.bbdkp.com]]></homepage>
+				<homepage><![CDATA[http://www.github.com/bbdkp/raidplanner]]></homepage>
 				<email><![CDATA[sajaki9@gmail.com]]></email>
 				<contributions-group>
 					<contributions status="current" from="2010-09-30" position="Developer"/>
@@ -46,27 +46,27 @@
 			<target-version>3.0.14</target-version>
 		</installation>
 		<link-group>
-			<link type="dependency" href="https://github.com/bbDKP/bbDKP/releases/tag/v1.4.3" lang="en">bbDKP 1.4.3</link>		
+			<link type="dependency" href="https://github.com/bbDKP/bbDKP/releases/tag/v1.4.3" lang="en">bbDKP 1.4.3</link>
 			<link type="language" href="contrib/languages/fr.xml" lang="en">French</link>
-			<link type="language" href="contrib/languages/de.xml" lang="en">German</link>	
+			<link type="language" href="contrib/languages/de.xml" lang="en">German</link>
 		</link-group>
 	</header>
 	<action-group>
 		<copy>
 			<file from="root/adm/style/dkp/acp_rp_settings.html" to="adm/style/dkp/acp_rp_settings.html"/>
-			<file from="root/adm/style/dkp/acp_rp_cal_settings.html" to="adm/style/dkp/acp_rp_cal_settings.html"/>			
+			<file from="root/adm/style/dkp/acp_rp_cal_settings.html" to="adm/style/dkp/acp_rp_cal_settings.html"/>
 			<file from="root/adm/style/dkp/acp_rp_teams.html" to="adm/style/dkp/acp_rp_teams.html"/>
 			<file from="root/adm/style/dkp/acp_rp_teams_edit.html" to="adm/style/dkp/acp_rp_teams_edit.html"/>
 			<file from="root/images/bbdkp/raidrole_images/*.*" to="images/bbdkp/raidrole_images/*.*"/>
 			<file from="root/images/bbdkp/event_images/*.*" to="images/bbdkp/event_images/*.*"/>
 			<file from="root/includes/acp/info/acp_raidplanner.php" to="includes/acp/info/acp_raidplanner.php"/>
-			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>		
-			
-			<file from="root/includes/bbdkp/controller/raidplanner/*.*" to="includes/bbdkp/controller/raidplanner/*.*"/>			
+			<file from="root/includes/acp/acp_raidplanner.php" to="includes/acp/acp_raidplanner.php"/>
+
+			<file from="root/includes/bbdkp/controller/raidplanner/*.*" to="includes/bbdkp/controller/raidplanner/*.*"/>
 			<file from="root/includes/bbdkp/block/*.*" to="includes/bbdkp/block/*.*"/>
-			<file from="root/includes/bbdkp/views/raidplanner/*.*" to="includes/bbdkp/views/raidplanner/*.*"/>			
-			<file from="root/includes/bbdkp/views/viewPlanner.php" to="includes/bbdkp/views/viewPlanner.php"/>						
-			
+			<file from="root/includes/bbdkp/views/raidplanner/*.*" to="includes/bbdkp/views/raidplanner/*.*"/>
+			<file from="root/includes/bbdkp/views/viewPlanner.php" to="includes/bbdkp/views/viewPlanner.php"/>
+
 			<file from="root/includes/ucp/info/ucp_planner.php" to="includes/ucp/info/ucp_planner.php"/>
 			<file from="root/includes/ucp/ucp_planner.php" to="includes/ucp/ucp_planner.php"/>
 			<file from="root/install/*.*" to="install/*.*"/>
@@ -89,67 +89,35 @@
 		</copy>
 		<open src="index.php">
 			<edit>
-				<comment lang="en"><![CDATA[Include class]]></comment>
-				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[// [+]Raidplanner
-if ($config['rp_index_display_week'] == 1)
-{
-    include($phpbb_root_path . 'includes/bbdkp/views/iViews.' . $phpEx);
-    include($phpbb_root_path . 'includes/bbdkp/views/viewNavigation.'. $phpEx);
-    $Navigation = new \bbdkp\views\viewNavigation('index');
-    include($phpbb_root_path . 'includes/bbdkp/views/viewplanner.'. $phpEx);
-    $viewplanner = new \bbdkp\views\viewPlanner($Navigation);
-
-	$user->add_lang ( array ('mods/raidplanner'));
-	$cal = new \bbdkp\views\raidplanner\rpweek($viewplanner);
-	$cal->display();
-}
-// [-]Raidplanner]]></action>
-			</edit>
-			<edit>
 				<comment lang="en"><![CDATA[Displays current week on index]]></comment>
 				<find><![CDATA[// Assign index specific vars]]></find>
-				<action type="before-add"><![CDATA[// [+]Raidplanner
-if ($config['rp_index_display_week'] == 1)
-{
-	$user->add_lang ( array ('mods/raidplanner'));
-	$cal = new \bbdkp\views\raidplanner\rpweek();
-	$cal->display();
-}
-// [-]Raidplanner
+				<action type="before-add"><![CDATA[
+					// [+]Raidplanner
+					if ($config['rp_index_display_week'] == 1)
+					{
+					    define('IN_BBDKP', true);
+					    // load view class
+					    if (!class_exists('\bbdkp\views\viewFactory'))
+					    {
+					        require("{$phpbb_root_path}includes/bbdkp/views/viewFactory.$phpEx");
+					    }
 
+					    include($phpbb_root_path . 'includes/bbdkp/views/iViews.' . $phpEx);
+					    include($phpbb_root_path . 'includes/bbdkp/views/viewNavigation.'. $phpEx);
+					    $Navigation = new \bbdkp\views\viewNavigation('index');
 
-// [+]Raidplanner
-if ($config['rp_index_display_week'] == 1)
-{
-    define('IN_BBDKP', true);
+					    include($phpbb_root_path . 'includes/bbdkp/views/viewplanner.'. $phpEx);
 
-    if (!class_exists('\bbdkp\admin\Admin'))
-    {
-        require("{$phpbb_root_path}includes/bbdkp/admin/admin.$phpEx");
-    }
-    include($phpbb_root_path . 'includes/bbdkp/views/iViews.' . $phpEx);
-    include($phpbb_root_path . 'includes/bbdkp/views/viewNavigation.'. $phpEx);
-    $Navigation = new \bbdkp\views\viewNavigation('index');
+					    $viewplanner = new \bbdkp\views\viewPlanner($Navigation, 'week');
 
-    include($phpbb_root_path . 'includes/bbdkp/views/viewplanner.'. $phpEx);
-    $viewplanner = new \bbdkp\views\viewPlanner($Navigation);
-
-    if ($config['rp_index_display_week'] == 1)
-    {
-        $user->add_lang ( array ('mods/raidplanner'));
-        if (!class_exists('\bbdkp\views\raidplanner\rpweek', false))
-        {
-            include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rpweek.' . $phpEx);
-        }
-        $cal = new \bbdkp\views\raidplanner\rpweek($viewplanner);
-        $cal->display();
-    }
-
-}
-// [-]Raidplanner
-
-
+					    $calendarclass = '\bbdkp\views\raidplanner\rpweek';
+					    if (!class_exists( $calendarclass, false))
+					    {
+					        include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rpweek.' . $phpEx);
+					    }
+					    $cal = new \bbdkp\views\raidplanner\rpweek($viewplanner);
+					}
+					// [-]Raidplanner
 ]]></action>
 			</edit>
 		</open>
@@ -206,7 +174,7 @@ define('RP_RECURRING',		$table_prefix . 'rp_recurring');
 define('RP_SIGNUPS',		$table_prefix . 'rp_signups');
 define('RP_RAIDPLAN_WATCH',	$table_prefix . 'rp_raidplans_watch'); //deprecated
 define('RP_WATCH',			$table_prefix . 'rp_watch');  //deprecated
-define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');  
+define('RP_RAIDPLAN_ROLES',		$table_prefix . 'rp_raidplanroles');
 define('RP_RAIDPLAN_ANNOUNCEMENT',		$table_prefix . 'rp_announcement');
 define('RP_TEAMS',		$table_prefix . 'rp_teams');
 define('RP_TEAMSIZE',		$table_prefix . 'rp_teamsizes');

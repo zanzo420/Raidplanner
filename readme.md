@@ -1,4 +1,4 @@
-[![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
+[![bbDKP](http://www.bbDKP.com/images/site_logo.png)](https://www.github.com/bbDKP/raidplanner)
 
 #Raidplanner 1.0.4
 

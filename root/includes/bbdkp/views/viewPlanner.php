@@ -62,14 +62,20 @@ class viewPlanner implements iViews
      * @param viewNavigation $Navigation
      */
 
-    public function __construct(viewNavigation $Navigation)
+    public function __construct(viewNavigation $Navigation, $view_mode='')
     {
+        if($view_mode=='')
+        {
+            $view_mode = request_var('view', 'month');
+        }
+        $this->view_mode = $view_mode;
         $this->buildpage($Navigation);
     }
 
     public $guild_id;
     public $game_id;
     public $dkpsys_id;
+    public $view_mode;
 
     /**
      * Build the page
@@ -86,7 +92,7 @@ class viewPlanner implements iViews
         //get permissions
         if ( !$auth->acl_get('u_raidplanner_view_raidplans') )
         {
-            \trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
+            trigger_error( 'USER_CANNOT_VIEW_RAIDPLAN' );
         }
 
         $raidplan_id = request_var('hidden_raidplanid', request_var('raidplanid', 0));
@@ -97,20 +103,20 @@ class viewPlanner implements iViews
             'raidplan',
         );
 
-        $view_mode = request_var('view', 'month');
-        if (!in_array($view_mode, $valid_viewsmodes))
+
+        if (!in_array($this->view_mode, $valid_viewsmodes))
         {
-            trigger_error($user->lang['USER_INVALID_RAIDPLANVIEW'] . ' "' . $view_mode . '" ' );
+            trigger_error($user->lang['USER_INVALID_RAIDPLANVIEW'] . ' "' . $this->view_mode . '" ' );
         }
 
         $action = request_var('action', 'display');
 
         // display header
-        $this->cal = new DisplayFrame($this, $view_mode);
+        $this->cal = new DisplayFrame($this, $this->view_mode);
 
         $this->cal->display();
 
-        switch($view_mode)
+        switch($this->view_mode)
         {
             case "raidplan":
                 // display a raidplan
@@ -121,7 +127,7 @@ class viewPlanner implements iViews
             case "week":
             case "month":
                 // show the calendar
-                $this->ViewCalendar($view_mode);
+                $this->ViewCalendar();
                 break;
             default:
                 trigger_error($user->lang['USER_INVALIDVIEW']);
@@ -155,15 +161,15 @@ class viewPlanner implements iViews
      * Build the calendar
      * @param $view_mode
      */
-    private function ViewCalendar($view_mode)
+    private function ViewCalendar()
     {
         global $phpbb_root_path, $phpEx;
 
         // display wanted calendar
-        $calendarclass = '\bbdkp\views\raidplanner\rp' . $view_mode;
+        $calendarclass = '\bbdkp\views\raidplanner\rp' . $this->view_mode;
         if (!class_exists( $calendarclass, false))
         {
-            include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rp' . $view_mode .'.' . $phpEx);
+            include($phpbb_root_path . 'includes/bbdkp/views/raidplanner/calendar/rp' . $this->view_mode .'.' . $phpEx);
         }
         $cal = new $calendarclass($this);
         $cal->display();
