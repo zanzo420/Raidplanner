@@ -1124,26 +1124,32 @@ class Raidplan_display
             ));
         }
 
+        // get team array
+        $sql = 'SELECT * FROM ' . RP_TEAMS . '
+					ORDER BY teams_id';
+        $db->sql_query($sql);
+        $team_id = 0;
+        $result = $db->sql_query($sql);
+        while ( $row = $db->sql_fetchrow ( $result ) )
+        {
+            $team_id = $row ['teams_id'];
+            $template->assign_block_vars( 'team_row', array (
+                'VALUE' => $row ['teams_id'],
+                'SELECTED' => ' selected="selected"',
+                'OPTION' => $row ['team_name'] . ': ' .  $row['team_size']));
+        }
+        $db->sql_freeresult($result);
+
+        if ($team_id == 0)
+        {
+            trigger_error('NOTEAMSDEFINED');
+        }
+
         /*
          * make raid composition proposal
          */
-        if($raidplan->getId() == 0)
+        if($raidplan->getId() == 0 && $team_id > 0)
         {
-            // new raid
-            $sql = 'SELECT * FROM ' . RP_TEAMS . '
-					ORDER BY teams_id';
-            $db->sql_query($sql);
-            $result = $db->sql_query($sql);
-            while ( $row = $db->sql_fetchrow ( $result ) )
-            {
-                $team_id = $row ['teams_id'];
-                $template->assign_block_vars( 'team_row', array (
-                    'VALUE' => $row ['teams_id'],
-                    'SELECTED' => ' selected="selected"',
-                    'OPTION' => $row ['team_name'] . ': ' .  $row['team_size']));
-            }
-            $db->sql_freeresult($result);
-
             // make roles proposal
             $sql = 'SELECT t.game_id, t.role_id, t.role_needed, t.teams_id, r.role_color, r.role_icon, l.name as role_description
             FROM ' . RP_TEAMSIZE . ' t

@@ -14,7 +14,7 @@
 			<author>
 				<realname><![CDATA[Sajaki]]></realname>
 				<username><![CDATA[Sajaki]]></username>
-				<homepage><![CDATA[http://www.bbdkp.com]]></homepage>
+				<homepage><![CDATA[https://www.github.com/bbdkp/raidplanner]]></homepage>
 				<email><![CDATA[sajaki9@gmail.com]]></email>
 				<contributions-group>
 					<contributions status="current" from="2009-01-01" position="Developer"/>
@@ -34,7 +34,7 @@
 	<action-group>
 		<copy>
 			<file from="root/language/fr/mods/*.*" to="language/fr/mods/*.*"/>
-			<file from="root/language/fr/email/*.*" to="language/fr/email/*.*"/>	
+			<file from="root/language/fr/email/*.*" to="language/fr/email/*.*"/>
 		</copy>
 		<open src="language/de/common.php">
 			<edit>

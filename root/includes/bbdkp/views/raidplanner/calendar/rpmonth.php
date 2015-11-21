@@ -36,8 +36,6 @@ if (!class_exists('\bbdkp\views\raidplanner\Raidplan_display', false))
  */
 class rpmonth extends RaidCalendar
 {
-	private $mode = '';
-
     private $viewPlanner;
 
 	/**
@@ -46,8 +44,7 @@ class rpmonth extends RaidCalendar
 	function __construct(\bbdkp\views\viewPlanner $viewPlanner)
 	{
         $this->viewPlanner = $viewPlanner;
-		$this->mode="month";
-		parent::__construct($viewPlanner, $this->mode);
+		parent::__construct($viewPlanner, $viewPlanner->view_mode);
 	}
 
 	/**

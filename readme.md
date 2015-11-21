@@ -1,9 +1,24 @@
-[![bbDKP](http://www.bbDKP.com/images/site_logo.png)](http://www.bbDKP.com)
+[![bbDKP](http://www.bbDKP.com/images/site_logo.png)](https://www.github.com/bbDKP/raidplanner)
 
 #Raidplanner 1.0.4
 
 
 a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips and Overlays
+
+## Current
+
+v1.0.4
+
+## Installation
+* 	Unzip the zip file into /store/mods
+* 	Launch automod, choose the install link. this will copy all the files, perform the necessary edits.
+* 	Then surf to /install/index.php, and you will see the database installer. Launch the database installer.  This will install the acp module, and clear the caches (template, theme, imagesets)
+*	Once installed, you will find the ACP module added under the raid section in bbdkp ACP.</li>
+
+
+## Requirements
+*	bbDKP 1.4.3
+*	phpBB 3.0.14
 
 
 ##### General Features
@@ -21,11 +36,11 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	comes in English, French and German
 
 ##### Inviting and signing up
-*	Confirm Raid Raidplans 
+*	Confirm Raid Raidplans
 *	Ability to invite multiple groups to an raidplan
 *	Sign up with your Guild characters to raids
 *	Follow up to which raid(s) you signed up in UCP.
-*	with approved, available and not available sections. 
+*	with approved, available and not available sections.
 *	Raidmembers can change their comments, or change their signup from available to not available.
 *	Raidleaders can approve or deny raidmembers
 *   tooltip shows current status of your signup
@@ -51,46 +66,32 @@ a phpBB3 Calendar where you can plan your Guild Raidplans. Uses Jquery Tooltips 
 *	Custom date/time formatting controlled in calendar ACP - this overwrites the user's preferred date/time format, so you can display just the time in hours where it makes sense (like in the week view) or the whole date+time (like in the display Raidplan)
 *	UCP module that displays upcoming Raidplans (that the user has registered for) for the next X days.
 
-## Current
+### History and credits
 
-v1.0.4
+*	Raidplanner mod was partly made from Alightner's Calendar mod and phpRaider, refactored into functional classes to work with bbDKP.
 
-## Installation
-* 	Unzip the zip file into /store/mods
-* 	Launch automod, choose the install link. this will copy all the files, perform the necessary edits. 
-* 	Then surf to /install/index.php, and you will see the database installer. Launch the database installer.  This will install the acp module, and clear the caches (template, theme, imagesets)
-*	Once installed, you will find the ACP module added under the raid section in bbdkp ACP.</li>
-
-
-## Requirements
-*	bbDKP 1.4.1
-*	phpBB 3.0.14
-
-### History and credits 
-
-*	Raidplanner mod was partly made from Alightner's Calendar mod and phpRaider, refactored into functional classes to work with bbDKP. 
 
 ### changes
 
 *	1.0.4 2015-10-25
-	* [CHG] target phpbb 3.0.14 and bbdkp 1.4.1
+	* [CHG] target phpbb 3.0.14 and bbdkp 1.4.3
 
 *	1.0.3 2014-07-16
 	* [FIX] #58 signup select sql had wrong join condition
-	
+
 *	1.0.2 2014-07-12
-	* [FIX] #57 fix Function array dereferencing not being available in php 5.3. causes erratic errors in php < 5.4 (missing signups). 
-	
+	* [FIX] #57 fix Function array dereferencing not being available in php 5.3. causes erratic errors in php < 5.4 (missing signups).
+
 *	1.0.1 2014-07-01
-	* [FIX] #56 File Name and Link Reference case mismatch.	
+	* [FIX] #56 File Name and Link Reference case mismatch.
 
 *   1.0 2014-06-30
 	*   [FIX] compatible with bbDKP 1.3.0.7 or higher
-	
+
 *   1.0 RC2 2014-06-21
 	*   [FIX] #52 cache queries
 	*   [FIX] modify editing raidplan screen
-	
+
 *   1.0 RC1 2014-06-15
 	*   [FIX] #52 fix display signoffs
 	*	[FIX] #52 fix can't edit raid roles
@@ -101,24 +102,24 @@ v1.0.4
 	*   [FIX] #49 ajax file should be in super path
 	*   [FIX] fix french translation
 	*   [FIX] #49 fix block path		
-			
-*   0.12 2014-06-07 
-	*   [FIX] #46 show size of raid team on popup 
+
+*   0.12 2014-06-07
+	*   [FIX] #46 show size of raid team on popup
 	*   [FIX] #41 use explicit getters/setters for the raidplan class
-	*	[NEW] #39 tabbed acp 
+	*	[NEW] #39 tabbed acp
     *   [FIX] #38 templating view class split 	
     *   [FIX] #37 Viewplanner refactoring    
-    *   [FIX] #36 js validation for newteamsize field in raidteam acp 
-    *   [FIX] #33 better icons 
- 	
+    *   [FIX] #36 js validation for newteamsize field in raidteam acp
+    *   [FIX] #33 better icons
+
 *   0.11.0 2014-05-19
-    *   [NEW] tabbed interface for ACP, split into 4 modules. 
+    *   [NEW] tabbed interface for ACP, split into 4 modules.
     *   [FIX] #27 duplicate signups. this was due to the signup object not being rebuilt after displaying the raidplan.
     *   [FIX] #29 Split Authorisation from Raidplan Class. a new class "RaidAuth" is called from Raidplan class constructor, and checks permissions. local raidplan fields are set by one call with as argument the action that needs checking. advantages: raidplan class has too many responsibilities and checking auth should not be one of them.
-    *   [FIX] #26 No acp error handler for raidteams. now there is js and php validation. 
-    *   [FIX] #25 No acp error handler for roles. now there is js and php validation. 
-    *   [FIX] #32 upcoming raid, top signup side blocks next to calendar 
-            
+    *   [FIX] #26 No acp error handler for raidteams. now there is js and php validation.
+    *   [FIX] #25 No acp error handler for roles. now there is js and php validation.
+    *   [FIX] #32 upcoming raid, top signup side blocks next to calendar
+
 *   0.10.0 2014-04-05
     *   [CHG] adapted to new view bbdkp class
     *	[NEW] add setting to enable past raids, and set it to default.
@@ -145,7 +146,7 @@ v1.0.4
 	*	[NEW] welcome message moved to block
 	*	[FIX] missing language entry for push permission
 	*	[FIX] fixed #214 tooltip no longer appears on wrong date
-	*	[FIX] fixed #202 : if the confirmed raider is unsigned after raid was pushed, exec_decreasedkp_after_unsign decreases dkp points by event standard amount 
+	*	[FIX] fixed #202 : if the confirmed raider is unsigned after raid was pushed, exec_decreasedkp_after_unsign decreases dkp points by event standard amount
 *	0.5.0 2012-08-02
 	*	[NEW] MSSQL, postgreSQL support
 	*	[UPD] requires with bbDKP 1.2.8
@@ -158,8 +159,8 @@ v1.0.4
 	*	[FIX] raidplan class initialisation now resets properties on build
 	*	[NEW] raidplan tooltip now shows 'frozen' when raid has passed
 	*	[NEW] raidplan tooltip now shows your signup status (signed up, maybe, confirmed, signed off
-	*	[NEW] confirmation box when adding or editing raidplan 
-	*	[NEW] delete button for raidplan 
+	*	[NEW] confirmation box when adding or editing raidplan
+	*	[NEW] delete button for raidplan
 	*	[NEW] added plugin table installer
 	*	[NEW] added the week view in the board index
 	*	[FIX] signup comments now suppot bbcode
@@ -169,17 +170,17 @@ v1.0.4
 	*	[UPD] updated jquery to v172
 	*	[UPD] updated jquery tools to v127
 	*	[FIX] added acp config to toggle portal dispnay
-	*	[NEW] added upcoming raids raidblock to portal 
-	*	[NEW] added top raiders raidblock to portal 
+	*	[NEW] added upcoming raids raidblock to portal
+	*	[NEW] added top raiders raidblock to portal
 	*	[FIX] renamed installer to index.php
 *	0.3.0 2011-11-21
 	*	[NEW] opacity change when hovering
 	*	[FIX] w3c, mod validator fixes
 	*	[FIX] made tooltips smaller
 	*	[NEW] new signup pane in raid view (js popup stays)
-	*	[NEW] html5 canvas clock added 
-	*	[FIX] timezone handling improved, now prints timezone 
-	*	[FIX] ticket 135 (could not add raid on date before today in next month) 
+	*	[NEW] html5 canvas clock added
+	*	[FIX] timezone handling improved, now prints timezone
+	*	[FIX] ticket 135 (could not add raid on date before today in next month)
 	*	[FIX] renamed installer to index.php
 	*	[FIX] redid dummy icon in photoshop
 	*	[FIX] normaised css so that it fits in prosilver
@@ -199,12 +200,12 @@ v1.0.4
 	*	[CHG] UCP module with available raids
 	*	[CHG] changed tablenames, appends table constants to bbDKP constants file
 	*	[CHG] is plugin for bbDKP 1.2.4
-	*	[CHG] split backend /includes code and recoded/refactored into php5 classes using factory/strategy pattern. 
+	*	[CHG] split backend /includes code and recoded/refactored into php5 classes using factory/strategy pattern.
 	*	[CHG] added UMIF installer script, removed sql portions from modx
 	*	[CHG] Removed config table, now uses phpbb config table.
 	*	[CHG] split modx file into main, template and language
 	*	[CHG] forked from Calendar mod 0.1.0 renamed Raidplanner
-	
+
 
 ## Community
 
@@ -221,13 +222,8 @@ Send us a pull request
 This application is opensource software released under the GPL. Please see source code and the docs directory for more details. Powered by bbDkp (c) 2009 The bbDkp Project Team bbDkp. If you use this software and find it to be useful, we ask that you retain the copyright notice below.
 bbDKP (c) 2008, 2009 Sajaki, Malfate, Kapli, Hroar
 bbDKP (c) 2007 Ippeh, Teksonic, Monkeytech, DWKN
-EQDkp (c) 2003 The EqDkp Project Team 
+EQDkp (c) 2003 The EqDkp Project Team
 
 ## Paypal donation
 
 [![Foo](https://www.paypal.com/en_US/BE/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=sajaki9%40gmail%2ecom&lc=BE&item_name=bbDKP%20Guild%20management&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
-
-
-
-
-
